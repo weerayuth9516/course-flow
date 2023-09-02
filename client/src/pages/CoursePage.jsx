@@ -3,7 +3,7 @@ import React from "react";
 function CoursePage() {
   const displayCards = (
     <div className="col-span-4">
-      <div className="course-card w-[357px] h-[475px] rounded-lg shadow-lg border border-gray-100">
+      <div className="course-card w-[357px] h-[475px] rounded-lg shadow-lg border border-gray-100 mb-8">
         <div className="course-card-thumnail">
           <img
             src="src/assets/ourCourses/image.png"
