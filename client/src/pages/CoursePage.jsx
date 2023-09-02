@@ -64,6 +64,7 @@ function CoursePage() {
           <div className="course-detail">
             <p>{limitLetter}</p>
           </div>
+          
 
         </div>
         <div className="course-card-footer mt-10">
