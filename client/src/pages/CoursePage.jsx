@@ -17,13 +17,16 @@ function CoursePage() {
           <div className="course-detail">
             <p>Lorem ipsum dolor sit amet, conse ctetur adipiscing elit.</p>
           </div>
+          
 
-          <div className="course-card-footer mt-4">
+        </div>
+        <div className="course-card-footer mt-10">
+          <hr className="border-t border-gray-300 my-4 w-full" />
             <span>
               <img
                 src="src/assets/ourCourses/Frame.png"
                 alt="Image icon"
-                className="inline mr-2"
+                className="inline mr-2 ml-4"
               />
               6 Lessons
             </span>
@@ -31,12 +34,11 @@ function CoursePage() {
               <img
                 src="src/assets/ourCourses/Vectors.png"
                 alt="Image icon"
-                className="inline mr-2"
+                className="inline mr-2 ml-4"
               />
               6 Hours
             </span>
           </div>
-        </div>
       </div>
     </div>
   );
