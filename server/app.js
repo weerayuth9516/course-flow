@@ -3,6 +3,7 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import userRouter from "./apps/userRouter.js";
 import dotenv from "dotenv";
+import courseRouter from "./apps/courseRouter.js";
 async function init() {
   const app = express();
   const port = 4001;
@@ -10,7 +11,7 @@ async function init() {
   app.use(cors());
   app.use(bodyParser.json());
   app.use("/users", userRouter);
-
+  app.use("/courses", courseRouter);
   app.get("/", (req, res) => {
     return res.send("Course Flow API Running.");
   });
