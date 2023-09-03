@@ -6,6 +6,7 @@ import Login from "./pages/LoginPage";
 import EditProfile from "./pages/EditProfilePage";
 import Course from "./pages/CoursePage";
 import NotFoundPage from "./pages/NotFoundPage";
+import CourseDetailPage from "./pages/CourseDetailPage";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/editprofile" element={<EditProfile />} />
         <Route path="/course" element={<Course />} />
+        <Route path="/course/courseDetail" element={<CourseDetailPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </BrowserRouter>
