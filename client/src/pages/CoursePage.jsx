@@ -44,7 +44,7 @@ function CoursePage() {
 
         {/* Display course cards */}
         {searchList.map((item, index) => {
-    const oneHundredLetter =
+    const limitLetter =
       item.course_detail.length > 70
         ? item.course_detail.substring(0, 70) + "..."
         : item.course_detail;
@@ -62,7 +62,7 @@ function CoursePage() {
           <h3 className="mb-2 text-orange-500">Course</h3>
           <h2 className="font-bold text-2xl mb-2">{item.course_name}</h2>
           <div className="course-detail">
-            <p>{oneHundredLetter}</p>
+            <p>{limitLetterLetter}</p>
           </div>
 
         </div>
@@ -82,7 +82,7 @@ function CoursePage() {
                 alt="Image icon"
                 className="inline mr-2 ml-4"
               />
-              6 Hours
+              {item.course_learning_time} Hours
             </span>
           </div>
       </div>
