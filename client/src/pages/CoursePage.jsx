@@ -15,7 +15,7 @@ function CoursePage() {
     <div className="container">
      <div className="bg-[url('src/assets/ourCourses/image_background.png')] bg-container bg-center bg-no-repeat h-[190px]">
       <div className="search-box mb-4 flex flex-col items-center mt-40">
-        <label for="input" className="text-gray-700 text-4xl font-bold">
+        <label htmlFor="input" className="text-gray-700 text-4xl font-bold">
           Our Courses
         </label>
         <div className="relative mt-12">
@@ -45,8 +45,8 @@ function CoursePage() {
         {/* Display course cards */}
         {searchList.map((item, index) => {
     const oneHundredLetter =
-      item.course_detail.length > 20
-        ? item.course_detail.substring(0, 20) + "..."
+      item.course_detail.length > 70
+        ? item.course_detail.substring(0, 70) + "..."
         : item.course_detail;
     return (
     <div key={index} className="col-span-4">
