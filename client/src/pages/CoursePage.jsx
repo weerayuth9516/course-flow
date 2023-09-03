@@ -62,7 +62,7 @@ function CoursePage() {
           <h3 className="mb-2 text-orange-500">Course</h3>
           <h2 className="font-bold text-2xl mb-2">{item.course_name}</h2>
           <div className="course-detail">
-            <p>{limitLetterLetter}</p>
+            <p>{limitLetter}</p>
           </div>
 
         </div>
