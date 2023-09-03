@@ -7,6 +7,7 @@ import Login from "./pages/LoginPage";
 import EditProfilePage from "./pages/EditProfilePage";
 import Course from "./pages/CoursePage";
 import NotFoundPage from "./pages/NotFoundPage";
+import CourseDetailPage from "./pages/CourseDetailPage";
 
 function App() {
   const [token, setToken] = useState(false);
@@ -27,6 +28,7 @@ function App() {
         <Route path="/login" element={<Login setToken={setToken} />} />
         <Route path="/editprofile" element={<EditProfilePage setToken={setToken}/>} />
         <Route path="/course" element={<Course />} />
+        <Route path="/course/courseDetail" element={<CourseDetailPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </BrowserRouter>
