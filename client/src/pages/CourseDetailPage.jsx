@@ -11,18 +11,27 @@ function CourseDetailPage() {
   return (
     <>
       <div className="flex flex-col mt-9">
-        <Link to="/course">🡠 Back</Link>
+        <Link to="/course" className="text-blue-500 ml-[200px] mb-4 font-bold">
+          <span className="font-semibold text-xs pr-2">🡠</span> Back
+        </Link>
         <div className="flex justify-center">
           <div className="w-[739px] h-[460px] bg-gray-500 rounded-lg"></div>
           <div className="w-[357px] h-[449px] py-8 px-6 shadow-lg rounded-lg ml-5">
-            <p className="course">Course</p>
-            <p className="name-course">Service Design Essentails</p>
-            <p className="detail">
-              Lorem ipsum dolor, sit amet consectetur adipisicing elit.
+            <p className="text-sm text-orange-500 mb-4">Course</p>
+            <p className="text-2xl text-black font-medium">
+              Service Design Essentails
             </p>
-            <p className="price-course">THB 3,559.00</p>
-            <hr />
-            <button className="get-in">Get in Desire Course</button>
+            <p className="text-gray-700 mb-4">
+              Lorem ipsum dolor sit amet, conse.
+              <br /> ctetur adipiscing elit.
+            </p>
+            <p className="text-gray-700 text-2xl font-medium mb-3">
+              THB 3,559.00
+            </p>
+            <hr className="mb-6" />
+            <button className="px-8 py-[18px] w-[309px] h-[60px] border-solid border-[1px] rounded-[12px] border-orange-500 font-bold text-orange-500">
+              Get in Desire Course
+            </button>
             <br />
             <button className="subscribe">Subscribe This Course</button>
           </div>
@@ -59,7 +68,7 @@ function CourseDetailPage() {
           </p>
         </div>
         <div className="w-[739px] ml-[200px]">
-          <header className="module">Module Samples</header>
+          <header className="font-medium">Module Samples</header>
 
           <Accordion className="border-b bg-none">
             <AccordionSummary
