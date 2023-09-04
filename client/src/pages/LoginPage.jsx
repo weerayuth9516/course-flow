@@ -2,7 +2,6 @@ import React from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { Link } from "react-router-dom";
-<<<<<<< HEAD
 import { supabase } from "../supabase/client";
 import { useNavigate } from "react-router-dom";
 
@@ -39,29 +38,6 @@ function LoginPage({setToken}) {
     }
   };
 
-=======
-
-function LoginPage() {
-  const initialValues = {
-    email: "",
-    password: "",
-  };
-
-  const validationSchema = Yup.object().shape({
-    email: Yup.string()
-      .email("Invalid email address")
-      .required("Email is required"),
-    password: Yup.string()
-      .required("Password is required")
-      .min(6, "Password must be at least 6 characters"),
-  });
-
-  const handleSubmit = (values) => {
-    // handle form submit
-    console.log("Form submitted with values:", values);
-  };
-
->>>>>>> 5ead3647da84110a317675674c5d1e5bf826eab2
   return (
     <div className="container">
       <div
