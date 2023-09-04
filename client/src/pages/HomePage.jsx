@@ -1,7 +1,10 @@
-import React from 'react'
+import React from "react";
+import Header from "../components/Header";
 
 export default function HomePage() {
   return (
-    <div className='text-[48px]'>Home</div>
-  )
+    <div className="text-[48px]">
+      <Header />
+    </div>
+  );
 }
