@@ -4,6 +4,27 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 
 function RegisterPage() {
+  const formik = useFormik({
+    initialValues: {
+      name: " ",
+      birthDate: " ",
+      education: " ",
+      email: " ",
+      password: " ",
+    },
+
+    onSubmit: (values) => {
+      console.log(values);
+    },
+  });
+  const validationSchema = Yup.object({
+    name: Yup.string()
+      .matches(/^[a-zA-Z'-]+$/, "Name must contain only letters, -, or  ' ")
+      .required("Name is required"),
+  });
+
+  console.log(formik.errors);
+
   return (
     <div className="h-screen flex flex-col items-center justify-center bg-[url('src/assets/registerPage/register-bg.svg')] bg-cover bg-no-repeat bg-bottom">
       <div className="w-[453px]">
@@ -11,7 +32,7 @@ function RegisterPage() {
           Register to start learning!
         </header>
 
-        <form>
+        <form onSubmit={formik.handleSubmit}>
           <label htmlFor="name" className="text-base">
             Name
           </label>
@@ -21,23 +42,31 @@ function RegisterPage() {
             id="name"
             name="name"
             placeholder="Enter Name and Lastname"
+            onChange={formik.handleChange}
+            value={formik.values.name}
             className="w-full border border-gray-300 py-2 pl-3 pr-4 rounded-lg mb-6"
           />
+          {formik.errors.name ? <p>{formik.errors.name}</p> : null}
+
           <br />
           <label htmlFor="birthDate">Date of Birth</label>
           <br />
           <input
-            type="text"
-            placeholder="DD/MM/YY"
-            className="w-full border border-gray-300 py-2 pl-3 pr-4 rounded-lg"
+            type="date"
+            id="birthDate"
+            onChange={formik.handleChange}
+            value={formik.values.birthDate}
+            className="mb-6 w-full border border-gray-300 py-2 pl-3 pr-4 rounded-lg"
           />
-          <input type="date" className="mb-6" />
           <br />
           <label htmlFor="education">Educational Background</label>
           <br />
           <input
             type="text"
+            id="education"
             placeholder="Enter Educational Background"
+            onChange={formik.handleChange}
+            value={formik.values.education}
             className="w-full border border-gray-300 py-2 pl-3 pr-4 rounded-lg mb-6"
           />
           <br />
@@ -45,7 +74,10 @@ function RegisterPage() {
           <br />
           <input
             type="email"
+            id="email"
             placeholder="Enter Email"
+            onChange={formik.handleChange}
+            value={formik.values.email}
             className="w-full border border-gray-300 py-2 pl-3 pr-4 rounded-lg mb-6"
           />
           <br />
@@ -53,7 +85,10 @@ function RegisterPage() {
           <br />
           <input
             type="password"
+            id="password"
             placeholder="Enter password"
+            onChange={formik.handleChange}
+            value={formik.values.password}
             className="w-full border border-gray-300 py-2 pl-3 pr-4 rounded-lg mb-6"
           />
           <br />
