@@ -2,8 +2,11 @@ import React from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { Link } from "react-router-dom";
+import { supabase } from "../supabase/client";
+import { useNavigate } from "react-router-dom";
 
-function LoginPage() {
+function LoginPage({setToken}) {
+  const navigate = useNavigate();
   const initialValues = {
     email: "",
     password: "",
@@ -18,9 +21,21 @@ function LoginPage() {
       .min(6, "Password must be at least 6 characters"),
   });
 
-  const handleSubmit = (values) => {
+  const handleSubmit = async (values) => {
     // handle form submit
     console.log("Form submitted with values:", values);
+    try{
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: values.email,
+        password: values.password,
+      })
+     if(error) throw error
+     console.log(data)
+     setToken(data)
+     navigate("/")
+    }catch(error){
+      alert(error)
+    }
   };
 
   return (
