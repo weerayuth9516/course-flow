@@ -1,20 +1,17 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React from "react";
+import Header from "../components/Header";
+import EditProfileForm from "../components/EditProfileForm";
 
-function EditProfilePage({token}) {
-  const navigate = useNavigate()
-
-  const handleLogOut = () =>{
-    sessionStorage.removeItem("token");
-    navigate("/login");
-  }
-  return (
-    <>
-      <div>UserProfilePage</div>
-      {token && <p>Welcome Back {token.user.aud}</p>}
-      <button onClick={handleLogOut}>Log Out</button>
-    </>
-  );
-}
+const handleLogOut = () => {
+  sessionStorage.removeItem("token");
+  navigate("/login");
+};
+return (
+  <div className="font-inter">
+    <Header />
+    <div className="text-header2">Profile</div>
+    <EditProfileForm />
+  </div>
+);
 
 export default EditProfilePage;
