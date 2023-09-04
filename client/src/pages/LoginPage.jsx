@@ -32,7 +32,7 @@ function LoginPage({setToken}) {
      if(error) throw error
      console.log(data)
      setToken(data)
-     navigate("/")
+     navigate("/editprofile")
     }catch(error){
       alert(error)
     }
