@@ -3,7 +3,7 @@ import Header from "../components/Header";
 
 export default function HomePage() {
   return (
-    <div className="text-[48px]">
+    <div>
       <Header />
     </div>
   );
