@@ -1,29 +1,24 @@
 import logo from "../assets/header/CourseFlow.png";
 
 import arrow from "../assets/header/arrow-dropdown.png";
-import user from "../assets/header/user.png";
+import userimage from "../assets/header/user.png";
 import homework from "../assets/header/homework.png";
-// import frames from "../assets/ourcourses/frames.png";
+import frames from "../assets/header/Frame.png";
 import star from "../assets/header/star.png";
 import logout from "../assets/header/logout.png";
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import axios from "axios";
+import { Link, useParams } from "react-router-dom";
+import useGetuser from "../hook/useGetuser";
 
 function Header() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  //   const [users, setUsers] = useState([]);
+  const params = useParams();
+  const { user, getCurrentUser } = useGetuser();
 
-  //   const getUsers = async () => {
-  //     const userInformations = await axios.get("http://localhost:4001/users");
-  //     setUsers(userInformations.data);
-  //     console.log(userInformations.data);
-  //   };
-
-  //   useEffect(() => {
-  //     getUsers();
-  //   }, []);
+  useEffect(() => {
+    getCurrentUser(params.id);
+  }, []);
 
   return (
     <section id="header" className="font-inter">
@@ -61,7 +56,7 @@ function Header() {
                   id="username"
                   className="text-body2 font-normal text-gray-800 m-2"
                 >
-                  User Fullname
+                  User Name
                 </span>
                 <img
                   id="arrow-dropdown"
@@ -83,7 +78,7 @@ function Header() {
                       <img
                         id="profile"
                         className="p-4"
-                        src={user}
+                        src={userimage}
                         alt="profile"
                       />
                       <span id="profile">Profile</span>
@@ -94,7 +89,7 @@ function Header() {
                       <img
                         id="myCourses"
                         className="p-4"
-                        src={star}
+                        src={frames}
                         alt="My courses"
                       />
                       <span id="myCourses">My Courses</span>

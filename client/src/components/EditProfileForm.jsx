@@ -1,8 +1,11 @@
-import { useState, userEffect } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import useGetuser from "../hook/useGetuser";
 
 function EditProfileForm() {
   const params = useParams();
+
+  const { user, getCurrentUser, updateUserProfileById } = useGetuser();
   const [name, setName] = useState("");
   const [birthDate, setBirthDate] = useState("");
   const [education, setEducation] = useState("");
@@ -14,17 +17,20 @@ function EditProfileForm() {
   //     delete images[imageKey];
   //     setImages({ ...images });
   //   };
+  //   useEffect(() => {
+  //     getCurrentUser(params.id);
+  //   }, []);
 
   return (
     <div
       id="edit-profile-container"
-      className="flex flex-col items-center justify-center h-[955px]"
+      className=" flex flex-col items-center justify-center h-[955px]"
     >
-      <span className="text-header2 mt-[106px] font-medium">Profile</span>
-      <form className="flex flex-row items-start justify-between text-body2 mt-[45px] w-[930px] h-[521px]">
+      <span className=" text-header2  font-medium">Profile</span>
+      <form className="flex flex-row items-start justify-between text-body2 mt-[100px] w-[930px] h-[521px]">
         <div className="col-span-full">
           <label>
-            <div className="mt-2 flex items-center justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10 w-[358px] h-[358px]">
+            <div className="mt- flex items-center justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10 w-[358px] h-[358px]">
               <div className="text-center">
                 <svg
                   className="mx-auto h-12 w-12 text-gray-300"
