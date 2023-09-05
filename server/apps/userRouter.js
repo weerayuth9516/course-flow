@@ -25,13 +25,9 @@ userRouter.get("/:id", async (req, res) => {
 userRouter.post("/", async (req, res) => {
   const results = await supabase.from("users").insert([
     {
-      user_email: `${req.body.email}`,
       user_name: `${req.body.user_name}`,
-      user_lastname: `${req.body.user_lastname}`,
-      user_education_background: `${req.body.education_background}`,
-      user_role: `user`,
+      user_education: `${req.body.education_background}`,
       user_dob: `${req.body.user_bod}`,
-      user_password: `${req.body.user_password}`,
     },
   ]);
   if (results.statusText === "OK") {
@@ -48,11 +44,8 @@ userRouter.put("/:id", async (req, res) => {
     .update({
       user_email: `${req.body.email}`,
       user_name: `${req.body.user_name}`,
-      user_lastname: `${req.body.user_lastname}`,
-      user_education_background: `${req.body.education_background}`,
-      user_role: `user`,
+      user_education: `${req.body.education_background}`,
       user_dob: `${req.body.user_bod}`,
-      user_password: `${req.body.user_password}`,
     })
     .eq("user_id", id)
     .select();
