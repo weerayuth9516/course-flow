@@ -1,29 +1,24 @@
 import logo from "../assets/header/CourseFlow.png";
 
 import arrow from "../assets/header/arrow-dropdown.png";
-import user from "../assets/header/user.png";
+import userimage from "../assets/header/user.png";
 import homework from "../assets/header/homework.png";
-// import frames from "../assets/ourcourses/frames.png";
+import frames from "../assets/header/Frame.png";
 import star from "../assets/header/star.png";
 import logout from "../assets/header/logout.png";
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import axios from "axios";
+import { Link, useParams } from "react-router-dom";
+import useGetuser from "../hook/useGetuser";
 
 function Header() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  //   const [users, setUsers] = useState([]);
+  const params = useParams();
+  const { user, getCurrentUser } = useGetuser();
 
-  //   const getUsers = async () => {
-  //     const userInformations = await axios.get("http://localhost:4001/users");
-  //     setUsers(userInformations.data);
-  //     console.log(userInformations.data);
-  //   };
-
-  //   useEffect(() => {
-  //     getUsers();
-  //   }, []);
+  useEffect(() => {
+    getCurrentUser("2f765281-1028-46f4-8c04-a392e96ddd5c");
+  }, []);
 
   return (
     <section id="header" className="font-inter">
@@ -61,7 +56,7 @@ function Header() {
                   id="username"
                   className="text-body2 font-normal text-gray-800 m-2"
                 >
-                  User Fullname
+                  {user.user_name}
                 </span>
                 <img
                   id="arrow-dropdown"
@@ -76,14 +71,14 @@ function Header() {
               {isMenuOpen && (
                 <div
                   id="menuItems"
-                  className="bg-white drop-shadow-xl flex flex-col absolute top-16 right-1 text-body3 font-normal text-gray-700 rounded-md w-[198px]"
+                  className="bg-white drop-shadow-xl flex flex-col absolute top-16 right-1 text-body3 font-normal text-gray-700 rounded-md w-[198px] z-30"
                 >
                   <Link to="/editprofile">
                     <div className="flex items-center rounded-md hover:bg-blue-200">
                       <img
                         id="profile"
                         className="p-4"
-                        src={user}
+                        src={userimage}
                         alt="profile"
                       />
                       <span id="profile">Profile</span>
@@ -94,7 +89,7 @@ function Header() {
                       <img
                         id="myCourses"
                         className="p-4"
-                        src={star}
+                        src={frames}
                         alt="My courses"
                       />
                       <span id="myCourses">My Courses</span>
