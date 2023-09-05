@@ -25,7 +25,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login setToken={setToken} />} />
-        <Route path="/editprofile" element={<EditProfilePage />} />
+        <Route path="/editprofile" element={<EditProfilePage setToken={setToken}/>} />
         <Route path="/course" element={<Course />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
