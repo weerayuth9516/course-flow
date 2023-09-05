@@ -1,6 +1,7 @@
 import React from "react";
 import { DebounceInput } from "react-debounce-input";
 import useGetsearch from "../hook/useGetsearch";
+import Header from "../components/Header";
 
 function CoursePage() {
   const { searchList, inputText, setInputText, getSearchList } = useGetsearch();
@@ -13,6 +14,7 @@ function CoursePage() {
 
   return (
     <div className="container">
+    <Header />
      <div className="bg-[url('src/assets/ourCourses/image_background.png')] bg-container bg-center bg-no-repeat h-[190px]">
       <div className="search-box mb-4 flex flex-col items-center mt-40">
         <label htmlFor="input" className="text-gray-700 text-4xl font-bold">
