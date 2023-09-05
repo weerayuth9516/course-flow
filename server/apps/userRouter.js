@@ -42,7 +42,6 @@ userRouter.put("/:id", async (req, res) => {
   const results = await supabase
     .from("users")
     .update({
-      user_email: `${req.body.user_email}`,
       user_name: `${req.body.user_name}`,
       user_education: `${req.body.user_education}`,
       user_dob: `${req.body.user_dob}`,
