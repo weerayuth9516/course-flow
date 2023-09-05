@@ -31,13 +31,18 @@ function RegisterPage() {
   //ยังไม่มี post new user?
   const registerUser = async (userProfile) => {
     try {
-      const response = await axios.post(
+      const result = await axios.post(
         "http://localhost:4001/users",
         userProfile
       );
-      return response.data;
+
+      if (result.status === 201) {
+        console.log("User registration successful");
+      } else {
+        console.log("User registration failed");
+      }
     } catch (error) {
-      console.log(error);
+      console.error("An error occurred", error);
     }
   };
 
@@ -48,7 +53,7 @@ function RegisterPage() {
       navigate("/login");
       console.log(response);
     } catch (error) {
-      console.log(error);
+      console.error("response error", error);
     }
   };
 
