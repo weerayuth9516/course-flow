@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { supabase } from "../supabase/client";
 import { useNavigate } from "react-router-dom";
 
-function LoginPage({setToken}) {
+function LoginPage({ setToken }) {
   const navigate = useNavigate();
   const initialValues = {
     email: "",
@@ -24,17 +24,23 @@ function LoginPage({setToken}) {
   const handleSubmit = async (values) => {
     // handle form submit
     console.log("Form submitted with values:", values);
-    try{
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: values.email,
-        password: values.password,
-      })
-     if(error) throw error
-     console.log(data)
-     setToken(data)
-     navigate("/editprofile")
-    }catch(error){
-      alert(error)
+    try {
+      const results = await supabase
+        .from("users")
+        .select("*")
+        .eq("user_email", values.email);
+      if (results.data.length === 0) {
+        alert("Email Invalid.");
+      } else {
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email: values.email,
+          password: values.password,
+        });
+        setToken(data);
+        navigate("/editprofile");
+      }
+    } catch (error) {
+      navigate("/login");
     }
   };
 

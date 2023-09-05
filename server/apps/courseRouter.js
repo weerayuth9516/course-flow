@@ -7,6 +7,7 @@ courseRouter.get("/", async (req, res) => {
   const limit = req.query.limit;
   const title = req.query.title;
   let results;
+
   if (title) {
     results = await supabase
       .from("courses")

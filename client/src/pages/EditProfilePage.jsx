@@ -1,19 +1,20 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React from "react";
+import Header from "../components/Header";
+import EditProfileForm from "../components/EditProfileForm";
+import background from "../assets/ourCourses/image_background.png";
 
-function EditProfilePage({token}) {
-  const navigate = useNavigate()
-
-  const handleLogOut = () =>{
-    sessionStorage.removeItem("token");
-    navigate("/login");
-  }
+function EditProfilePage() {
   return (
-    <>
-      <div>UserProfilePage</div>
-      {token && <p>Welcome Back {token.user.aud}</p>}
-      <button onClick={handleLogOut}>Log Out</button>
-    </>
+    <div className="font-inter relative">
+      <Header />
+      <img
+        src={background}
+        alt="background"
+        className="absolute top-[200px] w-screen"
+      />
+      <EditProfileForm />
+      <footer className="h-[240px] bg-blue-600"></footer>
+    </div>
   );
 }
 
