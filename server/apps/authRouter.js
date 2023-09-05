@@ -14,7 +14,11 @@ authRouter.post("/register", async (req, res) => {
       email: req.body.email,
       password: req.body.password,
     });
-    return res.json({ message: "Register user sucessefully." });
+    if (results.error !== null) {
+      return res.json({ message: "Register user sucessefully." });
+    } else {
+      return res.status(400).json({ message: "API INVALID" });
+    }
   } else {
     return res.status(400).json({ message: "Email Invalid" });
   }
