@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import Header from "../components/Header";
 
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
@@ -10,13 +11,14 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 function CourseDetailPage() {
   return (
     <>
+      <Header />
       <div className="flex flex-col mt-9">
         <Link to="/course" className="text-blue-500 ml-[200px] mb-4 font-bold">
           <span className="font-semibold text-xs pr-2">🡠</span> Back
         </Link>
         <div className="flex justify-center">
           <div className="w-[739px] h-[460px] bg-gray-500 rounded-lg"></div>
-          <div className="w-[357px] h-[449px] py-8 px-6 shadow-lg rounded-lg ml-5">
+          <div className="w-[357px] h-[449px] py-8 px-6 shadow-lg rounded-lg ml-12 sticky">
             <p className="text-sm text-orange-500 mb-4">Course</p>
             <p className="text-2xl text-black font-medium">
               Service Design Essentails
