@@ -4,19 +4,19 @@ import { useNavigate } from "react-router-dom";
 
 const useGetuser = () => {
   const navigate = useNavigate();
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState({});
   const [isError, setIsError] = useState(null);
   const [isLoading, setIsLoading] = useState(null);
 
-  const getCurrentUser = async () => {
+  const getCurrentUser = async (id) => {
     try {
       setIsError(false);
       setIsLoading(true);
       const userDataFromServer = await axios.get(
         `http://localhost:4001/users/${id}`
       );
-      setUser(userDataFromServer.data.data);
-      console.log(userDataFromServer.data.data);
+      setUser(userDataFromServer.data.data[0]);
+      console.log(userDataFromServer.data.data[0]);
     } catch (error) {
       setIsError(true);
       setIsLoading(false);

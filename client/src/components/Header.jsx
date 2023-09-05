@@ -11,13 +11,13 @@ import { Link, useParams } from "react-router-dom";
 import useGetuser from "../hook/useGetuser";
 
 function Header() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const params = useParams();
   const { user, getCurrentUser } = useGetuser();
 
   useEffect(() => {
-    getCurrentUser(params.id);
+    getCurrentUser("2f765281-1028-46f4-8c04-a392e96ddd5c");
   }, []);
 
   return (
@@ -56,7 +56,7 @@ function Header() {
                   id="username"
                   className="text-body2 font-normal text-gray-800 m-2"
                 >
-                  {user && user.user_name}
+                  {user.user_name}
                 </span>
                 <img
                   id="arrow-dropdown"
@@ -71,7 +71,7 @@ function Header() {
               {isMenuOpen && (
                 <div
                   id="menuItems"
-                  className="bg-white drop-shadow-xl flex flex-col absolute top-16 right-1 text-body3 font-normal text-gray-700 rounded-md w-[198px]"
+                  className="bg-white drop-shadow-xl flex flex-col absolute top-16 right-1 text-body3 font-normal text-gray-700 rounded-md w-[198px] z-30"
                 >
                   <Link to="/editprofile">
                     <div className="flex items-center rounded-md hover:bg-blue-200">
