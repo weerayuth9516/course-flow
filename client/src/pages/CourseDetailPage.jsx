@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import Header from "../components/Header";
 
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
@@ -10,6 +11,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 function CourseDetailPage() {
   return (
     <>
+      <Header />
       <div className="flex flex-col mt-9">
         <Link to="/course" className="text-blue-500 ml-[200px] mb-4 font-bold">
           <span className="font-semibold text-xs pr-2">🡠</span> Back
