@@ -13,14 +13,11 @@ function CoursePage() {
   };
 
   return (
-    <div
-      id="container"
-      className="bg-[url('src/assets/ourCourses/image_background.png')] bg-cover bg-center bg-no-repeat h-[190px] w-100%"
-    >
+    <div className="container font-inter mx-auto">
       <Header />
-      <div className=" w-100%">
-        <div className="search-box mb-4 flex flex-col items-center mt-40">
-          <label htmlFor="input" className="text-gray-700 text-4xl font-bold">
+      <div className="bg-[url('src/assets/ourCourses/image_background.png')] bg-right bg-no-repeat">
+        <div className="search-box mb-2 flex flex-col items-center mt-20 h-[230px]">
+          <label htmlFor="input" className="text-black text-header2 font-bold">
             Our Courses
           </label>
           <div className="relative mt-12">
@@ -44,7 +41,7 @@ function CoursePage() {
         </div>
       </div>
 
-      <div className="course-cards-container flex justify-center m-20">
+      <div className="course-cards-container flex justify-center">
         <div className="course-cards-container grid grid-cols-12 gap-7">
           {/* Display course cards */}
           {searchList.map((item, index) => {
@@ -63,8 +60,8 @@ function CoursePage() {
                     />
                   </div>
                   <div className="description-box m-4">
-                    <h3 className="mb-2 text-orange-500">Course</h3>
-                    <h2 className="font-bold text-2xl mb-2">
+                    <h3 className="mb-2 text-orange-500 text-body3">Course</h3>
+                    <h2 className="font-bold mb-2 text-header3">
                       {item.course_name}
                     </h2>
                     <div className="course-detail">
