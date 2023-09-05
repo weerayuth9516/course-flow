@@ -1,4 +1,4 @@
-import React , {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import "./App.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Home from "./pages/HomePage";
@@ -8,6 +8,7 @@ import EditProfilePage from "./pages/EditProfilePage";
 import Course from "./pages/CoursePage";
 import NotFoundPage from "./pages/NotFoundPage";
 import CourseDetailPage from "./pages/CourseDetailPage";
+import CoursePage from "./pages/CoursePage";
 
 function App() {
   const [token, setToken] = useState(false);
@@ -26,8 +27,11 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login setToken={setToken} />} />
-        <Route path="/editprofile" element={<EditProfilePage setToken={setToken}/>} />
-        <Route path="/course" element={<Course />} />
+        <Route
+          path="/editprofile"
+          element={<EditProfilePage setToken={setToken} />}
+        />
+        <Route path="/course" element={<CoursePage />} />
         <Route path="/course/courseDetail" element={<CourseDetailPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>

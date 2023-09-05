@@ -45,10 +45,10 @@ function LoginPage({ setToken }) {
   };
 
   return (
-    <div className="container">
+    <div id="container">
       <div
         className="h-screen flex items-center justify-center 
-      bg-[url('src/assets/loginPage/bg-login.png')] bg-cover bg-center bg-no-repeat"
+      bg-[url('src/assets/loginPage/bg-login.png')] bg-cover bg-center bg-no-repeat w-100%"
       >
         <div className="login-form w-[453px] h-[446px]">
           <h2 className="text-4xl text-[#383ba7] font-bold mb-10">
