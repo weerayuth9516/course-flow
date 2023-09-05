@@ -11,7 +11,7 @@ import { Link, useParams } from "react-router-dom";
 import useGetuser from "../hook/useGetuser";
 
 function Header() {
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const params = useParams();
   const { user, getCurrentUser } = useGetuser();
@@ -56,7 +56,7 @@ function Header() {
                   id="username"
                   className="text-body2 font-normal text-gray-800 m-2"
                 >
-                  User Name
+                  {user && user.user_name}
                 </span>
                 <img
                   id="arrow-dropdown"

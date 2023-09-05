@@ -8,7 +8,7 @@ const useGetuser = () => {
   const [isError, setIsError] = useState(null);
   const [isLoading, setIsLoading] = useState(null);
 
-  const getCurrentUser = async (id) => {
+  const getCurrentUser = async () => {
     try {
       setIsError(false);
       setIsLoading(true);
@@ -16,6 +16,7 @@ const useGetuser = () => {
         `http://localhost:4001/users/${id}`
       );
       setUser(userDataFromServer.data.data);
+      console.log(userDataFromServer.data.data);
     } catch (error) {
       setIsError(true);
       setIsLoading(false);
@@ -37,6 +38,8 @@ const useGetuser = () => {
   return {
     user,
     setUser,
+    getCurrentUser,
+    updateUserProfileById,
     isError,
     isLoading,
   };
