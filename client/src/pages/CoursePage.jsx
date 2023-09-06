@@ -15,7 +15,7 @@ function CoursePage() {
   return (
     <div
       id="container"
-      className="bg-[url('src/assets/ourCourses/image_background.png')] bg-cover bg-center bg-no-repeat h-[190px] w-100%"
+      className="bg-[url('src/assets/ourCourses/image_background.png')] bg-center bg-no-repeat bg-[length:100%_190px]"
     >
       <Header />
       <div className=" w-100%">
