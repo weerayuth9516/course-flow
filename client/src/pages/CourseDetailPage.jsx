@@ -51,8 +51,13 @@ function CourseDetailPage() {
           <Link to="/course" className="text-blue-500 mb-4 font-bold">
             <span className="font-semibold text-xs pr-2">🡠</span> Back
           </Link>
-          <video controls width="739px" height="460px" className="rounded-lg">
-            <sourse src={course.course_video_trailer} type="video/mp4" />
+          <video
+            controls
+            width="739px"
+            height="460px"
+            className="rounded-lg cursor-pointer"
+          >
+            <source src={course.course_video_trailer} type="video/mp4" />
           </video>
           {/* <div className="w-[739px] h-[460px] bg-gray-500 rounded-lg"></div> */}
           <div className="w-[735px]">
@@ -108,7 +113,7 @@ function CourseDetailPage() {
           </div>
         </div>
 
-        <div className="h-full mt-12 sticky top-40">
+        <div className="h-full mt-7 sticky top-40">
           <div className="w-[357px] h-[449px] py-8 px-6 shadow-lg rounded-lg ml-10">
             <p className="text-sm text-orange-500 mb-4">Course</p>
             <p className="text-2xl text-black font-medium mb-2">
