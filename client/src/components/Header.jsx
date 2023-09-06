@@ -11,6 +11,7 @@ import { Link, useParams } from "react-router-dom";
 import useGetuser from "../hook/useGetuser";
 import { useContext } from "react";
 import { SessionContext } from "../App";
+import { supabase } from "../supabase/client";
 function Header() {
   const { session, setSession } = useContext(SessionContext);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -18,6 +19,12 @@ function Header() {
   const params = useParams();
   const { user, getCurrentUser } = useGetuser();
 
+  function singOutHandle(_event) {
+    if (_event) {
+      supabase.auth.signOut();
+      setSession(null);
+    }
+  }
   useEffect(() => {
     if (session) {
       getCurrentUser(session.user.id);
@@ -26,7 +33,7 @@ function Header() {
       getCurrentUser(null);
       setIsLoggedIn(false);
     }
-  }, []);
+  }, [session]);
 
   return (
     <section id="header" className="font-inter">
@@ -126,7 +133,7 @@ function Header() {
                     </div>
                   </Link>
                   <hr className="bg-gray-300 h-0.5" />
-                  <Link to="/login">
+                  <Link to="/login" onClick={singOutHandle}>
                     <div className="flex items-center rounded-md hover:bg-red-100">
                       <img
                         id="logOut"

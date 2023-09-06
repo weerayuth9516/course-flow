@@ -24,7 +24,6 @@ function App() {
   // }, []);
   const [session, setSession] = useState(null);
   useEffect(() => {
-    console.log(session);
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
     });

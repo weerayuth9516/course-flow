@@ -28,7 +28,7 @@ function EditProfileForm() {
     } else {
       getCurrentUser(null);
     }
-  }, []);
+  }, [session]);
 
   useEffect(() => {
     if (user) {
