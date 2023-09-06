@@ -4,6 +4,7 @@ import useGetuser from "../hook/useGetuser";
 import remove from "../assets/header/remove.png";
 import { useContext } from "react";
 import { SessionContext } from "../App";
+
 function EditProfileForm() {
   const { user, getCurrentUser, updateUserProfileById } = useGetuser();
   const [name, setName] = useState("");
@@ -55,7 +56,7 @@ function EditProfileForm() {
   return (
     <div
       id="edit-profile-container"
-      className=" flex flex-col items-center justify-center"
+      className=" flex flex-col items-center justify-center bg-[url('src/assets/ourCourses/image_background.png')] bg-no-repeat bg-[length:100%_190px] bg-[center_top_5rem] h-[955px]"
     >
       <span className=" text-header2  font-medium">Profile</span>
       <form
