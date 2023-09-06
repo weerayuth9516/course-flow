@@ -55,7 +55,7 @@ function EditProfileForm() {
   return (
     <div
       id="edit-profile-container"
-      className=" flex flex-col items-center justify-center h-[955px]"
+      className=" flex flex-col items-center justify-center"
     >
       <span className=" text-header2  font-medium">Profile</span>
       <form
@@ -182,7 +182,6 @@ function EditProfileForm() {
                   type="text"
                   className="border border-gray-500 w-[453px] h-[48px] rounded-lg p-3 "
                   value={email}
-                  disabled
                 />
               </div>
             </label>
