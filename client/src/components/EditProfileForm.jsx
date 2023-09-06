@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import useGetuser from "../hook/useGetuser";
 import remove from "../assets/header/remove.png";
-
+import { useContext } from "react";
+import { SessionContext } from "../App";
 function EditProfileForm() {
   const params = useParams();
 
@@ -13,7 +14,7 @@ function EditProfileForm() {
   const [email, setEmail] = useState("");
   //   const [images, setImages] = useState({});
   const [hasAvatar, setHasAvatar] = useState(false);
-
+  const { session, setSession } = useContext(SessionContext);
   const handleRemoveImage = (event) => {
     event.preventDefault();
     setHasAvatar(false);
@@ -22,7 +23,11 @@ function EditProfileForm() {
   };
 
   useEffect(() => {
-    getCurrentUser("2f765281-1028-46f4-8c04-a392e96ddd5c");
+    if (session) {
+      getCurrentUser(session.user.id);
+    } else {
+      getCurrentUser(null);
+    }
   }, []);
 
   useEffect(() => {

@@ -9,15 +9,23 @@ import logout from "../assets/header/logout.png";
 import { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import useGetuser from "../hook/useGetuser";
-
+import { useContext } from "react";
+import { SessionContext } from "../App";
 function Header() {
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const { session, setSession } = useContext(SessionContext);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const params = useParams();
   const { user, getCurrentUser } = useGetuser();
 
   useEffect(() => {
-    getCurrentUser("2f765281-1028-46f4-8c04-a392e96ddd5c");
+    if (session) {
+      getCurrentUser(session.user.id);
+      setIsLoggedIn(true);
+    } else {
+      getCurrentUser(null);
+      setIsLoggedIn(false);
+    }
   }, []);
 
   return (

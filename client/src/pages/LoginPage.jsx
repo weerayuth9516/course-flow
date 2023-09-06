@@ -4,7 +4,7 @@ import * as Yup from "yup";
 import { Link } from "react-router-dom";
 import { supabase } from "../supabase/client";
 import { useNavigate } from "react-router-dom";
-import Header from "../components/Header"
+import Header from "../components/Header";
 import axios from "axios";
 import { useContext } from "react";
 import { SessionContext } from "../App";
@@ -45,7 +45,6 @@ function LoginPage({ setToken }) {
         password: values.password,
       });
       setSession(res.data.session);
-      console.log(session);
       navigate("/editprofile");
       // const results = await supabase
       //   .from("users")
@@ -67,14 +66,13 @@ function LoginPage({ setToken }) {
     }
   };
   useEffect(() => {
-    console.log(session);
     if (session !== null) {
       navigate("/");
     }
   });
   return (
     <div className="container font-inter mx-auto w-full h-screen bg-[url('src/assets/loginPage/bg-login.png')] bg-cover bg-center bg-no-repeat">
-    <Header/>
+      <Header />
       <div className="flex flex-col justify-center items-center mt-20">
         <div className="login-form w-[453px] h-[446px]">
           <h2 className="text-header2 text-[#383ba7] font-bold mb-10">
@@ -147,7 +145,7 @@ function LoginPage({ setToken }) {
             </Link>
           </div>
         </div>
-        </div>
+      </div>
     </div>
   );
 }
