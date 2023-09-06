@@ -9,39 +9,31 @@ import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 
 function CourseDetailPage() {
   const [course, setCourse] = useState({});
-  const [lesson, setLesson] = useState({});
+  const [lesson, setLesson] = useState([]);
   const params = useParams();
-  const navigate = useNavigate;
 
-  const getCourse = async () => {
-    const result = await axios.get(
+  const getCourseAndLesson = async () => {
+    const courseResult = await axios.get(
       `http://localhost:4001/courses/${params.courseId}`
     );
-    setCourse(result.data.data[0]);
+    const lessonResult = await axios.get(
+      `http://localhost:4001/courses/${params.courseId}/lessons`
+    );
+    const courseData = courseResult.data.data[0];
+    const lessonData = lessonResult.data.data[0].lessons;
+
+    setCourse(courseData);
+    setLesson(lessonData);
+    console.log(courseData);
+    console.log(lessonData);
   };
 
-  // const getCourse = async (lessonId) => {
-  //   const result = await axios.get(
-  //     `http://localhost:4001/courses/${params.courseId}`
-  //   );
-  //   const courseResult = result.data.data[0];
-
-  //   const response = await axios.get(
-  //     `http://localhost:4001/courses/${params.courseId}/lessons/${lessonId}`
-  //   );
-  //   const lessonData = response.data;
-  //   setCourse(courseResult);
-  //   console.log(courseResult, lessonData);
-  //   return { courseResult, lessonData };
-  // };
-
   useEffect(() => {
-    getCourse();
-  }, []);
+    getCourseAndLesson();
+  }, [params.courseId]);
 
   return (
     <>
@@ -79,33 +71,29 @@ function CourseDetailPage() {
                 expandIcon={<ExpandMoreIcon />}
                 aria-controls="panel1a-content"
                 id="panel1a-header"
-                onClick={() =>
-                  navigate(
-                    `/course/courseDetail/d93e4360-839c-4c3c-a183-493c735b7d08/lessons/244dadb7-a345-4e14-8c2a-9f2b20deaa93`
-                  )
-                }
               >
                 <Typography className="font-medium text-black !text-2xl">
                   <span className="text-gray-700 text-2xl font-medium mr-3">
                     01
                   </span>
-                  {/* {course.lessons.lesson_name} */} introduction
+                  {lesson.lesson_name} introduction
                 </Typography>
               </AccordionSummary>
               <AccordionDetails>
                 <Typography>
                   <hr className="mb-2" />
                   <div className="pl-8 text-gray-700">
-                    {/* {course.map((item, index) => {})} */}
-                    <Typography variant="body1">
-                      • {lesson.lesson_name} <br />• Welcome to the Course
-                      <br />• Welcome to the Course
-                      <br />• Welcome to the Course
-                      <br />• Welcome to the Course
-                      <br />• Welcome to the Course
-                      <br />• Welcome to the Course
-                      <br />• Welcome to the Course
-                    </Typography>
+                    {lesson.map((item, index) => (
+                      <Typography variant="body1" key={index}>
+                        <br />• {item.lesson_name}
+                        {/* <br />• Welcome to the Course
+    <br />• Welcome to the Course
+    <br />• Welcome to the Course
+    <br />• Welcome to the Coursey
+    <br />• Welcome to the Course
+    <br />• Welcome to the Course */}
+                      </Typography>
+                    ))}
                   </div>
                 </Typography>
               </AccordionDetails>
