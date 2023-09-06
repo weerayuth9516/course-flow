@@ -42,21 +42,21 @@ function CoursePage() {
       </div>
 
       <div className="course-cards-container flex justify-center">
-        <div className="course-cards-container grid grid-cols-12 gap-7">
+        <div className="course-cards-container grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-7">
           {/* Display course cards */}
           {searchList.map((item, index) => {
             const limitLetter =
-              item.course_detail.length > 70
-                ? item.course_detail.substring(0, 70) + "..."
-                : item.course_detail;
+              item.course_summary.length > 60
+                ? item.course_summary.substring(0, 60) + "..."
+                : item.course_summary;
             return (
-              <div key={index} className="col-span-4">
+              <div key={index} className="">
                 <div className="course-card w-[357px] h-[475px] rounded-lg shadow-lg border border-gray-100 mb-8">
                   <div className="course-card-thumnail">
                     <img
                       src={item.course_cover_img}
                       alt="Description of the image"
-                      className="w-[357px] h-[240px] object-cover rounded-lg shadow-lg"
+                      className="w-[357px] h-[240px] object-fit rounded-lg shadow-lg"
                     />
                   </div>
                   <div className="description-box m-4">
@@ -84,7 +84,7 @@ function CoursePage() {
                         alt="Image icon"
                         className="inline mr-2 ml-4"
                       />
-                      {item.course_learning_time} Hours
+                      {item.course_duration} Hours
                     </span>
                   </div>
                 </div>
