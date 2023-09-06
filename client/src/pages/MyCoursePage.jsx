@@ -3,13 +3,7 @@ import useGetsearch from "../hook/useGetsearch";
 import Header from "../components/Header";
 
 function MyCoursePage() {
-  const { searchList, inputText, setInputText, getSearchList } = useGetsearch();
-
-  const handleInputChange = (e) => {
-    const newInputText = e.target.value;
-    setInputText(newInputText);
-    getSearchList(newInputText);
-  };
+  const { searchList } = useGetsearch();
 
   return (
     <div id="container" className="font-inter mx-auto">
@@ -39,19 +33,19 @@ function MyCoursePage() {
           </div>
           <div className="mt-5 text-header3 text-gray-800">My Maxfield</div>
           <div className="w-[309px] h-[134px] flex justify-center space-x-4 mt-8">
-            <div className="w-[143px] h-[134px] border-2 rounded-lg shadow-lg bg-gray-200 flex flex-col space-y-12">
-              <div className="mt-3 ml-3">
+            <div className="w-[143px] h-[134px] border-2 rounded-lg shadow-lg bg-gray-200 flex flex-col space-y-8">
+              <div className="mt-3 ml-3 text-body2 text-gray-700">
                 <div>Course</div>
                 <div>Inprogress</div>
               </div>
-              <div className="ml-3 mb-3 font-bold">3</div>
+              <div className="ml-3 mb-3 font-bold text-header3">3</div>
             </div>
-            <div className="w-[143px] h-[134px] border-2 rounded-lg shadow-lg bg-gray-200 flex flex-col space-y-12">
-              <div className="mt-3 ml-3">
+            <div className="w-[143px] h-[134px] border-2 rounded-lg shadow-lg bg-gray-200 flex flex-col space-y-8">
+              <div className="mt-3 ml-3 text-body2 text-gray-700">
                 <div>Course</div>
                 <div>Complete</div>
               </div>
-              <div className="ml-3 mb-3 font-bold">2</div>
+              <div className="ml-3 mb-3 font-bold text-header3">2</div>
             </div>
           </div>
         </div>
