@@ -55,7 +55,7 @@ function CoursePage() {
                   <div className="course-card-thumnail">
                     <img
                       src={item.course_cover_img}
-                      alt="Description of the image"
+                      alt="course-image"
                       className="w-[357px] h-[240px] object-fit rounded-lg shadow-lg"
                     />
                   </div>
