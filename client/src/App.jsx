@@ -9,32 +9,44 @@ import Course from "./pages/CoursePage";
 import NotFoundPage from "./pages/NotFoundPage";
 import CourseDetailPage from "./pages/CourseDetailPage";
 import CoursePage from "./pages/CoursePage";
-
+import { supabase } from "./supabase/client";
+export const SessionContext = React.createContext();
 function App() {
-  const [token, setToken] = useState(false);
-  if (token) {
-    sessionStorage.setItem("token", JSON.stringify(token));
-  }
+  // const [token, setToken] = useState(false);
+  // if (token) {
+  //   sessionStorage.setItem("token", JSON.stringify(token));
+  // }
+  // useEffect(() => {
+  //   if (sessionStorage.getItem("token")) {
+  //     let data = JSON.parse(sessionStorage.getItem("token"));
+  //     setToken(data);
+  //   }
+  // }, []);
+  const [session, setSession] = useState(null);
   useEffect(() => {
-    if (sessionStorage.getItem("token")) {
-      let data = JSON.parse(sessionStorage.getItem("token"));
-      setToken(data);
-    }
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+    });
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+    return () => subscription.unsubscribe();
   }, []);
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/login" element={<Login setToken={setToken} />} />
-        <Route
-          path="/editprofile"
-          element={<EditProfilePage setToken={setToken} />}
-        />
-        <Route path="/course" element={<CoursePage />} />
-        <Route path="/course/courseDetail" element={<CourseDetailPage />} />
-        <Route path="*" element={<NotFoundPage />} />
-      </Routes>
+      <SessionContext.Provider value={{ session, setSession }}>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/editprofile" element={<EditProfilePage />} />
+          <Route path="/course" element={<CoursePage />} />
+          <Route path="/course/courseDetail" element={<CourseDetailPage />} />
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+      </SessionContext.Provider>
     </BrowserRouter>
   );
 }

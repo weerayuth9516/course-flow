@@ -1,12 +1,15 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { Link } from "react-router-dom";
 import { supabase } from "../supabase/client";
 import { useNavigate } from "react-router-dom";
-
+import axios from "axios";
+import { useContext } from "react";
+import { SessionContext } from "../App";
 function LoginPage({ setToken }) {
   const navigate = useNavigate();
+  const { session, setSession } = useContext(SessionContext);
   const initialValues = {
     email: "",
     password: "",
@@ -25,25 +28,48 @@ function LoginPage({ setToken }) {
     // handle form submit
     console.log("Form submitted with values:", values);
     try {
-      const results = await supabase
-        .from("users")
-        .select("*")
-        .eq("user_email", values.email);
-      if (results.data.length === 0) {
-        alert("Email Invalid.");
-      } else {
-        const { data, error } = await supabase.auth.signInWithPassword({
-          email: values.email,
-          password: values.password,
-        });
-        setToken(data);
-        navigate("/editprofile");
+      const results = await axios.post(
+        "http://localhost:4001/auth/login",
+        values
+      );
+      if (results.data.message === "Email Invalid") {
+        return alert("Email Invalid");
       }
+      if (results.data.message === "Password Invalid") {
+        return alert("Password Invalid");
+      }
+      const res = await supabase.auth.signInWithPassword({
+        email: values.email,
+        password: values.password,
+      });
+      setSession(res.data.session);
+      console.log(session);
+      navigate("/editprofile");
+      // const results = await supabase
+      //   .from("users")
+      //   .select("*")
+      //   .eq("user_email", values.email);
+      // if (results.data.length === 0) {
+      //   alert("Email Invalid.");
+      // } else {
+      //   const results = await supabase.auth.signInWithPassword({
+      //     email: values.email,
+      //     password: values.password,
+      //   });
+      //   console.log(results);
+      //   // setToken(data);
+      // navigate("/editprofile");
+      //}
     } catch (error) {
       navigate("/login");
     }
   };
-
+  useEffect(() => {
+    console.log(session);
+    if (session !== null) {
+      navigate("/");
+    }
+  });
   return (
     <div id="container">
       <div
