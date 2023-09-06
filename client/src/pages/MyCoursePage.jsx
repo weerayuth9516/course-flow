@@ -13,7 +13,7 @@ function MyCoursePage() {
           <div className="title text-black text-header2 font-bold mb-5">
             My Course
           </div>
-          <div className="flex space-x-4 mt-12">
+          <div className="flex space-x-10 mt-12">
             <button className="text-gray-700 focus:text-black focus:border-b focus:border-b-1 focus: border-black pb-2">
               All Course
             </button>
