@@ -13,9 +13,9 @@ function CoursePage() {
   };
 
   return (
-    <div className="container font-inter mx-auto">
+    <div className="font-inter mx-auto">
       <Header />
-      <div className="bg-[url('src/assets/ourCourses/image_background.png')] bg-right bg-no-repeat">
+      <div className="bg-[url('src/assets/ourCourses/image_background.png')] bg-[length:100%_190px] bg-no-repeat">
         <div className="search-box mb-2 flex flex-col items-center mt-20 h-[230px]">
           <label htmlFor="input" className="text-black text-header2 font-bold">
             Our Courses
