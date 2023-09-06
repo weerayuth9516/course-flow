@@ -4,9 +4,11 @@ import * as Yup from "yup";
 import { Link } from "react-router-dom";
 import { supabase } from "../supabase/client";
 import { useNavigate } from "react-router-dom";
+import Header from "../components/Header"
 import axios from "axios";
 import { useContext } from "react";
 import { SessionContext } from "../App";
+
 function LoginPage({ setToken }) {
   const navigate = useNavigate();
   const { session, setSession } = useContext(SessionContext);
@@ -71,13 +73,11 @@ function LoginPage({ setToken }) {
     }
   });
   return (
-    <div id="container">
-      <div
-        className="h-screen flex items-center justify-center 
-      bg-[url('src/assets/loginPage/bg-login.png')] bg-cover bg-center bg-no-repeat w-100%"
-      >
+    <div className="container font-inter mx-auto w-full h-screen bg-[url('src/assets/loginPage/bg-login.png')] bg-cover bg-center bg-no-repeat">
+    <Header/>
+      <div className="flex flex-col justify-center items-center mt-20">
         <div className="login-form w-[453px] h-[446px]">
-          <h2 className="text-4xl text-[#383ba7] font-bold mb-10">
+          <h2 className="text-header2 text-[#383ba7] font-bold mb-10">
             Welcome back!
           </h2>
           <Formik
@@ -89,7 +89,7 @@ function LoginPage({ setToken }) {
               <div className="mb-4">
                 <label
                   htmlFor="email"
-                  className="block text-md text-black-500 mb-2"
+                  className="block text-body2 text-black-500 mb-2"
                 >
                   Email:
                 </label>
@@ -111,7 +111,7 @@ function LoginPage({ setToken }) {
               <div className="mb-4">
                 <label
                   htmlFor="password"
-                  className="block text-md text-black-500 mb-2 mt-5"
+                  className="block text-body2 text-black-500 mb-2 mt-5"
                 >
                   Password:
                 </label>
@@ -147,7 +147,7 @@ function LoginPage({ setToken }) {
             </Link>
           </div>
         </div>
-      </div>
+        </div>
     </div>
   );
 }
