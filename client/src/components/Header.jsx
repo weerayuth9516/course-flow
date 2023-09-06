@@ -9,16 +9,31 @@ import logout from "../assets/header/logout.png";
 import { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import useGetuser from "../hook/useGetuser";
-
+import { useContext } from "react";
+import { SessionContext } from "../App";
+import { supabase } from "../supabase/client";
 function Header() {
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const { session, setSession } = useContext(SessionContext);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const params = useParams();
   const { user, getCurrentUser } = useGetuser();
 
+  function singOutHandle(_event) {
+    if (_event) {
+      supabase.auth.signOut();
+      setSession(null);
+    }
+  }
   useEffect(() => {
-    getCurrentUser("2f765281-1028-46f4-8c04-a392e96ddd5c");
-  }, []);
+    if (session) {
+      getCurrentUser(session.user.id);
+      setIsLoggedIn(true);
+    } else {
+      getCurrentUser(null);
+      setIsLoggedIn(false);
+    }
+  }, [session]);
 
   return (
     <section id="header" className="font-inter">
@@ -118,7 +133,7 @@ function Header() {
                     </div>
                   </Link>
                   <hr className="bg-gray-300 h-0.5" />
-                  <Link to="/login">
+                  <Link to="/login" onClick={singOutHandle}>
                     <div className="flex items-center rounded-md hover:bg-red-100">
                       <img
                         id="logOut"

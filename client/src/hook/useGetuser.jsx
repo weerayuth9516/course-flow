@@ -10,13 +10,17 @@ const useGetuser = () => {
 
   const getCurrentUser = async (id) => {
     try {
-      setIsError(false);
-      setIsLoading(true);
-      const userDataFromServer = await axios.get(
-        `http://localhost:4001/users/${id}`
-      );
-      setUser(userDataFromServer.data.data[0]);
-      console.log(userDataFromServer.data.data[0]);
+      if (id !== null) {
+        setIsError(false);
+        setIsLoading(true);
+        const userDataFromServer = await axios.get(
+          `http://localhost:4001/users/${id}`
+        );
+        setUser(userDataFromServer.data.data[0]);
+        // console.log(userDataFromServer.data.data[0]);
+      } else {
+        setUser({});
+      }
     } catch (error) {
       setIsError(true);
       setIsLoading(false);
