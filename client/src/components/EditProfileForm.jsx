@@ -5,8 +5,6 @@ import remove from "../assets/header/remove.png";
 import { useContext } from "react";
 import { SessionContext } from "../App";
 function EditProfileForm() {
-  const params = useParams();
-
   const { user, getCurrentUser, updateUserProfileById } = useGetuser();
   const [name, setName] = useState("");
   const [birthDate, setBirthDate] = useState("");
