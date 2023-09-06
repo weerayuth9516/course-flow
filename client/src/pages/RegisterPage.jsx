@@ -34,11 +34,15 @@ function RegisterPage() {
   const registerUser = async (userProfile) => {
     try {
 <<<<<<< HEAD
+<<<<<<< HEAD
       const response = await axios.post(
         "http://localhost:4001/auth/register",
 =======
       const result = await axios.post(
 <<<<<<< HEAD
+=======
+      const result = await axios.post(
+>>>>>>> bf453ef962e739cd19c32874728b5a2546023f78
         "http://localhost:4001/users",
 >>>>>>> bf453ef (fix: resolve condition logic)
 =======
@@ -52,10 +56,15 @@ function RegisterPage() {
       } else {
         console.log("User registration failed");
       }
+<<<<<<< HEAD
       return result.data;
     } catch (error) {
       console.error("An error occurred", error);
       throw error;
+=======
+    } catch (error) {
+      console.error("An error occurred", error);
+>>>>>>> bf453ef962e739cd19c32874728b5a2546023f78
     }
   };
 
