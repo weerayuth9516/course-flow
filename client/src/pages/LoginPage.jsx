@@ -71,7 +71,7 @@ function LoginPage({ setToken }) {
     }
   });
   return (
-    <div className="container font-inter mx-auto w-full h-screen bg-[url('src/assets/loginPage/bg-login.png')] bg-cover bg-center bg-no-repeat">
+    <div className="container font-inter mx-auto w-100% h-screen bg-[url('src/assets/loginPage/bg-login.png')] bg-cover bg-center bg-no-repeat">
       <Header />
       <div className="flex flex-col justify-center items-center mt-20">
         <div className="login-form w-[453px] h-[446px]">
