@@ -44,4 +44,84 @@ courseRouter.get("/:id", async (req, res) => {
   }
 });
 
+//courseDetailPage/BE
+courseRouter.get("/:id/lessons", async (req, res) => {
+  try {
+    const courseId = req.params.id;
+
+    const { data, error } = await supabase
+      .from("courses")
+      .select("*,lessons(*)")
+      .eq("course_id", courseId);
+
+    if (error) {
+      return res.status(500).json({ error: error.message });
+    }
+
+    return res.json({ data });
+  } catch (error) {
+    console.error("An error occurred:", error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+courseRouter.get("/:id/lessons/:lessonId", async (req, res) => {
+  try {
+    const courseId = req.params.id;
+    const lessonId = req.params.lessonId;
+
+    const { data, error } = await supabase
+      .from("courses")
+      .select("*,lessons(*)")
+      .eq("course_id", courseId)
+      .eq("lessons.lesson_id", lessonId);
+
+    if (error) {
+      return res.status(500).json({ error: error.message });
+    }
+
+    if (data.length === 0 || !data[0].lessons) {
+      return res.status(404).json({ error: "Lesson not found" });
+    }
+
+    const lesson = data[0].lessons.find((l) => l.lesson_id === lessonId);
+
+    if (!lesson) {
+      return res.status(404).json({ error: "Lesson not found" });
+    }
+
+    return res.json({ lesson });
+  } catch (error) {
+    console.error("An error occurred:", error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+courseRouter.get("/:id/lessons/:lessonId/sublessons", async (req, res) => {
+  try {
+    const courseId = req.params.id;
+    const lessonId = req.params.lessonId;
+
+    const { data, error } = await supabase
+      .from("courses")
+      .select("lessons(lesson_id, sub_lessons(sub_lesson_id))")
+      .eq("course_id", courseId)
+      .eq("lessons.lesson_id", lessonId);
+
+    if (error) {
+      return res.status(500).json({ error: error.message });
+    }
+
+    const sublessons = data[0]?.lessons[0]?.sublessons;
+
+    if (!sublessons) {
+      return res.status(404).json({ error: "Sublessons not found" });
+    }
+    return res.json({ sublessons });
+  } catch (error) {
+    console.error("An error occurred:", error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
 export default courseRouter;
