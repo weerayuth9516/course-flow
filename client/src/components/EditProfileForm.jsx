@@ -47,7 +47,7 @@ function EditProfileForm() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    updateUserProfileById("2f765281-1028-46f4-8c04-a392e96ddd5c", {
+    updateUserProfileById(session.user.id, {
       user_name: name,
       user_dob: birthDate,
       user_education: education,
