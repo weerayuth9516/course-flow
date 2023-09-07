@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
@@ -13,28 +14,38 @@ import axios from "axios";
 function CourseDetailPage() {
   const [course, setCourse] = useState({});
   const [lesson, setLesson] = useState([]);
+  const [subLesson, setSubLesson] = useState([]);
   const params = useParams();
 
-  const getCourseAndLesson = async () => {
+  const getCourseAndLessonAndSubLesson = async () => {
     const courseResult = await axios.get(
       `http://localhost:4001/courses/${params.courseId}`
     );
     const lessonResult = await axios.get(
       `http://localhost:4001/courses/${params.courseId}/lessons`
     );
+    // const subLessonResult = await axios.get(
+    //   `http://localhost:4001/course/${params.courseId}/lessons/${params.lessonId}/subLessons`
+    // );
+
     const courseData = courseResult.data.data[0];
     const lessonData = lessonResult.data.data[0].lessons;
-    console.log(lessonResult.data.data[0].lessons);
+    // const subLessonData = subLessonResult.data.data[0].subLessons;
+    console.log(lessonResult.data.data[0]);
 
     setCourse(courseData);
     setLesson(lessonData);
+    // setSubLesson(subLessonData);
+
     console.log(courseData);
     console.log(lessonData);
   };
 
   useEffect(() => {
-    getCourseAndLesson();
+    getCourseAndLessonAndSubLesson();
   }, [params.courseId]);
+
+  const [expand, setExpand] = useState(false);
 
   return (
     <>
@@ -44,14 +55,14 @@ function CourseDetailPage() {
           <Link to="/course" className="text-blue-500 mb-4 font-bold">
             <span className="font-semibold text-xs pr-2">🡠</span> Back
           </Link>
-          <video
-            controls
+          <iframe
             width="739px"
             height="460px"
-            className="rounded-lg cursor-pointer"
-          >
-            <source src={course.course_video_trailer} type="video/mp4" />
-          </video>
+            src="https://qlxsggpxpucbrqcywrkm.supabase.co/storage/v1/object/public/course_video_trailers/A-Class%20trailer.mp4?t=2023-09-07T10%3A12%3A00.864Z"
+            frameborder="0"
+            allowfullscreen
+          ></iframe>
+
           {/* <div className="w-[739px] h-[460px] bg-gray-500 rounded-lg"></div> */}
           <div className="w-[735px]">
             <p className="text-4xl font-medium mb-6 mt-20">
@@ -63,44 +74,35 @@ function CourseDetailPage() {
             <header className="font-medium text-4xl mt-16">
               Module Samples
             </header>
-
-            <Accordion
-              // key={index}
-              className="mt-8 mb-40"
-              style={{ boxShadow: "none", border: "none", height: "50px" }}
-            >
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls="panel1a-content"
-                id="panel1a-header"
-                className="delay-1000"
+            {lesson.map((item, index) => (
+              <Accordion
+                key={index}
+                className="mt-8 mb-40"
+                style={{ boxShadow: "none", border: "bottom", height: "50px" }}
               >
-                {lesson.map((item, index) => (
-                  <Typography
-                    className="font-medium text-black !text-2xl"
-                    key={index}
-                  >
+                <AccordionSummary
+                  expandIcon={<ExpandMoreIcon />}
+                  aria-controls="panel1a-content"
+                  id="panel1a-header"
+                >
+                  <Typography className="font-medium text-black !text-2xl">
                     <span className="text-gray-700 text-2xl font-medium mr-3">
                       0{index + 1}
                     </span>
                     {item.lesson_name} introduction
                   </Typography>
-                ))}
-              </AccordionSummary>
-              <AccordionDetails>
-                <Typography>
-                  <hr className="mb-2" />
-                  <div className="pl-8 text-gray-700">
-                    <Typography variant="body1">
-                      • Welcome to the Course
-                    </Typography>
-                    <Typography variant="body1">
-                      • Welcome to the Course
-                    </Typography>
-                  </div>
-                </Typography>
-              </AccordionDetails>
-            </Accordion>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <Typography>
+                    <div className="pl-8 text-gray-700">
+                      <Typography variant="body1">
+                        • Welcome to the Course
+                      </Typography>
+                    </div>
+                  </Typography>
+                </AccordionDetails>
+              </Accordion>
+            ))}
           </div>
         </div>
 
@@ -128,6 +130,7 @@ function CourseDetailPage() {
           </div>
         </div>
       </div>
+      <Footer />
     </>
   );
 }
