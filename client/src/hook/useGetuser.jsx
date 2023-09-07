@@ -46,16 +46,13 @@ const useGetuser = () => {
       setIsLoading(true);
       const results = await supabase.storage
         .from("user_avatars")
-        .update(`${id}.jpg`, data.avatarObj, {
+        .upload(`${data.avatarObj.name}`, data.avatarObj, {
           cacheControl: "3600",
           upsert: true,
-          contentType: "image/jpeg",
+          contentType: `${data.avatarObj.type}`,
         });
       if (results.error === null) {
-        const urlData = await supabase.storage
-          .from("user_avatars")
-          .createSignedUrl(`${results.data.path}`, 60);
-        data = { ...data, user_avatar: urlData.data.signedUrl };
+        data = { ...data, user_avatar: `${data.avatarObj.name}` };
         await axios.put(`http://localhost:4001/users/${id}`, data);
         setIsLoading(false);
         navigate("/");

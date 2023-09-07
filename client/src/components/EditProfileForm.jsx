@@ -25,14 +25,8 @@ function EditProfileForm() {
 
   const handleRemoveImage = async (event) => {
     event.preventDefault();
-    // updateAvatarProfilById(session.user.id, {
-    //   user_avatar: null,
-    //   imgPath: imgPath,
-    // });
     setImages({});
     setHasImage(false);
-    //   delete images[imageKey];
-    //   setImages({ ...images });
   };
 
   useEffect(() => {

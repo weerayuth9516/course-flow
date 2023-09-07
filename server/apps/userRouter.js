@@ -19,9 +19,15 @@ userRouter.get("/:id", async (req, res) => {
   const results = await supabase.from("users").select("*").eq("user_id", id);
   const file = await supabase.storage
     .from("user_avatars")
-    .download(`${id}.jpg`);
+    .getPublicUrl(`${results.data[0].user_avatar}`);
   if (results.statusText === "OK") {
-    return res.json({ data: { ...results.data, user_avatar: file } });
+    const responseForClient = {
+      ...results.data[0],
+      user_avatar: file.data.publicUrl,
+    };
+    return res.json({
+      data: [responseForClient],
+    });
   } else {
     return res.status(400).send(`API ERROR : ${results.error}`);
   }
@@ -44,6 +50,10 @@ userRouter.post("/", async (req, res) => {
 
 userRouter.put("/:id", multerUpload.single("userAvatar"), async (req, res) => {
   const id = req.params.id;
+  const oldPath = await supabase
+    .from("users")
+    .select("user_avatar")
+    .eq("user_id", id);
   const results = await supabase
     .from("users")
     .update({
@@ -54,6 +64,11 @@ userRouter.put("/:id", multerUpload.single("userAvatar"), async (req, res) => {
     })
     .eq("user_id", id)
     .select();
+  const url = await supabase.storage
+    .from("user_avatars")
+    .remove([oldPath.data.user_avatar]);
+  console.log(oldPath);
+  console.log(url);
   if (results.statusText === "OK") {
     return res.json({ message: "Update users successfully." });
   } else {
