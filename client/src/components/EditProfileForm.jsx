@@ -18,6 +18,7 @@ function EditProfileForm() {
   const [education, setEducation] = useState("");
   const [email, setEmail] = useState("");
   const [images, setImages] = useState("");
+  const [fileBody, setFileBody] = useState({});
   const [hasImage, setHasImage] = useState(false);
   const [hasUpload, setHasUpload] = useState(false);
   const { session, setSession } = useContext(SessionContext);
@@ -28,7 +29,7 @@ function EditProfileForm() {
     //   user_avatar: null,
     //   imgPath: imgPath,
     // });
-    setImages("");
+    setImages({});
     setHasImage(false);
     //   delete images[imageKey];
     //   setImages({ ...images });
@@ -54,9 +55,7 @@ function EditProfileForm() {
         // setImgPath(user.user_avatar.split("/"));
         setHasImage(true);
         try {
-          const imgPathArr = user.user_avatar.split("/");
           setImages(user.user_avatar);
-          setImgPath(imgPathArr[imgPathArr.length - 1]);
         } catch {
           console.log("Awaiting for loading Img Path");
         }
@@ -66,24 +65,25 @@ function EditProfileForm() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-
-    const formData = new FormData();
-
-    formData.append("user_name", name);
-    formData.append("user_dob", birthDate);
-    formData.append("user_education", education);
-    formData.append("user_avatar", images);
-
-    updateUserProfileById(session.user.id, formData);
+    const data = {
+      user_name: name,
+      user_dob: birthDate,
+      user_education: education,
+      avatarObj: fileBody,
+    };
+    updateUserProfileById(session.user.id, data);
   };
 
   const handleFileChange = (event) => {
-    const uniqueId = Date.now();
     const file = event.target.files[event.target.files.length - 1];
-    console.log(file);
-    if (file) {
-      setImages(URL.createObjectURL(file));
-      setHasImage(true);
+    try {
+      if (file) {
+        setImages(URL.createObjectURL(file));
+        setFileBody(file);
+        setHasImage(true);
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 

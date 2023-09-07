@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "../supabase/client";
 
 const useGetuser = () => {
   const navigate = useNavigate();
@@ -43,12 +44,26 @@ const useGetuser = () => {
     try {
       setIsError(false);
       setIsLoading(true);
-      await axios.put(`http://localhost:4001/users/${id}`, data, {
-        header: { "content-type": "multipart/form-data" },
-      });
-      setIsLoading(false);
-      navigate("/");
+      const results = await supabase.storage
+        .from("user_avatars")
+        .update(`${id}.jpg`, data.avatarObj, {
+          cacheControl: "3600",
+          upsert: true,
+          contentType: "image/jpeg",
+        });
+      if (results.error === null) {
+        const urlData = await supabase.storage
+          .from("user_avatars")
+          .createSignedUrl(`${results.data.path}`, 60);
+        data = { ...data, user_avatar: urlData.data.signedUrl };
+        await axios.put(`http://localhost:4001/users/${id}`, data);
+        setIsLoading(false);
+        navigate("/");
+      } else {
+        console.log(results.error);
+      }
     } catch (error) {
+      console.log(error);
       setIsError(true);
       setIsLoading(false);
     }
