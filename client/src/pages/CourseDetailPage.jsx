@@ -24,6 +24,7 @@ function CourseDetailPage() {
     );
     const courseData = courseResult.data.data[0];
     const lessonData = lessonResult.data.data[0].lessons;
+    console.log(lessonResult.data.data[0].lessons);
 
     setCourse(courseData);
     setLesson(lessonData);
@@ -64,6 +65,7 @@ function CourseDetailPage() {
             </header>
 
             <Accordion
+              // key={index}
               className="mt-8 mb-40"
               style={{ boxShadow: "none", border: "none", height: "50px" }}
             >
@@ -71,29 +73,30 @@ function CourseDetailPage() {
                 expandIcon={<ExpandMoreIcon />}
                 aria-controls="panel1a-content"
                 id="panel1a-header"
+                className="delay-1000"
               >
-                <Typography className="font-medium text-black !text-2xl">
-                  <span className="text-gray-700 text-2xl font-medium mr-3">
-                    01
-                  </span>
-                  {lesson.lesson_name} introduction
-                </Typography>
+                {lesson.map((item, index) => (
+                  <Typography
+                    className="font-medium text-black !text-2xl"
+                    key={index}
+                  >
+                    <span className="text-gray-700 text-2xl font-medium mr-3">
+                      0{index + 1}
+                    </span>
+                    {item.lesson_name} introduction
+                  </Typography>
+                ))}
               </AccordionSummary>
               <AccordionDetails>
                 <Typography>
                   <hr className="mb-2" />
                   <div className="pl-8 text-gray-700">
-                    {lesson.map((item, index) => (
-                      <Typography variant="body1" key={index}>
-                        <br />• {item.lesson_name}
-                        {/* <br />• Welcome to the Course
-    <br />• Welcome to the Course
-    <br />• Welcome to the Course
-    <br />• Welcome to the Coursey
-    <br />• Welcome to the Course
-    <br />• Welcome to the Course */}
-                      </Typography>
-                    ))}
+                    <Typography variant="body1">
+                      • Welcome to the Course
+                    </Typography>
+                    <Typography variant="body1">
+                      • Welcome to the Course
+                    </Typography>
                   </div>
                 </Typography>
               </AccordionDetails>
@@ -101,7 +104,7 @@ function CourseDetailPage() {
           </div>
         </div>
 
-        <div className="h-full mt-7 sticky top-40">
+        <div className="h-full mt-7 sticky top-16">
           <div className="w-[357px] h-[449px] py-8 px-6 shadow-lg rounded-lg ml-10">
             <p className="text-sm text-orange-500 mb-4">Course</p>
             <p className="text-2xl text-black font-medium mb-2">
