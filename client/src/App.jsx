@@ -44,8 +44,13 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/editprofile" element={<EditProfilePage />} />
           <Route path="/course" element={<CoursePage />} />
+<<<<<<< HEAD
           <Route path="/mycourses" element={<MyCoursePage />} />
           <Route path="/course/courseDetail/:courseId" element={<CourseDetailPage />} />
+=======
+          <Route path="/mycourse" element={<MyCoursePage />} />
+          <Route path="/course/courseDetail" element={<CourseDetailPage />} />
+>>>>>>> e3fff4305f0e89a10aa0c311367385bce34963b9
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </SessionContext.Provider>
