@@ -17,7 +17,7 @@ const useGetuser = () => {
           `http://localhost:4001/users/${id}`
         );
         setUser(userDataFromServer.data.data[0]);
-        // console.log(userDataFromServer.data.data[0]);
+        console.log(userDataFromServer.data.data[0]);
       } else {
         setUser({});
       }
@@ -44,8 +44,9 @@ const useGetuser = () => {
       setIsError(false);
       setIsLoading(true);
       await axios.put(`http://localhost:4001/users/${id}`, data, {
-        header: { "content-type": "multipart/form-data" },
+        headers: { "content-type": "multipart/form-data" },
       });
+
       setIsLoading(false);
       navigate("/");
     } catch (error) {

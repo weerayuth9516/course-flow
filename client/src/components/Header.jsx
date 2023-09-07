@@ -36,15 +36,20 @@ function Header() {
   }, [session]);
 
   return (
-    <section id="header" className="font-inter bg-white drop-shadow-xl">
+    <section
+      id="header"
+      className="font-inter bg-white drop-shadow-xl relative z-50"
+    >
       <div
         id="header-container"
         className="flex h-[88px] items-center justify-between pl-[160px] pr-[160px]"
       >
-        <img id="logo" src={logo} alt="Logo" />
+        <Link to={"/"}>
+          <img id="logo" src={logo} alt="Logo" />
+        </Link>
         <div
           id="header-items"
-          className="flex items-center justify-between text-body2 font-bold"
+          className="flex items-center justify-between text-body2 font-bold z-50"
         >
           <Link to="/course">
             <span
@@ -86,7 +91,7 @@ function Header() {
               {isMenuOpen && (
                 <div
                   id="menuItems"
-                  className="bg-white drop-shadow-xl flex flex-col absolute top-16 right-1 text-body3 font-normal text-gray-700 rounded-md w-[198px] z-200"
+                  className="bg-white shadow-xl flex flex-col absolute top-16 right-1 text-body3 font-normal text-gray-700 rounded-md w-[198px] z-10"
                 >
                   <Link to="/editprofile">
                     <div className="flex items-center rounded-md hover:bg-blue-200">
