@@ -17,9 +17,9 @@ function EditProfileForm() {
   const [birthDate, setBirthDate] = useState("");
   const [education, setEducation] = useState("");
   const [email, setEmail] = useState("");
-  //   const [images, setImages] = useState({});
-  const [hasAvatar, setHasAvatar] = useState(false);
-  const [imgPath, setImgPath] = useState("");
+  const [images, setImages] = useState({});
+  const [hasImage, setHasImage] = useState(false);
+  const [hasUpload, setHasUpload] = useState(false);
   const { session, setSession } = useContext(SessionContext);
   const handleRemoveImage = async (event) => {
     event.preventDefault();
@@ -70,6 +70,22 @@ function EditProfileForm() {
     });
   };
 
+  const handleRemoveImage = (event) => {
+    event.preventDefault();
+    setHasImage(false);
+    // delete images[imageKey];
+    // setImages({ ...images });
+  };
+
+  const handleFileChange = (event) => {
+    const uniqueId = Date.now();
+    const file = event.target.files[0];
+    if (file) {
+      setImages(file);
+      setHasImage(true);
+    }
+  };
+
   return (
     <div
       id="edit-profile-container"
@@ -82,7 +98,7 @@ function EditProfileForm() {
       >
         <div id="image-preview" className="col-span-full">
           <label>
-            {hasAvatar ? (
+            {hasImage ? (
               <div id="user-image" className="relative">
                 <img
                   src={user.user_avatar}
@@ -125,12 +141,30 @@ function EditProfileForm() {
                         name="file-upload"
                         type="file"
                         className="sr-only"
+                        onChange={handleFileChange}
                       />
                     </label>
                   </div>
                   <p className="text-xs leading-5 text-gray-600">
                     PNG, JPG, JPEG up to 2MB
                   </p>
+                  if (!hasUpload)
+                  {
+                    <div id="image-upload-file" className="relative">
+                      <img
+                        id="image-preview"
+                        src={images}
+                        alt="Upload your"
+                        className="rounded-2xl w-[358px] h-[358px]"
+                      />
+                      <button
+                        className="absolute top-[6px] left-[320px] bg-purple-600 w-[32px] h-[32px] rounded-full flex justify-center items-center text-white text-header3 font-light"
+                        onClick={(event) => handleRemoveImage(event)}
+                      >
+                        <img src={remove} alt="Remove Image" />
+                      </button>
+                    </div>
+                  }
                 </div>
               </div>
             )}

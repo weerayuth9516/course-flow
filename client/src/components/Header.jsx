@@ -1,5 +1,4 @@
 import logo from "../assets/header/CourseFlow.png";
-
 import arrow from "../assets/header/arrow-dropdown.png";
 import userimage from "../assets/header/user.png";
 import homework from "../assets/header/homework.png";
@@ -12,6 +11,7 @@ import useGetuser from "../hook/useGetuser";
 import { useContext } from "react";
 import { SessionContext } from "../App";
 import { supabase } from "../supabase/client";
+
 function Header() {
   const { session, setSession } = useContext(SessionContext);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -36,7 +36,7 @@ function Header() {
   }, [session]);
 
   return (
-    <section id="header" className="font-inter bg-white drop-shadow-xl z-100">
+    <section id="header" className="font-inter bg-white drop-shadow-xl">
       <div
         id="header-container"
         className="flex h-[88px] items-center justify-between pl-[160px] pr-[160px]"
@@ -86,7 +86,7 @@ function Header() {
               {isMenuOpen && (
                 <div
                   id="menuItems"
-                  className="bg-white drop-shadow-xl flex flex-col absolute top-16 right-1 text-body3 font-normal text-gray-700 rounded-md w-[198px]"
+                  className="bg-white drop-shadow-xl flex flex-col absolute top-16 right-1 text-body3 font-normal text-gray-700 rounded-md w-[198px] z-200"
                 >
                   <Link to="/editprofile">
                     <div className="flex items-center rounded-md hover:bg-blue-200">
