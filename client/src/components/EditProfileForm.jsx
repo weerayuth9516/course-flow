@@ -17,17 +17,19 @@ function EditProfileForm() {
   const [birthDate, setBirthDate] = useState("");
   const [education, setEducation] = useState("");
   const [email, setEmail] = useState("");
-  const [images, setImages] = useState({});
+  const [images, setImages] = useState("");
   const [hasImage, setHasImage] = useState(false);
   const [hasUpload, setHasUpload] = useState(false);
   const { session, setSession } = useContext(SessionContext);
+
   const handleRemoveImage = async (event) => {
     event.preventDefault();
-    updateAvatarProfilById(session.user.id, {
-      user_avatar: null,
-      imgPath: imgPath,
-    });
-    setHasAvatar(false);
+    // updateAvatarProfilById(session.user.id, {
+    //   user_avatar: null,
+    //   imgPath: imgPath,
+    // });
+    setImages("");
+    setHasImage(false);
     //   delete images[imageKey];
     //   setImages({ ...images });
   };
@@ -47,12 +49,13 @@ function EditProfileForm() {
       setEducation(user.user_education);
       setEmail(user.user_email);
       if (user.user_avatar === null) {
-        setHasAvatar(false);
+        setHasImage(false);
       } else {
         // setImgPath(user.user_avatar.split("/"));
-        setHasAvatar(true);
+        setHasImage(true);
         try {
           const imgPathArr = user.user_avatar.split("/");
+          setImages(user.user_avatar);
           setImgPath(imgPathArr[imgPathArr.length - 1]);
         } catch {
           console.log("Awaiting for loading Img Path");
@@ -63,25 +66,23 @@ function EditProfileForm() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    updateUserProfileById(session.user.id, {
-      user_name: name,
-      user_dob: birthDate,
-      user_education: education,
-    });
-  };
 
-  const handleRemoveImage = (event) => {
-    event.preventDefault();
-    setHasImage(false);
-    // delete images[imageKey];
-    // setImages({ ...images });
+    const formData = new FormData();
+
+    formData.append("user_name", name);
+    formData.append("user_dob", birthDate);
+    formData.append("user_education", education);
+    formData.append("user_avatar", images);
+
+    updateUserProfileById(session.user.id, formData);
   };
 
   const handleFileChange = (event) => {
     const uniqueId = Date.now();
-    const file = event.target.files[0];
+    const file = event.target.files[event.target.files.length - 1];
+    console.log(file);
     if (file) {
-      setImages(file);
+      setImages(URL.createObjectURL(file));
       setHasImage(true);
     }
   };
@@ -101,7 +102,7 @@ function EditProfileForm() {
             {hasImage ? (
               <div id="user-image" className="relative">
                 <img
-                  src={user.user_avatar}
+                  src={images}
                   alt="User image"
                   className="flex items-center justify-center rounded-2xl w-[358px] h-[358px]"
                 />
@@ -148,23 +149,21 @@ function EditProfileForm() {
                   <p className="text-xs leading-5 text-gray-600">
                     PNG, JPG, JPEG up to 2MB
                   </p>
-                  if (!hasUpload)
-                  {
-                    <div id="image-upload-file" className="relative">
-                      <img
-                        id="image-preview"
-                        src={images}
-                        alt="Upload your"
-                        className="rounded-2xl w-[358px] h-[358px]"
-                      />
-                      <button
-                        className="absolute top-[6px] left-[320px] bg-purple-600 w-[32px] h-[32px] rounded-full flex justify-center items-center text-white text-header3 font-light"
-                        onClick={(event) => handleRemoveImage(event)}
-                      >
-                        <img src={remove} alt="Remove Image" />
-                      </button>
-                    </div>
-                  }
+
+                  <div id="image-upload-file" className="relative">
+                    <img
+                      id="image-preview"
+                      src={images}
+                      alt="image-preview"
+                      className="rounded-2xl w-[358px] h-[358px]"
+                    />
+                    <button
+                      className="absolute top-[6px] left-[320px] bg-purple-600 w-[32px] h-[32px] rounded-full flex justify-center items-center text-white text-header3 font-light"
+                      onClick={(event) => handleRemoveImage(event)}
+                    >
+                      <img src={remove} alt="Remove Image" />
+                    </button>
+                  </div>
                 </div>
               </div>
             )}

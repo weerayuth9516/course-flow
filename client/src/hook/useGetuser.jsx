@@ -43,7 +43,9 @@ const useGetuser = () => {
     try {
       setIsError(false);
       setIsLoading(true);
-      await axios.put(`http://localhost:4001/users/${id}`, data);
+      await axios.put(`http://localhost:4001/users/${id}`, data, {
+        header: { "content-type": "multipart/form-data" },
+      });
       setIsLoading(false);
       navigate("/");
     } catch (error) {

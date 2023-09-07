@@ -38,21 +38,22 @@ userRouter.post("/", async (req, res) => {
 });
 
 userRouter.put("/:id", async (req, res) => {
-  const id = req.params.id;
-  const results = await supabase
-    .from("users")
-    .update({
-      user_name: `${req.body.user_name}`,
-      user_education: `${req.body.user_education}`,
-      user_dob: `${req.body.user_dob}`,
-    })
-    .eq("user_id", id)
-    .select();
-  if (results.statusText === "OK") {
-    return res.json({ message: "Update users successfully." });
-  } else {
-    return res.status(400).send(`API ERROR`);
-  }
+  // const id = req.params.id;
+  // const results = await supabase
+  //   .from("users")
+  //   .update({
+  //     user_name: `${req.body.user_name}`,
+  //     user_education: `${req.body.user_education}`,
+  //     user_dob: `${req.body.user_dob}`,
+  //   })
+  //   .eq("user_id", id)
+  //   .select();
+  // if (results.statusText === "OK") {
+  //   return res.json({ message: "Update users successfully." });
+  // } else {
+  //   return res.status(400).send(`API ERROR`);
+  // }
+  console.log(req);
 });
 
 userRouter.put("/avatar/:id", async (req, res) => {
