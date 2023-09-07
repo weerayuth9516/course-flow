@@ -25,17 +25,14 @@ function LoginPage({ setToken }) {
       .required("Password is required")
       .min(6, "Password must be at least 6 characters"),
   });
-
   const handleSubmit = async (values) => {
-    // handle form submit
-    console.log("Form submitted with values:", values);
     try {
       const results = await axios.post(
         "http://localhost:4001/auth/login",
         values
       );
       if (results.data.message === "Email Invalid") {
-        return alert("Email Invalid");
+        validationSchema.ErrorMessage("Email Not Found.");
       }
       if (results.data.message === "Password Invalid") {
         return alert("Password Invalid");
@@ -45,22 +42,7 @@ function LoginPage({ setToken }) {
         password: values.password,
       });
       setSession(res.data.session);
-      navigate("/editprofile");
-      // const results = await supabase
-      //   .from("users")
-      //   .select("*")
-      //   .eq("user_email", values.email);
-      // if (results.data.length === 0) {
-      //   alert("Email Invalid.");
-      // } else {
-      //   const results = await supabase.auth.signInWithPassword({
-      //     email: values.email,
-      //     password: values.password,
-      //   });
-      //   console.log(results);
-      //   // setToken(data);
-      // navigate("/editprofile");
-      //}
+      navigate("/");
     } catch (error) {
       navigate("/login");
     }
