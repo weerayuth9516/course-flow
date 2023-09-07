@@ -19,6 +19,7 @@ const useGetuser = () => {
         );
         setUser(userDataFromServer.data.data[0]);
         console.log(userDataFromServer.data.data[0]);
+        console.log(userDataFromServer.data.data[0]);
       } else {
         setUser({});
       }
