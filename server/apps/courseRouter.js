@@ -128,6 +128,7 @@ courseRouter.get("/:id/lessons/:lessonId/sublessons", async (req, res) => {
     const courseId = req.params.id;
     const lessonId = req.params.lessonId;
 
+    // Check if the course with courseId exists
     const { data: courseData, error: courseError } = await supabase
       .from("courses")
       .select("course_id")
@@ -142,6 +143,7 @@ courseRouter.get("/:id/lessons/:lessonId/sublessons", async (req, res) => {
       return res.status(404).json({ error: "Course Id not found" });
     }
 
+    // Retrieve data for the specified lesson and its sub-lessons
     const { data, error } = await supabase
       .from("courses")
       .select("*,lessons(*, sub_lessons(*))")
@@ -152,13 +154,17 @@ courseRouter.get("/:id/lessons/:lessonId/sublessons", async (req, res) => {
       return res.status(500).json({ error: error.message });
     }
 
-    const sublessons = data[0]?.lessons[0]?.sub_lessons;
-
-    if (!sublessons) {
-      return res.status(404).json({ error: "Sublessons not found" });
+    if (!data || data.length === 0) {
+      return res.status(404).json({ error: "Lesson not found" });
     }
 
-    return res.json({ sublessons });
+    // Assuming data[0] contains the lesson and its sub-lessons
+    const lessonData = data[0].sub_lessons;
+
+    // Now you can return the lessonData as a response
+    return res.json({
+      data: lessonData,
+    });
   } catch (error) {
     console.error("An error occurred:", error);
     return res.status(500).json({ error: "Internal Server Error" });
