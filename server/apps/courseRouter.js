@@ -45,31 +45,31 @@ courseRouter.get("/:id", async (req, res) => {
 });
 
 //courseDetailPage/BE
-courseRouter.get("/:id", async (req, res) => {
-  try {
-    const id = req.params.id;
+// courseRouter.get("/:id", async (req, res) => {
+//   try {
+//     const id = req.params.id;
 
-    const { data, error } = await supabase
-      .from("courses")
-      .select("course_video_trailer, *")
-      .eq("course_id", id);
+//     const { data, error } = await supabase
+//       .from("courses")
+//       .select("course_video_trailer, *")
+//       .eq("course_id", id);
 
-    if (error) {
-      return res.status(400).send(`API ERROR: ${error.message}`);
-    }
+//     if (error) {
+//       return res.status(400).send(`API ERROR: ${error.message}`);
+//     }
 
-    if (!data || data.length === 0) {
-      return res.status(404).json({ error: "Course not found" });
-    }
+//     if (!data || data.length === 0) {
+//       return res.status(404).json({ error: "Course not found" });
+//     }
 
-    return res.json({
-      data: data[0],
-    });
-  } catch (error) {
-    console.error("An error occurred:", error);
-    return res.status(500).json({ error: "Internal Server Error" });
-  }
-});
+//     return res.json({
+//       data: data[0],
+//     });
+//   } catch (error) {
+//     console.error("An error occurred:", error);
+//     return res.status(500).json({ error: "Internal Server Error" });
+//   }
+// });
 
 courseRouter.get("/:id/lessons", async (req, res) => {
   try {
@@ -83,8 +83,8 @@ courseRouter.get("/:id/lessons", async (req, res) => {
     if (error) {
       return res.status(500).json({ error: error.message });
     }
-
-    return res.json({ data });
+    const leassonArray = data[0].lessons;
+    return res.json({ data: leassonArray });
   } catch (error) {
     console.error("An error occurred:", error);
     return res.status(500).json({ error: "Internal Server Error" });
@@ -159,7 +159,7 @@ courseRouter.get("/:id/lessons/:lessonId/sublessons", async (req, res) => {
     }
 
     // Assuming data[0] contains the lesson and its sub-lessons
-    const lessonData = data[0].sub_lessons;
+    const lessonData = data[0].lessons[0].sub_lessons;
 
     // Now you can return the lessonData as a response
     return res.json({

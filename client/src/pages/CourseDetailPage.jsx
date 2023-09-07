@@ -39,29 +39,36 @@ function CourseDetailPage() {
     const courseResult = await axios.get(
       `http://localhost:4001/courses/${params.courseId}`
     );
+    setCourse(courseResult.data.data[0]);
     const lessonResult = await axios.get(
       `http://localhost:4001/courses/${params.courseId}/lessons`
     );
-    const lessonData = lessonResult.data.data[0].lessons[0];
-    console.log(lessonData);
-    const subLessonResult = await axios.get(
-      `http://localhost:4001/courses/${params.courseId}/lessons/${lessonData.lesson_id}/sublessons`
-    );
-
-    const courseData = courseResult.data.data[0];
-
-    const subLessonData = subLessonResult.data.data;
-    // console.log(courseResult.data.data[0]);
-    setCourse(courseData);
-    setLesson(lessonData);
-    // setSubLesson(subLessonData);
-    // console.log(subLessonData);
-    // console.log(courseData);
-    // console.log(lessonData);
+    if (lesson.length < lessonResult.data.data.length) {
+      setLesson(
+        lessonResult.data.data.map((value, index) => {
+          lesson.push(value);
+        })
+      );
+    }
+    const subLessonResult = async (lessonArr) => {
+      lessonArr.map(async (value) => {
+        const lessonName = value.lesson_name;
+        const subResult = await axios
+          .get(
+            `http://localhost:4001/courses/${params.courseId}/lessons/${value.lesson_id}/sublessons`
+          )
+          .then((value) => {
+            return { [lessonName]: value.data.data };
+          });
+        setSubLesson(subLesson.push(subResult));
+      });
+    };
+    subLessonResult(lesson);
   };
 
   useEffect(() => {
     getCourseAndLessonAndSubLesson();
+    console.log(Object.keys(subLesson));
   }, [params.courseId]);
 
   const toggleData = [
