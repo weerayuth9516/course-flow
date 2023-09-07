@@ -94,7 +94,7 @@ function Header() {
                   className="bg-white shadow-xl flex flex-col absolute top-16 right-1 text-body3 font-normal text-gray-700 rounded-md w-[198px] z-10"
                 >
                   <Link to="/editprofile">
-                    <div className="flex items-center rounded-md hover:bg-blue-200">
+                    <div className="flex items-center rounded-md hover:bg-gray-200">
                       <img
                         id="profile"
                         className="p-4"
@@ -105,7 +105,7 @@ function Header() {
                     </div>
                   </Link>
                   <Link to="/mycourses">
-                    <div className="flex items-center rounded-md hover:bg-blue-200">
+                    <div className="flex items-center rounded-md hover:bg-gray-200">
                       <img
                         id="myCourses"
                         className="p-4"
@@ -116,7 +116,7 @@ function Header() {
                     </div>
                   </Link>
                   <Link to="/myhomeworks">
-                    <div className="flex items-center rounded-md hover:bg-blue-200">
+                    <div className="flex items-center rounded-md hover:bg-gray-200">
                       <img
                         id="myHomework"
                         className="p-4"
@@ -127,7 +127,7 @@ function Header() {
                     </div>
                   </Link>
                   <Link to="/mydesirecourses">
-                    <div className="flex items-center rounded-md hover:bg-blue-200">
+                    <div className="flex items-center rounded-md hover:bg-gray-200">
                       <img
                         id="myDesireCourse"
                         className="p-4"
