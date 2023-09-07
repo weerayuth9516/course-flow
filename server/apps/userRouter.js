@@ -67,10 +67,14 @@ userRouter.put("/avatar/:id", async (req, res) => {
       })
       .eq("user_id", id)
       .select();
-    const resultFromStorageTable = await supabase.storage
-      .from("user_avatars/user_avatar")
-      .remove([`/${req.body.imgPath}`]);
-    console.log(resultFromStorageTable);
+  } else {
+    results = await supabase
+      .from("users")
+      .update({
+        user_avatar: null,
+      })
+      .eq("user_id", id)
+      .select();
   }
 
   if (results.statusText === "OK") {
