@@ -43,7 +43,7 @@ function CoursePage() {
         </div>
       </div>
 
-      <div className="course-cards-container flex justify-center">
+      <div className="course-cards-container flex justify-center mb-20">
         <div className="course-cards-container grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-7">
           {/* Display course cards */}
           {searchList.map((item, index) => {
@@ -55,7 +55,7 @@ function CoursePage() {
                 ? item.course_summary.substring(0, 60) + "..."
                 : item.course_summary;
             return (
-              <div key={index} className="">
+              <div key={index} className="course-cards-box">
                 <div className="course-card w-[357px] h-[475px] rounded-lg shadow-lg border border-gray-100 mb-8">
                   <div className="course-card-thumbnail">
                     <Link to={`/course/courseDetail/${item.course_id}`}>
