@@ -55,6 +55,30 @@ userRouter.put("/:id", async (req, res) => {
   }
 });
 
+userRouter.put("/avatar/:id", async (req, res) => {
+  const id = req.params.id;
+  let results;
+  if (req.body.user_avatar === null) {
+    console.log(null);
+    results = await supabase
+      .from("users")
+      .update({
+        user_avatar: null,
+      })
+      .eq("user_id", id)
+      .select();
+    const resultFromStorageTable = await supabase.storage
+      .from("user_avatars/user_avatar")
+      .remove([`/${req.body.imgPath}`]);
+    console.log(resultFromStorageTable);
+  }
+
+  if (results.statusText === "OK") {
+    return res.json({ message: "Update users successfully." });
+  } else {
+    return res.status(400).send(`API ERROR`);
+  }
+});
 userRouter.delete("/:id", async (req, res) => {
   const id = req.params.id;
   const results = await supabase.from("users").delete().eq("user_id", id);
@@ -65,5 +89,4 @@ userRouter.delete("/:id", async (req, res) => {
     return res.status(400).send(`API ERROR`);
   }
 });
-
 export default userRouter;

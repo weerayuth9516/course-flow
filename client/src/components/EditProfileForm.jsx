@@ -4,18 +4,29 @@ import useGetuser from "../hook/useGetuser";
 import remove from "../assets/header/remove.png";
 import { useContext } from "react";
 import { SessionContext } from "../App";
+import { supabase } from "../supabase/client.js";
 
 function EditProfileForm() {
-  const { user, getCurrentUser, updateUserProfileById } = useGetuser();
+  const {
+    user,
+    getCurrentUser,
+    updateUserProfileById,
+    updateAvatarProfilById,
+  } = useGetuser();
   const [name, setName] = useState("");
   const [birthDate, setBirthDate] = useState("");
   const [education, setEducation] = useState("");
   const [email, setEmail] = useState("");
   //   const [images, setImages] = useState({});
   const [hasAvatar, setHasAvatar] = useState(false);
+  const [imgPath, setImgPath] = useState("");
   const { session, setSession } = useContext(SessionContext);
-  const handleRemoveImage = (event) => {
+  const handleRemoveImage = async (event) => {
     event.preventDefault();
+    updateAvatarProfilById(session.user.id, {
+      user_avatar: null,
+      imgPath: imgPath,
+    });
     setHasAvatar(false);
     //   delete images[imageKey];
     //   setImages({ ...images });
@@ -35,11 +46,17 @@ function EditProfileForm() {
       setBirthDate(user.user_dob);
       setEducation(user.user_education);
       setEmail(user.user_email);
-
-      if (user.user_avatar) {
-        setHasAvatar(true);
-      } else {
+      if (user.user_avatar === null) {
         setHasAvatar(false);
+      } else {
+        // setImgPath(user.user_avatar.split("/"));
+        setHasAvatar(true);
+        try {
+          const imgPathArr = user.user_avatar.split("/");
+          setImgPath(imgPathArr[imgPathArr.length - 1]);
+        } catch {
+          console.log("Awaiting for loading Img Path");
+        }
       }
     }
   }, [user]);

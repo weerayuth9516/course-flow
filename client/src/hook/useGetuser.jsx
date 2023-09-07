@@ -27,6 +27,18 @@ const useGetuser = () => {
     }
   };
 
+  const updateAvatarProfilById = async (id, data) => {
+    try {
+      setIsError(false);
+      setIsLoading(true);
+      await axios.put(`http://localhost:4001/users/avatar/${id}`, data);
+      setIsLoading(false);
+    } catch (error) {
+      setIsError(true);
+      setIsLoading(false);
+    }
+  };
+
   const updateUserProfileById = async (id, data) => {
     try {
       setIsError(false);
@@ -44,6 +56,7 @@ const useGetuser = () => {
     setUser,
     getCurrentUser,
     updateUserProfileById,
+    updateAvatarProfilById,
     isError,
     isLoading,
   };
