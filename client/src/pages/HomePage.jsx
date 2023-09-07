@@ -24,7 +24,7 @@ export default function HomePage() {
       {/* <div className="text-[48px] mb-[30px] pl-[6%]">
       <Header />
     </div> */}
-      <div className="bg-blue-100 h-auto relative pl-[15%] pr-[15%] mb-[100px] z-50">
+      <div className="bg-blue-100 h-auto relative pl-[15%] pr-[15%] mb-[100px] z-0">
         <div className="pt-[210px] pb-[230px]">
           <div className="font-semibold text-5xl">Best Virtual</div>
           <div className="font-semibold text-5xl mb-[25px]">

@@ -2,6 +2,7 @@ import { Router } from "express";
 import { supabase } from "../utils/db.js";
 import multer from "multer";
 import "dotenv/config";
+import multer from "multer";
 const userRouter = Router();
 const multerUpload = multer({ dest: "uploads" });
 
@@ -14,7 +15,17 @@ userRouter.get("/", async (req, res) => {
   }
 });
 
-userRouter.get("/:id", async (req, res) => {
+// userRouter.get("/:id", async (req, res) => {
+//   const id = req.params.id;
+//   const results = await supabase.from("users").select("*").eq("user_id", id);
+//   if (results.statusText === "OK") {
+//     return res.json({ data: results.data });
+//   } else {
+//     return res.status(400).send(`API ERROR : ${results.error}`);
+//   }
+// });
+
+userRouter.get("/:id", avatarUpload, async (req, res) => {
   const id = req.params.id;
   const results = await supabase.from("users").select("*").eq("user_id", id);
   const file = await supabase.storage

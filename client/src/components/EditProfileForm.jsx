@@ -20,7 +20,6 @@ function EditProfileForm() {
   const [images, setImages] = useState("");
   const [fileBody, setFileBody] = useState({});
   const [hasImage, setHasImage] = useState(false);
-  const [hasUpload, setHasUpload] = useState(false);
   const { session, setSession } = useContext(SessionContext);
 
   const handleRemoveImage = async (event) => {
@@ -46,7 +45,6 @@ function EditProfileForm() {
       if (user.user_avatar === null) {
         setHasImage(false);
       } else {
-        // setImgPath(user.user_avatar.split("/"));
         setHasImage(true);
         try {
           setImages(user.user_avatar);
@@ -143,21 +141,6 @@ function EditProfileForm() {
                   <p className="text-xs leading-5 text-gray-600">
                     PNG, JPG, JPEG up to 2MB
                   </p>
-
-                  <div id="image-upload-file" className="relative">
-                    <img
-                      id="image-preview"
-                      src={images}
-                      alt="image-preview"
-                      className="rounded-2xl w-[358px] h-[358px]"
-                    />
-                    <button
-                      className="absolute top-[6px] left-[320px] bg-purple-600 w-[32px] h-[32px] rounded-full flex justify-center items-center text-white text-header3 font-light"
-                      onClick={(event) => handleRemoveImage(event)}
-                    >
-                      <img src={remove} alt="Remove Image" />
-                    </button>
-                  </div>
                 </div>
               </div>
             )}
