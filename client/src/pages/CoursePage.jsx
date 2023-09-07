@@ -1,7 +1,9 @@
 import React from "react";
 import { DebounceInput } from "react-debounce-input";
 import useGetsearch from "../hook/useGetsearch";
+import { Link } from 'react-router-dom'
 import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 function CoursePage() {
   const { searchList, inputText, setInputText, getSearchList } = useGetsearch();
@@ -52,17 +54,19 @@ function CoursePage() {
             return (
               <div key={index} className="">
                 <div className="course-card w-[357px] h-[475px] rounded-lg shadow-lg border border-gray-100 mb-8">
-                  <div className="course-card-thumnail">
-                    <img
-                      src={item.course_cover_img}
-                      alt="course-image"
-                      className="w-[357px] h-[240px] object-fit rounded-lg shadow-lg"
-                    />
+                  <div className="course-card-thumbnail">
+                    <Link to={`/course/courseDetail/${item.course_id}`}>
+                      <img
+                        src={item.course_cover_img}
+                        alt="course-image"
+                        className="w-[357px] h-[240px] object-fit rounded-lg shadow-lg"
+                      />
+                    </Link>
                   </div>
                   <div className="description-box m-4">
                     <h3 className="mb-2 text-orange-500 text-body3">Course</h3>
                     <h2 className="font-bold mb-2 text-header3">
-                      {item.course_name}
+                    <Link to={`/course/courseDetail/${item.course_id}`}>{item.course_name}</Link>
                     </h2>
                     <div className="course-detail">
                       <p>{limitLetter}</p>
@@ -94,6 +98,7 @@ function CoursePage() {
           {/* End display course cards */}
         </div>
       </div>
+      <Footer />
     </div>
   );
 }
