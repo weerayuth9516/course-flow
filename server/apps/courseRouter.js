@@ -45,8 +45,7 @@ courseRouter.get("/:id", async (req, res) => {
 });
 
 //courseDetailPage/BE
-<<<<<<< HEAD
-<<<<<<< HEAD
+
 courseRouter.get("/:id", async (req, res) => {
   try {
     const id = req.params.id;
@@ -73,10 +72,6 @@ courseRouter.get("/:id", async (req, res) => {
   }
 });
 
-=======
->>>>>>> 534928e (feat: add get API lessons/sublessons)
-=======
->>>>>>> c133960 (feat: add get API lessons/sublessons)
 courseRouter.get("/:id/lessons", async (req, res) => {
   try {
     const courseId = req.params.id;
