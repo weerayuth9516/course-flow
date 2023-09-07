@@ -36,21 +36,17 @@ function App() {
   }, []);
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/login" element={<Login setToken={setToken} />} />
-        <Route
-          path="/editprofile"
-          element={<EditProfilePage setToken={setToken} />}
-        />
-        <Route path="/course" element={<CoursePage />} />
-        <Route
-          path="/course/courseDetail/:courseId"
-          element={<CourseDetailPage />}
-        />
-        <Route path="*" element={<NotFoundPage />} />
-      </Routes>
+      <SessionContext.Provider value={{ session, setSession }}>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/editprofile" element={<EditProfilePage />} />
+          <Route path="/course" element={<CoursePage />} />
+          <Route path="/course/courseDetail" element={<CourseDetailPage />} />
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+      </SessionContext.Provider>
     </BrowserRouter>
   );
 }

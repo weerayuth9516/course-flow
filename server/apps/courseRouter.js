@@ -45,8 +45,6 @@ courseRouter.get("/:id", async (req, res) => {
 });
 
 //courseDetailPage/BE
-<<<<<<< HEAD
-<<<<<<< HEAD
 courseRouter.get("/:id", async (req, res) => {
   try {
     const id = req.params.id;
@@ -73,10 +71,6 @@ courseRouter.get("/:id", async (req, res) => {
   }
 });
 
-=======
->>>>>>> 534928e (feat: add get API lessons/sublessons)
-=======
->>>>>>> c133960 (feat: add get API lessons/sublessons)
 courseRouter.get("/:id/lessons", async (req, res) => {
   try {
     const courseId = req.params.id;
@@ -134,9 +128,23 @@ courseRouter.get("/:id/lessons/:lessonId/sublessons", async (req, res) => {
     const courseId = req.params.id;
     const lessonId = req.params.lessonId;
 
+    const { data: courseData, error: courseError } = await supabase
+      .from("courses")
+      .select("course_id")
+      .eq("course_id", courseId)
+      .single();
+
+    if (courseError) {
+      return res.status(500).json({ error: courseError.message });
+    }
+
+    if (!courseData) {
+      return res.status(404).json({ error: "Course Id not found" });
+    }
+
     const { data, error } = await supabase
       .from("courses")
-      .select("lessons(lesson_id, sub_lessons(sub_lesson_id))")
+      .select("*,lessons(*, sub_lessons(*))")
       .eq("course_id", courseId)
       .eq("lessons.lesson_id", lessonId);
 
@@ -144,11 +152,12 @@ courseRouter.get("/:id/lessons/:lessonId/sublessons", async (req, res) => {
       return res.status(500).json({ error: error.message });
     }
 
-    const sublessons = data[0]?.lessons[0]?.sublessons;
+    const sublessons = data[0]?.lessons[0]?.sub_lessons;
 
     if (!sublessons) {
       return res.status(404).json({ error: "Sublessons not found" });
     }
+
     return res.json({ sublessons });
   } catch (error) {
     console.error("An error occurred:", error);
