@@ -16,7 +16,11 @@ function CoursePage() {
 
   return (
     <div className="font-inter mx-auto">
+    <div className="font-inter mx-auto">
       <Header />
+      <div className="bg-[url('src/assets/ourCourses/image_background.png')] bg-[length:100%_190px] bg-no-repeat">
+        <div className="search-box mb-2 flex flex-col items-center mt-20 h-[230px]">
+          <label htmlFor="input" className="text-black text-header2 font-bold">
       <div className="bg-[url('src/assets/ourCourses/image_background.png')] bg-[length:100%_190px] bg-no-repeat">
         <div className="search-box mb-2 flex flex-col items-center mt-20 h-[230px]">
           <label htmlFor="input" className="text-black text-header2 font-bold">
@@ -45,13 +49,19 @@ function CoursePage() {
 
       <div className="course-cards-container flex justify-center">
         <div className="course-cards-container grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-7">
+      <div className="course-cards-container flex justify-center">
+        <div className="course-cards-container grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-7">
           {/* Display course cards */}
           {searchList.map((item, index) => {
             const limitLetter =
               item.course_summary.length > 60
                 ? item.course_summary.substring(0, 60) + "..."
                 : item.course_summary;
+              item.course_summary.length > 60
+                ? item.course_summary.substring(0, 60) + "..."
+                : item.course_summary;
             return (
+              <div key={index} className="">
               <div key={index} className="">
                 <div className="course-card w-[357px] h-[475px] rounded-lg shadow-lg border border-gray-100 mb-8">
                   <div className="course-card-thumbnail">
@@ -88,6 +98,7 @@ function CoursePage() {
                         alt="Image icon"
                         className="inline mr-2 ml-4"
                       />
+                      {item.course_duration} Hours
                       {item.course_duration} Hours
                     </span>
                   </div>
