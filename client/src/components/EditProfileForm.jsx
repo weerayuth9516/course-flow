@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
 import useGetuser from "../hook/useGetuser";
 import remove from "../assets/header/remove.png";
 import { useContext } from "react";
@@ -7,12 +6,7 @@ import { SessionContext } from "../App";
 import { supabase } from "../supabase/client.js";
 
 function EditProfileForm() {
-  const {
-    user,
-    getCurrentUser,
-    updateUserProfileById,
-    updateAvatarProfilById,
-  } = useGetuser();
+  const { user, getCurrentUser, updateUserProfileById } = useGetuser();
   const [name, setName] = useState("");
   const [birthDate, setBirthDate] = useState("");
   const [education, setEducation] = useState("");
