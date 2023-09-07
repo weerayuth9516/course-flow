@@ -1,6 +1,7 @@
 import React from "react";
 import useGetsearch from "../hook/useGetsearch";
 import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 function MyCoursePage() {
   const { searchList } = useGetsearch();
@@ -105,6 +106,7 @@ function MyCoursePage() {
           </div>
         </div>
       </div>
+      <Footer/>
     </div>
   );
 }
