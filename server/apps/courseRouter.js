@@ -45,6 +45,35 @@ courseRouter.get("/:id", async (req, res) => {
 });
 
 //courseDetailPage/BE
+<<<<<<< HEAD
+=======
+courseRouter.get("/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    const { data, error } = await supabase
+      .from("courses")
+      .select("course_video_trailer, *")
+      .eq("course_id", id);
+
+    if (error) {
+      return res.status(400).send(`API ERROR: ${error.message}`);
+    }
+
+    if (!data || data.length === 0) {
+      return res.status(404).json({ error: "Course not found" });
+    }
+
+    return res.json({
+      data: data[0],
+    });
+  } catch (error) {
+    console.error("An error occurred:", error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+>>>>>>> 930fa3a8765041951b022f78b2277e3b55935e95
 courseRouter.get("/:id/lessons", async (req, res) => {
   try {
     const courseId = req.params.id;
