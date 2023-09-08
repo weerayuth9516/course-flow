@@ -129,6 +129,7 @@ courseRouter.get("/:id/lessons/:lessonId/sublessons", async (req, res) => {
     const lessonId = req.params.lessonId;
 
     // Check if the course with courseId exists
+    // Check if the course with courseId exists
     const { data: courseData, error: courseError } = await supabase
       .from("courses")
       .select("course_id")
@@ -159,7 +160,7 @@ courseRouter.get("/:id/lessons/:lessonId/sublessons", async (req, res) => {
     }
 
     // Assuming data[0] contains the lesson and its sub-lessons
-    const lessonData = data[0].lessons[0].sub_lessons;
+    const lessonData = data[0];
 
     // Now you can return the lessonData as a response
     return res.json({

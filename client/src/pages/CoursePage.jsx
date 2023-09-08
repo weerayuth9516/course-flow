@@ -2,11 +2,9 @@ import React from "react";
 import { DebounceInput } from "react-debounce-input";
 import useGetsearch from "../hook/useGetsearch";
 import Header from "../components/Header";
-import { useNavigate } from "react-router-dom";
 
 function CoursePage() {
   const { searchList, inputText, setInputText, getSearchList } = useGetsearch();
-  const navigate = useNavigate();
 
   const handleInputChange = (e) => {
     const newInputText = e.target.value;
@@ -55,13 +53,7 @@ function CoursePage() {
                 ? item.course_detail.substring(0, 70) + "..."
                 : item.course_detail;
             return (
-              <div
-                key={index}
-                className="col-span-4 cursor-pointer "
-                onClick={() =>
-                  navigate(`/course/courseDetail/${item.course_id}`)
-                }
-              >
+              <div key={index} className="col-span-4">
                 <div className="course-card w-[357px] h-[475px] rounded-lg shadow-lg border border-gray-100 mb-8">
                   <div className="course-card-thumnail">
                     <img
