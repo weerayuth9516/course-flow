@@ -16,11 +16,16 @@ import ellipse7 from "../assets/homepage/Ellipse7.png"
 import group5 from "../assets/homepage/Group5.png"
 import ellipse6 from "../assets/homepage/Ellipse6.png"
 import frame from "../assets/homepage/frame.png"
+import sec2 from "../assets/homepage/sec2.png"
+import sec3 from "../assets/homepage/sec3.png"
+import sec4 from "../assets/homepage/sec4.png"
+import sec5 from "../assets/homepage/sec5.png"
+import sec6 from "../assets/homepage/sec6.png"
 
 export default function HomePage() {
   return <>
 
-    <div className="text-[48px] mb-[30px] pl-[6%]">
+    <div className="text-[48px] pl-[5%]">
       <Header />
     </div>
     <div className="bg-blue-100 h-auto relative pl-[15%] pr-[15%] mb-[100px]">
@@ -42,7 +47,10 @@ export default function HomePage() {
       </div>
 
     </div>
-    <div className="flex pl-[15%] pr-[15%] gap-[50px] mb-[100px]">
+    <div className="flex pl-[15%] pr-[15%] gap-[50px] mb-[100px] relative">
+      <img className="absolute top-[-34%] left-[15%]" src={sec2}></img>
+      <img className="absolute top-[-20%] left-[35%]" src={sec3}></img>
+      <img className="absolute top-[70%] right-[5%]" src={sec4}></img>
       <img className="object-cover h-auto w-[40%] rounded-md"
         src="https://www.phoenix.edu/content/dam/edu/blog/2023/02/Male-programmer-writing-code-in-modern-office-704x421.jpg"
         alt=""></img>
@@ -80,7 +88,8 @@ export default function HomePage() {
 
 
     </div>
-    <div className="flex pl-[15%] pr-[15%] gap-[50px] mb-[100px]">
+    <div className="flex pl-[15%] pr-[15%] gap-[50px] mb-[300px] relative">
+      <img className="absolute bottom-[-60%] right-[12%]" src={sec5}></img>
 
       <div className="flex flex-col">
 
@@ -120,31 +129,31 @@ export default function HomePage() {
     </div>
 
     <div className=" flex flex-col justify-center items-center">
-      <h1 className="items-center justify-center mb-[50px] text-2xl text-bold font-semibold">Our Professional Instructor</h1>
-      <div className="pl-[10%] pr-[10%] flex gap-[40px] mb-[100px]">
+      <h1 className="items-center justify-center mb-[5px] text-2xl text-bold font-semibold">Our Professional Instructor</h1>
+      <div className="pl-[10%] pr-[10%] flex gap-[20px] mb-[200px]">
         <div className="flex flex-col justify-center items-center">
-          <img className="w-[350px] h-[350px] object-cover rounded-md"
+          <img className="w-[350px] h-[65%] object-cover rounded-md"
             src="https://w.wallha.com/ws/14/DWaxqUMB.jpg"
             alt=""></img>
           <div>Kim Jisoo</div>
           <div className="text-xs text-blue-400">Blackpink</div>
         </div>
         <div className="flex flex-col justify-center items-center">
-          <img className="w-[350px] h-[350px] object-cover rounded-md"
+          <img className="w-[350px] h-[65%] object-cover rounded-md"
             src="https://s.isanook.com/jo/0/ud/492/2462673/jennie.jpg?ip/crop/w670h402/q80/jpg"
             alt=""></img>
           <div>Kim Jennie</div>
           <div className="text-xs text-blue-400">Blackpink</div>
         </div>
         <div className="flex flex-col justify-center items-center">
-          <img className="w-[350px] h-[350px] object-cover rounded-md"
+          <img className="w-[350px] h-[65%] object-cover rounded-md"
             src="https://i.mydramalist.com/66L5p_5c.jpg"
             alt=""></img>
           <div>Park Chaeyoung</div>
           <div className="text-xs text-blue-400">Blackpink</div>
         </div>
         <div className="flex flex-col justify-center items-center">
-          <img className="w-[350px] h-[350px] object-cover rounded-md"
+          <img className="w-[350px] h-[65%] object-cover rounded-md"
             src="https://i.pinimg.com/736x/16/34/5b/16345b49fe985982921dabaefa03880c.jpg"
             alt=""></img>
           <div>Lalisa Manoban</div>
@@ -155,8 +164,10 @@ export default function HomePage() {
       </div>
 
     </div>
-    <section className="mb-[200px]">
+    <section className="mb-[200px] relative">
       <img className="w-screen" src={frame}></img>
+      <img className="absolute right-[5%] top-[-10%]" src={sec3}></img>
+      <img className="absolute right-0 top-[-30%]" src={sec6}></img>
     </section>
 
 
