@@ -10,6 +10,7 @@ import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
 import 'swiper/css/autoplay';
 
+
 import vector from "../assets/homepage/vector.png"
 import polygon from "../assets/homepage/Polygon.png"
 import heart from "../assets/homepage/heart.png"
@@ -87,23 +88,44 @@ export default function HomePage() {
               eligendi ab aliquid.</p>
 
 
-          </div>
-
-        </div>
-        <div className="flex mb-[20px]">
-          <img className="mr-[15px] h-[30px] w-[30px]"
-            src={heart}
-            alt=""></img>
-          <div className="flex-col">
-            <h2 className="mb-[10px]">Support All Student</h2>
-            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nesciunt aliquam voluptate vitae
-              nihil,
-              eligendi ab aliquid.</p>
 
           </div>
-
+          <div className="text-gray-700">
+            Welcome to Schooler! The one-stop online class management
+          </div>
+          <div className="text-gray-700 mb-[40px]">
+            system that caters to all your educational needs
+          </div>
+          <Link to="/course">
+            <button className="bg-blue-500 text-white font-semibold py-[14px] px-[35px] rounded-xl">
+              Explore Courses
+            </button>
+          </Link>
+          <img className="absolute top-0 right-0 z-0" src={wave}></img>
+          <img
+            className="absolute top-[14%] right-[10%] z-0"
+            src={computer}
+          ></img>
+          <img
+            className="absolute top-[10%] left-[-1%] z-0"
+            src={circle1}
+          ></img>
+          <img
+            className="absolute right-[10%] bottom-[10%]"
+            src={polygon3}
+          ></img>
+          <img
+            className="absolute right-[4%] bottom-[40%]"
+            src={ellipse7}
+          ></img>
+          <img className="absolute right-[40%] top-[15%]" src={group5}></img>
+          <img
+            className="absolute right-[45%] bottom-[16%]"
+            src={ellipse6}
+          ></img>
         </div>
       </div>
+
 
 
     </div>
@@ -124,23 +146,54 @@ export default function HomePage() {
               nihil,
               eligendi ab aliquid.</p>
 
-          </div>
-
-        </div>
-        <div className="flex mb-[20px]">
-          <img className="mr-[15px] h-[30px] w-[30px]"
-            src={heart}
-            alt=""></img>
-          <div className="flex-col">
-            <h2 className="mb-[10px]">Support All Student</h2>
-            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nesciunt aliquam voluptate vitae
-              nihil,
-              eligendi ab aliquid.</p>
 
           </div>
-
         </div>
       </div>
+      <div className="flex pl-[15%] pr-[15%] gap-[50px] mb-[100px]">
+        <div className="flex flex-col">
+          <div className="font-semibold text-2xl">
+            Interaction between the tutor{" "}
+          </div>
+          <div className="mb-[30px] font-semibold text-2xl">
+            and the learners
+          </div>
+          <div className="flex mb-[20px]">
+            <img
+              className="mr-[15px] h-[30px] w-[30px]"
+              src={commu}
+              alt=""
+            ></img>
+            <div className="flex-col">
+              <h2 className="mb-[10px]">Purely Collaborative</h2>
+              <p>
+                Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+                Nesciunt aliquam voluptate vitae nihil, eligendi ab aliquid.
+              </p>
+            </div>
+          </div>
+          <div className="flex mb-[20px]">
+            <img
+              className="mr-[15px] h-[30px] w-[30px]"
+              src={heart}
+              alt=""
+            ></img>
+            <div className="flex-col">
+              <h2 className="mb-[10px]">Support All Student</h2>
+              <p>
+                Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+                Nesciunt aliquam voluptate vitae nihil, eligendi ab aliquid.
+              </p>
+            </div>
+          </div>
+        </div>
+        <img
+          className="object-cover h-auto w-[40%] rounded-md"
+          src="https://usa.bootcampcdn.com/wp-content/uploads/sites/119/2020/12/tes_gen_blog_code7-1-800x412.jpg"
+          alt=""
+        ></img>
+      </div>
+
       <img className="object-cover h-auto w-[40%] rounded-md ml-[10%]"
         src={programmer2}
         alt=""></img>
@@ -286,13 +339,9 @@ export default function HomePage() {
         <Link to="/course">
           <button className="text-orange-400 bg-white w-[80%] py-[20px] rounded-md font-semibold">Check Out Our Course</button>
         </Link>
+
       </div>
-      <img className=" object-cover absolute right-[12%]" src={vector}></img>
-      <img className="w-[40px] h-[40px] top-[100px] right-[5%] absolute" src={polygon}></img>
-    </div>
-    <Footer />
-
-  </>
+      <Footer />
+    </>
+  );
 }
-
-

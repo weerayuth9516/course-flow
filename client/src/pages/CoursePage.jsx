@@ -1,7 +1,9 @@
 import React from "react";
 import { DebounceInput } from "react-debounce-input";
 import useGetsearch from "../hook/useGetsearch";
+import { Link } from 'react-router-dom'
 import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 function CoursePage() {
   const { searchList, inputText, setInputText, getSearchList } = useGetsearch();
@@ -13,14 +15,14 @@ function CoursePage() {
   };
 
   return (
+
     <div
       id="container"
-      className="bg-[url('src/assets/ourCourses/image_background.png')] bg-cover bg-center bg-no-repeat h-[190px] w-100%"
     >
       <Header />
-      <div className=" w-100%">
-        <div className="search-box mb-4 flex flex-col items-center mt-40">
-          <label htmlFor="input" className="text-gray-700 text-4xl font-bold">
+      <div className="bg-[url('src/assets/ourCourses/image_background.png')] bg-[length:100%_190px] bg-no-repeat">
+        <div className="search-box mb-2 flex flex-col items-center mt-20 h-[230px]">
+          <label htmlFor="input" className="text-black text-header2 font-bold">
             Our Courses
           </label>
           <div className="relative mt-12">
@@ -44,28 +46,33 @@ function CoursePage() {
         </div>
       </div>
 
-      <div className="course-cards-container flex justify-center m-20">
-        <div className="course-cards-container grid grid-cols-12 gap-7">
+      <div className="course-cards-container flex justify-center mb-20">
+        <div className="course-cards-container grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-7">
           {/* Display course cards */}
           {searchList.map((item, index) => {
             const limitLetter =
-              item.course_detail.length > 70
-                ? item.course_detail.substring(0, 70) + "..."
-                : item.course_detail;
+              item.course_summary.length > 60
+                ? item.course_summary.substring(0, 60) + "..."
+                : item.course_summary;
+              item.course_summary.length > 60
+                ? item.course_summary.substring(0, 60) + "..."
+                : item.course_summary;
             return (
-              <div key={index} className="col-span-4">
+              <div key={index} className="course-cards-box">
                 <div className="course-card w-[357px] h-[475px] rounded-lg shadow-lg border border-gray-100 mb-8">
-                  <div className="course-card-thumnail">
-                    <img
-                      src={item.course_cover_img}
-                      alt="Description of the image"
-                      className="w-[357px] h-[240px] object-cover rounded-lg shadow-lg"
-                    />
+                  <div className="course-card-thumbnail">
+                    <Link to={`/course/courseDetail/${item.course_id}`}>
+                      <img
+                        src={item.course_cover_img}
+                        alt="course-image"
+                        className="w-[357px] h-[240px] object-fit rounded-lg shadow-lg"
+                      />
+                    </Link>
                   </div>
                   <div className="description-box m-4">
-                    <h3 className="mb-2 text-orange-500">Course</h3>
-                    <h2 className="font-bold text-2xl mb-2">
-                      {item.course_name}
+                    <h3 className="mb-2 text-orange-500 text-body3">Course</h3>
+                    <h2 className="font-bold mb-2 text-header3">
+                    <Link to={`/course/courseDetail/${item.course_id}`}>{item.course_name}</Link>
                     </h2>
                     <div className="course-detail">
                       <p>{limitLetter}</p>
@@ -87,7 +94,7 @@ function CoursePage() {
                         alt="Image icon"
                         className="inline mr-2 ml-4"
                       />
-                      {item.course_learning_time} Hours
+                      {item.course_duration} Hours
                     </span>
                   </div>
                 </div>
@@ -97,6 +104,7 @@ function CoursePage() {
           {/* End display course cards */}
         </div>
       </div>
+      <Footer />
     </div>
   );
 }

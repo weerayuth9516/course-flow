@@ -1,12 +1,17 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { Link } from "react-router-dom";
 import { supabase } from "../supabase/client";
 import { useNavigate } from "react-router-dom";
+import Header from "../components/Header";
+import axios from "axios";
+import { useContext } from "react";
+import { SessionContext } from "../App";
 
 function LoginPage({ setToken }) {
   const navigate = useNavigate();
+  const { session, setSession } = useContext(SessionContext);
   const initialValues = {
     email: "",
     password: "",
@@ -20,38 +25,39 @@ function LoginPage({ setToken }) {
       .required("Password is required")
       .min(6, "Password must be at least 6 characters"),
   });
-
   const handleSubmit = async (values) => {
-    // handle form submit
-    console.log("Form submitted with values:", values);
     try {
-      const results = await supabase
-        .from("users")
-        .select("*")
-        .eq("user_email", values.email);
-      if (results.data.length === 0) {
-        alert("Email Invalid.");
-      } else {
-        const { data, error } = await supabase.auth.signInWithPassword({
-          email: values.email,
-          password: values.password,
-        });
-        setToken(data);
-        navigate("/editprofile");
+      const results = await axios.post(
+        "http://localhost:4001/auth/login",
+        values
+      );
+      if (results.data.message === "Email Invalid") {
+        validationSchema.ErrorMessage("Email Not Found.");
       }
+      if (results.data.message === "Password Invalid") {
+        return alert("Password Invalid");
+      }
+      const res = await supabase.auth.signInWithPassword({
+        email: values.email,
+        password: values.password,
+      });
+      setSession(res.data.session);
+      navigate("/");
     } catch (error) {
       navigate("/login");
     }
   };
-
+  useEffect(() => {
+    if (session !== null) {
+      navigate("/");
+    }
+  });
   return (
-    <div id="container">
-      <div
-        className="h-screen flex items-center justify-center 
-      bg-[url('src/assets/loginPage/bg-login.png')] bg-cover bg-center bg-no-repeat w-100%"
-      >
+    <div className="font-inter w-screen h-screen bg-[url('src/assets/loginPage/bg-login.png')] bg-cover bg-no-repeat">
+      <Header />
+      <div className="flex flex-col justify-center items-center h-5/6">
         <div className="login-form w-[453px] h-[446px]">
-          <h2 className="text-4xl text-[#383ba7] font-bold mb-10">
+          <h2 className="text-header2 text-[#383ba7] font-bold mb-10">
             Welcome back!
           </h2>
           <Formik
@@ -63,7 +69,7 @@ function LoginPage({ setToken }) {
               <div className="mb-4">
                 <label
                   htmlFor="email"
-                  className="block text-md text-black-500 mb-2"
+                  className="block text-body2 text-black-500 mb-2"
                 >
                   Email:
                 </label>
@@ -85,7 +91,7 @@ function LoginPage({ setToken }) {
               <div className="mb-4">
                 <label
                   htmlFor="password"
-                  className="block text-md text-black-500 mb-2 mt-5"
+                  className="block text-body2 text-black-500 mb-2 mt-5"
                 >
                   Password:
                 </label>
