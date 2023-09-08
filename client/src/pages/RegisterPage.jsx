@@ -1,5 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { Formik, Field, Form, ErrorMessage } from "formik";
+import { supabase } from "../supabase/client.js";
 import * as Yup from "yup";
 import axios from "axios";
 
@@ -32,10 +33,10 @@ function RegisterPage() {
   const registerUser = async (userProfile) => {
     try {
       const response = await axios.post(
-        "http://localhost:4001/users",
+        "http://localhost:4001/auth/register",
+
         userProfile
       );
-      return response.data;
     } catch (error) {
       console.log(error);
     }
@@ -48,7 +49,7 @@ function RegisterPage() {
       navigate("/login");
       console.log(response);
     } catch (error) {
-      console.log(error);
+      console.error("response error", error);
     }
   };
 

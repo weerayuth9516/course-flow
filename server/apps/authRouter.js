@@ -5,6 +5,7 @@ import "dotenv/config";
 const authRouter = Router();
 
 authRouter.post("/register", async (req, res) => {
+  console.log(req.body);
   const emailChecker = await supabase
     .from("users")
     .select("*")
