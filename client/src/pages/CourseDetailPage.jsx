@@ -52,7 +52,7 @@ function CourseDetailPage() {
     }
     const subLessonResult = async (lessonArr) => {
       lessonArr.map(async (value) => {
-        const lessonName = value.lesson_name;
+        const lessonName = value;
         const subResult = await axios
           .get(
             `http://localhost:4001/courses/${params.courseId}/lessons/${value.lesson_id}/sublessons`
@@ -60,6 +60,7 @@ function CourseDetailPage() {
           .then((value) => {
             return { [lessonName]: value.data.data };
           });
+        console.log(lessonName);
         setSubLesson(subLesson.push(subResult));
       });
     };
@@ -68,93 +69,103 @@ function CourseDetailPage() {
 
   useEffect(() => {
     getCourseAndLessonAndSubLesson();
-    console.log(Object.keys(subLesson));
+    // console.log(Object.keys(subLesson));
   }, [params.courseId]);
 
-  const toggleData = [
-    {
-      title: "01 Introduction",
-      content: (
-        <ul>
-          <li>
-            <p className="text-lg text-gray-700">Welcome to the course </p>
-          </li>
-          <li>
-            <p className="text-lg text-gray-700">Course Overview </p>
-          </li>
-          <li>
-            <p className="text-lg text-gray-700">Getting to Know You </p>
-          </li>
-        </ul>
-      ),
-    },
-    {
-      title: "02 Service Design Theories and Principles",
-      content: (
-        <ul>
-          <li>
-            <p className="text-lg text-gray-700">Welcome to the course </p>
-          </li>
-          <li>
-            <p className="text-lg text-gray-700">Course Overview </p>
-          </li>
-          <li>
-            <p className="text-lg text-gray-700">Getting to Know You </p>
-          </li>
-        </ul>
-      ),
-    },
-    {
-      title: "03 Understanding Users and Finding Opportunities",
-      content: (
-        <ul>
-          <li>
-            <p className="text-lg text-gray-700">Welcome to the course </p>
-          </li>
-          <li>
-            <p className="text-lg text-gray-700">Course Overview </p>
-          </li>
-          <li>
-            <p className="text-lg text-gray-700">Getting to Know You </p>
-          </li>
-        </ul>
-      ),
-    },
-    {
-      title: "04 Identifying and Validatiing Opportunities for Design",
-      content: (
-        <ul>
-          <li>
-            <p className="text-lg text-gray-700">Welcome to the course </p>
-          </li>
-          <li>
-            <p className="text-lg text-gray-700">Course Overview </p>
-          </li>
-          <li>
-            <p className="text-lg text-gray-700">Getting to Know You </p>
-          </li>
-        </ul>
-      ),
-    },
-    {
-      title: "05 Prototyping",
-      content: (
-        <ul>
-          <li>
-            <p className="text-lg text-gray-700">Welcome to the course </p>
-          </li>
-          <li>
-            <p className="text-lg text-gray-700">Course Overview </p>
-          </li>
-          <li>
-            <p className="text-lg text-gray-700">Getting to Know You </p>
-          </li>
-        </ul>
-      ),
-    },
-  ];
+  // const toggleData = [
+  //   {
+  //     title: "01 Introduction",
+  //     content: (
+  //       <ul>
+  //         <li>
+  //           <p className="text-lg text-gray-700 ml-5 mt-5">
+  //             ● Welcome to the course
+  //           </p>
+  //         </li>
+  //         <li>
+  //           <p className="text-lg text-gray-700 ml-5">● Course Overview </p>
+  //         </li>
+  //         <li>
+  //           <p className="text-lg text-gray-700 ml-5">● Getting to Know You </p>
+  //         </li>
+  //       </ul>
+  //     ),
+  //   },
+  //   {
+  //     title: "02 Service Design Theories and Principles",
+  //     content: (
+  //       <ul>
+  //         <li>
+  //           <p className="text-lg text-gray-700 ml-5 mt-5">
+  //             ● Welcome to the course
+  //           </p>
+  //         </li>
+  //         <li>
+  //           <p className="text-lg text-gray-700 ml-5">● Course Overview </p>
+  //         </li>
+  //         <li>
+  //           <p className="text-lg text-gray-700 ml-5">● Getting to Know You </p>
+  //         </li>
+  //       </ul>
+  //     ),
+  //   },
+  //   {
+  //     title: "03 Understanding Users and Finding Opportunities",
+  //     content: (
+  //       <ul>
+  //         <li>
+  //           <p className="text-lg text-gray-700 ml-5 mt-5">
+  //             ● Welcome to the course
+  //           </p>
+  //         </li>
+  //         <li>
+  //           <p className="text-lg text-gray-700 ml-5">● Course Overview </p>
+  //         </li>
+  //         <li>
+  //           <p className="text-lg text-gray-700 ml-5">● Getting to Know You </p>
+  //         </li>
+  //       </ul>
+  //     ),
+  //   },
+  //   {
+  //     title: "04 Identifying and Validatiing Opportunities for Design",
+  //     content: (
+  //       <ul>
+  //         <li>
+  //           <p className="text-lg text-gray-700 ml-5 mt-5">
+  //             ● Welcome to the course
+  //           </p>
+  //         </li>
+  //         <li>
+  //           <p className="text-lg text-gray-700 ml-5">● Course Overview </p>
+  //         </li>
+  //         <li>
+  //           <p className="text-lg text-gray-700 ml-5">● Getting to Know You </p>
+  //         </li>
+  //       </ul>
+  //     ),
+  //   },
+  //   {
+  //     title: "05 Prototyping",
+  //     content: (
+  //       <ul>
+  //         <li>
+  //           <p className="text-lg text-gray-700 ml-5 mt-5">
+  //             ● Welcome to the course
+  //           </p>
+  //         </li>
+  //         <li>
+  //           <p className="text-lg text-gray-700 ml-5">● Course Overview </p>
+  //         </li>
+  //         <li>
+  //           <p className="text-lg text-gray-700 ml-5">● Getting to Know You </p>
+  //         </li>
+  //       </ul>
+  //     ),
+  //   },
+  // ];
 
-  const [toggleStates, setToggleStates] = useState(toggleData.map(() => false));
+  // const [toggleStates, setToggleStates] = useState(subLesson.map(() => false));
 
   const toggle = (index) => {
     const newToggleStates = [...toggleStates];
@@ -190,46 +201,17 @@ function CourseDetailPage() {
               Module Samples
             </header>
             <div className="flex flex-col items-start ">
-              {toggleData.map((data, index) => (
+              {/* {subLesson.map((item, index) => (
                 <ToggleList
                   className="text-lg"
                   key={index}
-                  title={data.title}
-                  content={data.content}
+                  title={item.lesson_name}
+                  content={item.sub_lesson_name}
                   isOpen={toggleStates[index]}
                   toggle={() => toggle(index)}
                 />
-              ))}
+              ))} */}
             </div>
-            {/* {lesson.map((item, index) => (
-              <Accordion
-                key={index}
-                className="mt-8 mb-40"
-                style={{ boxShadow: "none", border: "bottom", height: "50px" }}
-              >
-                <AccordionSummary
-                  expandIcon={<ExpandMoreIcon />}
-                  aria-controls="panel1a-content"
-                  id="panel1a-header"
-                >
-                  <Typography className="font-medium text-black !text-2xl">
-                    <span className="text-gray-700 text-2xl font-medium mr-3">
-                      0{index + 1}
-                    </span>
-                    {item.lesson_name} introduction
-                  </Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                  <Typography>
-                    <div className="pl-8 text-gray-700">
-                      <Typography variant="body1">
-                        • Welcome to the Course
-                      </Typography>
-                    </div>
-                  </Typography>
-                </AccordionDetails>
-              </Accordion>
-            ))} */}
           </div>
         </div>
 
