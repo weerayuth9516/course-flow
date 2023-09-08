@@ -18,7 +18,6 @@ const useGetuser = () => {
           `http://localhost:4001/users/${id}`
         );
         setUser(userDataFromServer.data.data[0]);
-        console.log(userDataFromServer.data.data[0]);
       } else {
         setUser({});
       }
