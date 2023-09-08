@@ -11,17 +11,8 @@ import CourseDetailPage from "./pages/CourseDetailPage";
 import CoursePage from "./pages/CoursePage";
 import { supabase } from "./supabase/client";
 export const SessionContext = React.createContext();
+
 function App() {
-  // const [token, setToken] = useState(false);
-  // if (token) {
-  //   sessionStorage.setItem("token", JSON.stringify(token));
-  // }
-  // useEffect(() => {
-  //   if (sessionStorage.getItem("token")) {
-  //     let data = JSON.parse(sessionStorage.getItem("token"));
-  //     setToken(data);
-  //   }
-  // }, []);
   const [session, setSession] = useState(null);
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {

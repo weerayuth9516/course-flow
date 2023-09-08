@@ -153,7 +153,7 @@ export default function HomePage() {
       </div>
 
       <div className=" flex flex-col justify-center items-center">
-        <h1 className="items-center justify-center mb-[50px] text-2xl text-bold font-semibold">
+        <h1 className="items-center justify-center mb-[50px] text-2xl text-bold font-semibold text-header2">
           Our Professional Instructor
         </h1>
         <div className="pl-[10%] pr-[10%] flex gap-[40px] mb-[100px]">
@@ -199,7 +199,7 @@ export default function HomePage() {
         <img className="w-screen" src={frame}></img>
       </section>
 
-      <div class="bg-gradient-to-r from-indigo-500 to-sky-500 h-auto relative flex justify-between">
+      <div className="bg-gradient-to-r from-indigo-500 to-sky-500 h-auto relative flex justify-between">
         <div className="flex flex-col pl-[15%] pt-[120px] pb-[170px]">
           <div className="text-white text-4xl">Interested in Becoming</div>
           <div className="text-white text-4xl mb-[40px] ">
