@@ -11,176 +11,63 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 import axios from "axios";
 
-const ToggleList = ({ title, content, isOpen, toggle }) => {
-  return (
-    <div className="mt-5 mb-5">
-      <div className="toggle-header" onClick={toggle}>
-        <h2 className="inline toggle-title mr-10 text-2xl">{title}</h2>
-        <button className="toggle-button inline">
-          {isOpen ? (
-            <img src="/src/assets/registerPage/arrow-down.svg" />
-          ) : (
-            <img src="/src/assets/registerPage/arrow-down.svg" />
-          )}
-        </button>
-      </div>
-      {isOpen && <div className="toggle-content">{content}</div>}
-    </div>
-  );
-};
-
 function CourseDetailPage() {
-  const [course, setCourse] = useState({});
+  const [course, setCourse] = useState([]);
   const [lesson, setLesson] = useState([]);
-  const [subLesson, setSubLesson] = useState([]);
+
   const params = useParams();
 
   const getCourseAndLessonAndSubLesson = async () => {
+    try{
     const courseResult = await axios.get(
       `http://localhost:4001/courses/${params.courseId}`
     );
     setCourse(courseResult.data.data[0]);
+  } catch (error) {
+    console.log("request error");
+  }
+
+  // Get lessons and subLesson by courseId
+  try{
     const lessonResult = await axios.get(
       `http://localhost:4001/courses/${params.courseId}/lessons`
-    );
-    if (lesson.length < lessonResult.data.data.length) {
-      setLesson(
-        lessonResult.data.data.map((value, index) => {
-          lesson.push(value);
-        })
       );
-    }
-    const subLessonResult = async (lessonArr) => {
-      lessonArr.map(async (value) => {
-        const lessonName = value.lesson_name;
-        const subResult = await axios
-          .get(
-            `http://localhost:4001/courses/${params.courseId}/lessons/${value.lesson_id}/sublessons`
-          )
-          .then((value) => {
-            return { [lessonName]: value.data.data };
-          });
-
-        setSubLesson(subLesson.push(subResult));
-      });
-    };
-    subLessonResult(lesson);
+      setLesson(lessonResult.data.data)
+      
+  }catch (error) {
+    console.log("request error");
+  }
   };
 
   useEffect(() => {
     getCourseAndLessonAndSubLesson();
-    console.log(subLesson);
   }, [params.courseId]);
 
-  const toggleData = [
-    {
-      title: "01 Introduction",
-      content: (
-        <ul>
-          <li>
-            <p className="text-lg text-gray-700 ml-5 mt-5">
-              ● Welcome to the course{" "}
-            </p>
-          </li>
-          <li>
-            <p className="text-lg text-gray-700 ml-5 ">● Course Overview </p>
-          </li>
-          <li>
-            <p className="text-lg text-gray-700 ml-5 ">
-              ● Getting to Know You{" "}
-            </p>
-          </li>
-        </ul>
-      ),
-    },
-    {
-      title: "02 Service Design Theories and Principles",
-      content: (
-        <ul>
-          <li>
-            <p className="text-lg text-gray-700 ml-5 mt-5">
-              ● Welcome to the course{" "}
-            </p>
-          </li>
-          <li>
-            <p className="text-lg text-gray-700 ml-5 ">● Course Overview </p>
-          </li>
-          <li>
-            <p className="text-lg text-gray-700 ml-5 ">
-              ● Getting to Know You{" "}
-            </p>
-          </li>
-        </ul>
-      ),
-    },
-    {
-      title: "03 Understanding Users and Finding Opportunities",
-      content: (
-        <ul>
-          <li>
-            <p className="text-lg text-gray-700 ml-5 mt-5">
-              ● Welcome to the course{" "}
-            </p>
-          </li>
-          <li>
-            <p className="text-lg text-gray-700 ml-5 ">● Course Overview </p>
-          </li>
-          <li>
-            <p className="text-lg text-gray-700 ml-5 ">
-              ● Getting to Know You{" "}
-            </p>
-          </li>
-        </ul>
-      ),
-    },
-    {
-      title: "04 Identifying and Validatiing Opportunities for Design",
-      content: (
-        <ul>
-          <li>
-            <p className="text-lg text-gray-700 ml-5 mt-5">
-              ● Welcome to the course{" "}
-            </p>
-          </li>
-          <li>
-            <p className="text-lg text-gray-700 ml-5 ">● Course Overview </p>
-          </li>
-          <li>
-            <p className="text-lg text-gray-700 ml-5 ">
-              ● Getting to Know You{" "}
-            </p>
-          </li>
-        </ul>
-      ),
-    },
-    {
-      title: "05 Prototyping",
-      content: (
-        <ul>
-          <li>
-            <p className="text-lg text-gray-700 ml-5 mt-5">
-              ● Welcome to the course{" "}
-            </p>
-          </li>
-          <li>
-            <p className="text-lg text-gray-700 ml-5 ">● Course Overview </p>
-          </li>
-          <li>
-            <p className="text-lg text-gray-700 ml-5 ">
-              ● Getting to Know You{" "}
-            </p>
-          </li>
-        </ul>
-      ),
-    },
-  ];
-
-  const [toggleStates, setToggleStates] = useState(toggleData.map(() => false));
+  
+  const [toggleStates, setToggleStates] = useState(lesson.map(() => false));
 
   const toggle = (index) => {
     const newToggleStates = [...toggleStates];
     newToggleStates[index] = !newToggleStates[index];
     setToggleStates(newToggleStates);
+  };
+
+  const ToggleList = ({ title, content, isOpen, toggle }) => {
+    return (
+      <div className="mt-5 mb-5">
+        <div className="toggle-header" onClick={toggle}>
+          <h2 className="inline toggle-title mr-10 text-2xl">{title}</h2>
+          <button className="toggle-button inline">
+            {isOpen ? (
+              <img src="/src/assets/registerPage/arrow-down.svg" />
+            ) : (
+              <img src="/src/assets/registerPage/arrow-down.svg" />
+            )}
+          </button>
+        </div>
+        {isOpen && <div className="toggle-content"><ul>{content}</ul></div>}
+      </div>
+    );
   };
 
   return (
@@ -204,19 +91,29 @@ function CourseDetailPage() {
             <p className="text-4xl font-medium mb-6 mt-20">
               {course.course_name}
             </p>
-            <p className="text-gray-700">{course.course_detail}</p>
+            <div>
+      <p className="text-gray-700">
+      {course.course_detail}
+      </p>
+    </div>
+
+
           </div>
           <div className="w-[739px]">
             <header className="font-medium text-4xl mt-16">
               Module Samples
             </header>
             <div className="flex flex-col items-start mb-[100px] ">
-              {toggleData.map((data, index) => (
+              {lesson.map((data, index) => (
                 <ToggleList
-                  className="text-lg "
+                  className="text-lg"
                   key={index}
-                  title={data.title}
-                  content={data.content}
+                  title={data.lesson_name}
+                  content={data.sub_lessons && data.sub_lessons.length !== 0 ? data.sub_lessons.map((item,index)=>{
+                  return (<li key={index}>{item.sub_lesson_name}</li>
+
+                  )
+                  }): ""}
                   isOpen={toggleStates[index]}
                   toggle={() => toggle(index)}
                 />
