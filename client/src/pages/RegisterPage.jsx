@@ -34,9 +34,9 @@ function RegisterPage() {
     try {
       const response = await axios.post(
         "http://localhost:4001/auth/register",
+
         userProfile
       );
-      return response.data;
     } catch (error) {
       console.log(error);
     }
@@ -49,7 +49,7 @@ function RegisterPage() {
       navigate("/login");
       console.log(response);
     } catch (error) {
-      console.log(error);
+      console.error("response error", error);
     }
   };
 
