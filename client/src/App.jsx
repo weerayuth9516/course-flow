@@ -43,7 +43,12 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/editprofile" element={<EditProfilePage />} />
           <Route path="/course" element={<CoursePage />} />
-          <Route path="/course/courseDetail/:courseId" element={<CourseDetailPage />} />
+
+          <Route
+            path="/course/courseDetail/:courseId"
+            element={<CourseDetailPage />}
+          />
+
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </SessionContext.Provider>
