@@ -15,7 +15,11 @@ authRouter.post("/register", async (req, res) => {
       email: req.body.email,
       password: req.body.password,
     });
-    return res.json({ message: "Register user sucessefully." });
+    if (results.error !== null) {
+      return res.json({ message: "Register user sucessefully." });
+    } else {
+      return res.status(400).json({ message: "API INVALID" });
+    }
   } else {
     return res.status(400).json({ message: "Email Invalid" });
   }
@@ -28,22 +32,23 @@ authRouter.post("/login", async (req, res) => {
     .from("users")
     .select("*")
     .eq("user_email", emailReq);
-  if (emailChecker.statusText === "OK") {
+  if (emailChecker.data.length !== 0) {
     const results = await supabase.auth.signInWithPassword({
       email: emailReq,
       password: passwordReq,
     });
+
     if (results.error !== null) {
-      return res.status(400).json({
+      return res.json({
         message: "Password Invalid",
       });
     } else {
-      const se = await supabase.auth.getSession();
-      console.log(se);
-      return res.json({ message: results });
+      // const se = await supabase.auth.getSession();
+      // console.log(se);
+      return res.json({ message: "API Invalid" });
     }
   } else {
-    return res.status(400).json({
+    return res.json({
       message: "Email Invalid",
     });
   }

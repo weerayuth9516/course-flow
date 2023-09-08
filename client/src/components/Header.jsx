@@ -1,5 +1,4 @@
 import logo from "../assets/header/CourseFlow.png";
-
 import arrow from "../assets/header/arrow-dropdown.png";
 import userimage from "../assets/header/user.png";
 import homework from "../assets/header/homework.png";
@@ -12,6 +11,7 @@ import useGetuser from "../hook/useGetuser";
 import { useContext } from "react";
 import { SessionContext } from "../App";
 import { supabase } from "../supabase/client";
+
 function Header() {
   const { session, setSession } = useContext(SessionContext);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -36,15 +36,20 @@ function Header() {
   }, [session]);
 
   return (
-    <section id="header" className="font-inter">
+    <section
+      id="header"
+      className="font-inter bg-white drop-shadow-xl relative z-50"
+    >
       <div
         id="header-container"
         className="flex h-[88px] items-center justify-between pl-[160px] pr-[160px]"
       >
-        <img id="logo" src={logo} alt="Logo" />
+        <Link to={"/"}>
+          <img id="logo" src={logo} alt="Logo" />
+        </Link>
         <div
           id="header-items"
-          className="flex items-center justify-between text-body2 font-bold"
+          className="flex items-center justify-between text-body2 font-bold z-50"
         >
           <Link to="/course">
             <span
@@ -64,7 +69,7 @@ function Header() {
                 <img
                   id="image-profile"
                   className="w-10 h-10 m-2 rounded-full"
-                  src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                  src={user.user_avatar}
                   alt="image profile"
                 />
                 <span
@@ -86,10 +91,10 @@ function Header() {
               {isMenuOpen && (
                 <div
                   id="menuItems"
-                  className="bg-white drop-shadow-xl flex flex-col absolute top-16 right-1 text-body3 font-normal text-gray-700 rounded-md w-[198px] z-30"
+                  className="bg-white shadow-xl flex flex-col absolute top-16 right-1 text-body3 font-normal text-gray-700 rounded-md w-[198px] z-10"
                 >
                   <Link to="/editprofile">
-                    <div className="flex items-center rounded-md hover:bg-blue-200">
+                    <div className="flex items-center rounded-md hover:bg-gray-200">
                       <img
                         id="profile"
                         className="p-4"
@@ -100,7 +105,7 @@ function Header() {
                     </div>
                   </Link>
                   <Link to="/mycourses">
-                    <div className="flex items-center rounded-md hover:bg-blue-200">
+                    <div className="flex items-center rounded-md hover:bg-gray-200">
                       <img
                         id="myCourses"
                         className="p-4"
@@ -111,7 +116,7 @@ function Header() {
                     </div>
                   </Link>
                   <Link to="/myhomeworks">
-                    <div className="flex items-center rounded-md hover:bg-blue-200">
+                    <div className="flex items-center rounded-md hover:bg-gray-200">
                       <img
                         id="myHomework"
                         className="p-4"
@@ -122,7 +127,7 @@ function Header() {
                     </div>
                   </Link>
                   <Link to="/mydesirecourses">
-                    <div className="flex items-center rounded-md hover:bg-blue-200">
+                    <div className="flex items-center rounded-md hover:bg-gray-200">
                       <img
                         id="myDesireCourse"
                         className="p-4"

@@ -25,17 +25,14 @@ function LoginPage({ setToken }) {
       .required("Password is required")
       .min(6, "Password must be at least 6 characters"),
   });
-
   const handleSubmit = async (values) => {
-    // handle form submit
-    console.log("Form submitted with values:", values);
     try {
       const results = await axios.post(
         "http://localhost:4001/auth/login",
         values
       );
       if (results.data.message === "Email Invalid") {
-        return alert("Email Invalid");
+        validationSchema.ErrorMessage("Email Not Found.");
       }
       if (results.data.message === "Password Invalid") {
         return alert("Password Invalid");
@@ -45,22 +42,7 @@ function LoginPage({ setToken }) {
         password: values.password,
       });
       setSession(res.data.session);
-      navigate("/editprofile");
-      // const results = await supabase
-      //   .from("users")
-      //   .select("*")
-      //   .eq("user_email", values.email);
-      // if (results.data.length === 0) {
-      //   alert("Email Invalid.");
-      // } else {
-      //   const results = await supabase.auth.signInWithPassword({
-      //     email: values.email,
-      //     password: values.password,
-      //   });
-      //   console.log(results);
-      //   // setToken(data);
-      // navigate("/editprofile");
-      //}
+      navigate("/");
     } catch (error) {
       navigate("/login");
     }
@@ -71,9 +53,9 @@ function LoginPage({ setToken }) {
     }
   });
   return (
-    <div className="container font-inter mx-auto w-full h-screen bg-[url('src/assets/loginPage/bg-login.png')] bg-cover bg-center bg-no-repeat">
+    <div className="font-inter w-screen h-screen bg-[url('src/assets/loginPage/bg-login.png')] bg-cover bg-no-repeat">
       <Header />
-      <div className="flex flex-col justify-center items-center mt-20">
+      <div className="flex flex-col justify-center items-center h-5/6">
         <div className="login-form w-[453px] h-[446px]">
           <h2 className="text-header2 text-[#383ba7] font-bold mb-10">
             Welcome back!
