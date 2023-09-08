@@ -78,13 +78,17 @@ function CourseDetailPage() {
       content: (
         <ul>
           <li>
-            <p className="text-lg text-gray-700">Welcome to the course </p>
+            <p className="text-lg text-gray-700 ml-5 mt-5">
+              ● Welcome to the course{" "}
+            </p>
           </li>
           <li>
-            <p className="text-lg text-gray-700">Course Overview </p>
+            <p className="text-lg text-gray-700 ml-5 ">● Course Overview </p>
           </li>
           <li>
-            <p className="text-lg text-gray-700">Getting to Know You </p>
+            <p className="text-lg text-gray-700 ml-5 ">
+              ● Getting to Know You{" "}
+            </p>
           </li>
         </ul>
       ),
@@ -94,13 +98,17 @@ function CourseDetailPage() {
       content: (
         <ul>
           <li>
-            <p className="text-lg text-gray-700">Welcome to the course </p>
+            <p className="text-lg text-gray-700 ml-5 mt-5">
+              ● Welcome to the course{" "}
+            </p>
           </li>
           <li>
-            <p className="text-lg text-gray-700">Course Overview </p>
+            <p className="text-lg text-gray-700 ml-5 ">● Course Overview </p>
           </li>
           <li>
-            <p className="text-lg text-gray-700">Getting to Know You </p>
+            <p className="text-lg text-gray-700 ml-5 ">
+              ● Getting to Know You{" "}
+            </p>
           </li>
         </ul>
       ),
@@ -110,13 +118,17 @@ function CourseDetailPage() {
       content: (
         <ul>
           <li>
-            <p className="text-lg text-gray-700">Welcome to the course </p>
+            <p className="text-lg text-gray-700 ml-5 mt-5">
+              ● Welcome to the course{" "}
+            </p>
           </li>
           <li>
-            <p className="text-lg text-gray-700">Course Overview </p>
+            <p className="text-lg text-gray-700 ml-5 ">● Course Overview </p>
           </li>
           <li>
-            <p className="text-lg text-gray-700">Getting to Know You </p>
+            <p className="text-lg text-gray-700 ml-5 ">
+              ● Getting to Know You{" "}
+            </p>
           </li>
         </ul>
       ),
@@ -126,13 +138,17 @@ function CourseDetailPage() {
       content: (
         <ul>
           <li>
-            <p className="text-lg text-gray-700">Welcome to the course </p>
+            <p className="text-lg text-gray-700 ml-5 mt-5">
+              ● Welcome to the course{" "}
+            </p>
           </li>
           <li>
-            <p className="text-lg text-gray-700">Course Overview </p>
+            <p className="text-lg text-gray-700 ml-5 ">● Course Overview </p>
           </li>
           <li>
-            <p className="text-lg text-gray-700">Getting to Know You </p>
+            <p className="text-lg text-gray-700 ml-5 ">
+              ● Getting to Know You{" "}
+            </p>
           </li>
         </ul>
       ),
@@ -142,13 +158,17 @@ function CourseDetailPage() {
       content: (
         <ul>
           <li>
-            <p className="text-lg text-gray-700">Welcome to the course </p>
+            <p className="text-lg text-gray-700 ml-5 mt-5">
+              ● Welcome to the course{" "}
+            </p>
           </li>
           <li>
-            <p className="text-lg text-gray-700">Course Overview </p>
+            <p className="text-lg text-gray-700 ml-5 ">● Course Overview </p>
           </li>
           <li>
-            <p className="text-lg text-gray-700">Getting to Know You </p>
+            <p className="text-lg text-gray-700 ml-5 ">
+              ● Getting to Know You{" "}
+            </p>
           </li>
         </ul>
       ),
