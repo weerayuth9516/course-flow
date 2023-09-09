@@ -22,13 +22,13 @@ function MyCoursePage() {
             My Course
           </div>
           <div className="flex space-x-10 mt-12">
-            <button className="text-gray-700 focus:text-black focus:border-b focus:border-b-1 focus: border-black pb-2">
+            <button className="transform hover:scale-110 transition-transform duration-300 ease-in-out hover:shadow-lg text-gray-700 focus:text-black focus:border-b focus:border-b-1 focus: border-black p-2">
               All Course
             </button>
-            <button className="text-gray-700 focus:text-black focus:border-b focus:border-b-1 focus: border-black pb-2">
+            <button className="transform hover:scale-110 transition-transform duration-300 ease-in-out hover:shadow-lg text-gray-700 focus:text-black focus:border-b focus:border-b-1 focus: border-black p-2">
               Inprogress
             </button>
-            <button className="text-gray-700 focus:text-black focus:border-b focus:border-b-1 focus: border-black pb-2">
+            <button className="transform hover:scale-110 transition-transform duration-300 ease-in-out hover:shadow-lg text-gray-700 focus:text-black focus:border-b focus:border-b-1 focus: border-black p-2">
               Completed
             </button>
           </div>
@@ -41,14 +41,14 @@ function MyCoursePage() {
           </div>
           <div className="mt-5 text-header3 text-gray-800">My Maxfield</div>
           <div className="w-[309px] h-[134px] flex justify-center space-x-4 mt-8">
-            <div className="w-[143px] h-[134px] border-2 rounded-lg shadow-lg bg-gray-200 flex flex-col space-y-8">
+            <div className="w-[143px] h-[134px] border-2 rounded-lg shadow-lg bg-gray-200 flex flex-col space-y-8  transform hover:scale-110 transition-transform duration-300 ease-in-out hover:shadow-lg">
               <div className="mt-3 ml-3 text-body2 text-gray-700">
                 <div>Course</div>
                 <div>Inprogress</div>
               </div>
               <div className="ml-3 mb-3 font-bold text-header3">3</div>
             </div>
-            <div className="w-[143px] h-[134px] border-2 rounded-lg shadow-lg bg-gray-200 flex flex-col space-y-8">
+            <div className="w-[143px] h-[134px] border-2 rounded-lg shadow-lg bg-gray-200 flex flex-col space-y-8  transform hover:scale-110 transition-transform duration-300 ease-in-out hover:shadow-lg">
               <div className="mt-3 ml-3 text-body2 text-gray-700">
                 <div>Course</div>
                 <div>Complete</div>

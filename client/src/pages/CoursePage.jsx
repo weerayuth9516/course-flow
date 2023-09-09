@@ -45,7 +45,7 @@ function CoursePage() {
               name="message-text"
               type="text"
               value={inputText}
-              className="w-[357px] h-[48px] pl-10 border rounded-lg py-2 px-3 focus:outline-none focus:border-orange-100"
+              className="w-[357px] h-[48px] pl-10 border rounded-lg py-2 px-3 focus:outline-none hover:border-orange-300 focus:border-orange-300"
               placeholder="Search..."
               debounceTimeout={500}
               onChange={handleInputChange}
