@@ -44,53 +44,6 @@ courseRouter.get("/:id", async (req, res) => {
   }
 });
 
-//courseDetailPage/BE
-// courseRouter.get("/:id", async (req, res) => {
-//   try {
-//     const id = req.params.id;
-
-//     const { data, error } = await supabase
-//       .from("courses")
-//       .select("course_video_trailer, *")
-//       .eq("course_id", id);
-
-//     if (error) {
-//       return res.status(400).send(`API ERROR: ${error.message}`);
-//     }
-
-//     if (!data || data.length === 0) {
-//       return res.status(404).json({ error: "Course not found" });
-//     }
-
-//     return res.json({
-//       data: data[0],
-//     });
-//   } catch (error) {
-//     console.error("An error occurred:", error);
-//     return res.status(500).json({ error: "Internal Server Error" });
-//   }
-// });
-
-courseRouter.get("/:id/lessons", async (req, res) => {
-  try {
-    const courseId = req.params.id;
-
-    const { data, error } = await supabase
-      .from("courses")
-      .select("*,lessons(*)")
-      .eq("course_id", courseId);
-
-    if (error) {
-      return res.status(500).json({ error: error.message });
-    }
-    const leassonArray = data[0].lessons;
-    return res.json({ data: leassonArray });
-  } catch (error) {
-    console.error("An error occurred:", error);
-    return res.status(500).json({ error: "Internal Server Error" });
-  }
-});
-
 courseRouter.get("/:id/lessons/:lessonId", async (req, res) => {
   try {
     const courseId = req.params.id;
@@ -98,7 +51,7 @@ courseRouter.get("/:id/lessons/:lessonId", async (req, res) => {
 
     const { data, error } = await supabase
       .from("courses")
-      .select("*,lessons(*)")
+      .select("course_id,lessons, lessons(lesson_name, sub_lessons(*))")
       .eq("course_id", courseId)
       .eq("lessons.lesson_id", lessonId);
 
@@ -123,12 +76,11 @@ courseRouter.get("/:id/lessons/:lessonId", async (req, res) => {
   }
 });
 
-courseRouter.get("/:id/lessons/:lessonId/sublessons", async (req, res) => {
+// Get lesson and subLesson by courseId for May
+courseRouter.get("/:id/lessons/", async (req, res) => {
   try {
     const courseId = req.params.id;
-    const lessonId = req.params.lessonId;
 
-    // Check if the course with courseId exists
     // Check if the course with courseId exists
     const { data: courseData, error: courseError } = await supabase
       .from("courses")
@@ -144,12 +96,10 @@ courseRouter.get("/:id/lessons/:lessonId/sublessons", async (req, res) => {
       return res.status(404).json({ error: "Course Id not found" });
     }
 
-    // Retrieve data for the specified lesson and its sub-lessons
     const { data, error } = await supabase
-      .from("courses")
-      .select("*,lessons(*, sub_lessons(*))")
-      .eq("course_id", courseId)
-      .eq("lessons.lesson_id", lessonId);
+      .from("lessons")
+      .select("lesson_name, sub_lessons(*)")
+      .eq("course_id", courseId);
 
     if (error) {
       return res.status(500).json({ error: error.message });
@@ -159,10 +109,8 @@ courseRouter.get("/:id/lessons/:lessonId/sublessons", async (req, res) => {
       return res.status(404).json({ error: "Lesson not found" });
     }
 
-    // Assuming data[0] contains the lesson and its sub-lessons
-    const lessonData = data[0];
+    const lessonData = data;
 
-    // Now you can return the lessonData as a response
     return res.json({
       data: lessonData,
     });
