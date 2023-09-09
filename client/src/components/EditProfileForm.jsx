@@ -20,6 +20,8 @@ function EditProfileForm() {
   const [hasImage, setHasImage] = useState(false);
   const { session, setSession } = useContext(SessionContext);
 
+  const [errorMessage, setErrorMessage] = useState("");
+
   // const validationSchema = Yup.object({
   //   name: Yup.string().required("Name is required"),
   //   birthDate: Yup.date()
@@ -91,7 +93,7 @@ function EditProfileForm() {
     const typeFile = file.name.substring(file.name.lastIndexOf(".") + 1);
     if (file.size > 2097152) {
       setHasImage(false);
-      alert("File too large");
+      setErrorMessage("File too large!");
     } else if (
       typeFile.toLowerCase() === "jpg" ||
       typeFile.toLowerCase() === "png" ||
@@ -102,13 +104,14 @@ function EditProfileForm() {
           setImages(URL.createObjectURL(file));
           setFileBody(file);
           setHasImage(true);
+          setErrorMessage("");
         }
       } catch (error) {
         console.log(error);
       }
     } else {
       setHasImage(false);
-      alert("File Only JPG,PNG,JEPG");
+      setErrorMessage("File Only JPG, PNG, JPEG !");
     }
   };
 
@@ -133,6 +136,7 @@ function EditProfileForm() {
                     alt="User image"
                     className="flex items-center justify-center rounded-2xl w-[358px] h-[358px]"
                   />
+
                   <button
                     className="absolute top-[6px] left-[320px] bg-purple-600 w-[32px] h-[32px] rounded-full flex justify-center items-center text-white text-header3 font-light"
                     onClick={(event) => handleRemoveImage(event)}
@@ -143,14 +147,22 @@ function EditProfileForm() {
               ) : (
                 <div
                   id="hasnot-image"
-                  className="flex items-center justify-center rounded-2xl border border-dashed bg-gray-100 border-gray-900/25 px-6 py-10 w-[358px] h-[358px]"
+                  className={`flex items-center justify-center rounded-2xl border border-dashed bg-gray-100 border-gray-900/25 px-6 py-10 w-[358px] h-[358px]  ${
+                    errorMessage && "border-purple-500 border-2"
+                  }`}
                 >
-                  <div className="flex flex-col justify-center items-center">
-                    <img src={addImage} />
+                  <div className="flex flex-col justify-center items-center group">
+                    <img
+                      src={addImage}
+                      className="scale-100 group-hover:scale-110"
+                    />
+
                     <div className="mt-4 flex text-sm leading-6 text-gray-600">
                       <label
                         htmlFor="file-upload"
-                        className="relative cursor-pointer rounded-md bg-white font-semibold text-blue-400 hover:text-blue-600"
+                        className={`relative cursor-pointer rounded-md bg-white font-semibold text-blue-400 scale-100 group-hover:scale-110 ${
+                          errorMessage && "text-purple-500"
+                        }`}
                       >
                         <span>Upload image</span>
                         <input
@@ -162,10 +174,19 @@ function EditProfileForm() {
                         />
                       </label>
                     </div>
-                    <p className="text-xs leading-5 text-gray-600">
+                    <p
+                      className={`text-xs leading-5 text-gray-600 ${
+                        errorMessage && "text-purple-500"
+                      }`}
+                    >
                       PNG, JPG, JPEG up to 2MB
                     </p>
                   </div>
+                </div>
+              )}
+              {errorMessage && (
+                <div className="text-purple-500 font-bold p-5">
+                  {errorMessage}
                 </div>
               )}
             </label>
