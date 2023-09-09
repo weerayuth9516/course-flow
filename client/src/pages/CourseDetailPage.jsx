@@ -3,48 +3,39 @@ import { Link, useParams } from "react-router-dom";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 
-import Accordion from "@mui/material/Accordion";
-import AccordionSummary from "@mui/material/AccordionSummary";
-import AccordionDetails from "@mui/material/AccordionDetails";
-import Typography from "@mui/material/Typography";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-
 import axios from "axios";
 
 function CourseDetailPage() {
   const [course, setCourse] = useState([]);
   const [lesson, setLesson] = useState([]);
+  const [toggleStates, setToggleStates] = useState(lesson.map(() => false));
 
   const params = useParams();
 
   const getCourseAndLessonAndSubLesson = async () => {
-    try{
-    const courseResult = await axios.get(
-      `http://localhost:4001/courses/${params.courseId}`
-    );
-    setCourse(courseResult.data.data[0]);
-  } catch (error) {
-    console.log("request error");
-  }
-
-  // Get lessons and subLesson by courseId
-  try{
-    const lessonResult = await axios.get(
-      `http://localhost:4001/courses/${params.courseId}/lessons`
+    try {
+      const courseResult = await axios.get(
+        `http://localhost:4001/courses/${params.courseId}`
       );
-      setLesson(lessonResult.data.data)
-      
-  }catch (error) {
-    console.log("request error");
-  }
+      setCourse(courseResult.data.data[0]);
+    } catch (error) {
+      console.log("request error");
+    }
+
+    // Get lessons and subLesson by courseId
+    try {
+      const lessonResult = await axios.get(
+        `http://localhost:4001/courses/${params.courseId}/lessons`
+      );
+      setLesson(lessonResult.data.data);
+    } catch (error) {
+      console.log("request error");
+    }
   };
 
   useEffect(() => {
     getCourseAndLessonAndSubLesson();
   }, [params.courseId]);
-
-  
-  const [toggleStates, setToggleStates] = useState(lesson.map(() => false));
 
   const toggle = (index) => {
     const newToggleStates = [...toggleStates];
@@ -65,7 +56,11 @@ function CourseDetailPage() {
             )}
           </button>
         </div>
-        {isOpen && <div className="toggle-content"><ul>{content}</ul></div>}
+        {isOpen && (
+          <div className="toggle-content">
+            <ul>{content}</ul>
+          </div>
+        )}
       </div>
     );
   };
@@ -92,12 +87,13 @@ function CourseDetailPage() {
               {course.course_name}
             </p>
             <div>
-      <p className="text-gray-700">
-      {course.course_detail}
-      </p>
-    </div>
-
-
+              <p className="text-gray-700">
+                {typeof course.course_detail === "string" &&
+                course.course_detail.length > 1500
+                  ? course.course_detail.substring(0, 1500) + "..."
+                  : course.course_detail}
+              </p>
+            </div>
           </div>
           <div className="w-[739px]">
             <header className="font-medium text-4xl mt-16">
@@ -109,11 +105,13 @@ function CourseDetailPage() {
                   className="text-lg"
                   key={index}
                   title={data.lesson_name}
-                  content={data.sub_lessons && data.sub_lessons.length !== 0 ? data.sub_lessons.map((item,index)=>{
-                  return (<li key={index}>{item.sub_lesson_name}</li>
-
-                  )
-                  }): ""}
+                  content={
+                    data.sub_lessons && data.sub_lessons.length !== 0
+                      ? data.sub_lessons.map((item, index) => {
+                          return <li key={index}>{item.sub_lesson_name}</li>;
+                        })
+                      : ""
+                  }
                   isOpen={toggleStates[index]}
                   toggle={() => toggle(index)}
                 />
