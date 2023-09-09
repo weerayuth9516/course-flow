@@ -1,3 +1,4 @@
+import React from "react";
 import logo from "../assets/header/CourseFlow.png";
 import facebookLogo from "../assets/footer/fb.png";
 import igLogo from "../assets/footer/ig.png";
@@ -11,18 +12,23 @@ function Footer() {
         <Link to="/">
           <img className="cursor-pointer" src={logo}></img>
         </Link>
-
+        <div className="flex gap-28">
+          <Link to="/course">
+            <a className="text-white cursor-pointer">All course</a>
+          </Link>
+          <a className="text-white cursor-pointer">Bundle Package</a>
+        </div>
 
         <div className="flex gap-[10px]">
-          <a className="cursor-pointer">
-            <img src={facebookLogo}></img>
-          </a>
-          <a className="cursor-pointer">
-            <img src={igLogo}></img>
-          </a>
-          <a className="cursor-pointer">
-            <img src={twLogo}></img>
-          </a>
+          <div className="cursor-pointer">
+            <a href="https://www.facebook.com/" target="_blank"><img src={facebookLogo}/></a>
+          </div>
+          <div className="cursor-pointer">
+          <a href="https://www.instagram.com/"target="_blank"><img src={igLogo}/></a>
+          </div>
+          <div className="cursor-pointer">
+          <a href="https://twitter.com/"target="_blank"><img src={twLogo}/></a>
+          </div>
         </div>
       </div>
     </section>
