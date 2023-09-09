@@ -1,9 +1,7 @@
 import { Router } from "express";
 import { supabase } from "../utils/db.js";
-import multer from "multer";
 import "dotenv/config";
 const userRouter = Router();
-const multerUpload = multer({ dest: "uploads" });
 
 userRouter.get("/", async (req, res) => {
   const results = await supabase.from("users").select("*");
@@ -48,7 +46,7 @@ userRouter.post("/", async (req, res) => {
   }
 });
 
-userRouter.put("/:id", multerUpload.single("userAvatar"), async (req, res) => {
+userRouter.put("/:id", async (req, res) => {
   const id = req.params.id;
   const oldPath = await supabase
     .from("users")
@@ -66,8 +64,7 @@ userRouter.put("/:id", multerUpload.single("userAvatar"), async (req, res) => {
     .select();
   const url = await supabase.storage
     .from("user_avatars")
-    .remove([oldPath.data.user_avatar]);
-  console.log(oldPath);
+    .remove([oldPath.data[0].user_avatar]);
   console.log(url);
   if (results.statusText === "OK") {
     return res.json({ message: "Update users successfully." });
@@ -79,7 +76,6 @@ userRouter.put("/:id", multerUpload.single("userAvatar"), async (req, res) => {
 userRouter.delete("/:id", async (req, res) => {
   const id = req.params.id;
   const results = await supabase.from("users").delete().eq("user_id", id);
-  console.log(results);
   if (results.status === 204) {
     return res.json({ message: "Deleted users successfully." });
   } else {
