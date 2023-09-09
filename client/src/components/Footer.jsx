@@ -14,9 +14,9 @@ function Footer() {
         </Link>
         <div className="flex gap-28">
           <Link to="/course">
-            <a className="text-white cursor-pointer">All course</a>
+            <p className="text-white cursor-pointer">All course</p>
           </Link>
-          <a className="text-white cursor-pointer">Bundle Package</a>
+          <p className="text-white cursor-pointer">Bundle Package</p>
         </div>
 
         <div className="flex gap-[10px]">
