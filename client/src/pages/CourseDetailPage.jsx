@@ -2,13 +2,16 @@ import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-
+import useGetsearch from "../hook/useGetsearch";
 import axios from "axios";
+import DisplayCards from "../components/DisplayCards";
 
 function CourseDetailPage() {
   const [course, setCourse] = useState([]);
   const [lesson, setLesson] = useState([]);
   const [toggleStates, setToggleStates] = useState(lesson.map(() => false));
+
+  const { searchList, getSearchList } = useGetsearch();
 
   const params = useParams();
 
@@ -36,6 +39,10 @@ function CourseDetailPage() {
   useEffect(() => {
     getCourseAndLessonAndSubLesson();
   }, [params.courseId]);
+
+  useEffect(() => {
+    getSearchList("", 3);
+  }, []);
 
   const toggle = (index) => {
     const newToggleStates = [...toggleStates];
@@ -143,6 +150,9 @@ function CourseDetailPage() {
             </button>
           </div>
         </div>
+      </div>
+      <div className="mt-20">
+      <DisplayCards searchList={searchList}/>
       </div>
       <Footer />
     </>
