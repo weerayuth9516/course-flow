@@ -153,7 +153,8 @@ function CourseDetailPage() {
           </div>
         </div>
       </div>
-      <div className="mt-20">
+      <div className="mt-20 flex flex-col justify-center items-center">
+        <div className="text-header2 font-bold mb-12">Other Interesting Course</div>
       <DisplayCards searchList={searchList}/>
       </div>
       <Footer />
