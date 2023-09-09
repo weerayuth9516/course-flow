@@ -23,12 +23,12 @@ function CoursePage() {
   }, []);
 
   return (
-
+    <>
+    <Header />
     <div
       id="container"
     >
-      <Header />
-      <div className="bg-[url('src/assets/ourCourses/image_background.png')] bg-[length:100%_190px] bg-no-repeat">
+      <div className="font-inter bg-[url('src/assets/ourCourses/image_background.png')] bg-[length:100%_190px] bg-no-repeat">
         <div className="search-box mb-2 flex flex-col items-center mt-20 h-[230px]">
           <label htmlFor="input" className="text-black text-header2 font-bold">
             Our Courses
@@ -56,6 +56,7 @@ function CoursePage() {
       <DisplayCards searchList={searchList}/>
       <Footer />
     </div>
+    </>
   );
 }
 
