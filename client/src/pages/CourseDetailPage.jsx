@@ -12,7 +12,6 @@ function CourseDetailPage() {
   const [toggleStates, setToggleStates] = useState(lesson.map(() => false));
 
   const { searchList, getSearchList } = useGetsearch();
-
   const params = useParams();
 
   const getCourseAndLessonAndSubLesson = async () => {
@@ -50,12 +49,13 @@ function CourseDetailPage() {
     setToggleStates(newToggleStates);
   };
 
-  const ToggleList = ({ title, content, isOpen, toggle }) => {
+  const ToggleList = ({ title, content, isOpen, toggle, index }) => {
     return (
-      <div className="mt-5 mb-5">
+      <div className="mt-5 mb-5 w-[739px] relative">
         <div className="toggle-header" onClick={toggle}>
-          <h2 className="inline toggle-title mr-10 text-2xl">{title}</h2>
-          <button className="toggle-button inline">
+          <div className="inline left-0 text-header3 font-bold">0{index + 1}</div>
+          <h2 className="inline toggle-title mr-10 text-2xl absolute left-10 text-header3 font-bold">{title}</h2>
+          <button className="toggle-button inline absolute right-0">
             {isOpen ? (
               <img src="/src/assets/registerPage/arrow-down.svg" />
             ) : (
@@ -63,9 +63,10 @@ function CourseDetailPage() {
             )}
           </button>
         </div>
+        <div className="border-t border-gray-300 mt-10"></div>
         {isOpen && (
-          <div className="toggle-content">
-            <ul>{content}</ul>
+          <div className="toggle-content mt-10 ml-10">
+            <ul className="list-disc text-body2 text-gray-700">{content}</ul>
           </div>
         )}
       </div>
@@ -103,7 +104,7 @@ function CourseDetailPage() {
             </div>
           </div>
           <div className="w-[739px]">
-            <header className="font-medium text-4xl mt-16">
+            <header className="text-header2 font-bold text-4xl mt-16 mb-10">
               Module Samples
             </header>
             <div className="flex flex-col items-start mb-[100px] ">
@@ -111,6 +112,7 @@ function CourseDetailPage() {
                 <ToggleList
                   className="text-lg"
                   key={index}
+                  index={index}
                   title={data.lesson_name}
                   content={
                     data.sub_lessons && data.sub_lessons.length !== 0

@@ -1,7 +1,7 @@
 import React from "react";
 import { DebounceInput } from "react-debounce-input";
 import useGetsearch from "../hook/useGetsearch";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import search from "../assets/ourCourses/search.png"
 
 import Header from "../components/Header";
@@ -53,7 +53,7 @@ function CoursePage() {
           </div>
         </div>
       </div>
-      <DisplayCards searchList={searchList} limit={limit}/>
+      <DisplayCards searchList={searchList}/>
       <Footer />
     </div>
   );

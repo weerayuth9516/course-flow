@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import vector from "../assets/ourCourses/Vectors.png"
+import Vector from "../assets/ourCourses/Vectors.png"
 import Frame from "../assets/ourCourses/Frame.png"
 
 function DisplayCards({searchList}) {
@@ -50,7 +50,7 @@ function DisplayCards({searchList}) {
             </span>
             <span className="ml-5">
               <img
-                src={vector}
+                src={Vector}
                 alt="Image icon"
                 className="inline mr-2 ml-4"
               />
