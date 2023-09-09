@@ -1,10 +1,17 @@
 import React from "react";
 import useGetsearch from "../hook/useGetsearch";
+import { useEffect } from "react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import DisplayCards from "../components/DisplayCards";
 
 function MyCoursePage() {
-  const { searchList } = useGetsearch();
+  const { searchList, getSearchList } = useGetsearch();
+  const limit = 12;
+
+  useEffect(() => {
+    getSearchList("", limit);
+  }, []);
 
   return (
     <div id="container" className="font-inter mx-auto">
@@ -52,57 +59,7 @@ function MyCoursePage() {
         </div>
         <div className="course-cards-container flex justify-center">
           <div className="course-cards-container grid grid-cols-2 gap-7">
-            {/* Display course cards */}
-            {searchList.map((item, index) => {
-              const limitLetter =
-                item.course_summary.length > 60
-                  ? item.course_summary.substring(0, 60) + "..."
-                  : item.course_summary;
-              return (
-                <div key={index} className="">
-                  <div className="course-card w-[357px] h-[475px] rounded-lg shadow-lg border border-gray-100 mb-8">
-                    <div className="course-card-thumnail">
-                      <img
-                        src={item.course_cover_img}
-                        alt="course-cover-image"
-                        className="w-[357px] h-[240px] object-fit rounded-lg shadow-lg"
-                      />
-                    </div>
-                    <div className="description-box m-4">
-                      <h3 className="mb-2 text-orange-500 text-body3">
-                        Course
-                      </h3>
-                      <h2 className="font-bold mb-2 text-header3">
-                        {item.course_name}
-                      </h2>
-                      <div className="course-detail">
-                        <p>{limitLetter}</p>
-                      </div>
-                    </div>
-                    <div className="course-card-footer mt-10">
-                      <hr className="border-t border-gray-300 my-4 w-full" />
-                      <span>
-                        <img
-                          src="src/assets/ourCourses/Frame.png"
-                          alt="Image icon"
-                          className="inline mr-2 ml-4"
-                        />
-                        6 Lessons
-                      </span>
-                      <span className="ml-5">
-                        <img
-                          src="src/assets/ourCourses/Vectors.png"
-                          alt="Image icon"
-                          className="inline mr-2 ml-4"
-                        />
-                        {item.course_duration} Hours
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-            {/* End display course cards */}
+          <DisplayCards searchList={searchList}/>
           </div>
         </div>
       </div>

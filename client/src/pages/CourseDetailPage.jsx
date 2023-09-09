@@ -50,8 +50,12 @@ function CourseDetailPage() {
     return (
       <div className="mt-5 mb-5 w-[739px] relative">
         <div className="toggle-header" onClick={toggle}>
-          <div className="inline left-0 text-header3 font-bold">0{index + 1}</div>
-          <div className="inline toggle-title mr-10 text-2xl absolute left-10 text-header3 font-bold">{title}</div>
+          <div className="inline left-0 text-header3 font-bold">
+            0{index + 1}
+          </div>
+          <div className="inline toggle-title mr-10 text-2xl absolute left-10 text-header3 font-bold">
+            {title}
+          </div>
           <button className="toggle-button inline absolute right-0">
             {isOpen ? (
               <img src="/src/assets/registerPage/arrow-down.svg" />
@@ -151,8 +155,12 @@ function CourseDetailPage() {
         </div>
       </div>
       <div className="mt-20 flex flex-col justify-center items-center">
-        <div className="text-header2 font-bold mb-12">Other Interesting Course</div>
-      <DisplayCards searchList={searchList}/>
+        <div className="text-header2 font-bold mb-12">
+          Other Interesting Course
+        </div>
+        <div className="course-cards-container grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-10">
+          <DisplayCards searchList={searchList} />
+        </div>
       </div>
       <Footer />
     </>

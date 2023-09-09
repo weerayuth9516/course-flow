@@ -6,8 +6,7 @@ import Frame from "../assets/ourCourses/Frame.png"
 function DisplayCards({searchList}) {
   return (
 
-<div className="course-cards-container flex justify-center mb-20">
-<div className="course-cards-container grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-10">
+<>
   {/* Display course cards */}
   {searchList.map((item, index) => {
     const limitLetter =
@@ -62,9 +61,7 @@ function DisplayCards({searchList}) {
     );
   })}
   {/* End display course cards */}
-</div>
-</div>
-
+  </>
 )
 }
 

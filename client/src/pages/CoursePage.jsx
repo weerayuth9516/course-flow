@@ -53,7 +53,11 @@ function CoursePage() {
           </div>
         </div>
       </div>
+      <div className="course-cards-container flex justify-center mb-20">
+      <div className="course-cards-container grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-10">
       <DisplayCards searchList={searchList}/>
+      </div>
+      </div>
       <Footer />
     </div>
     </>
