@@ -59,7 +59,10 @@ function CoursePage() {
       <DisplayCards searchList={searchList}/>
       </div>
       </div>
+<<<<<<< HEAD
       {(session)?<div>Hello</div>:""}
+=======
+>>>>>>> a33fa2c (refactor: component)
       <Footer />
     </div>
     </>
