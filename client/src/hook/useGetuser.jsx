@@ -39,43 +39,33 @@ const useGetuser = () => {
     }
   };
 
-  const updateUserProfileById = async (id, data) => {
+  const updateUserProfileById = async (id, inputData) => {
     try {
-      let results;
       setIsError(false);
       setIsLoading(true);
-      console.log(data.avatarObj.size);
-      if (data.avatarObj.size > 2097152) {
-        alert("File too large");
+      let newData;
+      if (inputData.avatarObj.name) {
+        const results = await supabase.storage
+          .from("user_avatars")
+          .upload(`${inputData.avatarObj.name}`, inputData.avatarObj, {
+            cachesControl: "3600",
+            upsert: true,
+            contentType: `${inputData.avatarObj.type}`,
+          });
+        results.error === null
+          ? (newData = {
+              ...inputData,
+              user_avatar: `${inputData.avatarObj.name}`,
+            })
+          : setIsLoading(false);
       } else {
-        const typeFile = data.avatarObj.name.substring(
-          data.avatarObj.name.lastIndexOf(".") + 1
-        );
-
-        if (
-          typeFile.toLowerCase() === "jpg" ||
-          typeFile.toLowerCase() === "png" ||
-          typeFile.toLowerCase() === "jpeg"
-        ) {
-          results = await supabase.storage
-            .from("user_avatars")
-            .upload(`${data.avatarObj.name}`, data.avatarObj, {
-              cacheControl: "3600",
-              upsert: true,
-              contentType: `${data.avatarObj.type}`,
-            });
-          if (results.error === null) {
-            data = { ...data, user_avatar: `${data.avatarObj.name}` };
-            await axios.put(`http://localhost:4001/users/${id}`, data);
-            setIsLoading(false);
-            navigate("/");
-          } else {
-            console.log(results.error);
-          }
-        } else {
-          alert("Type File invalid.");
-        }
+        newData = inputData;
       }
+      isLoading
+        ? await axios.put(`http://localhost:4001/users/${id}`, newData)
+        : alert("Storage API Invalid");
+      setIsLoading(false);
+      navigate("/");
     } catch (error) {
       console.log(error);
       setIsError(true);

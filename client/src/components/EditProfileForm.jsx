@@ -80,6 +80,7 @@ function EditProfileForm() {
       user_name: name,
       user_dob: birthDate,
       user_education: education,
+      user_email: email,
       avatarObj: fileBody,
     };
     updateUserProfileById(session.user.id, data);
@@ -87,14 +88,27 @@ function EditProfileForm() {
 
   const handleFileChange = (event) => {
     const file = event.target.files[event.target.files.length - 1];
-    try {
-      if (file) {
-        setImages(URL.createObjectURL(file));
-        setFileBody(file);
-        setHasImage(true);
+    const typeFile = file.name.substring(file.name.lastIndexOf(".") + 1);
+    if (file.size > 2097152) {
+      setHasImage(false);
+      alert("File too large");
+    } else if (
+      typeFile.toLowerCase() === "jpg" ||
+      typeFile.toLowerCase() === "png" ||
+      typeFile.toLowerCase() === "jpeg"
+    ) {
+      try {
+        if (file) {
+          setImages(URL.createObjectURL(file));
+          setFileBody(file);
+          setHasImage(true);
+        }
+      } catch (error) {
+        console.log(error);
       }
-    } catch (error) {
-      console.log(error);
+    } else {
+      setHasImage(false);
+      alert("File Only JPG,PNG,JEPG");
     }
   };
 
