@@ -2,7 +2,18 @@ import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+<<<<<<< HEAD
 import useGetsearch from "../hook/useGetsearch";
+=======
+import ToggleLesson from "../components/ToggleLesson";
+
+import Accordion from "@mui/material/Accordion";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import Typography from "@mui/material/Typography";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+
+>>>>>>> cbe2549 (feat:add toggle component)
 import axios from "axios";
 import DisplayCards from "../components/DisplayCards";
 
@@ -40,6 +51,7 @@ function CourseDetailPage() {
     getSearchList("", 3);
   }, [params.courseId]);
 
+<<<<<<< HEAD
   const toggle = (index) => {
     const newToggleStates = [...toggleStates];
     newToggleStates[index] = !newToggleStates[index];
@@ -74,6 +86,8 @@ function CourseDetailPage() {
     );
   };
 
+=======
+>>>>>>> cbe2549 (feat:add toggle component)
   return (
     <>
       <Header />
@@ -108,6 +122,7 @@ function CourseDetailPage() {
             <header className="text-header2 font-bold text-4xl mt-16 mb-10">
               Module Samples
             </header>
+<<<<<<< HEAD
             <div className="flex flex-col items-start mb-[100px] ">
               {lesson.map((data, index) => (
                 <ToggleList
@@ -127,6 +142,9 @@ function CourseDetailPage() {
                 />
               ))}
             </div>
+=======
+            <ToggleLesson />
+>>>>>>> cbe2549 (feat:add toggle component)
           </div>
         </div>
 
