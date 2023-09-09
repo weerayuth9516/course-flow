@@ -16,9 +16,7 @@ function Footer() {
           <Link to="/course">
             <p className="text-white cursor-pointer">All course</p>
           </Link>
-          <p className="text-white cursor-pointer">Bundle Package</p>
         </div>
-
         <div className="flex gap-[10px]">
           <div className="cursor-pointer">
             <a href="https://www.facebook.com/" target="_blank"><img src={facebookLogo}/></a>
