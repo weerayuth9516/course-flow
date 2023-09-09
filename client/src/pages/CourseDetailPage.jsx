@@ -37,11 +37,8 @@ function CourseDetailPage() {
 
   useEffect(() => {
     getCourseAndLessonAndSubLesson();
-  }, [params.courseId]);
-
-  useEffect(() => {
     getSearchList("", 3);
-  }, []);
+  }, [params.courseId]);
 
   const toggle = (index) => {
     const newToggleStates = [...toggleStates];
@@ -54,7 +51,7 @@ function CourseDetailPage() {
       <div className="mt-5 mb-5 w-[739px] relative">
         <div className="toggle-header" onClick={toggle}>
           <div className="inline left-0 text-header3 font-bold">0{index + 1}</div>
-          <h2 className="inline toggle-title mr-10 text-2xl absolute left-10 text-header3 font-bold">{title}</h2>
+          <div className="inline toggle-title mr-10 text-2xl absolute left-10 text-header3 font-bold">{title}</div>
           <button className="toggle-button inline absolute right-0">
             {isOpen ? (
               <img src="/src/assets/registerPage/arrow-down.svg" />
