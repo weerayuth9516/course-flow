@@ -1,100 +1,27 @@
-import { useState } from "react";
-
-const toggleData = [
-  {
-    title: "01 Introduction",
-    content: (
-      <ul>
-        <li>
-          <p className="text-lg text-gray-700 ml-5 mt-5">
-            ● Welcome to the course{" "}
-          </p>
-        </li>
-        <li>
-          <p className="text-lg text-gray-700 ml-5 ">● Course Overview </p>
-        </li>
-        <li>
-          <p className="text-lg text-gray-700 ml-5 ">● Getting to Know You </p>
-        </li>
-      </ul>
-    ),
-  },
-  {
-    title: "02 Service Design Theories and Principles",
-    content: (
-      <ul>
-        <li>
-          <p className="text-lg text-gray-700 ml-5 mt-5">
-            ● Welcome to the course{" "}
-          </p>
-        </li>
-        <li>
-          <p className="text-lg text-gray-700 ml-5 ">● Course Overview </p>
-        </li>
-        <li>
-          <p className="text-lg text-gray-700 ml-5 ">● Getting to Know You </p>
-        </li>
-      </ul>
-    ),
-  },
-  {
-    title: "03 Understanding Users and Finding Opportunities",
-    content: (
-      <ul>
-        <li>
-          <p className="text-lg text-gray-700 ml-5 mt-5">
-            ● Welcome to the course{" "}
-          </p>
-        </li>
-        <li>
-          <p className="text-lg text-gray-700 ml-5 ">● Course Overview </p>
-        </li>
-        <li>
-          <p className="text-lg text-gray-700 ml-5 ">● Getting to Know You </p>
-        </li>
-      </ul>
-    ),
-  },
-  {
-    title: "04 Identifying and Validatiing Opportunities for Design",
-    content: (
-      <ul>
-        <li>
-          <p className="text-lg text-gray-700 ml-5 mt-5">
-            ● Welcome to the course{" "}
-          </p>
-        </li>
-        <li>
-          <p className="text-lg text-gray-700 ml-5 ">● Course Overview </p>
-        </li>
-        <li>
-          <p className="text-lg text-gray-700 ml-5 ">● Getting to Know You </p>
-        </li>
-      </ul>
-    ),
-  },
-  {
-    title: "05 Prototyping",
-    content: (
-      <ul>
-        <li>
-          <p className="text-lg text-gray-700 ml-5 mt-5">
-            ● Welcome to the course{" "}
-          </p>
-        </li>
-        <li>
-          <p className="text-lg text-gray-700 ml-5 ">● Course Overview </p>
-        </li>
-        <li>
-          <p className="text-lg text-gray-700 ml-5 ">● Getting to Know You </p>
-        </li>
-      </ul>
-    ),
-  },
-];
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { useParams } from "react-router-dom";
 
 function ToggleLesson() {
-  const [toggleStates, setToggleStates] = useState(toggleData.map(() => false));
+  const [lesson, setLesson] = useState([]);
+  const params = useParams();
+
+  const [toggleStates, setToggleStates] = useState(lesson.map(() => false));
+
+  const getLessonAndSubLesson = async () => {
+    try {
+      const lessonResult = await axios.get(
+        `http://localhost:4001/courses/${params.courseId}/lessons`
+      );
+      setLesson(lessonResult.data.data);
+    } catch (error) {
+      console.log("request error");
+    }
+  };
+
+  useEffect(() => {
+    getLessonAndSubLesson();
+  }, [params.courseId]);
 
   const toggle = (index) => {
     const newToggleStates = [...toggleStates];
@@ -105,13 +32,16 @@ function ToggleLesson() {
   return (
     <div className="mt-5 mb-5">
       <div className="flex flex-col items-start mb-[100px]">
-        {toggleData.map((item, index) => (
+        {lesson.map((data, index) => (
           <div key={index} className="w-[739px]">
             <div
               className="flex justify-between border-b border-solid border-1 pb-5 mb-3"
               onClick={() => toggle(index)}
             >
-              <p className=" text-2xl">{item.title}</p>
+              <p className=" text-2xl font-medium">
+                <span className="text-gray-700 mr-5">0{index + 1}</span>
+                {data.lesson_name}
+              </p>
               <button id="toggle-button">
                 {toggleStates[index] ? (
                   <img src="/src/assets/registerPage/arrow-down.svg" />
@@ -120,7 +50,19 @@ function ToggleLesson() {
                 )}
               </button>
             </div>
-            {toggleStates[index] && <div className="mb-5">{item.content}</div>}
+            {toggleStates[index] && (
+              <div className="mb-5">
+                {data.sub_lessons && data.sub_lessons.length !== 0
+                  ? data.sub_lessons.map((subItem, subIndex) => {
+                      return (
+                        <li key={subIndex} className="text-gray-700 ml-8">
+                          {subItem.sub_lesson_name}
+                        </li>
+                      );
+                    })
+                  : null}
+              </div>
+            )}
           </div>
         ))}
       </div>

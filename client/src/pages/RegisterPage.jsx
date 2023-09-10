@@ -30,7 +30,6 @@ function RegisterPage() {
       .required("Password is required"),
   });
 
-  //ยังไม่มี post new user?
   const registerUser = async (userProfile) => {
     try {
       const response = await axios.post(
@@ -68,97 +67,155 @@ function RegisterPage() {
             validationSchema={validationSchema}
             onSubmit={handleSubmit}
           >
-            <Form>
-              <div className="mb-4">
-                <label htmlFor="name" className="text-base">
-                  Name
-                </label>
+            {({ errors, touched }) => (
+              <Form>
+                <div className="mb-4 relative">
+                  <label htmlFor="name" className="text-base">
+                    Name
+                  </label>
 
-                <Field
-                  type="text"
-                  id="name"
-                  name="name"
-                  placeholder="Enter Name and Lastname"
-                  className="w-full border border-gray-300 py-2 pl-3 pr-4 rounded-lg"
-                />
-                <ErrorMessage
-                  name="name"
-                  component="div"
-                  className="text-red-500"
-                />
-              </div>
+                  <Field
+                    type="text"
+                    id="name"
+                    name="name"
+                    placeholder="Enter Name and Lastname"
+                    className={`w-full border border-gray-300 py-2 pl-3 pr-4 rounded-lg focus:border-orange-500 focus:outline-none ${
+                      errors.name && touched.name
+                        ? "border-purple-500 border-2"
+                        : ""
+                    }`}
+                  />
+                  <ErrorMessage
+                    name="name"
+                    component="div"
+                    className="text-red-500 text-sm"
+                  />
+                  {errors.name && touched.name ? (
+                    <img
+                      src="src/assets/registerPage/errorIcon.svg"
+                      alt="errorIcon"
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 z-10"
+                    />
+                  ) : (
+                    ""
+                  )}
+                </div>
 
-              <div className="mb-4">
-                <label htmlFor="birthDate">Date of Birth</label>
-                <Field
-                  type="date"
-                  id="birthDate"
-                  name="birthDate"
-                  className="w-full border border-gray-300 py-2 pl-3 pr-4 rounded-lg"
-                />
-                <ErrorMessage
-                  name="birthDate"
-                  component="div"
-                  className="text-red-500"
-                />
-              </div>
+                <div className="mb-4">
+                  <label htmlFor="birthDate">Date of Birth</label>
+                  <Field
+                    type="date"
+                    id="birthDate"
+                    name="birthDate"
+                    className={`w-full border border-gray-300 py-2 pl-3 pr-4 rounded-lg uppercase text-gray-600 focus:border-orange-500 focus:outline-none ${
+                      errors.birthDate && touched.birthDate
+                        ? "border-purple-500 border-2"
+                        : ""
+                    }`}
+                  />
+                  <ErrorMessage
+                    name="birthDate"
+                    component="div"
+                    className="text-red-500 text-sm"
+                  />
+                </div>
 
-              <div className="mb-4">
-                <label htmlFor="education">Educational Background</label>
-                <Field
-                  type="text"
-                  id="education"
-                  name="education"
-                  placeholder="Enter Educational Background"
-                  className="w-full border border-gray-300 py-2 pl-3 pr-4 rounded-lg "
-                />
-                <ErrorMessage
-                  name="education"
-                  component="div"
-                  className="text-red-500"
-                />
-              </div>
-              <div className="mb-4">
-                <label htmlFor="email">Email</label>
-                <Field
-                  type="email"
-                  id="email"
-                  name="email"
-                  placeholder="Enter Email"
-                  className="w-full border border-gray-300 py-2 pl-3 pr-4 rounded-lg "
-                />
-                <ErrorMessage
-                  name="email"
-                  component="div"
-                  className="text-red-500"
-                />
-              </div>
-              <div className="mb-4">
-                <label htmlFor="password">Password</label>
-                <Field
-                  type="password"
-                  id="password"
-                  name="password"
-                  placeholder="Enter password"
-                  className="w-full border border-gray-300 py-2 pl-3 pr-4 rounded-lg "
-                />
-                <ErrorMessage
-                  name="password"
-                  component="div"
-                  className="text-red-500"
-                />
-              </div>
-              <button
-                type="submit"
-                className="bg-blue-500 text-white w-full mb-6 px-8 py-3.5 rounded-xl"
-              >
-                Register
-              </button>
-            </Form>
+                <div className="mb-4 relative">
+                  <label htmlFor="education">Educational Background</label>
+                  <Field
+                    type="text"
+                    id="education"
+                    name="education"
+                    placeholder="Enter Educational Background"
+                    className={`w-full border border-gray-300 py-2 pl-3 pr-4 rounded-lg focus:border-orange-500 focus:outline-none ${
+                      errors.education && touched.education
+                        ? "border-purple-500 border-2"
+                        : ""
+                    }`}
+                  />
+                  <ErrorMessage
+                    name="education"
+                    component="div"
+                    className="text-red-500 text-sm"
+                  />
+                  {errors.education && touched.education ? (
+                    <img
+                      src="src/assets/registerPage/errorIcon.svg"
+                      alt="errorIcon"
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 z-10"
+                    />
+                  ) : (
+                    ""
+                  )}
+                </div>
+                <div className="mb-4 relative">
+                  <label htmlFor="email">Email</label>
+                  <Field
+                    type="email"
+                    id="email"
+                    name="email"
+                    placeholder="Enter Email"
+                    className={`w-full border border-gray-300 py-2 pl-3 pr-4 rounded-lg focus:border-orange-500 focus:outline-none ${
+                      errors.email && touched.email
+                        ? "border-purple-500 border-2"
+                        : ""
+                    }`}
+                  />
+                  <ErrorMessage
+                    name="email"
+                    component="div"
+                    className="text-red-500 text-sm"
+                  />
+                  {errors.email && touched.email ? (
+                    <img
+                      src="src/assets/registerPage/errorIcon.svg"
+                      alt="errorIcon"
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 z-10"
+                    />
+                  ) : (
+                    ""
+                  )}
+                </div>
+                <div className="mb-4 relative">
+                  <label htmlFor="password">Password</label>
+                  <Field
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="Enter password"
+                    className={`w-full border border-gray-300 py-2 pl-3 pr-4 rounded-lg focus:border-orange-500 focus:outline-none ${
+                      errors.password && touched.password
+                        ? "border-purple-500 border-2"
+                        : ""
+                    }`}
+                  />
+                  <ErrorMessage
+                    name="password"
+                    component="div"
+                    className="text-red-500 text-sm"
+                  />
+                  {errors.password && touched.password ? (
+                    <img
+                      src="src/assets/registerPage/errorIcon.svg"
+                      alt="errorIcon"
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 z-10"
+                    />
+                  ) : (
+                    ""
+                  )}
+                </div>
+                <button
+                  type="submit"
+                  className="bg-blue-500 text-white w-full mb-6 px-8 py-3.5 rounded-xl hover:bg-blue-600"
+                >
+                  Register
+                </button>
+              </Form>
+            )}
           </Formik>
           <div className="already">
             Already have an account?
-            <Link to="/login" className="text-blue-500 ml-2.5">
+            <Link to="/login" className="text-blue-500 ml-2.5 font-bold">
               Log in
             </Link>
           </div>

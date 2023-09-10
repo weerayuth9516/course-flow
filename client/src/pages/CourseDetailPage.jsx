@@ -2,30 +2,18 @@ import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-<<<<<<< HEAD
-import useGetsearch from "../hook/useGetsearch";
-=======
 import ToggleLesson from "../components/ToggleLesson";
 
-import Accordion from "@mui/material/Accordion";
-import AccordionSummary from "@mui/material/AccordionSummary";
-import AccordionDetails from "@mui/material/AccordionDetails";
-import Typography from "@mui/material/Typography";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+// import useGetsearch from "../hook/useGetsearch";
+// import DisplayCards from "../components/DisplayCards";
 
->>>>>>> cbe2549 (feat:add toggle component)
 import axios from "axios";
-import DisplayCards from "../components/DisplayCards";
 
 function CourseDetailPage() {
-  const [course, setCourse] = useState([]);
-  const [lesson, setLesson] = useState([]);
-  const [toggleStates, setToggleStates] = useState(lesson.map(() => false));
-
-  const { searchList, getSearchList } = useGetsearch();
+  const [course, setCourse] = useState({});
   const params = useParams();
 
-  const getCourseAndLessonAndSubLesson = async () => {
+  const getCourse = async () => {
     try {
       const courseResult = await axios.get(
         `http://localhost:4001/courses/${params.courseId}`
@@ -34,60 +22,13 @@ function CourseDetailPage() {
     } catch (error) {
       console.log("request error");
     }
-
-    // Get lessons and subLesson by courseId
-    try {
-      const lessonResult = await axios.get(
-        `http://localhost:4001/courses/${params.courseId}/lessons`
-      );
-      setLesson(lessonResult.data.data);
-    } catch (error) {
-      console.log("request error");
-    }
   };
 
   useEffect(() => {
-    getCourseAndLessonAndSubLesson();
-    getSearchList("", 3);
+    getCourse();
+    // getSearchList("", 3);
   }, [params.courseId]);
 
-<<<<<<< HEAD
-  const toggle = (index) => {
-    const newToggleStates = [...toggleStates];
-    newToggleStates[index] = !newToggleStates[index];
-    setToggleStates(newToggleStates);
-  };
-
-  const ToggleList = ({ title, content, isOpen, toggle, index }) => {
-    return (
-      <div className="mt-5 mb-5 w-[739px] relative">
-        <div className="toggle-header" onClick={toggle}>
-          <div className="inline left-0 text-header3 font-bold">
-            0{index + 1}
-          </div>
-          <div className="inline toggle-title mr-10 text-2xl absolute left-10 text-header3 font-bold">
-            {title}
-          </div>
-          <button className="toggle-button inline absolute right-0">
-            {isOpen ? (
-              <img src="/src/assets/registerPage/arrow-down.svg" />
-            ) : (
-              <img src="/src/assets/registerPage/arrow-down.svg" />
-            )}
-          </button>
-        </div>
-        <div className="border-t border-gray-300 mt-10"></div>
-        {isOpen && (
-          <div className="toggle-content mt-10 ml-10">
-            <ul className="list-disc text-body2 text-gray-700">{content}</ul>
-          </div>
-        )}
-      </div>
-    );
-  };
-
-=======
->>>>>>> cbe2549 (feat:add toggle component)
   return (
     <>
       <Header />
@@ -109,42 +50,18 @@ function CourseDetailPage() {
             <p className="text-4xl font-medium mb-6 mt-20">
               {course.course_name}
             </p>
-            <div>
-              <p className="text-gray-700">
-                {typeof course.course_detail === "string" &&
-                course.course_detail.length > 1500
-                  ? course.course_detail.substring(0, 1500) + "..."
-                  : course.course_detail}
-              </p>
-            </div>
+            <p className="text-gray-700">
+              {typeof course.course_detail === "string" &&
+              course.course_detail.length > 1500
+                ? course.course_detail.substring(0, 1500) + "..."
+                : course.course_detail}
+            </p>
           </div>
           <div className="w-[739px]">
-            <header className="text-header2 font-bold text-4xl mt-16 mb-10">
+            <header className="font-medium text-4xl mt-16">
               Module Samples
             </header>
-<<<<<<< HEAD
-            <div className="flex flex-col items-start mb-[100px] ">
-              {lesson.map((data, index) => (
-                <ToggleList
-                  className="text-lg"
-                  key={index}
-                  index={index}
-                  title={data.lesson_name}
-                  content={
-                    data.sub_lessons && data.sub_lessons.length !== 0
-                      ? data.sub_lessons.map((item, index) => {
-                          return <li key={index}>{item.sub_lesson_name}</li>;
-                        })
-                      : ""
-                  }
-                  isOpen={toggleStates[index]}
-                  toggle={() => toggle(index)}
-                />
-              ))}
-            </div>
-=======
             <ToggleLesson />
->>>>>>> cbe2549 (feat:add toggle component)
           </div>
         </div>
 
@@ -166,20 +83,15 @@ function CourseDetailPage() {
               Get in Desire Course
             </button>
             <br />
-            <button className="px-8 py-[18px] w-[309px] h-[60px] border-solid border-[1px] rounded-[12px] bg-blue-500 font-bold text-white mt-5 hover:opacity-75 ">
+            <button className="px-8 py-[18px] w-[309px] h-[60px] border-solid border-[1px] rounded-[12px] bg-blue-500 font-bold text-white mt-5 hover:bg-blue-600 ">
               Subscribe This Course
             </button>
           </div>
         </div>
       </div>
-      <div className="mt-20 flex flex-col justify-center items-center">
-        <div className="text-header2 font-bold mb-12">
-          Other Interesting Course
-        </div>
-        <div className="course-cards-container grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-10">
-          <DisplayCards searchList={searchList} />
-        </div>
-      </div>
+      {/* <div className="mt-20 flex flex-col justify-center items-center">
+        <div className="text-header2 font-bold mb-12">Other Interesting Course</div>
+      <DisplayCards searchList={searchList}/> */}
       <Footer />
     </>
   );
