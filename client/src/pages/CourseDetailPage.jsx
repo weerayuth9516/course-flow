@@ -1,17 +1,22 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { Link, useParams } from "react-router-dom";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import ToggleLesson from "../components/ToggleLesson";
+import SubFooter from "../components/SubFooter";
 
-// import useGetsearch from "../hook/useGetsearch";
-// import DisplayCards from "../components/DisplayCards";
+import useGetsearch from "../hook/useGetsearch.js";
+import DisplayCards from "../components/DisplayCards";
+import { SessionContext } from "../App";
 
 import axios from "axios";
 
 function CourseDetailPage() {
   const [course, setCourse] = useState({});
   const params = useParams();
+
+  const { searchList, getSearchList } = useGetsearch();
+  const { session } = useContext(SessionContext);
 
   const getCourse = async () => {
     try {
@@ -26,7 +31,7 @@ function CourseDetailPage() {
 
   useEffect(() => {
     getCourse();
-    // getSearchList("", 3);
+    getSearchList("", 3);
   }, [params.courseId]);
 
   return (
@@ -89,9 +94,13 @@ function CourseDetailPage() {
           </div>
         </div>
       </div>
-      {/* <div className="mt-20 flex flex-col justify-center items-center">
-        <div className="text-header2 font-bold mb-12">Other Interesting Course</div>
-      <DisplayCards searchList={searchList}/> */}
+      <div className="mt-20 flex flex-col justify-center items-center">
+        <div className="text-header2 font-bold mb-12">
+          Other Interesting Course
+        </div>
+        <DisplayCards searchList={searchList} />
+      </div>
+      {!session ? <SubFooter /> : ""}
       <Footer />
     </>
   );
