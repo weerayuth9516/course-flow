@@ -5,7 +5,6 @@ import Home from "./pages/HomePage";
 import Register from "./pages/RegisterPage";
 import Login from "./pages/LoginPage";
 import EditProfilePage from "./pages/EditProfilePage";
-import Course from "./pages/CoursePage";
 import NotFoundPage from "./pages/NotFoundPage";
 import CourseDetailPage from "./pages/CourseDetailPage";
 import CoursePage from "./pages/CoursePage";
@@ -35,7 +34,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/editprofile" element={<EditProfilePage />} />
           <Route path="/course" element={<CoursePage />} />
-          <Route path="/mycourses" element={<MyCoursePage />} />
+          {(session)?<Route path="/mycourses" element={<MyCoursePage />} />:""} 
           <Route path="/course/courseDetail/:courseId" element={<CourseDetailPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { Link } from "react-router-dom";
@@ -9,7 +9,7 @@ import axios from "axios";
 import { useContext } from "react";
 import { SessionContext } from "../App";
 
-function LoginPage({ setToken }) {
+function LoginPage() {
   const navigate = useNavigate();
   const { session, setSession } = useContext(SessionContext);
   const initialValues = {
@@ -23,27 +23,25 @@ function LoginPage({ setToken }) {
       .required("Email is required"),
     password: Yup.string()
       .required("Password is required")
-      .min(6, "Password must be at least 6 characters"),
+      .min(12, "Password must be at least 12 characters"),
   });
-  const handleSubmit = async (values) => {
+  const handleSubmit = async (values, { setErrors }) => {
     try {
+      
       const results = await axios.post(
         "http://localhost:4001/auth/login",
         values
       );
-      if (results.data.message === "Email Invalid") {
-        validationSchema.ErrorMessage("Email Not Found.");
-      }
-      if (results.data.message === "Password Invalid") {
-        return alert("Password Invalid");
-      }
       const res = await supabase.auth.signInWithPassword({
         email: values.email,
         password: values.password,
       });
       setSession(res.data.session);
       navigate("/");
+
+
     } catch (error) {
+      setErrors(error.response.data);
       navigate("/login");
     }
   };
@@ -65,6 +63,7 @@ function LoginPage({ setToken }) {
             validationSchema={validationSchema}
             onSubmit={handleSubmit}
           >
+             {({ errors, touched }) =>(
             <Form>
               <div className="mb-4">
                 <label
@@ -77,7 +76,11 @@ function LoginPage({ setToken }) {
                   type="email"
                   id="email"
                   name="email"
-                  className="border border-gray-300 p-2 rounded-md w-full"
+                  className={`w-full border border-gray-300 py-2 pl-3 pr-4 rounded-lg focus:border-orange-500 focus:outline-none ${
+                    errors.email && touched.email
+                      ? "border-purple-500 border-2"
+                      : ""
+                  }`}
                   placeholder="Enter Email"
                   required
                 />
@@ -99,7 +102,11 @@ function LoginPage({ setToken }) {
                   type="password"
                   id="password"
                   name="password"
-                  className="border border-gray-300 p-2 rounded-md w-full"
+                  className={`w-full border border-gray-300 py-2 pl-3 pr-4 rounded-lg focus:border-orange-500 focus:outline-none ${
+                    errors.password && touched.password
+                      ? "border-purple-500 border-2"
+                      : ""
+                  }`}
                   placeholder="Enter password"
                   required
                 />
@@ -119,6 +126,7 @@ function LoginPage({ setToken }) {
                 </button>
               </div>
             </Form>
+             )}
           </Formik>
           <div className="text-left mt-10">
             Don't have an account?{"  "}

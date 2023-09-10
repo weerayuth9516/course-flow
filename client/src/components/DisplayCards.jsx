@@ -6,8 +6,7 @@ import Frame from "../assets/ourCourses/Frame.png"
 function DisplayCards({searchList}) {
   return (
 
-<div className="course-cards-container flex justify-center mb-20">
-<div className="course-cards-container grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-10">
+<>
   {/* Display course cards */}
   {searchList.map((item, index) => {
     const limitLetter =
@@ -20,7 +19,7 @@ function DisplayCards({searchList}) {
     return (
       <div key={index} className="course-cards-box">
         <div className="course-card w-[357px] h-[475px] rounded-lg shadow-lg border border-gray-100 mb-8">
-          <div className="course-card-thumbnail">
+          <div className="course-card-thumbnail transform hover:scale-105 transition-transform duration-300 ease-in-out hover:shadow-lg">
             <Link to={`/course/courseDetail/${item.course_id}`}>
               <img
                 src={item.course_cover_img}
@@ -31,7 +30,7 @@ function DisplayCards({searchList}) {
           </div>
           <div className="description-box m-4">
             <h3 className="mb-2 text-orange-500 text-body3">Course</h3>
-            <h2 className="font-bold mb-2 text-header3">
+            <h2 className="font-bold mb-2 text-header3 transform hover:scale-110 transition-transform duration-300 ease-in-out hover:shadow-lg">
             <Link to={`/course/courseDetail/${item.course_id}`}>{item.course_name}</Link>
             </h2>
             <div className="course-detail">
@@ -62,9 +61,7 @@ function DisplayCards({searchList}) {
     );
   })}
   {/* End display course cards */}
-</div>
-</div>
-
+  </>
 )
 }
 
