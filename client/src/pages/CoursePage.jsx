@@ -7,6 +7,7 @@ import { SessionContext } from "../App";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import DisplayCards from "../components/DisplayCards";
+import SubFooter from "../components/SubFooter"
 
 function CoursePage() {
   const { searchList, inputText, setInputText, getSearchList } = useGetsearch();
@@ -59,7 +60,7 @@ function CoursePage() {
       <DisplayCards searchList={searchList}/>
       </div>
       </div>
-      {(session)?<div>Hello</div>:""}
+      {(!session)?<SubFooter/>:""}
       <Footer />
     </div>
     </>
