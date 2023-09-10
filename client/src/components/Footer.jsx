@@ -11,12 +11,7 @@ function Footer() {
         <Link to="/">
           <img className="cursor-pointer" src={logo}></img>
         </Link>
-        <div className="flex gap-28">
-          <Link to="/course">
-            <a className="text-white cursor-pointer">All course</a>
-          </Link>
-          <a className="text-white cursor-pointer">Bundle Package</a>
-        </div>
+
 
         <div className="flex gap-[10px]">
           <a className="cursor-pointer">
