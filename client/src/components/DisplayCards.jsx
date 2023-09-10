@@ -17,7 +17,7 @@ function DisplayCards({searchList}) {
       <div key={index} className="course-cards-box font-inter">
         <div className="course-card w-[357px] h-[475px] rounded-lg shadow-lg border border-gray-100 mb-8">
           <div className="course-card-thumbnail transform hover:scale-105 transition-transform duration-300 ease-in-out hover:shadow-lg">
-            <Link to={`/course/courseDetail/${item.course_id}`}>
+            <Link to={`/course/courseDetail/${item.course_id}`} target="_blank">
               <img
                 src={item.course_cover_img}
                 alt="course-image"
@@ -28,7 +28,7 @@ function DisplayCards({searchList}) {
           <div className="description-box m-4">
             <h3 className="mb-2 text-orange-500 text-body3">Course</h3>
             <h2 className="font-bold mb-2 text-header3 text-black transform hover:scale-110 transition-transform duration-300 ease-in-out hover:shadow-lg">
-            <Link to={`/course/courseDetail/${item.course_id}`}>{item.course_name}</Link>
+            <Link to={`/course/courseDetail/${item.course_id}`} target="_blank">{item.course_name}</Link>
             </h2>
             <div className="course-detail text-body2 text-gray-700">
               <p>{limitLetter}</p>
