@@ -13,9 +13,6 @@ function DisplayCards({searchList}) {
       item.course_summary.length > 60
         ? item.course_summary.substring(0, 60) + "..."
         : item.course_summary;
-      item.course_summary.length > 60
-        ? item.course_summary.substring(0, 60) + "..."
-        : item.course_summary;
     return (
       <div key={index} className="course-cards-box">
         <div className="course-card w-[357px] h-[475px] rounded-lg shadow-lg border border-gray-100 mb-8">
