@@ -32,6 +32,7 @@ authRouter.post("/login", async (req, res) => {
     .from("users")
     .select("*")
     .eq("user_email", emailReq);
+
   if (emailChecker.data.length !== 0) {
     const results = await supabase.auth.signInWithPassword({
       email: emailReq,
@@ -39,17 +40,18 @@ authRouter.post("/login", async (req, res) => {
     });
 
     if (results.error !== null) {
-      return res.json({
-        message: "Password Invalid",
+      // Password is invalid
+      return res.status(400).json({
+        password: "Password Invalid",
       });
     } else {
-      // const se = await supabase.auth.getSession();
-      // console.log(se);
-      return res.json({ message: "API Invalid" });
+      // Successful login
+      return res.status(200).json({ message: "Login Successful" });
     }
   } else {
-    return res.json({
-      message: "Email Invalid",
+    // Email is invalid
+    return res.status(400).json({
+      email: "Email Invalid",
     });
   }
 });

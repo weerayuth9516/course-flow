@@ -1,15 +1,16 @@
-import React from "react";
+import React, { useContext } from "react";
 import { DebounceInput } from "react-debounce-input";
 import useGetsearch from "../hook/useGetsearch";
 import { useEffect } from "react";
 import search from "../assets/ourCourses/search.png"
-
+import { SessionContext } from "../App";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import DisplayCards from "../components/DisplayCards";
 
 function CoursePage() {
   const { searchList, inputText, setInputText, getSearchList } = useGetsearch();
+  const { session } = useContext(SessionContext);
   const limit = 12;
 
   const handleInputChange = (e) => {
@@ -58,6 +59,7 @@ function CoursePage() {
       <DisplayCards searchList={searchList}/>
       </div>
       </div>
+      {(session)?<div>Hello</div>:""}
       <Footer />
     </div>
     </>
