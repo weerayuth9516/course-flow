@@ -103,7 +103,7 @@ function LoginPage() {
                   id="password"
                   name="password"
                   className={`w-full border border-gray-300 py-2 pl-3 pr-4 rounded-lg focus:border-orange-500 focus:outline-none ${
-                    errors.email && touched.email
+                    errors.password && touched.password
                       ? "border-purple-500 border-2"
                       : ""
                   }`}
