@@ -28,19 +28,16 @@ function EditProfileForm() {
 
   const {
     nameErrorMessage,
-    setNameErrorMessage,
     dateErrorMessage,
-    setDateErrorMessage,
     educationErrorMessage,
-    setEducationErrorMessage,
     fileErrorMessage,
-    setfileErrorMessage,
     signError,
-    setSignError,
     validateFileChange,
     validateName,
     validateBirthDate,
     validateEducation,
+    birthDateSignError,
+    educationSignError,
   } = useContext(ValidateContext);
 
   const handleRemoveImage = async (event) => {
@@ -76,8 +73,12 @@ function EditProfileForm() {
     }
   }, [user]);
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
+    await validateName(name);
+    validateBirthDate(birthDate);
+    validateEducation(education);
+
     const data = {
       user_name: name,
       user_dob: birthDate,
@@ -86,35 +87,19 @@ function EditProfileForm() {
       avatarObj: fileBody,
     };
 
-    updateUserProfileById(session.user.id, data);
+    if (
+      nameErrorMessage === null &&
+      dateErrorMessage === null &&
+      educationErrorMessage === null
+    ) {
+      updateUserProfileById(session.user.id, data);
+    }
   };
 
   const handleFileChange = (event) => {
     const file = event.target.files[event.target.files.length - 1];
     const typeFile = file.name.substring(file.name.lastIndexOf(".") + 1);
     validateFileChange(file, typeFile);
-    // if (file.size > 2097152) {
-    //   setHasImage(false);
-    //   setfileErrorMessage("File too large! (max 2MB)");
-    // } else if (
-    //   typeFile.toLowerCase() === "jpg" ||
-    //   typeFile.toLowerCase() === "png" ||
-    //   typeFile.toLowerCase() === "jpeg"
-    // ) {
-    //   try {
-    //     if (file) {
-    //       setImages(URL.createObjectURL(file));
-    //       setFileBody(file);
-    //       setHasImage(true);
-    //       setfileErrorMessage("");
-    //     }
-    //   } catch (error) {
-    //     console.log(error);
-    //   }
-    // } else {
-    //   setHasImage(false);
-    //   setfileErrorMessage("File Only JPG, PNG, JPEG !");
-    // }
   };
 
   return (
@@ -243,6 +228,11 @@ function EditProfileForm() {
                     "&.Mui-focused fieldset": {
                       borderColor: "rgb(244 126 32)",
                     },
+                    root: {
+                      "& .Mui-error": {
+                        color: "rgb(168 85 247)",
+                      },
+                    },
                   },
                   "& .MuiInputBase-input": {
                     padding: "0 0 0 12px",
@@ -262,7 +252,7 @@ function EditProfileForm() {
               {dateErrorMessage && (
                 <div className="text-purple-500 text-body3">
                   {dateErrorMessage}
-                  {signError && (
+                  {birthDateSignError && (
                     <img
                       src={error}
                       alt="Error Icon"
@@ -294,7 +284,7 @@ function EditProfileForm() {
                 {educationErrorMessage && (
                   <div className="text-purple-500 text-body3">
                     {educationErrorMessage}
-                    {signError && (
+                    {educationSignError && (
                       <img
                         src={error}
                         alt="Error-Icon"

@@ -8,7 +8,11 @@ function Validate({ children }) {
   const [dateErrorMessage, setDateErrorMessage] = useState("");
   const [educationErrorMessage, setEducationErrorMessage] = useState("");
   const [emailErrorMessage, setEmailErrorMessage] = useState("");
+  const [images, setImages] = useState("");
+  const [fileBody, setFileBody] = useState({});
   const [signError, setSignError] = useState("");
+  const [educationSignError, setEducationSignError] = useState("");
+  const [birthDateSignError, setBirthDateSignError] = useState("");
   const [hasImage, setHasImage] = useState(false);
 
   const validateFileChange = (file, typeFile) => {
@@ -32,6 +36,7 @@ function Validate({ children }) {
       }
     } else {
       setHasImage(false);
+
       setfileErrorMessage("File Only JPG, PNG, JPEG !");
     }
   };
@@ -46,7 +51,7 @@ function Validate({ children }) {
       );
       setSignError(<img src={error} />);
     } else {
-      setNameErrorMessage("");
+      setNameErrorMessage(null);
       setSignError("");
     }
   };
@@ -54,28 +59,28 @@ function Validate({ children }) {
   const validateBirthDate = (birthDate) => {
     if (!birthDate) {
       setDateErrorMessage("Required!!!");
-      setSignError(<img src={error} />);
+      setBirthDateSignError(<img src={error} />);
     } else if (new Date(birthDate) > new Date()) {
       setDateErrorMessage("Date of Birth cannot be in the future.");
-      setSignError(<img src={error} />);
+      setBirthDateSignError(<img src={error} />);
     } else {
-      setDateErrorMessage("");
-      setSignError("");
+      setDateErrorMessage(null);
+      setBirthDateSignError("");
     }
   };
 
   const validateEducation = (education) => {
     if (!education) {
       setEducationErrorMessage("Required!!!");
-      setSignError(<img src={error} />);
+      setEducationSignError(<img src={error} />);
     } else if (education.length < 2 || education.length > 20) {
       setEducationErrorMessage(
         "Education background must be between 2 and 20 characters in length."
       );
-      setSignError(<img src={error} />);
+      setEducationSignError(<img src={error} />);
     } else {
-      setEducationErrorMessage("");
-      setSignError("");
+      setEducationErrorMessage(null);
+      setEducationSignError("");
     }
   };
 
@@ -87,7 +92,7 @@ function Validate({ children }) {
       setEmailErrorMessage("Invalid email format.");
       setSignError(<img src={error} />);
     } else {
-      setEmailErrorMessage("");
+      setEmailErrorMessage(null);
       setSignError("");
     }
   };
@@ -109,6 +114,9 @@ function Validate({ children }) {
     validateBirthDate,
     validateEducation,
     validateEmail,
+    educationSignError,
+    birthDateSignError,
+    setBirthDateSignError,
   };
 
   return (
