@@ -228,10 +228,14 @@ function EditProfileForm() {
                     "&.Mui-focused fieldset": {
                       borderColor: "rgb(244 126 32)",
                     },
-                    root: {
-                      "& .Mui-error": {
-                        color: "rgb(168 85 247)",
-                      },
+                  },
+                  "& .MuiInputBase-root.Mui-error": {
+                    color: "rgb(200 204 219) !important",
+                  },
+
+                  "& .MuiOutlinedInput-root.Mui-error": {
+                    "& fieldset": {
+                      borderColor: "rgb(200 204 219) !important",
                     },
                   },
                   "& .MuiInputBase-input": {
