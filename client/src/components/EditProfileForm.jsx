@@ -25,19 +25,22 @@ function EditProfileForm() {
   const [fileBody, setFileBody] = useState({});
   const [hasImage, setHasImage] = useState(false);
   const { session, setSession } = useContext(SessionContext);
+  const [fileErrorMessage, setfileErrorMessage] = useState("");
 
   const {
     nameErrorMessage,
     dateErrorMessage,
     educationErrorMessage,
-    fileErrorMessage,
+    // fileErrorMessage,
     signError,
-    validateFileChange,
+    // validateFileChange,
     validateName,
     validateBirthDate,
     validateEducation,
     birthDateSignError,
     educationSignError,
+    // hasImage,
+    // setHasImage,
   } = useContext(ValidateContext);
 
   const handleRemoveImage = async (event) => {
@@ -73,9 +76,9 @@ function EditProfileForm() {
     }
   }, [user]);
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
-    await validateName(name);
+    validateName(name);
     validateBirthDate(birthDate);
     validateEducation(education);
 
@@ -99,7 +102,30 @@ function EditProfileForm() {
   const handleFileChange = (event) => {
     const file = event.target.files[event.target.files.length - 1];
     const typeFile = file.name.substring(file.name.lastIndexOf(".") + 1);
-    validateFileChange(file, typeFile);
+
+    if (file.size > 2097152) {
+      setHasImage(false);
+      setfileErrorMessage("File too large! (max 2MB)");
+    } else if (
+      typeFile.toLowerCase() === "jpg" ||
+      typeFile.toLowerCase() === "png" ||
+      typeFile.toLowerCase() === "jpeg"
+    ) {
+      try {
+        if (file) {
+          setImages(URL.createObjectURL(file));
+          setFileBody(file);
+          setHasImage(true);
+          setfileErrorMessage("");
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      setHasImage(false);
+
+      setfileErrorMessage("File Only JPG, PNG, JPEG !");
+    }
   };
 
   return (

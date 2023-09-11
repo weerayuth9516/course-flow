@@ -15,31 +15,34 @@ function Validate({ children }) {
   const [birthDateSignError, setBirthDateSignError] = useState("");
   const [hasImage, setHasImage] = useState(false);
 
-  const validateFileChange = (file, typeFile) => {
-    if (file.size > 2097152) {
-      setHasImage(false);
-      setfileErrorMessage("File too large! (max 2MB)");
-    } else if (
-      typeFile.toLowerCase() === "jpg" ||
-      typeFile.toLowerCase() === "png" ||
-      typeFile.toLowerCase() === "jpeg"
-    ) {
-      try {
-        if (file) {
-          setImages(URL.createObjectURL(file));
-          setFileBody(file);
-          setHasImage(true);
-          setfileErrorMessage("");
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    } else {
-      setHasImage(false);
+  // const validateFileChange = (file, typeFile) => {
 
-      setfileErrorMessage("File Only JPG, PNG, JPEG !");
-    }
-  };
+  //   if (file.size > 2097152) {
+  //     setHasImage(false);
+  //     setfileErrorMessage("File too large! (max 2MB)");
+  //   } else if (
+  //     typeFile.toLowerCase() === "jpg" ||
+  //     typeFile.toLowerCase() === "png" ||
+  //     typeFile.toLowerCase() === "jpeg"
+  //   ) {
+  //     try {
+  //       if (file) {
+  //         setImages(URL.createObjectURL(file));
+  //         setFileBody(file);
+  //         setHasImage(true);
+  //         setfileErrorMessage("");
+  //         console.log(file);
+  //         console.log(fileBody);
+  //       }
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   } else {
+  //     setHasImage(false);
+
+  //     setfileErrorMessage("File Only JPG, PNG, JPEG !");
+  //   }
+  // };
 
   const validateName = (name) => {
     if (!name) {
@@ -109,7 +112,7 @@ function Validate({ children }) {
     setfileErrorMessage,
     signError,
     setSignError,
-    validateFileChange,
+    // validateFileChange,
     validateName,
     validateBirthDate,
     validateEducation,
@@ -117,6 +120,8 @@ function Validate({ children }) {
     educationSignError,
     birthDateSignError,
     setBirthDateSignError,
+    hasImage,
+    setHasImage,
   };
 
   return (
