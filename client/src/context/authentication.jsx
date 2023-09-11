@@ -13,24 +13,29 @@ function AuthProvider(props) {
   });
   const navigate = useNavigate();
   const login = async (data) => {
-    const results = await axios.post("http://localhost:4001/auth/login", data);
-    if (results.data.message === "Email Invalid") {
-      // setSession({ ...session, error: "Email Invalid" });
-      session.error = "Email Invalid";
-      return true;
+    session.error = null;
+    try {
+      const results = await axios.post(
+        "http://localhost:4001/auth/login",
+        data
+      );
+      if (!results.data.token) {
+        session.error = results.data.message;
+      } else {
+        console.log(results);
+        session.error = null;
+        const token = results.data.token;
+        const userDataFromToken = jwtDecode(token);
+        session.user = userDataFromToken;
+        navigate("/");
+        localStorage.setItem("token", token);
+      }
+    } catch (error) {
+      console.log(error);
+      session.error;
+      console.log(session.error);
+      return error;
     }
-    if (results.data.message === "Password Invalid") {
-      // setSession({ ...session, error: "Password Invalid" });
-      session.error = "Password Invalid";
-      return true;
-    }
-    const token = results.data.token;
-    const userDataFromToken = jwtDecode(token);
-    // setSession({ ...session, user: userDataFromToken });
-    session.user = userDataFromToken;
-    navigate("/");
-    localStorage.setItem("token", token);
-    return false;
   };
   const register = async (data) => {
     const result = await axios.post(
@@ -38,9 +43,13 @@ function AuthProvider(props) {
       data
     );
     if (result.data.message === "Register Successfully") {
+      session.error = null;
       navigate("/login");
+    } else if (result.data.message === "Email already sign in") {
+      session.error = result.data.message;
+      navigate("/register");
     } else {
-      session.error("Can not register");
+      alert("API INVALID");
     }
   };
   const logout = () => {

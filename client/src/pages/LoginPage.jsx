@@ -4,18 +4,16 @@ import * as Yup from "yup";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import Header from "../components/Header";
-import errorIcon from "../assets/loginPage/exclamation.png";
-import axios from "axios";
-import jwtDecode from "jwt-decode";
 import { useAuth } from "../context/authentication";
-
+import errorIcon from "../assets/loginPage/exclamation.png";
 function LoginPage() {
   const navigate = useNavigate();
+  const auth = useAuth();
+  const [errorMessage, setErrorMessage] = useState(null);
   const initialValues = {
     email: "",
     password: "",
   };
-  const auth = useAuth();
   const validationSchema = Yup.object().shape({
     email: Yup.string()
       .email("Invalid email address")
@@ -23,15 +21,16 @@ function LoginPage() {
     password: Yup.string()
       .required("Password is required")
       .min(12, "Password must be at least 12 characters"),
+      .min(12, "Password must be at least 12 characters"),
   });
   const handleSubmit = async (values, { setErrors }) => {
+  const handleSubmit = async (values, { setErrors }) => {
     try {
-      const status = auth.login(values);
-      if (status) {
-        validationSchema.ErrorMessage(auth.session.error);
-      }
+      await auth.login(values);
+      setErrorMessage(auth.session.error);
     } catch (error) {
-      setErrors(error.response.data);
+      console.log(error);
+      setErrorMessage(null);
       navigate("/login");
     }
   };
@@ -68,14 +67,14 @@ function LoginPage() {
                       id="email"
                       name="email"
                       className={`w-full border border-gray-300 py-2 pl-3 pr-4 rounded-lg focus:border-orange-500 focus:outline-none ${
-                        errors.email && touched.email
+                        errorMessage === "Email Invalid"
                           ? "border-purple-500 border-2"
                           : ""
                       }`}
                       placeholder="Enter Email"
                       required
                     />
-                    {errors.email && touched.email && (
+                    {errorMessage === "Email Invalid" && (
                       <div className="error-icon absolute right-4 top-4">
                         <img src={errorIcon} alt="Error Icon" />
                       </div>
@@ -86,6 +85,9 @@ function LoginPage() {
                     component="div"
                     className="text-purple-500 mt-2"
                   />
+                  {errorMessage === "Email Invalid" && (
+                    <div className="text-purple-500">{errorMessage}</div>
+                  )}
                 </div>
 
                 <div className="mb-4">
@@ -101,14 +103,14 @@ function LoginPage() {
                       id="password"
                       name="password"
                       className={`w-full border border-gray-300 py-2 pl-3 pr-4 rounded-lg focus:border-orange-500 focus:outline-none ${
-                        errors.password && touched.password
+                        errorMessage === "Password Invalid"
                           ? "border-purple-500 border-2"
                           : ""
                       }`}
                       placeholder="Enter password"
                       required
                     />
-                    {errors.password && touched.password && (
+                    {errorMessage === "Password Invalid" && (
                       <div className="error-icon absolute right-4 top-4">
                         <img src={errorIcon} alt="Error Icon" />
                       </div>
@@ -119,6 +121,9 @@ function LoginPage() {
                     component="div"
                     className="text-purple-500 mt-2"
                   />
+                  {errorMessage === "Password Invalid" && (
+                    <div className="text-purple-500">{errorMessage}</div>
+                  )}
                 </div>
 
                 <div className="text-center mt-8">

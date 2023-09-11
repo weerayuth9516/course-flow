@@ -18,11 +18,9 @@ import { useAuth } from "../context/authentication";
 import { useNavigate } from "react-router-dom";
 
 function EditProfileForm() {
-  const { user, getCurrentUser, updateUserProfileById } = useGetuser();
-  const [name, setName] = useState("");
-  const [birthDate, setBirthDate] = useState("");
-  const [education, setEducation] = useState("");
-  const [email, setEmail] = useState("");
+  const navigate = useNavigate();
+  const auth = useAuth();
+  const { updateUserProfileById } = useGetuser();
   const [images, setImages] = useState("");
   const [fileBody, setFileBody] = useState({});
   const [hasImage, setHasImage] = useState(false);
@@ -68,32 +66,27 @@ function EditProfileForm() {
   };
   useEffect(() => {
     if (auth.isAuthenicated) {
-      setName(auth.session.user.user_name);
-      setBirthDate(auth.session.user.user_dob);
-      setEducation(auth.session.user.user_education);
-      setEmail(auth.session.user.user_email);
       if (auth.session.user.user_avatar === null) {
         setHasImage(false);
       } else {
         setHasImage(true);
         try {
-          setImages(auth.session.user.user_avatar);
+          setImages(session.user_avatar);
         } catch {
           console.log("Awaiting for loading Img Path");
         }
       }
     } else {
-      getCurrentUser(null);
       navigate("/login");
     }
   }, [auth.isAuthenicated]);
 
   const handleSubmit = (event) => {
     const data = {
-      user_name: name,
-      user_dob: birthDate,
-      user_education: education,
-      user_email: email,
+      user_name: session.user_name,
+      user_dob: session.user_dob,
+      user_education: session.user_education,
+      user_email: session.user_email,
       avatarObj: fileBody,
     };
     if (dateErrorMessage === null && fileErrorMessage === null) {

@@ -8,27 +8,36 @@ const authRouter = Router();
 
 authRouter.post("/register", async (req, res) => {
   try {
-    const userData = {
-      user_email: req.body.email,
-      user_password: req.body.password,
-      user_education: req.body.education,
-      user_dob: req.body.birthDate,
-      user_name: req.body.name,
-    };
-    const salt = await bcrypt.genSalt(10);
-    userData.user_password = await bcrypt.hash(userData.user_password, salt);
-    const resultSupabase = await supabase
+    console.log(req.body.email);
+    const emailChecker = await supabase
       .from("users")
-      .insert([userData])
-      .select();
-    if (resultSupabase.statusText === "Created") {
-      return res.json({ message: "Register Successfully" });
+      .select("*")
+      .eq("user_email", req.body.email);
+    if (emailChecker.data[0]) {
+      return res.json({ message: "Email already sign in" });
     } else {
-      const returnStatus = supabase.status;
-      return res.status(returnStatus).json({
-        message: resultSupabase.statusText,
-        error: resultSupabase.error.details,
-      });
+      const userData = {
+        user_email: req.body.email,
+        user_password: req.body.password,
+        user_education: req.body.education,
+        user_dob: req.body.user_dob,
+        user_name: req.body.name,
+      };
+      const salt = await bcrypt.genSalt(10);
+      userData.user_password = await bcrypt.hash(userData.user_password, salt);
+      const resultSupabase = await supabase
+        .from("users")
+        .insert([userData])
+        .select();
+      if (resultSupabase.statusText === "Created") {
+        return res.json({ message: "Register Successfully" });
+      } else {
+        const returnStatus = supabase.status;
+        return res.status(returnStatus).json({
+          message: resultSupabase.statusText,
+          error: resultSupabase.error.details,
+        });
+      }
     }
   } catch (error) {
     console.log(error);
@@ -41,13 +50,13 @@ authRouter.post("/login", async (req, res) => {
       .from("users")
       .select("*")
       .eq("user_email", req.body.email);
-    if (supabaseResult.statusText === "OK") {
+    if (supabaseResult.data.length !== 0) {
       const isValidPassword = await bcrypt.compare(
         req.body.password,
         supabaseResult.data[0].user_password
       );
       if (!isValidPassword) {
-        return res.json({
+        return res.status(200).json({
           message: "Password Invalid",
         });
       } else {
@@ -75,7 +84,7 @@ authRouter.post("/login", async (req, res) => {
         });
       }
     } else {
-      return res.json({
+      return res.status(200).json({
         message: "Email Invalid",
       });
     }

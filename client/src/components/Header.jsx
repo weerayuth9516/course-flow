@@ -8,8 +8,6 @@ import logout from "../assets/header/logout.png";
 import { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import useGetuser from "../hook/useGetuser";
-import { useContext } from "react";
-import { supabase } from "../supabase/client";
 import { useAuth } from "../context/authentication";
 function Header() {
   // const { session, setSession } = useContext(SessionContext);
