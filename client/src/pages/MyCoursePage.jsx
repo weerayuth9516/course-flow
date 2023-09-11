@@ -1,13 +1,28 @@
 import React from "react";
-import useGetsearch from "../hook/useGetsearch";
 import { useEffect } from "react";
+import { useContext } from "react";
+import { SessionContext } from "../App";
+import useGetsearch from "../hook/useGetsearch";
+import useGetuser from "../hook/useGetuser";
+import DisplayCards from "../components/DisplayCards";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import DisplayCards from "../components/DisplayCards";
 
 function MyCoursePage() {
   const { searchList, getSearchList } = useGetsearch();
+  const { user, getCurrentUser} = useGetuser();
+  const { session } = useContext(SessionContext);
   const limit = 12;
+  
+  useEffect(() => {
+    if (session) {
+      getCurrentUser(session.user.id);
+      console.log(session)
+      console.log(user)
+    } else {
+      getCurrentUser(null);
+    }
+  }, [session]);
 
   useEffect(() => {
     getSearchList("", limit);
@@ -35,11 +50,12 @@ function MyCoursePage() {
         </div>
       </div>
       <div className="user-image-and-course-container flex justify-center">
-        <div className="user-box sticky top-0 w-[357px] h-[396px] rounded-lg shadow-lg mr-7 flex flex-col justify-center items-center">
-          <div>
-            <img src="src/assets/myCourse/profile.png" alt="user-image" />
+        <div className="user-box sticky top-0 w-[357px] h-[396px] rounded-lg shadow-lg mr-10 flex flex-col justify-center items-center">
+          <div className="w-[120px] h-[120px]">
+            <img src={user.user_avatar} alt="user image" className="object-contain w-full h-full"/>
+             
           </div>
-          <div className="mt-5 text-header3 text-gray-800">My Maxfield</div>
+          <div className="mt-5 text-header3 text-gray-800">{user.user_name}</div>
           <div className="w-[309px] h-[134px] flex justify-center space-x-4 mt-8">
             <div className="w-[143px] h-[134px] border-2 rounded-lg shadow-lg bg-gray-200 flex flex-col space-y-8  transform hover:scale-110 transition-transform duration-300 ease-in-out hover:shadow-lg">
               <div className="mt-3 ml-3 text-body2 text-gray-700">
@@ -57,8 +73,8 @@ function MyCoursePage() {
             </div>
           </div>
         </div>
-        <div className="course-cards-container flex justify-center">
-          <div className="course-cards-container grid grid-cols-2 gap-7">
+        <div className="course-cards-container flex justify-center mb-[150px]">
+          <div className="course-cards-container grid grid-cols-2 gap-10">
           <DisplayCards searchList={searchList}/>
           </div>
         </div>
