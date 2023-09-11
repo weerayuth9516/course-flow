@@ -98,7 +98,9 @@ function CourseDetailPage() {
         <div className="text-header2 font-bold mb-12">
           Other Interesting Course
         </div>
-        <DisplayCards searchList={searchList} />
+        <div className="flex mb-20 gap-10">
+          <DisplayCards searchList={searchList} />
+        </div>
       </div>
       {!session ? <SubFooter /> : ""}
       <Footer />
