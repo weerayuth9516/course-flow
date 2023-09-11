@@ -238,6 +238,11 @@ function EditProfileForm() {
                       borderColor: "rgb(200 204 219) !important",
                     },
                   },
+                  "& .Mui-focused.Mui-error": {
+                    "& fieldset": {
+                      borderColor: "rgb(244 126 32) !important",
+                    },
+                  },
                   "& .MuiInputBase-input": {
                     padding: "0 0 0 12px",
                     width: "453px",
