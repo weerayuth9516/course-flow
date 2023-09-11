@@ -4,6 +4,7 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import ToggleLesson from "../components/ToggleLesson";
 import SubFooter from "../components/SubFooter";
+import { ConfirmationModal } from "../components/ConfirmMadal";
 
 import useGetsearch from "../hook/useGetsearch.js";
 import DisplayCards from "../components/DisplayCards";
@@ -34,6 +35,22 @@ function CourseDetailPage() {
     getSearchList("", 3);
   }, [params.courseId]);
 
+  function addCommasToNumber(number) {
+    if (typeof number === "number") {
+      return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+    return "";
+  }
+
+  const [showModal, setShowModal] = useState(false);
+
+  const openModal = () => {
+    setShowModal(true);
+  };
+  const closeModal = () => {
+    setShowModal(false);
+  };
+
   return (
     <>
       <Header />
@@ -46,11 +63,9 @@ function CourseDetailPage() {
             width="739px"
             height="460px"
             src="https://qlxsggpxpucbrqcywrkm.supabase.co/storage/v1/object/public/course_video_trailers/A-Class%20trailer.mp4?t=2023-09-07T10%3A12%3A00.864Z"
-            // frameBorder="0"
             allowFullScreen
           ></iframe>
 
-          {/* <div className="w-[739px] h-[460px] bg-gray-500 rounded-lg"></div> */}
           <div className="w-[735px]">
             <p className="text-4xl font-medium mb-6 mt-20">
               {course.course_name}
@@ -81,12 +96,16 @@ function CourseDetailPage() {
               <br /> ctetur adipiscing elit.
             </p>
             <p className="text-gray-700 text-2xl font-medium mb-6">
-              THB {course.course_price}.00
+              THB {addCommasToNumber(course.course_price)}.00
             </p>
             <hr className="mb-6" />
-            <button className="px-8 py-[18px] w-[309px] h-[60px] border-solid border-[1px] rounded-[12px] border-orange-500 font-bold text-orange-500 mt-3 hover:bg-orange-500 hover:text-white">
+            <button
+              className="px-8 py-[18px] w-[309px] h-[60px] border-solid border-[1px] rounded-[12px] border-orange-500 font-bold text-orange-500 mt-3 hover:bg-orange-500 hover:text-white"
+              onClick={openModal}
+            >
               Get in Desire Course
             </button>
+            <ConfirmationModal isOpen={showModal} onRequestClose={closeModal} />
             <br />
             <button className="px-8 py-[18px] w-[309px] h-[60px] border-solid border-[1px] rounded-[12px] bg-blue-500 font-bold text-white mt-5 hover:bg-blue-600 ">
               Subscribe This Course
@@ -98,6 +117,7 @@ function CourseDetailPage() {
         <div className="text-header2 font-bold mb-12">
           Other Interesting Course
         </div>
+
         <div className="flex mb-20 gap-10">
           <DisplayCards searchList={searchList} />
         </div>
