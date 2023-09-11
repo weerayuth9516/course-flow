@@ -5,7 +5,6 @@ import Frame from "../assets/ourCourses/Frame.png"
 
 function DisplayCards({searchList}) {
   return (
-
 <>
   {/* Display course cards */}
   {searchList.map((item, index) => {

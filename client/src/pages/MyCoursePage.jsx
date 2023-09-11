@@ -35,7 +35,7 @@ function MyCoursePage() {
         </div>
       </div>
       <div className="user-image-and-course-container flex justify-center">
-        <div className="user-box sticky top-0 w-[357px] h-[396px] rounded-lg shadow-lg mr-7 flex flex-col justify-center items-center">
+        <div className="user-box sticky top-0 w-[357px] h-[396px] rounded-lg shadow-lg mr-10 flex flex-col justify-center items-center">
           <div>
             <img src="src/assets/myCourse/profile.png" alt="user-image" />
           </div>
@@ -57,8 +57,8 @@ function MyCoursePage() {
             </div>
           </div>
         </div>
-        <div className="course-cards-container flex justify-center">
-          <div className="course-cards-container grid grid-cols-2 gap-7">
+        <div className="course-cards-container flex justify-center mb-[150px]">
+          <div className="course-cards-container grid grid-cols-2 gap-10">
           <DisplayCards searchList={searchList}/>
           </div>
         </div>
