@@ -111,7 +111,7 @@ function RegisterPage() {
                   <ErrorMessage
                     name="name"
                     component="div"
-                    className="text-red-500 text-sm"
+                    className="text-purple-500 text-body3"
                   />
                   {errors.name && touched.name ? (
                     <img
@@ -191,7 +191,7 @@ function RegisterPage() {
                   <ErrorMessage
                     name="education"
                     component="div"
-                    className="text-red-500 text-sm"
+                    className="text-purple-500 text-body3"
                   />
                   {errors.education && touched.education ? (
                     <img
@@ -219,7 +219,7 @@ function RegisterPage() {
                   <ErrorMessage
                     name="email"
                     component="div"
-                    className="text-red-500 text-sm"
+                    className="text-purple-500 text-body3"
                   />
                   {errors.email && touched.email ? (
                     <img
@@ -247,7 +247,7 @@ function RegisterPage() {
                   <ErrorMessage
                     name="password"
                     component="div"
-                    className="text-red-500 text-sm"
+                    className="text-purple-500 text-body3"
                   />
                   {errors.password && touched.password ? (
                     <img
