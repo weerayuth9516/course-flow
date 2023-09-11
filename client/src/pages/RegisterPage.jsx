@@ -5,11 +5,19 @@ import * as Yup from "yup";
 import axios from "axios";
 import Header from "../components/Header";
 
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import TextField from "@mui/material/TextField";
+import dayjs from "dayjs";
+import { Stack } from "@mui/material";
+
+import { useContext, useState, useEffect } from "react";
+
 function RegisterPage() {
   const navigate = useNavigate();
   const initialValues = {
     name: "",
-    birthDate: "",
     education: "",
     email: "",
     password: "",
@@ -18,9 +26,9 @@ function RegisterPage() {
     name: Yup.string()
       .matches(/^[a-zA-Z'-]+$/, "Name must contain only letters, -, or  ' ")
       .required("Name is required"),
-    birthDate: Yup.date()
-      .max(new Date(), "Date of Birth cannot be in the future")
-      .required("Date of Birth is required"),
+    // birthDate: Yup.date()
+    //   .max(new Date(), "Date of Birth cannot be in the future")
+    //   .required("Date of Birth is required"),
     education: Yup.string().required("Educational Background is required"),
     email: Yup.string()
       .email("Invalid email address")
@@ -30,12 +38,10 @@ function RegisterPage() {
       .required("Password is required"),
   });
 
-  //ยังไม่มี post new user?
   const registerUser = async (userProfile) => {
     try {
       const response = await axios.post(
         "http://localhost:4001/auth/register",
-
         userProfile
       );
     } catch (error) {
@@ -44,13 +50,28 @@ function RegisterPage() {
   };
 
   const handleSubmit = async (values) => {
-    console.log(values);
-    try {
-      const response = await registerUser(values);
-      navigate("/login");
-      console.log(response);
-    } catch (error) {
-      console.error("response error", error);
+    const arrangeValues = { ...values, user_dob: birthDate };
+    console.log(arrangeValues);
+    if (dateErrorMessage === null) {
+      try {
+        const response = await registerUser(arrangeValues);
+        navigate("/login");
+        console.log(response);
+      } catch (error) {
+        console.error("response error", error);
+      }
+    }
+  };
+
+  const [birthDate, setBirthDate] = useState("");
+  const [dateErrorMessage, setDateErrorMessage] = useState(null);
+  const validateBirthDate = (birthDate) => {
+    if (!birthDate) {
+      setDateErrorMessage("Required!!!");
+    } else if (new Date(birthDate) > new Date()) {
+      setDateErrorMessage("Date of Birth cannot be in the future.");
+    } else {
+      setDateErrorMessage(null);
     }
   };
 
@@ -67,98 +88,189 @@ function RegisterPage() {
             initialValues={initialValues}
             validationSchema={validationSchema}
             onSubmit={handleSubmit}
+            enableReinitialize={true}
           >
-            <Form>
-              <div className="mb-4">
-                <label htmlFor="name" className="text-base">
-                  Name
-                </label>
+            {({ errors, touched }) => (
+              <Form>
+                <div className="mb-4 relative">
+                  <label htmlFor="name" className="text-base">
+                    Name
+                  </label>
 
-                <Field
-                  type="text"
-                  id="name"
-                  name="name"
-                  placeholder="Enter Name and Lastname"
-                  className="w-full border border-gray-300 py-2 pl-3 pr-4 rounded-lg"
-                />
-                <ErrorMessage
-                  name="name"
-                  component="div"
-                  className="text-red-500"
-                />
-              </div>
+                  <Field
+                    type="text"
+                    id="name"
+                    name="name"
+                    placeholder="Enter Name and Lastname"
+                    className={`w-full border border-gray-300 py-2 pl-3 pr-4 rounded-lg focus:border-orange-500 focus:outline-none ${
+                      errors.name && touched.name
+                        ? "border-purple-500 border-2"
+                        : ""
+                    }`}
+                  />
+                  <ErrorMessage
+                    name="name"
+                    component="div"
+                    className="text-purple-500 text-body3"
+                  />
+                  {errors.name && touched.name ? (
+                    <img
+                      src="src/assets/registerPage/errorIcon.svg"
+                      alt="errorIcon"
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 z-10"
+                    />
+                  ) : (
+                    ""
+                  )}
+                </div>
 
-              <div className="mb-4">
-                <label htmlFor="birthDate">Date of Birth</label>
-                <Field
-                  type="date"
-                  id="birthDate"
-                  name="birthDate"
-                  className="w-full border border-gray-300 py-2 pl-3 pr-4 rounded-lg"
-                />
-                <ErrorMessage
-                  name="birthDate"
-                  component="div"
-                  className="text-red-500"
-                />
-              </div>
+                <div className="mb-4">
+                  <label htmlFor="birthDate">Date of Birth</label>
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <Stack
+                      sx={{
+                        "& .MuiOutlinedInput-root": {
+                          "& fieldset": {
+                            borderColor: "rgb(200 204 219",
+                            borderColor: dateErrorMessage && "rgb(168 85 247)",
+                            borderWidth: dateErrorMessage && "2px",
+                            borderRadius: "8px",
+                          },
+                          "&.Mui-focused fieldset": {
+                            borderColor: "rgb(244 126 32)",
+                          },
+                          "&.Mui-focused.Mui-error fieldset": {
+                            borderColor: "rgb(244 126 32) !important",
+                          },
+                        },
+                        "& .MuiInputBase-root.Mui-error": {
+                          color: "rgb(200 204 219) !important",
+                        },
 
-              <div className="mb-4">
-                <label htmlFor="education">Educational Background</label>
-                <Field
-                  type="text"
-                  id="education"
-                  name="education"
-                  placeholder="Enter Educational Background"
-                  className="w-full border border-gray-300 py-2 pl-3 pr-4 rounded-lg "
-                />
-                <ErrorMessage
-                  name="education"
-                  component="div"
-                  className="text-red-500"
-                />
-              </div>
-              <div className="mb-4">
-                <label htmlFor="email">Email</label>
-                <Field
-                  type="email"
-                  id="email"
-                  name="email"
-                  placeholder="Enter Email"
-                  className="w-full border border-gray-300 py-2 pl-3 pr-4 rounded-lg "
-                />
-                <ErrorMessage
-                  name="email"
-                  component="div"
-                  className="text-red-500"
-                />
-              </div>
-              <div className="mb-4">
-                <label htmlFor="password">Password</label>
-                <Field
-                  type="password"
-                  id="password"
-                  name="password"
-                  placeholder="Enter password"
-                  className="w-full border border-gray-300 py-2 pl-3 pr-4 rounded-lg "
-                />
-                <ErrorMessage
-                  name="password"
-                  component="div"
-                  className="text-red-500"
-                />
-              </div>
-              <button
-                type="submit"
-                className="bg-blue-500 text-white w-full mb-6 px-8 py-3.5 rounded-xl"
-              >
-                Register
-              </button>
-            </Form>
+                        "& .MuiOutlinedInput-root.Mui-error": {
+                          "& fieldset": {
+                            borderColor: "rgb(200 204 219) !important",
+                          },
+                        },
+                        "& .MuiInputBase-input": {
+                          padding: "0 0 0 12px",
+                          width: "453px",
+                          height: "48px",
+                        },
+                      }}
+                    >
+                      <DatePicker
+                        value={dayjs(birthDate)}
+                        onChange={(date) => {
+                          setBirthDate(date);
+                          validateBirthDate(date);
+                        }}
+                      />
+                    </Stack>
+                    {dateErrorMessage && (
+                      <div className="text-purple-500 text-body3">
+                        {dateErrorMessage}
+                      </div>
+                    )}
+                  </LocalizationProvider>
+                </div>
+
+                <div className="mb-4 relative">
+                  <label htmlFor="education">Educational Background</label>
+                  <Field
+                    type="text"
+                    id="education"
+                    name="education"
+                    placeholder="Enter Educational Background"
+                    className={`w-full border border-gray-300 py-2 pl-3 pr-4 rounded-lg focus:border-orange-500 focus:outline-none ${
+                      errors.education && touched.education
+                        ? "border-purple-500 border-2"
+                        : ""
+                    }`}
+                  />
+                  <ErrorMessage
+                    name="education"
+                    component="div"
+                    className="text-purple-500 text-body3"
+                  />
+                  {errors.education && touched.education ? (
+                    <img
+                      src="src/assets/registerPage/errorIcon.svg"
+                      alt="errorIcon"
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 z-10"
+                    />
+                  ) : (
+                    ""
+                  )}
+                </div>
+                <div className="mb-4 relative">
+                  <label htmlFor="email">Email</label>
+                  <Field
+                    type="email"
+                    id="email"
+                    name="email"
+                    placeholder="Enter Email"
+                    className={`w-full border border-gray-300 py-2 pl-3 pr-4 rounded-lg focus:border-orange-500 focus:outline-none ${
+                      errors.email && touched.email
+                        ? "border-purple-500 border-2"
+                        : ""
+                    }`}
+                  />
+                  <ErrorMessage
+                    name="email"
+                    component="div"
+                    className="text-purple-500 text-body3"
+                  />
+                  {errors.email && touched.email ? (
+                    <img
+                      src="src/assets/registerPage/errorIcon.svg"
+                      alt="errorIcon"
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 z-10"
+                    />
+                  ) : (
+                    ""
+                  )}
+                </div>
+                <div className="mb-4 relative">
+                  <label htmlFor="password">Password</label>
+                  <Field
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="Enter password"
+                    className={`w-full border border-gray-300 py-2 pl-3 pr-4 rounded-lg focus:border-orange-500 focus:outline-none ${
+                      errors.password && touched.password
+                        ? "border-purple-500 border-2"
+                        : ""
+                    }`}
+                  />
+                  <ErrorMessage
+                    name="password"
+                    component="div"
+                    className="text-purple-500 text-body3"
+                  />
+                  {errors.password && touched.password ? (
+                    <img
+                      src="src/assets/registerPage/errorIcon.svg"
+                      alt="errorIcon"
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 z-10"
+                    />
+                  ) : (
+                    ""
+                  )}
+                </div>
+                <button
+                  type="submit"
+                  className="bg-blue-500 text-white w-full mb-6 px-8 py-3.5 rounded-xl hover:bg-blue-600"
+                >
+                  Register
+                </button>
+              </Form>
+            )}
           </Formik>
           <div className="already">
             Already have an account?
-            <Link to="/login" className="text-blue-500 ml-2.5">
+            <Link to="/login" className="text-blue-500 ml-2.5 font-bold">
               Log in
             </Link>
           </div>
