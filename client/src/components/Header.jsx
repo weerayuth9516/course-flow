@@ -19,7 +19,7 @@ function Header() {
   function singOutHandle(_event) {
     if (_event) {
       auth.logout();
-      // setSession(null);
+      setIsLoggedIn(false);
     }
   }
   useEffect(() => {
