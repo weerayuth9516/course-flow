@@ -13,8 +13,6 @@ import axios from "axios";
 import DisplayCards from "../components/DisplayCards";
 import { SessionContext } from "../App";
 
-import axios from "axios";
-
 function CourseDetailPage() {
   const [course, setCourse] = useState({});
   const params = useParams();

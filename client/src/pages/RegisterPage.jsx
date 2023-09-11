@@ -5,11 +5,19 @@ import * as Yup from "yup";
 import axios from "axios";
 import Header from "../components/Header";
 
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import TextField from "@mui/material/TextField";
+import dayjs from "dayjs";
+import { Stack } from "@mui/material";
+
+import { useContext, useState, useEffect } from "react";
+
 function RegisterPage() {
   const navigate = useNavigate();
   const initialValues = {
     name: "",
-    birthDate: "",
     education: "",
     email: "",
     password: "",
@@ -18,9 +26,9 @@ function RegisterPage() {
     name: Yup.string()
       .matches(/^[a-zA-Z'-]+$/, "Name must contain only letters, -, or  ' ")
       .required("Name is required"),
-    birthDate: Yup.date()
-      .max(new Date(), "Date of Birth cannot be in the future")
-      .required("Date of Birth is required"),
+    // birthDate: Yup.date()
+    //   .max(new Date(), "Date of Birth cannot be in the future")
+    //   .required("Date of Birth is required"),
     education: Yup.string().required("Educational Background is required"),
     email: Yup.string()
       .email("Invalid email address")
@@ -34,7 +42,6 @@ function RegisterPage() {
     try {
       const response = await axios.post(
         "http://localhost:4001/auth/register",
-
         userProfile
       );
     } catch (error) {
@@ -43,13 +50,28 @@ function RegisterPage() {
   };
 
   const handleSubmit = async (values) => {
-    console.log(values);
-    try {
-      const response = await registerUser(values);
-      navigate("/login");
-      console.log(response);
-    } catch (error) {
-      console.error("response error", error);
+    const arrangeValues = { ...values, user_dob: birthDate };
+    console.log(arrangeValues);
+    if (dateErrorMessage === null) {
+      try {
+        const response = await registerUser(arrangeValues);
+        navigate("/login");
+        console.log(response);
+      } catch (error) {
+        console.error("response error", error);
+      }
+    }
+  };
+
+  const [birthDate, setBirthDate] = useState("");
+  const [dateErrorMessage, setDateErrorMessage] = useState(null);
+  const validateBirthDate = (birthDate) => {
+    if (!birthDate) {
+      setDateErrorMessage("Required!!!");
+    } else if (new Date(birthDate) > new Date()) {
+      setDateErrorMessage("Date of Birth cannot be in the future.");
+    } else {
+      setDateErrorMessage(null);
     }
   };
 
@@ -66,6 +88,7 @@ function RegisterPage() {
             initialValues={initialValues}
             validationSchema={validationSchema}
             onSubmit={handleSubmit}
+            enableReinitialize={true}
           >
             {({ errors, touched }) => (
               <Form>
@@ -103,21 +126,53 @@ function RegisterPage() {
 
                 <div className="mb-4">
                   <label htmlFor="birthDate">Date of Birth</label>
-                  <Field
-                    type="date"
-                    id="birthDate"
-                    name="birthDate"
-                    className={`w-full border border-gray-300 py-2 pl-3 pr-4 rounded-lg uppercase text-gray-600 focus:border-orange-500 focus:outline-none ${
-                      errors.birthDate && touched.birthDate
-                        ? "border-purple-500 border-2"
-                        : ""
-                    }`}
-                  />
-                  <ErrorMessage
-                    name="birthDate"
-                    component="div"
-                    className="text-red-500 text-sm"
-                  />
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <Stack
+                      sx={{
+                        "& .MuiOutlinedInput-root": {
+                          "& fieldset": {
+                            borderColor: "rgb(200 204 219",
+                            borderColor: dateErrorMessage && "rgb(168 85 247)",
+                            borderWidth: dateErrorMessage && "2px",
+                            borderRadius: "8px",
+                          },
+                          "&.Mui-focused fieldset": {
+                            borderColor: "rgb(244 126 32)",
+                          },
+                          "&.Mui-focused.Mui-error fieldset": {
+                            borderColor: "rgb(244 126 32) !important",
+                          },
+                        },
+                        "& .MuiInputBase-root.Mui-error": {
+                          color: "rgb(200 204 219) !important",
+                        },
+
+                        "& .MuiOutlinedInput-root.Mui-error": {
+                          "& fieldset": {
+                            borderColor: "rgb(200 204 219) !important",
+                          },
+                        },
+                        "& .MuiInputBase-input": {
+                          padding: "0 0 0 12px",
+                          width: "453px",
+                          height: "48px",
+                        },
+                      }}
+                    >
+                      <DatePicker
+                        value={dayjs(birthDate)}
+                        onChange={(date) => {
+                          setBirthDate(date);
+                          validateBirthDate(date);
+                        }}
+                      />
+                    </Stack>
+                    {dateErrorMessage && (
+                      <div className="text-purple-500 text-body3">
+                        {dateErrorMessage}
+                      </div>
+                    )}
+                  </LocalizationProvider>
                 </div>
 
                 <div className="mb-4 relative">
