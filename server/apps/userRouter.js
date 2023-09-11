@@ -1,8 +1,9 @@
 import { Router } from "express";
 import { supabase } from "../utils/db.js";
 import "dotenv/config";
+import { protect } from "../middlewares/protect.js";
 const userRouter = Router();
-
+userRouter.use(protect);
 userRouter.get("/", async (req, res) => {
   const results = await supabase.from("users").select("*");
   if (results.statusText === "OK") {
