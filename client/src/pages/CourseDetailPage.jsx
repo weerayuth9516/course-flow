@@ -2,11 +2,14 @@ import React, { useEffect, useState, useContext } from "react";
 import { Link, useParams } from "react-router-dom";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+
 import ToggleLesson from "../components/ToggleLesson";
 import SubFooter from "../components/SubFooter";
 import { ConfirmationModal } from "../components/ConfirmMadal";
 
-import useGetsearch from "../hook/useGetsearch.js";
+import useGetsearch from "../hook/useGetsearch";
+import axios from "axios";
+
 import DisplayCards from "../components/DisplayCards";
 import { SessionContext } from "../App";
 
@@ -81,6 +84,7 @@ function CourseDetailPage() {
             <header className="font-medium text-4xl mt-16">
               Module Samples
             </header>
+
             <ToggleLesson />
           </div>
         </div>
