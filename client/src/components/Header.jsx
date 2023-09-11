@@ -9,31 +9,29 @@ import { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import useGetuser from "../hook/useGetuser";
 import { useContext } from "react";
-import { SessionContext } from "../App";
 import { supabase } from "../supabase/client";
-
+import { useAuth } from "../context/authentication";
 function Header() {
-  const { session, setSession } = useContext(SessionContext);
+  // const { session, setSession } = useContext(SessionContext);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const params = useParams();
   const { user, getCurrentUser } = useGetuser();
-
+  const auth = useAuth();
   function singOutHandle(_event) {
     if (_event) {
-      supabase.auth.signOut();
-      setSession(null);
+      auth.logout();
+      // setSession(null);
     }
   }
   useEffect(() => {
-    if (session) {
-      getCurrentUser(session.user.id);
+    if (auth.isAuthenicated) {
       setIsLoggedIn(true);
     } else {
       getCurrentUser(null);
       setIsLoggedIn(false);
     }
-  }, [session]);
+  }, [auth.isAuthenicated]);
 
   return (
     <section
@@ -75,7 +73,7 @@ function Header() {
                 <img
                   id="image-profile"
                   className="w-10 h-10 m-2 rounded-full"
-                  src={user.user_avatar}
+                  src={auth.session.user.user_avatar}
                   alt="image profile"
                 />
                 <span
@@ -83,7 +81,7 @@ function Header() {
                   className="text-body2 font-normal text-gray-800 m-2 group-hover:text-black cursor-pointer"
                   onClick={() => setIsMenuOpen(!isMenuOpen)}
                 >
-                  {user.user_name}
+                  {auth.session.user.user_name}
                 </span>
                 <img
                   id="arrow-dropdown"
@@ -105,7 +103,7 @@ function Header() {
                       <img
                         id="profile"
                         className="p-4"
-                        src={userimage}
+                        src={auth.session.user.user_avatar}
                         alt="profile"
                       />
                       <span id="profile">Profile</span>

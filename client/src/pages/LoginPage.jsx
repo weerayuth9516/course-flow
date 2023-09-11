@@ -2,22 +2,20 @@ import React, { useEffect } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { Link } from "react-router-dom";
-import { supabase } from "../supabase/client";
 import { useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 import errorIcon from "../assets/loginPage/exclamation.png";
 import axios from "axios";
-import { useContext } from "react";
-import { SessionContext } from "../App";
+import jwtDecode from "jwt-decode";
+import { useAuth } from "../context/authentication";
 
 function LoginPage() {
   const navigate = useNavigate();
-  const { session, setSession } = useContext(SessionContext);
   const initialValues = {
     email: "",
     password: "",
   };
-
+  const auth = useAuth();
   const validationSchema = Yup.object().shape({
     email: Yup.string()
       .email("Invalid email address")
@@ -28,23 +26,17 @@ function LoginPage() {
   });
   const handleSubmit = async (values, { setErrors }) => {
     try {
-      const results = await axios.post(
-        "http://localhost:4001/auth/login",
-        values
-      );
-      const res = await supabase.auth.signInWithPassword({
-        email: values.email,
-        password: values.password,
-      });
-      setSession(res.data.session);
-      navigate("/");
+      const status = auth.login(values);
+      if (status) {
+        validationSchema.ErrorMessage(auth.session.error);
+      }
     } catch (error) {
       setErrors(error.response.data);
       navigate("/login");
     }
   };
   useEffect(() => {
-    if (session !== null) {
+    if (auth.isAuthenicated) {
       navigate("/");
     }
   });
@@ -85,10 +77,7 @@ function LoginPage() {
                     />
                     {errors.email && touched.email && (
                       <div className="error-icon absolute right-4 top-4">
-                        <img
-                          src={errorIcon}
-                          alt="Error Icon"
-                        />
+                        <img src={errorIcon} alt="Error Icon" />
                       </div>
                     )}
                   </div>
@@ -107,24 +96,21 @@ function LoginPage() {
                     Password:
                   </label>
                   <div className="input-password-container relative">
-                  <Field
-                    type="password"
-                    id="password"
-                    name="password"
-                    className={`w-full border border-gray-300 py-2 pl-3 pr-4 rounded-lg focus:border-orange-500 focus:outline-none ${
-                      errors.password && touched.password
-                        ? "border-purple-500 border-2"
-                        : ""
-                    }`}
-                    placeholder="Enter password"
-                    required
-                  />
-                  {errors.password && touched.password && (
+                    <Field
+                      type="password"
+                      id="password"
+                      name="password"
+                      className={`w-full border border-gray-300 py-2 pl-3 pr-4 rounded-lg focus:border-orange-500 focus:outline-none ${
+                        errors.password && touched.password
+                          ? "border-purple-500 border-2"
+                          : ""
+                      }`}
+                      placeholder="Enter password"
+                      required
+                    />
+                    {errors.password && touched.password && (
                       <div className="error-icon absolute right-4 top-4">
-                        <img
-                          src={errorIcon}
-                          alt="Error Icon"
-                        />
+                        <img src={errorIcon} alt="Error Icon" />
                       </div>
                     )}
                   </div>

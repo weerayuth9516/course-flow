@@ -1,10 +1,18 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import App from './App.jsx'
-import './index.css'
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App.jsx";
+import "./index.css";
+import jwtInterceptor from "./utils/jwtInterceptors.js";
+import { BrowserRouter } from "react-router-dom";
+import { AuthProvider } from "./context/authentication.jsx";
 
-ReactDOM.createRoot(document.getElementById('root')).render(
+jwtInterceptor();
+ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-        <App/>
-  </React.StrictMode>,
-)
+    <BrowserRouter>
+      <AuthProvider>
+        <App />
+      </AuthProvider>
+    </BrowserRouter>
+  </React.StrictMode>
+);

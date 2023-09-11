@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import useGetuser from "../hook/useGetuser";
 import remove from "../assets/header/remove.png";
 import { useContext } from "react";
-import { SessionContext } from "../App";
 import { supabase } from "../supabase/client.js";
 import addImage from "../assets/header/add.png";
 import error from "../assets/header/error.png";
@@ -15,6 +14,8 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import dayjs from "dayjs";
 import { Stack } from "@mui/material";
+import { useAuth } from "../context/authentication";
+import { useNavigate } from "react-router-dom";
 
 function EditProfileForm() {
   const { user, getCurrentUser, updateUserProfileById } = useGetuser();
@@ -25,10 +26,10 @@ function EditProfileForm() {
   const [images, setImages] = useState("");
   const [fileBody, setFileBody] = useState({});
   const [hasImage, setHasImage] = useState(false);
-  const { session, setSession } = useContext(SessionContext);
+  const auth = useAuth();
   const [fileErrorMessage, setfileErrorMessage] = useState(null);
   const [dateErrorMessage, setDateErrorMessage] = useState(null);
-
+  const navigate = useNavigate();
   const initialValues = {
     name,
     birthDate,
@@ -66,32 +67,35 @@ function EditProfileForm() {
     setHasImage(false);
   };
 
-  useEffect(() => {
-    if (session) {
-      getCurrentUser(session.user.id);
-    } else {
-      getCurrentUser(null);
-    }
-  }, [session]);
+  // useEffect(() => {
+  //   if (session) {
+  //     // getCurrentUser(session.user.id);
+  //   } else {
+  //     getCurrentUser(null);
+  //   }
+  // }, [session]);
 
   useEffect(() => {
-    if (user) {
-      setName(user.user_name);
-      setBirthDate(user.user_dob);
-      setEducation(user.user_education);
-      setEmail(user.user_email);
-      if (user.user_avatar === null) {
+    if (auth.isAuthenicated) {
+      setName(auth.session.user.user_name);
+      setBirthDate(auth.session.user.user_dob);
+      setEducation(auth.session.user.user_education);
+      setEmail(auth.session.user.user_email);
+      if (auth.session.user.user_avatar === null) {
         setHasImage(false);
       } else {
         setHasImage(true);
         try {
-          setImages(user.user_avatar);
+          setImages(auth.session.user.user_avatar);
         } catch {
           console.log("Awaiting for loading Img Path");
         }
       }
+    } else {
+      getCurrentUser(null);
+      navigate("/login");
     }
-  }, [user]);
+  }, [auth.isAuthenicated]);
 
   const handleSubmit = (event) => {
     const data = {
@@ -102,7 +106,7 @@ function EditProfileForm() {
       avatarObj: fileBody,
     };
     if (dateErrorMessage === null && fileErrorMessage === null) {
-      updateUserProfileById(session.user.id, data);
+      updateUserProfileById(auth.user.user_id, data);
     }
   };
 
