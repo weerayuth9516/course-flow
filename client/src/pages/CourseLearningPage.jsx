@@ -13,6 +13,7 @@ function CourseLearningPage() {
 
     const [course, setCourse] = useState([]);
     const [lesson, setLesson] = useState([]);
+    const [status, setStatus] = useState(2);
     const [toggleStates, setToggleStates] = useState(lesson.map(() => false));
   
     const { searchList, getSearchList } = useGetsearch();
@@ -52,13 +53,10 @@ function CourseLearningPage() {
   
     const ToggleList = ({ title, content, isOpen, toggle, index }) => {
       return (
-        <div className="mt-5 mb-5 ml-5 w-[309px] relative">
-          <div className="toggle-header" onClick={toggle}>
-            <div className="inline left-0 text-body2 text-black">
-              0{index + 1}
-            </div>
-            <div className="inline toggle-title mr-10 text-2xl absolute left-10 text-body2 text-black">
-              {title}
+        <div className="mt-[50px] ml-5 w-[309px] relative">
+          <div className="toggle-header w-full h-[48px] border-1 border-b border-gray-400" onClick={toggle}>
+            <div className="toggle-title mr-10 absolute text-body2">
+            <span className="mr-6 text-gray-700">0{index + 1}</span><span className="text-black">{title}</span>
             </div>
             <button className="toggle-button inline absolute right-0">
               {isOpen ? (
@@ -68,10 +66,9 @@ function CourseLearningPage() {
               )}
             </button>
           </div>
-          <div className="border-t border-gray-300 mt-10"></div>
           {isOpen && (
-            <div className="toggle-content mt-10 ml-10">
-              <ul className="list-disc text-body2 text-gray-700">{content}</ul>
+            <div className="toggle-content mt-8 ml-1">
+              <ul className="text-body2 text-gray-700">{content}</ul>
             </div>
           )}
         </div>
@@ -86,7 +83,7 @@ function CourseLearningPage() {
     <div className='w-[1440px] border-2 border-red-700 mt-[120px]'>
     <div className='w-[357px] rounded-lg shadow-lg border border-gray-100'>
     <div className="description-box m-4 flex flex-col justify-start items-start">
-            <h3 className="mb-2 text-orange-500 text-body3">Course</h3>
+            <h3 className="mb-5 text-orange-500 text-body3">Course</h3>
             <h2 className="font-bold mb-2 text-header3">
             {course.course_name}
             </h2>
@@ -110,7 +107,15 @@ function CourseLearningPage() {
                   content={
                     data.sub_lessons && data.sub_lessons.length !== 0
                       ? data.sub_lessons.map((item, index) => {
-                          return <li key={index}>{item.sub_lesson_name}</li>;
+                          return <li key={index} className="mb-5">
+                            <span>{(status) === 0 ? (
+  <img src={notStart} className="object-fit inline mr-4"/>
+) : (status) === 1 ? (
+  <img src={inprogress} className="object-fit inline mr-4"/>
+) : (
+  <img src={completed} className="object-fit inline mr-4"/>
+)}
+                            </span><span className="pb-0">{item.sub_lesson_name}</span></li>;
                         })
                       : ""
                   }
