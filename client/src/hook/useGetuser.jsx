@@ -44,6 +44,7 @@ const useGetuser = () => {
       setIsError(false);
       setIsLoading(true);
       let newData;
+
       if (inputData.avatarObj.name) {
         const results = await supabase.storage
           .from("user_avatars")
@@ -52,6 +53,7 @@ const useGetuser = () => {
             upsert: true,
             contentType: `${inputData.avatarObj.type}`,
           });
+
         results.error === null
           ? (newData = {
               ...inputData,

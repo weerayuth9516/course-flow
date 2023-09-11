@@ -38,14 +38,20 @@ function Header() {
   return (
     <section
       id="header"
-      className="font-inter bg-white drop-shadow-xl relative z-50"
+      className="font-inter bg-white drop-shadow-md sticky top-0 z-50"
+      onMouseLeave={() => setIsMenuOpen(false)}
     >
       <div
         id="header-container"
         className="flex h-[88px] items-center justify-between pl-[160px] pr-[160px]"
       >
         <Link to={"/"}>
-          <img id="logo" src={logo} alt="Logo" />
+          <img
+            id="logo"
+            src={logo}
+            alt="Logo"
+            className="scale-100 hover:scale-110"
+          />
         </Link>
         <div
           id="header-items"
@@ -54,7 +60,7 @@ function Header() {
           <Link to="/course">
             <span
               id="ourCourses"
-              className="text-blue-700 mr-[50px] hover:text-blue-500"
+              className="text-blue-700 mr-[50px] hover:text-black hover:font-bold"
             >
               Our Courses
             </span>
@@ -64,7 +70,7 @@ function Header() {
             <>
               <div
                 id="nav-items"
-                className="flex items-center justify-between relative"
+                className="flex items-center justify-between relative group"
               >
                 <img
                   id="image-profile"
@@ -74,7 +80,8 @@ function Header() {
                 />
                 <span
                   id="username"
-                  className="text-body2 font-normal text-gray-800 m-2"
+                  className="text-body2 font-normal text-gray-800 m-2 group-hover:text-black cursor-pointer"
+                  onClick={() => setIsMenuOpen(!isMenuOpen)}
                 >
                   {user.user_name}
                 </span>
@@ -83,7 +90,7 @@ function Header() {
                   src={arrow}
                   alt="arrow-dropdown"
                   onClick={() => setIsMenuOpen(!isMenuOpen)}
-                  className="rounded-full scale-100 active:scale-125"
+                  className="rounded-full scale-100 group-hover:scale-125 cursor-pointer"
                 />
               </div>
 
@@ -139,7 +146,7 @@ function Header() {
                   </Link>
                   <hr className="bg-gray-300 h-0.5" />
                   <Link to="/login" onClick={singOutHandle}>
-                    <div className="flex items-center rounded-md hover:bg-red-100">
+                    <div className="flex items-center rounded-md hover:bg-blue-200">
                       <img
                         id="logOut"
                         className="p-4"
