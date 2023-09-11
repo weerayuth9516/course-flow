@@ -10,9 +10,8 @@ import CourseDetailPage from "./pages/CourseDetailPage";
 import CoursePage from "./pages/CoursePage";
 import MyCoursePage from "./pages/MyCoursePage";
 import { supabase } from "./supabase/client";
-import Validate from "./components/Validation";
+
 export const SessionContext = React.createContext();
-export const ValidateContext = React.createContext();
 
 function App() {
   const [session, setSession] = useState(null);
