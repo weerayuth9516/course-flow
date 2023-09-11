@@ -66,15 +66,6 @@ function EditProfileForm() {
     setImages({});
     setHasImage(false);
   };
-
-  // useEffect(() => {
-  //   if (session) {
-  //     // getCurrentUser(session.user.id);
-  //   } else {
-  //     getCurrentUser(null);
-  //   }
-  // }, [session]);
-
   useEffect(() => {
     if (auth.isAuthenicated) {
       setName(auth.session.user.user_name);

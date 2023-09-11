@@ -48,14 +48,6 @@ function AuthProvider(props) {
     setSession({ ...session, user: null, error: null });
   };
 
-  // const handleData = () => {
-  //   const token = localStorage.getItem("token");
-  //   console.log(token);
-  //   const userData = jwtDecode(localStorage.getItem("token"));
-  //   console.log(userData);
-  //   session.user = userData;
-  // };
-
   const isAuthenicated = Boolean(localStorage.getItem("token"));
   if (isAuthenicated) {
     const token = localStorage.getItem("token");
