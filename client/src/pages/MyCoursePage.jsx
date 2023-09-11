@@ -51,8 +51,9 @@ function MyCoursePage() {
       </div>
       <div className="user-image-and-course-container flex justify-center">
         <div className="user-box sticky top-0 w-[357px] h-[396px] rounded-lg shadow-lg mr-10 flex flex-col justify-center items-center">
-          <div>
-            <img src={user.user_avatar} alt="user image" />
+          <div className="w-[120px] h-[120px]">
+            <img src={user.user_avatar} alt="user image" className="object-contain w-full h-full"/>
+             
           </div>
           <div className="mt-5 text-header3 text-gray-800">{user.user_name}</div>
           <div className="w-[309px] h-[134px] flex justify-center space-x-4 mt-8">
