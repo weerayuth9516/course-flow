@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { supabase } from "../utils/db.js";
 import "dotenv/config";
+import jwt from "jsonwebtoken";
 import { protect } from "../middlewares/protect.js";
 const userRouter = Router();
 userRouter.use(protect);
@@ -16,16 +17,28 @@ userRouter.get("/", async (req, res) => {
 userRouter.get("/:id", async (req, res) => {
   const id = req.params.id;
   const results = await supabase.from("users").select("*").eq("user_id", id);
-  const file = await supabase.storage
-    .from("user_avatars")
-    .getPublicUrl(`${results.data[0].user_avatar}`);
   if (results.statusText === "OK") {
-    const responseForClient = {
-      ...results.data[0],
-      user_avatar: file.data.publicUrl,
-    };
+    const avatarPath = await supabase.storage
+      .from("user_avatars")
+      .getPublicUrl(results.data[0].user_avatar);
+    const token = jwt.sign(
+      {
+        user_id: results.data[0].user_id,
+        user_email: results.data[0].user_email,
+        user_name: results.data[0].user_name,
+        user_education: results.data[0].user_education,
+        user_dob: results.data[0].user_dob,
+        user_avatar: avatarPath.data.publicUrl,
+      },
+      process.env.SECRET_KEY,
+      {
+        expiresIn: "90000",
+      }
+    );
+
     return res.json({
-      data: [responseForClient],
+      message: "Fetching succesfully",
+      token,
     });
   } else {
     return res.status(400).send(`API ERROR : ${results.error}`);
@@ -41,7 +54,7 @@ userRouter.post("/", async (req, res) => {
     },
   ]);
   if (results.statusText === "OK") {
-    return res.json({ message: "Create users successfully." });
+    return res.json({ message: "Create users successfully" });
   } else {
     return res.status(400).send(`API ERROR`);
   }
@@ -66,9 +79,8 @@ userRouter.put("/:id", async (req, res) => {
   const url = await supabase.storage
     .from("user_avatars")
     .remove([oldPath.data[0].user_avatar]);
-  console.log(url);
   if (results.statusText === "OK") {
-    return res.json({ message: "Update users successfully." });
+    return res.json({ message: "Update users successfully" });
   } else {
     return res.status(400).send(`API ERROR`);
   }

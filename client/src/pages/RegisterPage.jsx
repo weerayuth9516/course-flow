@@ -4,6 +4,8 @@ import { supabase } from "../supabase/client.js";
 import * as Yup from "yup";
 import axios from "axios";
 import Header from "../components/Header";
+import { useAuth } from "../context/authentication.jsx";
+import { useEffect } from "react";
 
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -22,6 +24,7 @@ function RegisterPage() {
     email: "",
     password: "",
   };
+  const auth = useAuth();
   const validationSchema = Yup.object({
     name: Yup.string()
       .matches(/^[a-zA-Z'-]+$/, "Name must contain only letters, -, or  ' ")
@@ -38,42 +41,34 @@ function RegisterPage() {
       .required("Password is required"),
   });
 
-  const registerUser = async (userProfile) => {
-    try {
-      const response = await axios.post(
-        "http://localhost:4001/auth/register",
-        userProfile
-      );
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  //ยังไม่มี post new user?
+  // const registerUser = async (userProfile) => {
+  //   try {
+  //     const response = await axios.post(
+  //       "http://localhost:4001/auth/register",
+  //       userProfile
+  //     );
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   const handleSubmit = async (values) => {
-    const arrangeValues = { ...values, user_dob: birthDate };
-    console.log(arrangeValues);
-    if (dateErrorMessage === null) {
-      try {
-        const response = await registerUser(arrangeValues);
-        navigate("/login");
-        console.log(response);
-      } catch (error) {
-        console.error("response error", error);
-      }
+    console.log(values);
+    try {
+      // const response = await registerUser(values);
+      // navigate("/login");
+      // console.log(response);
+      auth.register(values);
+    } catch (error) {
+      console.error("response error", error);
     }
   };
-
-  const [birthDate, setBirthDate] = useState("");
-  const [dateErrorMessage, setDateErrorMessage] = useState(null);
-  const validateBirthDate = (birthDate) => {
-    if (!birthDate) {
-      setDateErrorMessage("Required!!!");
-    } else if (new Date(birthDate) > new Date()) {
-      setDateErrorMessage("Date of Birth cannot be in the future.");
-    } else {
-      setDateErrorMessage(null);
+  useEffect(() => {
+    if (auth.isAuthenicated) {
+      navigate("/");
     }
-  };
+  });
 
   return (
     <>

@@ -24,23 +24,24 @@ function AuthProvider(props) {
       session.error = "Password Invalid";
       return true;
     }
-    if (results.data.message === "Login Succesfully") {
-      const token = results.data.token;
-      const userDataFromToken = jwtDecode(token);
-      // setSession({ ...session, user: userDataFromToken });
-      session.user = userDataFromToken;
-      console.log(session);
-      navigate("/");
-      localStorage.setItem("token", token);
-      return false;
-    } else {
-      session.error = "Something wrong";
-      return true;
-    }
+    const token = results.data.token;
+    const userDataFromToken = jwtDecode(token);
+    // setSession({ ...session, user: userDataFromToken });
+    session.user = userDataFromToken;
+    navigate("/");
+    localStorage.setItem("token", token);
+    return false;
   };
   const register = async (data) => {
-    await axios.post("http://localhost:4001/auth/register", data);
-    navigate("/login");
+    const result = await axios.post(
+      "http://localhost:4001/auth/register",
+      data
+    );
+    if (result.data.message === "Register Successfully") {
+      navigate("/login");
+    } else {
+      session.error("Can not register");
+    }
   };
   const logout = () => {
     localStorage.removeItem("token");
@@ -56,7 +57,10 @@ function AuthProvider(props) {
   // };
 
   const isAuthenicated = Boolean(localStorage.getItem("token"));
-
+  if (isAuthenicated) {
+    const token = localStorage.getItem("token");
+    session.user = jwtDecode(token);
+  }
   return (
     <AuthContext.Provider
       value={{ session, login, logout, register, isAuthenicated }}

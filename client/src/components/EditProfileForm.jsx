@@ -106,7 +106,7 @@ function EditProfileForm() {
       avatarObj: fileBody,
     };
     if (dateErrorMessage === null && fileErrorMessage === null) {
-      updateUserProfileById(auth.user.user_id, data);
+      updateUserProfileById(auth.session.user.user_id, data);
     }
   };
 

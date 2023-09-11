@@ -22,7 +22,7 @@ authRouter.post("/register", async (req, res) => {
       .insert([userData])
       .select();
     if (resultSupabase.statusText === "Created") {
-      return res.json({ message: "Register Successfully." });
+      return res.json({ message: "Register Successfully" });
     } else {
       const returnStatus = supabase.status;
       return res.status(returnStatus).json({
@@ -51,6 +51,7 @@ authRouter.post("/login", async (req, res) => {
           message: "Password Invalid",
         });
       } else {
+        console.log(supabaseResult.data[0]);
         const avatarPath = await supabase.storage
           .from("user_avatars")
           .getPublicUrl(supabaseResult.data[0].user_avatar);

@@ -2,13 +2,15 @@ import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../supabase/client";
+import { useAuth } from "../context/authentication";
+import jwtDecode from "jwt-decode";
 
 const useGetuser = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState({});
   const [isError, setIsError] = useState(null);
   const [isLoading, setIsLoading] = useState(null);
-
+  const auth = useAuth();
   const getCurrentUser = async (id) => {
     try {
       if (id !== null) {
@@ -63,9 +65,19 @@ const useGetuser = () => {
       } else {
         newData = inputData;
       }
-      isLoading
-        ? await axios.put(`http://localhost:4001/users/${id}`, newData)
-        : alert("Storage API Invalid");
+      // isLoading
+      //   ? await axios.put(`http://localhost:4001/users/${id}`, newData)
+      //   : alert("Storage API Invalid");
+      const axiosResult = await axios.put(
+        `http://localhost:4001/users/${id}`,
+        newData
+      );
+      if (axiosResult.data.message == "Update users successfully") {
+        const fetching = await axios.get(`http://localhost:4001/users/${id}`);
+        const userDataFromToken = jwtDecode(fetching.data.token);
+        auth.session.user = userDataFromToken;
+        localStorage.setItem("token", fetching.data.token);
+      }
       setIsLoading(false);
       navigate("/");
     } catch (error) {

@@ -103,7 +103,7 @@ function Header() {
                       <img
                         id="profile"
                         className="p-4"
-                        src={auth.session.user.user_avatar}
+                        src={userimage}
                         alt="profile"
                       />
                       <span id="profile">Profile</span>
