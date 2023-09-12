@@ -5,7 +5,7 @@ import Footer from "../components/Footer";
 
 import ToggleLesson from "../components/ToggleLesson";
 import SubFooter from "../components/SubFooter";
-import { ConfirmationModal } from "../components/ConfirmMadal";
+import { DesireCourseModal, SubscribeModal } from "../components/ConfirmMadal";
 
 import useGetsearch from "../hook/useGetsearch";
 import axios from "axios";
@@ -43,13 +43,29 @@ function CourseDetailPage() {
     return "";
   }
 
-  const [showModal, setShowModal] = useState(false);
+  const [showDesireModal, setShowDesireModal] = useState(false);
+  const [showSubscribeModal, setShowSubscribeModal] = useState(false);
+  const [courseNameForModal, setCourseNameForModal] = useState("");
+  const [isSubscribed, setIsSubscribed] = useState(false);
 
-  const openModal = () => {
-    setShowModal(true);
+  const openDesireModal = (courseName) => {
+    setCourseNameForModal(courseName);
+    setShowDesireModal(true);
   };
-  const closeModal = () => {
-    setShowModal(false);
+  const closeDesireModal = () => {
+    setShowDesireModal(false);
+  };
+
+  const openSubscribeModal = (courseName) => {
+    setCourseNameForModal(courseName);
+    setShowSubscribeModal(true);
+  };
+  const closeSubscribeModal = () => {
+    setShowSubscribeModal(false);
+  };
+  const handleConfirmSubscribe = () => {
+    setIsSubscribed(true);
+    closeSubscribeModal();
   };
 
   return (
@@ -88,7 +104,7 @@ function CourseDetailPage() {
         </div>
 
         <div className="h-full mt-7 sticky top-16">
-          <div className="w-[357px] h-[449px] py-8 px-6 shadow-lg rounded-lg ml-10">
+          <div className="w-[357px] py-8 px-6 shadow-lg rounded-lg ml-10">
             <p className="text-sm text-orange-500 mb-4">Course</p>
             <p className="text-2xl text-black font-medium mb-2">
               {course.course_name}
@@ -101,17 +117,39 @@ function CourseDetailPage() {
               THB {addCommasToNumber(course.course_price)}.00
             </p>
             <hr className="mb-6" />
-            <button
-              className="px-8 py-[18px] w-[309px] h-[60px] border-solid border-[1px] rounded-[12px] border-orange-500 font-bold text-orange-500 mt-3 hover:bg-orange-500 hover:text-white"
-              onClick={openModal}
-            >
-              Get in Desire Course
-            </button>
-            <ConfirmationModal isOpen={showModal} onRequestClose={closeModal} />
-            <br />
-            <button className="px-8 py-[18px] w-[309px] h-[60px] border-solid border-[1px] rounded-[12px] bg-blue-500 font-bold text-white mt-5 hover:bg-blue-600 ">
-              Subscribe This Course
-            </button>
+
+            {isSubscribed ? (
+              <button className="px-8 py-[18px] w-[309px] h-[60px] border-solid border-[1px] rounded-[12px] bg-blue-500 font-bold text-white mt-5 hover:bg-blue-600">
+                Start Learning
+              </button>
+            ) : (
+              <>
+                <button
+                  className="px-8 py-[18px] w-[309px] h-[60px] border-solid border-[1px] rounded-[12px] border-orange-500 font-bold text-orange-500 mt-3 hover:bg-orange-500 hover:text-white"
+                  onClick={() => openDesireModal(course.course_name)}
+                >
+                  Get in Desire Course
+                </button>
+                <DesireCourseModal
+                  isOpen={showDesireModal}
+                  onRequestClose={closeDesireModal}
+                  courseName={courseNameForModal}
+                />
+                <br />
+                <button
+                  className="px-8 py-[18px] w-[309px] h-[60px] border-solid border-[1px] rounded-[12px] bg-blue-500 font-bold text-white mt-5 hover:bg-blue-600"
+                  onClick={() => openSubscribeModal(course.course_name)}
+                >
+                  Subscribe This Course
+                </button>
+                <SubscribeModal
+                  isOpen2={showSubscribeModal}
+                  onRequestClose2={closeSubscribeModal}
+                  courseName={courseNameForModal}
+                  onConfirm={handleConfirmSubscribe}
+                />
+              </>
+            )}
           </div>
         </div>
       </div>
