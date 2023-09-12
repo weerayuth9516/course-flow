@@ -7,9 +7,11 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import DisplayCards from "../components/DisplayCards";
 import SubFooter from "../components/SubFooter";
+import { useAuth } from "../context/authentication";
 
 function CoursePage() {
   const { searchList, inputText, setInputText, getSearchList } = useGetsearch();
+  const auth = useAuth();
   const limit = 12;
 
   const handleInputChange = (e) => {
@@ -57,7 +59,7 @@ function CoursePage() {
             <DisplayCards searchList={searchList} />
           </div>
         </div>
-        <div>{!session ? <SubFooter /> : ""}</div>
+        <div>{!auth.session.user ? <SubFooter /> : ""}</div>
         <Footer />
       </div>
     </>

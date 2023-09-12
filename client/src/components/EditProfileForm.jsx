@@ -22,11 +22,16 @@ function EditProfileForm() {
   const [hasImage, setHasImage] = useState(false);
   const [fileErrorMessage, setfileErrorMessage] = useState(null);
   const [dateErrorMessage, setDateErrorMessage] = useState(null);
+  const [session, setSession] = useState(auth.session.user);
+  const [name, setName] = useState("");
+  const [birthDate, setBirthDate] = useState("");
+  const [education, setEducation] = useState("");
+  const [email, setEmail] = useState("");
   const initialValues = {
-    name: auth.session.user_name,
-    birthDate: auth.session.user_dob,
-    education: auth.session.user_education,
-    email: auth.session.user_email,
+    name,
+    birthDate,
+    education,
+    email,
   };
   const validationSchema = Yup.object().shape({
     name: Yup.string()
@@ -60,12 +65,16 @@ function EditProfileForm() {
   };
   useEffect(() => {
     if (auth.isAuthenicated) {
+      setName(auth.session.user.user_name);
+      setBirthDate(auth.session.user.user_dob);
+      setEducation(auth.session.user.user_education);
+      setEmail(auth.session.user.user_email);
       if (auth.session.user.user_avatar === null) {
         setHasImage(false);
       } else {
         setHasImage(true);
         try {
-          setImages(session.user_avatar);
+          setImages(auth.session.user.user_avatar);
         } catch {
           console.log("Awaiting for loading Img Path");
         }
@@ -77,10 +86,10 @@ function EditProfileForm() {
 
   const handleSubmit = (event) => {
     const data = {
-      user_name: session.user_name,
-      user_dob: session.user_dob,
-      user_education: session.user_education,
-      user_email: session.user_email,
+      user_name: name,
+      user_dob: birthDate,
+      user_education: education,
+      user_email: email,
       avatarObj: fileBody,
     };
     if (dateErrorMessage === null && fileErrorMessage === null) {
@@ -91,7 +100,6 @@ function EditProfileForm() {
   const handleFileChange = (event) => {
     const file = event.target.files[event.target.files.length - 1];
     const typeFile = file.name.substring(file.name.lastIndexOf(".") + 1);
-
     if (file.size > 2097152) {
       setHasImage(false);
       setfileErrorMessage("File too large! (max 2MB)");
@@ -112,7 +120,6 @@ function EditProfileForm() {
       }
     } else {
       setHasImage(false);
-
       setfileErrorMessage("File Only JPG, PNG, JPEG !");
     }
   };
@@ -270,7 +277,7 @@ function EditProfileForm() {
                     }}
                   >
                     <DatePicker
-                      value={dayjs(birthDate)}
+                      value={dayjs(session.user_dob)}
                       onChange={(date) => {
                         setBirthDate(date);
                         validateBirthDate(date);
@@ -327,8 +334,7 @@ function EditProfileForm() {
                       id="email"
                       name="email"
                       type="text"
-                      disabled
-                      className={`border border-gray-500 w-[453px] h-[48px] rounded-lg p-3 text-gray-600${
+                      className={`border border-gray-500 w-[453px] h-[48px] rounded-lg p-3 focus:border-orange-500 focus:outline-none${
                         errors.email && touched.email
                           ? "border-2 border-purple-500"
                           : ""

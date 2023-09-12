@@ -34,7 +34,6 @@ const useGetuser = () => {
       setIsError(false);
       setIsLoading(true);
       let newData;
-
       if (inputData.avatarObj.name) {
         const results = await supabase.storage
           .from("user_avatars")
@@ -48,11 +47,13 @@ const useGetuser = () => {
           ? (newData = {
               ...inputData,
               user_avatar: `${inputData.avatarObj.name}`,
+              avatarObj: null,
             })
           : setIsLoading(false);
       } else {
-        newData = inputData;
+        newData = { ...inputData, user_avatar: null, avatarObj: null };
       }
+      console.log(newData);
       const axiosResult = await axios.put(
         `http://localhost:4001/users/${id}`,
         newData

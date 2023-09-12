@@ -62,23 +62,40 @@ userRouter.post("/", async (req, res) => {
 
 userRouter.put("/:id", async (req, res) => {
   const id = req.params.id;
+  console.log(req.body.user_email);
   const oldPath = await supabase
     .from("users")
     .select("user_avatar")
     .eq("user_id", id);
-  const results = await supabase
-    .from("users")
-    .update({
-      user_name: `${req.body.user_name}`,
-      user_education: `${req.body.user_education}`,
-      user_dob: `${req.body.user_dob}`,
-      user_avatar: `${req.body.user_avatar}`,
-    })
-    .eq("user_id", id)
-    .select();
-  const url = await supabase.storage
-    .from("user_avatars")
-    .remove([oldPath.data[0].user_avatar]);
+  let results;
+  let url;
+  if (req.body.user_avatar !== null) {
+    results = await supabase
+      .from("users")
+      .update({
+        user_email: `${req.body.user_email}`,
+        user_name: `${req.body.user_name}`,
+        user_education: `${req.body.user_education}`,
+        user_dob: `${req.body.user_dob}`,
+        user_avatar: `${req.body.user_avatar}`,
+      })
+      .eq("user_id", id)
+      .select();
+    url = await supabase.storage
+      .from("user_avatars")
+      .remove([oldPath.data[0].user_avatar]);
+  } else {
+    results = await supabase
+      .from("users")
+      .update({
+        user_email: `${req.body.user_email}`,
+        user_name: `${req.body.user_name}`,
+        user_education: `${req.body.user_education}`,
+        user_dob: `${req.body.user_dob}`,
+      })
+      .eq("user_id", id)
+      .select();
+  }
   if (results.statusText === "OK") {
     return res.json({ message: "Update users successfully" });
   } else {

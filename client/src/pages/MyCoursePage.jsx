@@ -1,28 +1,24 @@
 import React from "react";
 import { useEffect } from "react";
-import { useContext } from "react";
-// import { SessionContext } from "../App";
 import useGetsearch from "../hook/useGetsearch";
 import useGetuser from "../hook/useGetuser";
 import DisplayCards from "../components/DisplayCards";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import { useAuth } from "../context/authentication";
 
 function MyCoursePage() {
   const { searchList, getSearchList } = useGetsearch();
   const { user, getCurrentUser } = useGetuser();
-  const { session } = useContext();
   const limit = 12;
-
+  const auth = useAuth();
   useEffect(() => {
-    if (session) {
-      getCurrentUser(session.user.id);
-      console.log(session);
-      console.log(user);
+    if (auth.isAuthenicated) {
+      getCurrentUser(auth.session.user.user_id);
     } else {
       getCurrentUser(null);
     }
-  }, [session]);
+  }, [auth.isAuthenicated]);
 
   useEffect(() => {
     getSearchList("", limit);
@@ -54,13 +50,13 @@ function MyCoursePage() {
           <div className="user-box sticky top-20 w-[357px] h-[396px] rounded-lg shadow-lg mr-10 flex flex-col justify-center items-center">
             <div className="w-[120px] h-[120px]">
               <img
-                src={user.user_avatar}
+                src={auth.session.user.user_avatar}
                 alt="user image"
                 className="object-contain w-full h-full"
               />
             </div>
             <div className="mt-5 text-header3 text-gray-800">
-              {user.user_name}
+              {auth.session.user.user_name}
             </div>
             <div className="w-[309px] h-[134px] flex justify-center space-x-4 mt-8">
               <div className="w-[143px] h-[134px] border-2 rounded-lg shadow-lg bg-gray-200 flex flex-col space-y-8  transform hover:scale-110 transition-transform duration-300 ease-in-out hover:shadow-lg">
