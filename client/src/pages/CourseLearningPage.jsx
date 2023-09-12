@@ -57,9 +57,9 @@ function CourseLearningPage() {
 
   const ToggleList = ({ title, content, isOpen, toggle, index }) => {
     return (
-      <div className="mt-[50px] ml-5 w-[309px] relative">
+      <div className="ml-5 w-[309px] relative">
         <div
-          className="toggle-header w-full h-[48px] border-1 border-b border-gray-400"
+          className="toggle-header flex justify-start items-center w-full h-[72px] border-1 border-b border-gray-400"
           onClick={toggle}
         >
           <div className="toggle-title mr-10 absolute text-body2">
@@ -92,7 +92,7 @@ function CourseLearningPage() {
       >
         <div
           id="all-content"
-          className="w-[1440px] flex justify-center mt-[120px] space-x-8"
+          className="w-full flex justify-center mt-[120px] space-x-8"
         >
           <div
             id="sidebar"
@@ -111,7 +111,7 @@ function CourseLearningPage() {
                     : course.course_summary}
                 </p>
               </div>
-              <div>
+              <div className="mb-5">
                 <img src={percent} alt="progress image" />
               </div>
             </div>
