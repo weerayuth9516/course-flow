@@ -22,7 +22,7 @@ function CourseLearningPage() {
   const [displayVideo, setDisplayVideo] = useState(
     "https://qlxsggpxpucbrqcywrkm.supabase.co/storage/v1/object/public/course_videos/course_id_d9f4/lesson_id_c7ce/sub_lesson_id_4cc5.mp4?t=2023-09-12T04%3A56%3A27.848Z"
   );
-  const [toggleStates, setToggleStates] = useState(lesson.map(() => false));
+ 
 
   const videoRef = useRef(null);
   const [isVideoFinished, setIsVideoFinished] = useState(false);
@@ -31,15 +31,13 @@ function CourseLearningPage() {
 
   const handleVideoEnd = () => {
     setIsVideoFinished(true);
+    setStatus(3)
   };
 
   const handleVideoStart = () => {
     setIsVideoStarted(true);
     setStatus(2)
   };
-
-  useEffect(() => {
-  }, [status]);
 
   const params = useParams();
 
@@ -72,7 +70,7 @@ function CourseLearningPage() {
     getCourseAndLessonAndSubLesson();
   }, [params.courseId]);
 
-
+  const [toggleStates, setToggleStates] = useState(lesson.map(() => false));
   const toggle = (index) => {
     const newToggleStates = [...toggleStates];
     newToggleStates[index] = !newToggleStates[index];
@@ -157,6 +155,7 @@ function CourseLearningPage() {
                   content={
                     data.sub_lessons && data.sub_lessons.length !== 0
                       ? data.sub_lessons.map((item, index) => {
+                      
                           return (
                             <li key={index} className="mb-5 flex justify-start">
                               <span>
@@ -204,7 +203,7 @@ function CourseLearningPage() {
             id="right-content"
             className="flex flex-col justify-start w-[739px]"
           >
-            <p className="text-header2 text-black mb-8">{displaySubLesson}</p>
+            <p className="text-header2 text-black mb-2">{displaySubLesson}</p>
             <div className="text-header2 text-black">
               <video
                 ref={videoRef}
@@ -231,10 +230,10 @@ function CourseLearningPage() {
         </div>
       </div>
       <div className="font-inter font-bold text-body2 flex justify-between items-center">
-        <button className="ml-20 mt-10 mb-8 text-blue-500 ">
+        <button className="ml-20 mt-5 mb-5 text-blue-500 ">
           Previous Lesson
         </button>
-        <button className="w-[161px] h-[60px] mr-10 mt-10 mb-8 text-white bg-blue-500 rounded-lg">
+        <button className="w-[161px] h-[60px] mr-10 mt-5 mb-5 text-white bg-blue-500 rounded-lg">
           Next Lesson
         </button>
       </div>
