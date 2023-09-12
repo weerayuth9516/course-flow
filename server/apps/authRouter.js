@@ -8,7 +8,6 @@ const authRouter = Router();
 
 authRouter.post("/register", async (req, res) => {
   try {
-    console.log(req.body.email);
     const emailChecker = await supabase
       .from("users")
       .select("*")
@@ -60,10 +59,11 @@ authRouter.post("/login", async (req, res) => {
           message: "Password Invalid",
         });
       } else {
-        console.log(supabaseResult.data[0]);
-        const avatarPath = await supabase.storage
-          .from("user_avatars")
-          .getPublicUrl(supabaseResult.data[0].user_avatar);
+        const avatarPath = supabaseResult.data[0].user_avatar
+          ? await supabase.storage
+              .from("user_avatars")
+              .getPublicUrl(supabaseResult.data[0].user_avatar)
+          : null;
         const token = jwt.sign(
           {
             user_id: supabaseResult.data[0].user_id,
@@ -71,7 +71,7 @@ authRouter.post("/login", async (req, res) => {
             user_name: supabaseResult.data[0].user_name,
             user_education: supabaseResult.data[0].user_education,
             user_dob: supabaseResult.data[0].user_dob,
-            user_avatar: avatarPath.data.publicUrl,
+            user_avatar: avatarPath ? avatarPath.data.publicUrl : null,
           },
           process.env.SECRET_KEY,
           {
