@@ -12,8 +12,8 @@ import { Link, useParams } from "react-router-dom";
 function CourseLearningPage() {
   const [course, setCourse] = useState([]);
   const [lesson, setLesson] = useState([]);
-  const [status, setStatus] = useState(2);
-  const [displaySubLesson, setDisplaySubLesson] = useState("");
+  const [status, setStatus] = useState(1);
+  const [displaySubLesson, setDisplaySubLesson] = useState("uCOS");
   const [toggleStates, setToggleStates] = useState(lesson.map(() => false));
 
   const { searchList, getSearchList } = useGetsearch();
@@ -111,7 +111,7 @@ function CourseLearningPage() {
                     : course.course_summary}
                 </p>
               </div>
-              <div className="mb-5">
+              <div className="mb-3">
                 <img src={percent} alt="progress image" />
               </div>
             </div>
