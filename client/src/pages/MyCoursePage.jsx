@@ -29,8 +29,10 @@ function MyCoursePage() {
   }, []);
 
   return (
+    <>
+    <Header />
     <div id="container" className="font-inter mx-auto">
-      <Header />
+      
       <div className="bg-[url('src/assets/ourCourses/image_background.png')] bg-[length:100%_190px] bg-no-repeat">
         <div className="search-box mb-2 flex flex-col items-center mt-20 h-[230px]">
           <div className="title text-black text-header2 font-bold mb-5">
@@ -50,7 +52,7 @@ function MyCoursePage() {
         </div>
       </div>
       <div className="user-image-and-course-container flex justify-center">
-        <div className="user-box sticky top-0 w-[357px] h-[396px] rounded-lg shadow-lg mr-10 flex flex-col justify-center items-center">
+        <div className="user-box sticky top-20 w-[357px] h-[396px] rounded-lg shadow-lg mr-10 flex flex-col justify-center items-center">
           <div className="w-[120px] h-[120px]">
             <img src={user.user_avatar} alt="user image" className="object-contain w-full h-full"/>
              
@@ -81,6 +83,7 @@ function MyCoursePage() {
       </div>
       <Footer/>
     </div>
+    </>
   );
 }
 
