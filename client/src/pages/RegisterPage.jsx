@@ -4,21 +4,12 @@ import * as Yup from "yup";
 import Header from "../components/Header";
 import { useAuth } from "../context/authentication.jsx";
 import { useEffect } from "react";
-
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import TextField from "@mui/material/TextField";
 import dayjs from "dayjs";
 import { Stack } from "@mui/material";
-
-import { useContext, useState, useEffect } from "react";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import dayjs from "dayjs";
-import { Stack } from "@mui/material";
-
 import { useState } from "react";
 function RegisterPage() {
   const navigate = useNavigate();
@@ -168,58 +159,59 @@ function RegisterPage() {
                   </LocalizationProvider>
                 </div>
 
-              <div className="mb-4">
-                <label htmlFor="education">Educational Background</label>
-                <Field
-                  type="text"
-                  id="education"
-                  name="education"
-                  placeholder="Enter Educational Background"
-                  className="w-full border border-gray-300 py-2 pl-3 pr-4 rounded-lg "
-                />
-                <ErrorMessage
-                  name="education"
-                  component="div"
-                  className="text-red-500"
-                />
-              </div>
-              <div className="mb-4">
-                <label htmlFor="email">Email</label>
-                <Field
-                  type="email"
-                  id="email"
-                  name="email"
-                  placeholder="Enter Email"
-                  className="w-full border border-gray-300 py-2 pl-3 pr-4 rounded-lg "
-                />
-                <ErrorMessage
-                  name="email"
-                  component="div"
-                  className="text-red-500"
-                />
-              </div>
-              <div className="mb-4">
-                <label htmlFor="password">Password</label>
-                <Field
-                  type="password"
-                  id="password"
-                  name="password"
-                  placeholder="Enter password"
-                  className="w-full border border-gray-300 py-2 pl-3 pr-4 rounded-lg "
-                />
-                <ErrorMessage
-                  name="password"
-                  component="div"
-                  className="text-red-500"
-                />
-              </div>
-              <button
-                type="submit"
-                className="bg-blue-500 text-white w-full mb-6 px-8 py-3.5 rounded-xl"
-              >
-                Register
-              </button>
-            </Form>
+                <div className="mb-4">
+                  <label htmlFor="education">Educational Background</label>
+                  <Field
+                    type="text"
+                    id="education"
+                    name="education"
+                    placeholder="Enter Educational Background"
+                    className="w-full border border-gray-300 py-2 pl-3 pr-4 rounded-lg "
+                  />
+                  <ErrorMessage
+                    name="education"
+                    component="div"
+                    className="text-red-500"
+                  />
+                </div>
+                <div className="mb-4">
+                  <label htmlFor="email">Email</label>
+                  <Field
+                    type="email"
+                    id="email"
+                    name="email"
+                    placeholder="Enter Email"
+                    className="w-full border border-gray-300 py-2 pl-3 pr-4 rounded-lg "
+                  />
+                  <ErrorMessage
+                    name="email"
+                    component="div"
+                    className="text-red-500"
+                  />
+                </div>
+                <div className="mb-4">
+                  <label htmlFor="password">Password</label>
+                  <Field
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="Enter password"
+                    className="w-full border border-gray-300 py-2 pl-3 pr-4 rounded-lg "
+                  />
+                  <ErrorMessage
+                    name="password"
+                    component="div"
+                    className="text-red-500"
+                  />
+                </div>
+                <button
+                  type="submit"
+                  className="bg-blue-500 text-white w-full mb-6 px-8 py-3.5 rounded-xl"
+                >
+                  Register
+                </button>
+              </Form>
+            )}
           </Formik>
           <div className="already">
             Already have an account?

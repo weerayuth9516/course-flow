@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { Link } from "react-router-dom";
@@ -21,9 +21,7 @@ function LoginPage() {
     password: Yup.string()
       .required("Password is required")
       .min(12, "Password must be at least 12 characters"),
-      .min(12, "Password must be at least 12 characters"),
   });
-  const handleSubmit = async (values, { setErrors }) => {
   const handleSubmit = async (values, { setErrors }) => {
     try {
       await auth.login(values);

@@ -1,14 +1,10 @@
 import { useState, useEffect } from "react";
 import useGetuser from "../hook/useGetuser";
 import remove from "../assets/header/remove.png";
-import { useContext } from "react";
-import { supabase } from "../supabase/client.js";
 import addImage from "../assets/header/add.png";
 import error from "../assets/header/error.png";
-
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
-
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -24,15 +20,13 @@ function EditProfileForm() {
   const [images, setImages] = useState("");
   const [fileBody, setFileBody] = useState({});
   const [hasImage, setHasImage] = useState(false);
-  const auth = useAuth();
   const [fileErrorMessage, setfileErrorMessage] = useState(null);
   const [dateErrorMessage, setDateErrorMessage] = useState(null);
-  const navigate = useNavigate();
   const initialValues = {
-    name,
-    birthDate,
-    education,
-    email,
+    name: auth.session.user_name,
+    birthDate: auth.session.user_dob,
+    education: auth.session.user_education,
+    email: auth.session.user_email,
   };
   const validationSchema = Yup.object().shape({
     name: Yup.string()
