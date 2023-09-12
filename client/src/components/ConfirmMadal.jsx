@@ -33,3 +33,5 @@ export function ConfirmationModal({ isOpen, onRequestClose }) {
     </div>
   );
 }
+
+export function ConfirmSubscribeModal() {}
