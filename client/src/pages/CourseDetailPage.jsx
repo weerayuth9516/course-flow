@@ -2,23 +2,19 @@ import React, { useEffect, useState, useContext } from "react";
 import { Link, useParams } from "react-router-dom";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-
 import ToggleLesson from "../components/ToggleLesson";
 import SubFooter from "../components/SubFooter";
 import { DesireCourseModal, SubscribeModal } from "../components/ConfirmMadal";
-
 import useGetsearch from "../hook/useGetsearch";
 import axios from "axios";
-
 import DisplayCards from "../components/DisplayCards";
-import { SessionContext } from "../App";
 
 function CourseDetailPage() {
   const [course, setCourse] = useState({});
   const params = useParams();
 
   const { searchList, getSearchList } = useGetsearch();
-  const { session } = useContext(SessionContext);
+  // const { session } = useContext(SessionContext);
 
   const getCourse = async () => {
     try {
@@ -162,7 +158,7 @@ function CourseDetailPage() {
           <DisplayCards searchList={searchList} />
         </div>
       </div>
-      {!session ? <SubFooter /> : ""}
+      {/* {!session ? <SubFooter /> : ""} */}
       <Footer />
     </>
   );

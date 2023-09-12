@@ -1,34 +1,32 @@
 import { useState, useEffect } from "react";
 import useGetuser from "../hook/useGetuser";
 import remove from "../assets/header/remove.png";
-import { useContext } from "react";
-import { SessionContext } from "../App";
-import { supabase } from "../supabase/client.js";
 import addImage from "../assets/header/add.png";
 import error from "../assets/header/error.png";
-
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
-
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import dayjs from "dayjs";
 import { Stack } from "@mui/material";
+import { useAuth } from "../context/authentication";
+import { useNavigate } from "react-router-dom";
 
 function EditProfileForm() {
-  const { user, getCurrentUser, updateUserProfileById } = useGetuser();
+  const navigate = useNavigate();
+  const auth = useAuth();
+  const { updateUserProfileById } = useGetuser();
+  const [images, setImages] = useState("");
+  const [fileBody, setFileBody] = useState({});
+  const [hasImage, setHasImage] = useState(false);
+  const [fileErrorMessage, setfileErrorMessage] = useState(null);
+  const [dateErrorMessage, setDateErrorMessage] = useState(null);
+  const [session, setSession] = useState(auth.session.user);
   const [name, setName] = useState("");
   const [birthDate, setBirthDate] = useState("");
   const [education, setEducation] = useState("");
   const [email, setEmail] = useState("");
-  const [images, setImages] = useState("");
-  const [fileBody, setFileBody] = useState({});
-  const [hasImage, setHasImage] = useState(false);
-  const { session, setSession } = useContext(SessionContext);
-  const [fileErrorMessage, setfileErrorMessage] = useState(null);
-  const [dateErrorMessage, setDateErrorMessage] = useState(null);
-
   const initialValues = {
     name,
     birthDate,
@@ -65,33 +63,26 @@ function EditProfileForm() {
     setImages({});
     setHasImage(false);
   };
-
   useEffect(() => {
-    if (session) {
-      getCurrentUser(session.user.id);
-    } else {
-      getCurrentUser(null);
-    }
-  }, [session]);
-
-  useEffect(() => {
-    if (user) {
-      setName(user.user_name);
-      setBirthDate(user.user_dob);
-      setEducation(user.user_education);
-      setEmail(user.user_email);
-      if (user.user_avatar === null) {
+    if (auth.isAuthenicated) {
+      setName(auth.session.user.user_name);
+      setBirthDate(auth.session.user.user_dob);
+      setEducation(auth.session.user.user_education);
+      setEmail(auth.session.user.user_email);
+      if (auth.session.user.user_avatar === null) {
         setHasImage(false);
       } else {
         setHasImage(true);
         try {
-          setImages(user.user_avatar);
+          setImages(auth.session.user.user_avatar);
         } catch {
           console.log("Awaiting for loading Img Path");
         }
       }
+    } else {
+      navigate("/login");
     }
-  }, [user]);
+  }, [auth.isAuthenicated]);
 
   const handleSubmit = (event) => {
     const data = {
@@ -102,14 +93,13 @@ function EditProfileForm() {
       avatarObj: fileBody,
     };
     if (dateErrorMessage === null && fileErrorMessage === null) {
-      updateUserProfileById(session.user.id, data);
+      updateUserProfileById(auth.session.user.user_id, data);
     }
   };
 
   const handleFileChange = (event) => {
     const file = event.target.files[event.target.files.length - 1];
     const typeFile = file.name.substring(file.name.lastIndexOf(".") + 1);
-
     if (file.size > 2097152) {
       setHasImage(false);
       setfileErrorMessage("File too large! (max 2MB)");
@@ -130,7 +120,6 @@ function EditProfileForm() {
       }
     } else {
       setHasImage(false);
-
       setfileErrorMessage("File Only JPG, PNG, JPEG !");
     }
   };
@@ -288,7 +277,7 @@ function EditProfileForm() {
                     }}
                   >
                     <DatePicker
-                      value={dayjs(birthDate)}
+                      value={dayjs(session.user_dob)}
                       onChange={(date) => {
                         setBirthDate(date);
                         validateBirthDate(date);
@@ -345,8 +334,7 @@ function EditProfileForm() {
                       id="email"
                       name="email"
                       type="text"
-                      disabled
-                      className={`border border-gray-500 w-[453px] h-[48px] rounded-lg p-3 text-gray-600${
+                      className={`border border-gray-500 w-[453px] h-[48px] rounded-lg p-3 focus:border-orange-500 focus:outline-none${
                         errors.email && touched.email
                           ? "border-2 border-purple-500"
                           : ""

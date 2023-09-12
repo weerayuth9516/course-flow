@@ -2,13 +2,15 @@ import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../supabase/client";
+import { useAuth } from "../context/authentication";
+import jwtDecode from "jwt-decode";
 
 const useGetuser = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState({});
   const [isError, setIsError] = useState(null);
   const [isLoading, setIsLoading] = useState(null);
-
+  const auth = useAuth();
   const getCurrentUser = async (id) => {
     try {
       if (id !== null) {
@@ -27,24 +29,11 @@ const useGetuser = () => {
     }
   };
 
-  const updateAvatarProfilById = async (id, data) => {
-    try {
-      setIsError(false);
-      setIsLoading(true);
-      await axios.put(`http://localhost:4001/users/avatar/${id}`, data);
-      setIsLoading(false);
-    } catch (error) {
-      setIsError(true);
-      setIsLoading(false);
-    }
-  };
-
   const updateUserProfileById = async (id, inputData) => {
     try {
       setIsError(false);
       setIsLoading(true);
       let newData;
-
       if (inputData.avatarObj.name) {
         const results = await supabase.storage
           .from("user_avatars")
@@ -58,14 +47,23 @@ const useGetuser = () => {
           ? (newData = {
               ...inputData,
               user_avatar: `${inputData.avatarObj.name}`,
+              avatarObj: null,
             })
           : setIsLoading(false);
       } else {
-        newData = inputData;
+        newData = { ...inputData, user_avatar: null, avatarObj: null };
       }
-      isLoading
-        ? await axios.put(`http://localhost:4001/users/${id}`, newData)
-        : alert("Storage API Invalid");
+      console.log(newData);
+      const axiosResult = await axios.put(
+        `http://localhost:4001/users/${id}`,
+        newData
+      );
+      if (axiosResult.data.message == "Update users successfully") {
+        const fetching = await axios.get(`http://localhost:4001/users/${id}`);
+        const userDataFromToken = jwtDecode(fetching.data.token);
+        auth.session.user = userDataFromToken;
+        localStorage.setItem("token", fetching.data.token);
+      }
       setIsLoading(false);
       navigate("/");
     } catch (error) {
@@ -79,7 +77,6 @@ const useGetuser = () => {
     setUser,
     getCurrentUser,
     updateUserProfileById,
-    updateAvatarProfilById,
     isError,
     isLoading,
   };

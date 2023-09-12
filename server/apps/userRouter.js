@@ -1,8 +1,10 @@
 import { Router } from "express";
 import { supabase } from "../utils/db.js";
 import "dotenv/config";
+import jwt from "jsonwebtoken";
+import { protect } from "../middlewares/protect.js";
 const userRouter = Router();
-
+userRouter.use(protect);
 userRouter.get("/", async (req, res) => {
   const results = await supabase.from("users").select("*");
   if (results.statusText === "OK") {
@@ -15,16 +17,28 @@ userRouter.get("/", async (req, res) => {
 userRouter.get("/:id", async (req, res) => {
   const id = req.params.id;
   const results = await supabase.from("users").select("*").eq("user_id", id);
-  const file = await supabase.storage
-    .from("user_avatars")
-    .getPublicUrl(`${results.data[0].user_avatar}`);
   if (results.statusText === "OK") {
-    const responseForClient = {
-      ...results.data[0],
-      user_avatar: file.data.publicUrl,
-    };
+    const avatarPath = await supabase.storage
+      .from("user_avatars")
+      .getPublicUrl(results.data[0].user_avatar);
+    const token = jwt.sign(
+      {
+        user_id: results.data[0].user_id,
+        user_email: results.data[0].user_email,
+        user_name: results.data[0].user_name,
+        user_education: results.data[0].user_education,
+        user_dob: results.data[0].user_dob,
+        user_avatar: avatarPath.data.publicUrl,
+      },
+      process.env.SECRET_KEY,
+      {
+        expiresIn: "90000",
+      }
+    );
+
     return res.json({
-      data: [responseForClient],
+      message: "Fetching succesfully",
+      token,
     });
   } else {
     return res.status(400).send(`API ERROR : ${results.error}`);
@@ -40,7 +54,7 @@ userRouter.post("/", async (req, res) => {
     },
   ]);
   if (results.statusText === "OK") {
-    return res.json({ message: "Create users successfully." });
+    return res.json({ message: "Create users successfully" });
   } else {
     return res.status(400).send(`API ERROR`);
   }
@@ -48,26 +62,42 @@ userRouter.post("/", async (req, res) => {
 
 userRouter.put("/:id", async (req, res) => {
   const id = req.params.id;
+  console.log(req.body.user_email);
   const oldPath = await supabase
     .from("users")
     .select("user_avatar")
     .eq("user_id", id);
-  const results = await supabase
-    .from("users")
-    .update({
-      user_name: `${req.body.user_name}`,
-      user_education: `${req.body.user_education}`,
-      user_dob: `${req.body.user_dob}`,
-      user_avatar: `${req.body.user_avatar}`,
-    })
-    .eq("user_id", id)
-    .select();
-  const url = await supabase.storage
-    .from("user_avatars")
-    .remove([oldPath.data[0].user_avatar]);
-  console.log(url);
+  let results;
+  let url;
+  if (req.body.user_avatar !== null) {
+    results = await supabase
+      .from("users")
+      .update({
+        user_email: `${req.body.user_email}`,
+        user_name: `${req.body.user_name}`,
+        user_education: `${req.body.user_education}`,
+        user_dob: `${req.body.user_dob}`,
+        user_avatar: `${req.body.user_avatar}`,
+      })
+      .eq("user_id", id)
+      .select();
+    url = await supabase.storage
+      .from("user_avatars")
+      .remove([oldPath.data[0].user_avatar]);
+  } else {
+    results = await supabase
+      .from("users")
+      .update({
+        user_email: `${req.body.user_email}`,
+        user_name: `${req.body.user_name}`,
+        user_education: `${req.body.user_education}`,
+        user_dob: `${req.body.user_dob}`,
+      })
+      .eq("user_id", id)
+      .select();
+  }
   if (results.statusText === "OK") {
-    return res.json({ message: "Update users successfully." });
+    return res.json({ message: "Update users successfully" });
   } else {
     return res.status(400).send(`API ERROR`);
   }

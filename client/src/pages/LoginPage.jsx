@@ -1,23 +1,19 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { Link } from "react-router-dom";
-import { supabase } from "../supabase/client";
 import { useNavigate } from "react-router-dom";
 import Header from "../components/Header";
+import { useAuth } from "../context/authentication";
 import errorIcon from "../assets/loginPage/exclamation.png";
-import axios from "axios";
-import { useContext } from "react";
-import { SessionContext } from "../App";
-
 function LoginPage() {
   const navigate = useNavigate();
-  const { session, setSession } = useContext(SessionContext);
+  const auth = useAuth();
+  const [errorMessage, setErrorMessage] = useState(null);
   const initialValues = {
     email: "",
     password: "",
   };
-
   const validationSchema = Yup.object().shape({
     email: Yup.string()
       .email("Invalid email address")
@@ -28,23 +24,16 @@ function LoginPage() {
   });
   const handleSubmit = async (values, { setErrors }) => {
     try {
-      const results = await axios.post(
-        "http://localhost:4001/auth/login",
-        values
-      );
-      const res = await supabase.auth.signInWithPassword({
-        email: values.email,
-        password: values.password,
-      });
-      setSession(res.data.session);
-      navigate("/");
+      await auth.login(values);
+      setErrorMessage(auth.session.error);
     } catch (error) {
-      setErrors(error.response.data);
+      console.log(error);
+      setErrorMessage(null);
       navigate("/login");
     }
   };
   useEffect(() => {
-    if (session !== null) {
+    if (auth.isAuthenicated) {
       navigate("/");
     }
   });
@@ -76,19 +65,16 @@ function LoginPage() {
                       id="email"
                       name="email"
                       className={`w-full border border-gray-300 py-2 pl-3 pr-4 rounded-lg focus:border-orange-500 focus:outline-none ${
-                        errors.email && touched.email
+                        errorMessage === "Email Invalid"
                           ? "border-purple-500 border-2"
                           : ""
                       }`}
                       placeholder="Enter Email"
                       required
                     />
-                    {errors.email && touched.email && (
+                    {errorMessage === "Email Invalid" && (
                       <div className="error-icon absolute right-4 top-4">
-                        <img
-                          src={errorIcon}
-                          alt="Error Icon"
-                        />
+                        <img src={errorIcon} alt="Error Icon" />
                       </div>
                     )}
                   </div>
@@ -97,6 +83,9 @@ function LoginPage() {
                     component="div"
                     className="text-purple-500 mt-2"
                   />
+                  {errorMessage === "Email Invalid" && (
+                    <div className="text-purple-500">{errorMessage}</div>
+                  )}
                 </div>
 
                 <div className="mb-4">
@@ -107,24 +96,21 @@ function LoginPage() {
                     Password:
                   </label>
                   <div className="input-password-container relative">
-                  <Field
-                    type="password"
-                    id="password"
-                    name="password"
-                    className={`w-full border border-gray-300 py-2 pl-3 pr-4 rounded-lg focus:border-orange-500 focus:outline-none ${
-                      errors.password && touched.password
-                        ? "border-purple-500 border-2"
-                        : ""
-                    }`}
-                    placeholder="Enter password"
-                    required
-                  />
-                  {errors.password && touched.password && (
+                    <Field
+                      type="password"
+                      id="password"
+                      name="password"
+                      className={`w-full border border-gray-300 py-2 pl-3 pr-4 rounded-lg focus:border-orange-500 focus:outline-none ${
+                        errorMessage === "Password Invalid"
+                          ? "border-purple-500 border-2"
+                          : ""
+                      }`}
+                      placeholder="Enter password"
+                      required
+                    />
+                    {errorMessage === "Password Invalid" && (
                       <div className="error-icon absolute right-4 top-4">
-                        <img
-                          src={errorIcon}
-                          alt="Error Icon"
-                        />
+                        <img src={errorIcon} alt="Error Icon" />
                       </div>
                     )}
                   </div>
@@ -133,6 +119,9 @@ function LoginPage() {
                     component="div"
                     className="text-purple-500 mt-2"
                   />
+                  {errorMessage === "Password Invalid" && (
+                    <div className="text-purple-500">{errorMessage}</div>
+                  )}
                 </div>
 
                 <div className="text-center mt-8">

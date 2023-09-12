@@ -9,16 +9,12 @@ import authRouter from "./apps/authRouter.js";
 async function init() {
   const app = express();
   const port = 4001;
-
   dotenv.config();
-
   app.use(cors());
   app.use(bodyParser.json());
-
   app.use("/users", userRouter);
   app.use("/courses", courseRouter);
   app.use("/auth", authRouter);
-
   app.get("/", (req, res) => {
     return res.send("Course Flow API Running.");
   });
