@@ -10,7 +10,7 @@ import CourseDetailPage from "./pages/CourseDetailPage";
 import CoursePage from "./pages/CoursePage";
 import MyCoursePage from "./pages/MyCoursePage";
 import { supabase } from "./supabase/client";
-
+import CourseLearningPage from "./pages/CourseLearningPage";
 export const SessionContext = React.createContext();
 
 function App() {
@@ -35,15 +35,9 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/editprofile" element={<EditProfilePage />} />
           <Route path="/course" element={<CoursePage />} />
-          {session ? (
-            <Route path="/mycourses" element={<MyCoursePage />} />
-          ) : (
-            ""
-          )}
-          <Route
-            path="/course/courseDetail/:courseId"
-            element={<CourseDetailPage />}
-          />
+          {(session)?<Route path="/mycourses" element={<MyCoursePage />} />:""} 
+          <Route path="/courselearning/:courseId" element={<CourseLearningPage />} />
+          <Route path="/course/courseDetail/:courseId" element={<CourseDetailPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </SessionContext.Provider>
