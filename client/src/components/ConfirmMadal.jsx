@@ -1,4 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/authentication";
 
 export function DesireCourseModal({ isOpen, onRequestClose, courseName }) {
   return (
@@ -49,9 +51,16 @@ export function SubscribeModal({
   courseName,
   onConfirm,
 }) {
+  const navigate = useNavigate();
+  const auth = useAuth();
+
   const handleConfirm = () => {
-    onConfirm();
-    onRequestClose2();
+    if (auth.session.user !== null) {
+      onConfirm();
+      onRequestClose2();
+    } else {
+      navigate("/login");
+    }
   };
 
   return (

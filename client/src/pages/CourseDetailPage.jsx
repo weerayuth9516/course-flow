@@ -8,13 +8,14 @@ import { DesireCourseModal, SubscribeModal } from "../components/ConfirmMadal";
 import useGetsearch from "../hook/useGetsearch";
 import axios from "axios";
 import DisplayCards from "../components/DisplayCards";
+import { useAuth } from "../context/authentication";
 
 function CourseDetailPage() {
   const [course, setCourse] = useState({});
   const params = useParams();
 
   const { searchList, getSearchList } = useGetsearch();
-  // const { session } = useContext(SessionContext);
+  const auth = useAuth();
 
   const getCourse = async () => {
     try {
@@ -158,7 +159,7 @@ function CourseDetailPage() {
           <DisplayCards searchList={searchList} />
         </div>
       </div>
-      {/* {!session ? <SubFooter /> : ""} */}
+      {!auth.session.user ? <SubFooter /> : ""}
       <Footer />
     </>
   );
