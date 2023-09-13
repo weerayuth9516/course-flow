@@ -152,4 +152,36 @@ courseRouter.get("/:userId/mycourses", async (req, res) => {
   }
 });
 
+// subscipt_course
+courseRouter.post("/:courseId/mycourses", async (req, res) => {
+  try {
+    const { user_id, course_id } = req.body;
+
+    // const courseResults = await supabase
+    //   .from("courses")
+    //   .select("course_id")
+    //   .eq("course_id", courseId)
+    //   .single();
+    // console.log(courseResults);
+    const results = await supabase.from("user_course_details").insert([
+      {
+        course_id: req.body.course_id,
+        user_id: req.body.user_id,
+        status_id: 1,
+        subscription_id: 1,
+        subscription_date: new Date(),
+      },
+    ]);
+    console.log(results);
+    if (results.statusText === "OK") {
+      return res.json({ message: "Subscription course successfully" });
+    } else {
+      return res.status(400).send("API ERROR");
+    }
+  } catch (error) {
+    console.error("An error occurred:", error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
 export default courseRouter;
