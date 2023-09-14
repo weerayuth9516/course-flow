@@ -159,54 +159,93 @@ function RegisterPage() {
                   </LocalizationProvider>
                 </div>
 
-                <div className="mb-4">
+                <div className="mb-4 relative">
                   <label htmlFor="education">Educational Background</label>
                   <Field
                     type="text"
                     id="education"
                     name="education"
                     placeholder="Enter Educational Background"
-                    className="w-full border border-gray-300 py-2 pl-3 pr-4 rounded-lg "
+                    className={`w-full border border-gray-300 py-2 pl-3 pr-4 rounded-lg focus:border-orange-500 focus:outline-none ${
+                      errors.education && touched.education
+                        ? "border-purple-500 border-2"
+                        : ""
+                    }`}
                   />
                   <ErrorMessage
                     name="education"
                     component="div"
-                    className="text-red-500"
+                    className="text-purple-500 text-body3"
                   />
+                  {errors.education && touched.education ? (
+                    <img
+                      src="src/assets/registerPage/errorIcon.svg"
+                      alt="errorIcon"
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 z-10"
+                    />
+                  ) : (
+                    ""
+                  )}
                 </div>
-                <div className="mb-4">
+                <div className="mb-4 relative">
                   <label htmlFor="email">Email</label>
                   <Field
                     type="email"
                     id="email"
                     name="email"
                     placeholder="Enter Email"
-                    className="w-full border border-gray-300 py-2 pl-3 pr-4 rounded-lg "
+                    className={`w-full border border-gray-300 py-2 pl-3 pr-4 rounded-lg focus:border-orange-500 focus:outline-none ${
+                      errors.email && touched.email
+                        ? "border-purple-500 border-2"
+                        : ""
+                    }`}
                   />
                   <ErrorMessage
                     name="email"
                     component="div"
-                    className="text-red-500"
+                    className="text-purple-500 text-body3"
                   />
+                  {errors.email && touched.email ? (
+                    <img
+                      src="src/assets/registerPage/errorIcon.svg"
+                      alt="errorIcon"
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 z-10"
+                    />
+                  ) : (
+                    ""
+                  )}
                 </div>
-                <div className="mb-4">
+                <div className="mb-4 relative">
                   <label htmlFor="password">Password</label>
                   <Field
                     type="password"
                     id="password"
                     name="password"
                     placeholder="Enter password"
-                    className="w-full border border-gray-300 py-2 pl-3 pr-4 rounded-lg "
+                    className={`w-full border border-gray-300 py-2 pl-3 pr-4 rounded-lg focus:border-orange-500 focus:outline-none ${
+                      errors.password && touched.password
+                        ? "border-purple-500 border-2"
+                        : ""
+                    }`}
                   />
                   <ErrorMessage
                     name="password"
                     component="div"
-                    className="text-red-500"
+                    className="text-purple-500 text-body3"
                   />
+                  {errors.password && touched.password ? (
+                    <img
+                      src="src/assets/registerPage/errorIcon.svg"
+                      alt="errorIcon"
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 z-10"
+                    />
+                  ) : (
+                    ""
+                  )}
                 </div>
                 <button
                   type="submit"
-                  className="bg-blue-500 text-white w-full mb-6 px-8 py-3.5 rounded-xl"
+                  className="bg-blue-500 text-white w-full mb-6 px-8 py-3.5 rounded-xl hover:bg-blue-600"
                 >
                   Register
                 </button>
