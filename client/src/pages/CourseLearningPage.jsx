@@ -256,7 +256,7 @@ function CourseLearningPage() {
                               <span>
                                 <img
                                   src={subLessonStatusClass}
-                                  className="object-fit inline mr-4"
+                                  className="object-fit inline"
                                 />
                               </span>
                               <button
@@ -267,7 +267,7 @@ function CourseLearningPage() {
                                     item.sub_lesson_video
                                   )
                                 }
-                                className="text-left"
+                                className="w-[257px] h-[48px] text-left ml-3 whitespace-normal"
                               >
                                 {item.sub_lesson_name}
                               </button>
