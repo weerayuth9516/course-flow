@@ -16,7 +16,8 @@ function CourseDetailPage() {
   const params = useParams();
 
   const { user, getCurrentUser } = useGetuser();
-  const [session, setSession] = useState(auth.session.user);
+
+  // const [session, setSession] = useState(auth.session.user);
 
   const { searchList, getSearchList } = useGetsearch();
   const auth = useAuth();
@@ -92,7 +93,7 @@ function CourseDetailPage() {
         dataToSend
       );
       console.log(request);
-      if (request.status === 200) {
+      if (request.status === 201) {
         setIsSubscribed(true);
         closeSubscribeModal();
         console.log("Subscribed successfully");
