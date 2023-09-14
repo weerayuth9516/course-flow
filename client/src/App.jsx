@@ -9,6 +9,7 @@ import NotFoundPage from "./pages/NotFoundPage";
 import CourseDetailPage from "./pages/CourseDetailPage";
 import CoursePage from "./pages/CoursePage";
 import MyCoursePage from "./pages/MyCoursePage";
+import CourseLearningPage from "./pages/CourseLearningPage"
 import { useAuth } from "./context/authentication";
 // export const SessionContext = React.createContext();
 
@@ -26,6 +27,7 @@ function App() {
       ) : (
         ""
       )}
+      <Route path="/courselearning/:courseId" element={<CourseLearningPage />} />
       <Route
         path="/course/courseDetail/:courseId"
         element={<CourseDetailPage />}

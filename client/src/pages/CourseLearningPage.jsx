@@ -177,7 +177,7 @@ function CourseLearningPage() {
           </button>
         </div>
         {isOpen && (
-          <div className="toggle-content mt-8 ml-1">
+          <div className="toggle-content mt-4 mb-5 ml-1">
             <ul className="text-body2 text-gray-700">{content}</ul>
           </div>
         )}
@@ -220,7 +220,7 @@ function CourseLearningPage() {
                 </div>
                 <div className="w-[309px] h-[10px] bg-gray-300 rounded-lg">
                   <div
-                    class="h-full transition-width ease-in-out duration-500 bg-blue-500 power-level rounded-lg bg-gradient-to-r from-[#95beff] to-[#1855ea]"
+                    className="h-full transition-width ease-in-out duration-500 bg-blue-500 power-level rounded-lg bg-gradient-to-r from-[#95beff] to-[#1855ea]"
                     style={{ width: `${powerLevel}%` }}
                   ></div>
                 </div>
@@ -247,7 +247,12 @@ function CourseLearningPage() {
                               ? inprogress
                               : notStart;
                           return (
-                            <li key={index} className="mb-5 flex justify-start">
+                            <li
+                            key={index}
+                            className={`w-[309px] h-[60px] flex justify-start items-center pr-2 pl-2 ${
+                              currentSubLesson.subLessonName === item.sub_lesson_name ? 'bg-gray-100 rounded-lg' : ''
+                            }`}
+                          >
                               <span>
                                 <img
                                   src={subLessonStatusClass}
