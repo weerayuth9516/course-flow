@@ -32,7 +32,12 @@ function LoginPage() {
   };
   useEffect(() => {
     if (auth.isAuthenicated) {
-      navigate("/");
+      if (Boolean(localStorage.getItem(previousCourse))) {
+        const redirectPage = localStorage.getItem(previousCourse);
+        navigate(redirectPage);
+      } else {
+        navigate("/");
+      }
     }
   });
   return (

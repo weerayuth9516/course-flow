@@ -60,14 +60,42 @@ function CourseDetailPage() {
   const closeSubscribeModal = () => {
     setShowSubscribeModal(false);
   };
-  const handleConfirmSubscribe = () => {
-    setIsSubscribed(true);
-    closeSubscribeModal();
-  };
+  // const handleConfirmSubscribe = () => {
+  //   setIsSubscribed(true);
+  //   closeSubscribeModal();
+  // };
 
+  const handleConfirmSubscribe = async () => {
+    try {
+      const userId = auth.session.user.user_id;
+      const courseId = course.course_id;
+      const dataToSend = {
+        user_id: userId,
+        course_id: courseId,
+      };
+      // console.log(dataToSend);
+      const request = await axios.post(
+        `http://localhost:4001/courses/${params.courseId}/mycourses`,
+        dataToSend
+      );
+      // console.log(request);
+      if (request.status === 201) {
+        setIsSubscribed(true);
+        closeSubscribeModal();
+        console.log("Subscribed successfully");
+      } else {
+        console.log("Subscribed error");
+      }
+    } catch (error) {
+      console.log("Invalid to request:", error);
+    }
+  };
   return (
     <>
-      <Header />
+      <div className="relative z-1">
+        <Header />
+      </div>
+
       <div className="flex justify-center mt-9">
         <div className="flex flex-col mr-5">
           <Link to="/course" className="text-blue-500 mb-4 font-bold">
@@ -155,12 +183,16 @@ function CourseDetailPage() {
           Other Interesting Course
         </div>
 
-        <div className="flex mb-20 gap-10">
+        <div className="flex mb-20 gap-10 relative z-1">
           <DisplayCards searchList={searchList} />
         </div>
       </div>
-      {!auth.session.user ? <SubFooter /> : ""}
-      <Footer />
+      <div className="relative z-1">
+        {!auth.session.user ? <SubFooter /> : ""}
+      </div>
+      <div className="relative z-1">
+        <Footer />
+      </div>
     </>
   );
 }

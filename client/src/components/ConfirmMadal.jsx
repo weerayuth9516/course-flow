@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/authentication";
 
@@ -59,6 +59,7 @@ export function SubscribeModal({
       onConfirm();
       onRequestClose2();
     } else {
+      localStorage.setItem("previousCourse", window.location.pathname);
       navigate("/login");
     }
   };
@@ -66,10 +67,10 @@ export function SubscribeModal({
   return (
     <>
       {isOpen2 && (
-        <div className="fixed top-0 left-0 w-screen h-screen bg-black opacity-70 z-20"></div>
+        <div className="fixed top-0 left-0 w-screen h-screen bg-black opacity-70 z-90"></div>
       )}
       <div
-        className={`fixed top-[250px] left-[380px] z-30 ${
+        className={`fixed top-[250px] left-[380px] z-99 ${
           isOpen2 ? "" : "hidden"
         }`}
       >
