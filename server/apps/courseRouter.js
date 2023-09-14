@@ -14,11 +14,13 @@ courseRouter.get("/", async (req, res) => {
       .from("courses")
       .select("*")
       .ilike("course_name", `%${title}%`)
+      .eq("public_status", 1)
       .limit(limit == null ? 12 : limit);
   } else {
     results = await supabase
       .from("courses")
       .select("*")
+      .eq("public_status", 1)
       .limit(limit == null ? 12 : limit);
   }
   if (results.statusText === "OK") {
