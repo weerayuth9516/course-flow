@@ -164,16 +164,14 @@ courseRouter.post("/:courseId/mycourses", async (req, res) => {
     if (findUserSubscribeCourse.data.length > 0) {
       res.status(403).send("User already subscribed this course");
     } else {
-      const courseSubscription = await supabase
-        .from("user_course_details")
-        .insert([
-          {
-            course_id: req.body.course_id,
-            user_id: req.body.user_id,
-            status_id: 1,
-            subscription_id: 1,
-          },
-        ]);
+      await supabase.from("user_course_details").insert([
+        {
+          course_id: req.body.course_id,
+          user_id: req.body.user_id,
+          status_id: 1,
+          subscription_id: 1,
+        },
+      ]);
       // console.log(courseSubscription);
 
       const userCourseDetailId = await supabase
@@ -181,66 +179,33 @@ courseRouter.post("/:courseId/mycourses", async (req, res) => {
         .select("user_course_detail_id")
         .eq("course_id", req.body.course_id)
         .eq("user_id", req.body.user_id);
-      // console.log(userCourseDetailId);
-      // All lessons
-      const lessons = await supabase
+
+      // // All lessons
+      const lesson = await supabase
         .from("lessons")
         .select("lesson_id")
         .eq("course_id", req.body.course_id);
-
-      const lessonsData = lessons.data.map((lesson) => ({
+      const lessonArray = lesson.data.map((value) => {
+        return value.lesson_id;
+      });
+      const subLessonArray = await supabase
+        .from("sub_lessons")
+        .select("*")
+        .in("lesson_id", lessonArray);
+      const insertSubUserDeatil = subLessonArray.data.map((value) => ({
+        user_course_detail_id: userCourseDetailId.data[0].user_course_detail_id,
+        sub_lesson_id: value.sub_lesson_id,
+        status_id: 1,
+      }));
+      const lessonsData = lesson.data.map((lesson) => ({
         user_course_detail_id: userCourseDetailId.data[0].user_course_detail_id,
         lesson_id: lesson.lesson_id,
         status_id: 1,
       }));
-
-      const lessonSubscription = await supabase
-        .from("user_lesson_details")
-        .insert(lessonsData);
-
-      // // All sub lessons
-      const lessonIds = lessons.data.map((lesson) => ({
-        lesson_id: lesson.lesson_id,
-      }));
-      let subLessonArray = [];
-      const subData = lessonIds.map(async (value, index) => {
-        const results = await supabase
-          .from("sub_lessons")
-          .select("sub_lesson_id")
-          .eq("lesson_id", value.lesson_id);
-        return results.data;
-      });
-      console.log(subData);
-      // console.log(subLessonArray);
-      // const subLessons = await supabase
-      //   .from("sub_lessons")
-      //   .select("sub_lesson_id")
-      //   .eq("lesson_id", lessonIds);
-      // console.log(subLessons);
-      // async function insertSublessons() {
-      //   for (const lesson of subLessons) {
-      //     for (const subLesson of lesson.sub_lessons) {
-      //       const { data, error } = await supabase
-      //         .from("user_sub_lesson_details")
-      //         .insert([{ sub_lesson_id: subLesson.sub_lesson_id, status_id: 1 }]);
-      //     }
-      //   }
-      //   if (error) {
-      //     console.error("An error occurred while inserting", error);
-      //   } else {
-      //     console.log("Successfully inserted:", subLessons.sub_lesson_id);
-      //   }
-      //   insertSublessons();
-
-      //   // const subLessonData = subLessons.data.map((subLesson) => ({
-      //   //   sub_lesson_id: subLesson.sub_lesson_id,
-      //   //   status_id: 1,
-      //   // }));
-
-      //   console.log(courseSubscription);
-      //   console.log(lessonSubscription);
-      //   console.log();
-
+      await supabase.from("user_lesson_details").insert(lessonsData);
+      await supabase
+        .from("user_sub_lesson_details")
+        .insert(insertSubUserDeatil);
       if (
         courseSubscription.statusText ===
         // lessonSubscription.statusText
