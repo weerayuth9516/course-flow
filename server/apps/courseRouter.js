@@ -88,62 +88,6 @@ courseRouter.get("/:id/lessons/", async (req, res) => {
   }
 });
 
-//myCoursePage_Sprint2 "added lessonCount all course, in_progress, completed"
-// courseRouter.get("/:userId/mycourses", async (req, res) => {
-//   try {
-//     const userId = req.params.userId;
-
-//     // Validate the userId format (assuming it should be a valid UUID)
-//     const isValidUUID = /^\w{8}-\w{4}-\w{4}-\w{4}-\w{12}$/.test(userId);
-
-//     if (!isValidUUID) {
-//       return res.status(400).json({ error: "Invalid userId format" });
-//     }
-
-//     // Query the user_course_details table to fetch courses in progress for the user
-//     const { data: userCourseData, error: userCourseError } = await supabase
-//       .from("user_course_details")
-//       .select(
-//         `course_id:courses( course_id, course_name, course_summary, course_duration ), subscription_id:subscriptions( subscription_status ), status_id:status( status_value )`
-//       )
-//       .eq("user_id", userId)
-//       .eq("subscription_id", 1);
-
-//     if (userCourseError) {
-//       return res.status(500).json({ error: userCourseError.message });
-//     }
-
-//     if (userCourseData.length === 0) {
-//       // Handle the case where there are no user courses
-//       return res.status(404).json({ error: "No courses found for this user" });
-//     }
-
-//     // Iterate over userCourseData and add lesson_count to each item
-//     for (const course of userCourseData) {
-//       const courseId = course.course_id.course_id;
-//       const { data: lessonData, error: lessonError } = await supabase
-//         .from("lessons")
-//         .select("lesson_name")
-//         .eq("course_id", courseId);
-
-//       if (lessonError) {
-//         return res.status(500).json({ error: lessonError.message });
-//       }
-
-//       const lessonCount = lessonData.length;
-
-//       course.lesson_count = lessonCount;
-//     }
-
-//     return res.json({
-//       data: userCourseData,
-//     });
-//   } catch (error) {
-//     console.error("An error occurred:", error);
-//     return res.status(500).json({ error: "Internal Server Error" });
-//   }
-// });
-
 courseRouter.get("/:userId/mycourses", async (req, res) => {
   try {
     const userId = req.params.userId;
