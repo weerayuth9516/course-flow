@@ -248,11 +248,14 @@ function CourseLearningPage() {
                               : notStart;
                           return (
                             <li
-                            key={index}
-                            className={`w-[309px] h-[60px] flex justify-start items-center pr-2 pl-2 ${
-                              currentSubLesson.subLessonName === item.sub_lesson_name ? 'bg-gray-100 rounded-lg' : ''
-                            }`}
-                          >
+                              key={index}
+                              className={`w-[309px] h-[60px] flex justify-start items-center pr-2 pl-2 ${
+                                currentSubLesson.subLessonName ===
+                                item.sub_lesson_name
+                                  ? "bg-gray-100 rounded-lg"
+                                  : ""
+                              }`}
+                            >
                               <span>
                                 <img
                                   src={subLessonStatusClass}

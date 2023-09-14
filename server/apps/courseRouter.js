@@ -101,7 +101,7 @@ courseRouter.get("/:userId/mycourses", async (req, res) => {
     const { data: userCourseData, error: userCourseError } = await supabase
       .from("user_course_details")
       .select(
-        `course_id:courses( course_id, course_name, course_summary, course_duration ), subscription_id:subscriptions( subscription_status ), status_id:status( status_value )`
+        `course_id:courses( course_id, course_name, course_summary, course_duration, course_cover_img ), subscription_id:subscriptions( subscription_status ), status_id:status( status_value )`
       )
       .eq("user_id", userId)
       .eq("subscription_id", 1);
@@ -132,8 +132,10 @@ courseRouter.get("/:userId/mycourses", async (req, res) => {
 
     const myCourseData = userCourseData.map((value) => {
       return {
+        course_id: value.course_id.course_id,
         course_name: value.course_id.course_name,
         course_summary: value.course_id.course_summary,
+        course_cover_img: value.course_id.course_cover_img,
         course_duration: value.course_id.course_duration,
         subscription_status: value.subscription_id.subscription_status,
         status_value: value.status_id.status_value,
