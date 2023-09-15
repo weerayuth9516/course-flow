@@ -1,44 +1,25 @@
 import React, { useRef, useEffect, useState } from "react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import percent from "../assets/courseLearning/percent.png";
 import completed from "../assets/courseLearning/completed.png";
 import inprogress from "../assets/courseLearning/inprogress.png";
 import notStart from "../assets/courseLearning/notStart.png";
-import useGetsearch from "../hook/useGetsearch";
 import axios from "axios";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 function CourseLearningPage() {
   const [course, setCourse] = useState([]);
   const [lesson, setLesson] = useState([]);
   const [subLessonArray, setSubLessonArray] = useState([]);
-  const [status, setStatus] = useState(1);
-  
-
-  const [displaySubLesson, setDisplaySubLesson] = useState(
-    "Mobile Applications"
-  );
-  const [displayVideo, setDisplayVideo] = useState(
-    "https://qlxsggpxpucbrqcywrkm.supabase.co/storage/v1/object/public/course_videos/course_id_d9f4/lesson_id_c7ce/sub_lesson_id_4cc5.mp4?t=2023-09-12T04%3A56%3A27.848Z"
-  );
- 
+  const [lessonPage, setLessonPage] = useState(1);
+  const [currentSubLesson, setCurrentSubLesson] = useState({
+    subLessonName: "",
+    subLessonVideo: "",
+  });
+  const [subLessonStatus, setSubLessonStatus] = useState([]);
+  const [powerLevel, setPowerLevel] = useState(0);
 
   const videoRef = useRef(null);
-  const [isVideoFinished, setIsVideoFinished] = useState(false);
-  const [isVideoStarted, setIsVideoStarted] = useState(false);
- 
-
-  const handleVideoEnd = () => {
-    setIsVideoFinished(true);
-    setStatus(3)
-  };
-
-  const handleVideoStart = () => {
-    setIsVideoStarted(true);
-    setStatus(2)
-  };
-
   const params = useParams();
 
   const getCourseAndLessonAndSubLesson = async () => {
@@ -50,8 +31,6 @@ function CourseLearningPage() {
     } catch (error) {
       console.log("request error");
     }
-
-    // Get lessons and subLesson by courseId
     try {
       const lessonResult = await axios.get(
         `http://localhost:4001/courses/${params.courseId}/lessons`
@@ -59,8 +38,8 @@ function CourseLearningPage() {
       setLesson(lessonResult.data.data);
       const subLessons = lessonResult.data.data.flatMap(
         (lesson) => lesson.sub_lessons
-        );
-        setSubLessonArray(subLessons)
+      );
+      setSubLessonArray(subLessons);
     } catch (error) {
       console.log("request error");
     }
@@ -70,6 +49,31 @@ function CourseLearningPage() {
     getCourseAndLessonAndSubLesson();
   }, [params.courseId]);
 
+  useEffect(() => {
+    if (subLessonArray.length > 0) {
+      setCurrentSubLesson({
+        subLessonName: subLessonArray[0].sub_lesson_name,
+        subLessonVideo: subLessonArray[0].sub_lesson_video,
+      });
+    }
+    if (subLessonArray.length > 0) {
+      setSubLessonStatus(subLessonArray.map(() => "notStart"));
+    }
+  }, [subLessonArray]);
+
+  useEffect(() => {
+    calculatePowerLevel();
+  }, [subLessonStatus]);
+
+  useEffect(() => {
+    if (lessonPage >= 1 && lessonPage <= subLessonArray.length) {
+      setCurrentSubLesson({
+        subLessonName: subLessonArray[lessonPage - 1].sub_lesson_name,
+        subLessonVideo: subLessonArray[lessonPage - 1].sub_lesson_video,
+      });
+    }
+  }, [lessonPage, subLessonArray]);
+
   const [toggleStates, setToggleStates] = useState(lesson.map(() => false));
   const toggle = (index) => {
     const newToggleStates = [...toggleStates];
@@ -77,11 +81,80 @@ function CourseLearningPage() {
     setToggleStates(newToggleStates);
   };
 
-  const handleClick = (subLesson, subVideo) => {
-    setDisplaySubLesson(subLesson);
-    setDisplayVideo(subVideo);
-    setIsVideoFinished(false);
-    setIsVideoStarted(false);
+  const calculatePowerLevel = () => {
+    const totalSublesson = subLessonArray.length;
+    const countCompleted = subLessonStatus.filter(
+      (status) => status === "completed"
+    ).length;
+    if (totalSublesson === 0) {
+      setPowerLevel(0);
+    } else {
+      const percentProgress = Math.floor(
+        (countCompleted / totalSublesson) * 100
+      );
+      setPowerLevel(percentProgress);
+    }
+  };
+
+  const handleTitleClick = (subLesson, subVideo) => {
+    setCurrentSubLesson({
+      subLessonName: subLesson,
+      subLessonVideo: subVideo,
+    });
+
+    const currentIndex = subLessonArray.indexOf(
+      subLessonArray.find((item) => item.sub_lesson_name === subLesson)
+    );
+    setLessonPage(currentIndex + 1);
+  };
+
+  const handleNextClick = () => {
+    if (lessonPage < subLessonArray.length) {
+      setLessonPage(lessonPage + 1);
+    }
+  };
+
+  const handlePreviousClick = () => {
+    if (lessonPage > 1) {
+      setLessonPage(lessonPage - 1);
+    }
+  };
+
+  const handleVideoEnd = () => {
+    const currentIndex = subLessonArray.findIndex(
+      (subLesson) =>
+        subLesson.sub_lesson_name === currentSubLesson.subLessonName
+    );
+    if (currentIndex !== -1) {
+      const newStatusArray = [...subLessonStatus];
+      newStatusArray[currentIndex] = "completed";
+      setSubLessonStatus(newStatusArray);
+    }
+  };
+
+  const handleVideoStart = () => {
+    const currentIndex = subLessonArray.findIndex(
+      (subLesson) =>
+        subLesson.sub_lesson_name === currentSubLesson.subLessonName
+    );
+    if (currentIndex !== -1) {
+      const newStatusArray = [...subLessonStatus];
+      newStatusArray[currentIndex] !== "completed"
+        ? (newStatusArray[currentIndex] = "inprogress")
+        : "";
+      setSubLessonStatus(newStatusArray);
+    }
+  };
+
+  const handleAssignment = () => {
+    const currentIndex = subLessonArray.findIndex(
+      (subLesson) =>
+        subLesson.sub_lesson_name === currentSubLesson.subLessonName
+    );
+    if (currentIndex !== -1 && subLessonStatus[currentIndex] === "completed") {
+      return true;
+    }
+    return false;
   };
 
   const ToggleList = ({ title, content, isOpen, toggle, index }) => {
@@ -104,14 +177,13 @@ function CourseLearningPage() {
           </button>
         </div>
         {isOpen && (
-          <div className="toggle-content mt-8 ml-1">
+          <div className="toggle-content mt-4 mb-5 ml-1">
             <ul className="text-body2 text-gray-700">{content}</ul>
           </div>
         )}
       </div>
     );
   };
-
 
   return (
     <>
@@ -141,8 +213,17 @@ function CourseLearningPage() {
                     : course.course_summary}
                 </p>
               </div>
-              <div className="mb-3">
-                <img src={percent} alt="progress image" />
+              <div className="power-level mb-3 w-[309px] h-[39px] flex flex-col justify-start items-start">
+                {/* <img src={percent} alt="progress image" /> */}
+                <div className="text-body3 mb-2 text-gray-700">
+                  {powerLevel}% Complete
+                </div>
+                <div className="w-[309px] h-[10px] bg-gray-300 rounded-lg">
+                  <div
+                    className="h-full transition-width ease-in-out duration-500 bg-blue-500 power-level rounded-lg bg-gradient-to-r from-[#95beff] to-[#1855ea]"
+                    style={{ width: `${powerLevel}%` }}
+                  ></div>
+                </div>
               </div>
             </div>
             <div id="toggle-list-box" className="">
@@ -155,36 +236,38 @@ function CourseLearningPage() {
                   content={
                     data.sub_lessons && data.sub_lessons.length !== 0
                       ? data.sub_lessons.map((item, index) => {
-                      
+                          const currentIndex = subLessonArray.findIndex(
+                            (subLesson) =>
+                              subLesson.sub_lesson_name === item.sub_lesson_name
+                          );
+                          const subLessonStatusClass =
+                            subLessonStatus[currentIndex] === "completed"
+                              ? completed
+                              : subLessonStatus[currentIndex] === "inprogress"
+                              ? inprogress
+                              : notStart;
                           return (
-                            <li key={index} className="mb-5 flex justify-start">
+                            <li
+                            key={index}
+                            className={`w-[309px] h-[60px] flex justify-start items-center pr-2 pl-2 ${
+                              currentSubLesson.subLessonName === item.sub_lesson_name ? 'bg-gray-100 rounded-lg' : ''
+                            }`}
+                          >
                               <span>
-                                {status === 1 ? (
-                                  <img
-                                    src={notStart}
-                                    className="object-fit inline mr-4"
-                                  />
-                                ) : status === 2 ? (
-                                  <img
-                                    src={inprogress}
-                                    className="object-fit inline mr-4"
-                                  />
-                                ) : (
-                                  <img
-                                    src={completed}
-                                    className="object-fit inline mr-4"
-                                  />
-                                )}
+                                <img
+                                  src={subLessonStatusClass}
+                                  className="object-fit inline"
+                                />
                               </span>
                               <button
                                 key={index}
                                 onClick={() =>
-                                  handleClick(
+                                  handleTitleClick(
                                     item.sub_lesson_name,
                                     item.sub_lesson_video
                                   )
                                 }
-                                className="text-left"
+                                className="w-[257px] h-[48px] text-left ml-3 whitespace-normal"
                               >
                                 {item.sub_lesson_name}
                               </button>
@@ -203,39 +286,50 @@ function CourseLearningPage() {
             id="right-content"
             className="flex flex-col justify-start w-[739px]"
           >
-            <p className="text-header2 text-black mb-2">{displaySubLesson}</p>
+            <p className="text-header2 text-black mb-2">
+              {currentSubLesson.subLessonName}
+            </p>
             <div className="text-header2 text-black">
               <video
                 ref={videoRef}
                 controls
                 onPlay={handleVideoStart}
                 onEnded={handleVideoEnd}
-                src={displayVideo}
+                src={currentSubLesson.subLessonVideo}
                 className="w-[739px] h-[460px]"
               ></video>
 
-              {isVideoStarted ? 
-                  <p>Video has been started.</p>
-              : 
+              {handleAssignment() ? (
+                <div className="w-[739px] h-[314px] bg-blue-100 flex flex-col justify-center items-center mt-20">
+                  <h1>Assignment</h1>
+                  <h1>Submit</h1>
+                </div>
+              ) : (
                 ""
-              }
-
-              {isVideoFinished ? 
-                  <p>Video has finished playing.</p>
-              : 
-                ""
-              }
+              )}
             </div>
           </div>
         </div>
       </div>
-      <div className="font-inter font-bold text-body2 flex justify-between items-center">
-        <button className="ml-20 mt-5 mb-5 text-blue-500 ">
-          Previous Lesson
-        </button>
-        <button className="w-[161px] h-[60px] mr-10 mt-5 mb-5 text-white bg-blue-500 rounded-lg">
-          Next Lesson
-        </button>
+      <div className="flex justify-center items-center">
+        <div className="w-[1440px] font-inter font-bold text-body2 flex justify-between items-center">
+          {lessonPage > 1 ? (
+            <button
+              onClick={handlePreviousClick}
+              className="ml-20 mt-5 mb-5 text-blue-500 "
+            >
+              Previous Lesson
+            </button>
+          ) : (
+            <div></div>
+          )}
+          <button
+            onClick={handleNextClick}
+            className="w-[161px] h-[60px] mr-10 mt-5 mb-5 text-white bg-blue-500 rounded-lg"
+          >
+            Next Lesson
+          </button>
+        </div>
       </div>
       <Footer />
     </>

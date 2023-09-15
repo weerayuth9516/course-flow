@@ -137,34 +137,54 @@ courseRouter.get("/:userId/mycourses", async (req, res) => {
   try {
     const userId = req.params.userId;
 
-    // Validate the userId format (assuming it should be a valid UUID)
     const isValidUUID = /^\w{8}-\w{4}-\w{4}-\w{4}-\w{12}$/.test(userId);
 
     if (!isValidUUID) {
       return res.status(400).json({ error: "Invalid userId format" });
     }
 
-    // Query the user_course_details table to fetch courses in progress for the user
-    const { data, error } = await supabase
+    const { data: userCourseData, error: userCourseError } = await supabase
       .from("user_course_details")
       .select(
-        `course_id:courses( course_name, course_summary, course_duration ) , subscription_id:subscriptions( subscription_status ), status_id:status( status_value )`
+        `course_id:courses( course_id, course_name, course_summary, course_duration, course_cover_img ), subscription_id:subscriptions( subscription_status ), status_id:status( status_value )`
       )
       .eq("user_id", userId)
-      .eq("subscription_id", 1) // 1 is the subscription_id for "subscribed_courses"
-      .eq("status_id", 2); // 2 is the status_id for "in_progress"
+      .eq("subscription_id", 1);
 
-    if (error) {
-      return res.status(500).json({ error: error.message });
+    if (userCourseError) {
+      return res.status(500).json({ error: userCourseError.message });
     }
 
-    const myCourseData = data.map((value) => {
+    if (userCourseData.length === 0) {
+      return res.status(404).json({ error: "No courses found for this user" });
+    }
+
+    for (const course of userCourseData) {
+      const courseId = course.course_id.course_id;
+      const { data: lessonData, error: lessonError } = await supabase
+        .from("lessons")
+        .select("lesson_name")
+        .eq("course_id", courseId);
+
+      if (lessonError) {
+        return res.status(500).json({ error: lessonError.message });
+      }
+
+      const lessonCount = lessonData.length;
+
+      course.lesson_count = lessonCount;
+    }
+
+    const myCourseData = userCourseData.map((value) => {
       return {
+        course_id: value.course_id.course_id,
         course_name: value.course_id.course_name,
         course_summary: value.course_id.course_summary,
+        course_cover_img: value.course_id.course_cover_img,
         course_duration: value.course_id.course_duration,
         subscription_status: value.subscription_id.subscription_status,
         status_value: value.status_id.status_value,
+        lesson_count: value.lesson_count,
       };
     });
 
