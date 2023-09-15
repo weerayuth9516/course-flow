@@ -18,7 +18,6 @@ function MyCoursePage() {
 
   const getAllMyCourses = async (userId) => {
     try {
-      console.log(userId);
       const response = await axios.get(
         `http://localhost:4001/courses/${userId}/mycourses`
       );
@@ -32,7 +31,6 @@ function MyCoursePage() {
       );
       setCompletedCourses(createCompleteCourses);
     } catch (error) {
-      console.log(error);
       console.log("request error");
     }
   };

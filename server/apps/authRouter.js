@@ -56,7 +56,7 @@ authRouter.post("/login", async (req, res) => {
       );
       if (!isValidPassword) {
         return res.status(200).json({
-          message: "Password Invalid",
+          message: { password: "Password Invalid" },
         });
       } else {
         const avatarPath = supabaseResult.data[0].user_avatar
@@ -85,7 +85,7 @@ authRouter.post("/login", async (req, res) => {
       }
     } else {
       return res.status(200).json({
-        message: "Email Invalid",
+        message: { email: "Email Invalid" },
       });
     }
   } catch (error) {
