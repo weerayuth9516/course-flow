@@ -1,20 +1,22 @@
 import React, { useEffect, useState, useContext } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import ToggleLesson from "../components/ToggleLesson";
 import SubFooter from "../components/SubFooter";
-import { DesireCourseModal, SubscribeModal } from "../components/ConfirmMadal";
+import { SubscribeModal } from "../components/ConfirmMadal";
 import useGetsearch from "../hook/useGetsearch";
 import axios from "axios";
 import DisplayCards from "../components/DisplayCards";
+import { useAuth } from "../context/authentication";
 
 function CourseDetailPage() {
   const [course, setCourse] = useState({});
   const params = useParams();
 
   const { searchList, getSearchList } = useGetsearch();
-  // const { session } = useContext(SessionContext);
+  const auth = useAuth();
+  const navigate = useNavigate();
 
   const getCourse = async () => {
     try {
@@ -39,18 +41,24 @@ function CourseDetailPage() {
     return "";
   }
 
-  const [showDesireModal, setShowDesireModal] = useState(false);
+  // const [showDesireModal, setShowDesireModal] = useState(false);
   const [showSubscribeModal, setShowSubscribeModal] = useState(false);
   const [courseNameForModal, setCourseNameForModal] = useState("");
   const [isSubscribed, setIsSubscribed] = useState(false);
+  // const [isDesired, setIsDesired] = useState(false);
 
-  const openDesireModal = (courseName) => {
-    setCourseNameForModal(courseName);
-    setShowDesireModal(true);
-  };
-  const closeDesireModal = () => {
-    setShowDesireModal(false);
-  };
+  // const openDesireModal = (courseName) => {
+  //   setCourseNameForModal(courseName);
+  //   setShowDesireModal(true);
+  // };
+  // const closeDesireModal = () => {
+  //   setShowDesireModal(false);
+  // };
+
+  // const handleConfirmGetInDesire = () => {
+  //   setIsDesired(true);
+  //   closeDesireModal();
+  // };
 
   const openSubscribeModal = (courseName) => {
     setCourseNameForModal(courseName);
@@ -59,14 +67,38 @@ function CourseDetailPage() {
   const closeSubscribeModal = () => {
     setShowSubscribeModal(false);
   };
-  const handleConfirmSubscribe = () => {
-    setIsSubscribed(true);
-    closeSubscribeModal();
-  };
 
+  const handleConfirmSubscribe = async () => {
+    try {
+      const userId = auth.session.user.user_id;
+      const courseId = course.course_id;
+      const dataToSend = {
+        user_id: userId,
+        course_id: courseId,
+      };
+      // console.log(dataToSend);
+      const request = await axios.post(
+        `http://localhost:4001/courses/${params.courseId}/mycourses`,
+        dataToSend
+      );
+      // console.log(request);
+      if (request.status === 201) {
+        setIsSubscribed(true);
+        closeSubscribeModal();
+        console.log("Subscribed successfully");
+      } else {
+        console.log("Subscribed error");
+      }
+    } catch (error) {
+      console.log("Invalid to request:", error);
+    }
+  };
   return (
     <>
-      <Header />
+      <div className="relative z-1">
+        <Header />
+      </div>
+
       <div className="flex justify-center mt-9">
         <div className="flex flex-col mr-5">
           <Link to="/course" className="text-blue-500 mb-4 font-bold">
@@ -115,23 +147,36 @@ function CourseDetailPage() {
             <hr className="mb-6" />
 
             {isSubscribed ? (
-              <button className="px-8 py-[18px] w-[309px] h-[60px] border-solid border-[1px] rounded-[12px] bg-blue-500 font-bold text-white mt-5 hover:bg-blue-600">
+              <button
+                className="px-8 py-[18px] w-[309px] h-[60px] border-solid border-[1px] rounded-[12px] bg-blue-500 font-bold text-white mt-5 hover:bg-blue-600"
+                onClick={navigate("/courselearning/:courseId")}
+              >
                 Start Learning
               </button>
             ) : (
               <>
-                <button
-                  className="px-8 py-[18px] w-[309px] h-[60px] border-solid border-[1px] rounded-[12px] border-orange-500 font-bold text-orange-500 mt-3 hover:bg-orange-500 hover:text-white"
-                  onClick={() => openDesireModal(course.course_name)}
-                >
-                  Get in Desire Course
-                </button>
-                <DesireCourseModal
-                  isOpen={showDesireModal}
-                  onRequestClose={closeDesireModal}
-                  courseName={courseNameForModal}
-                />
-                <br />
+                {/* {isDesired ? (
+                  <button className="px-8 py-[18px] w-[309px] h-[60px] border-solid border-[1px] rounded-[12px] border-orange-500 font-bold text-orange-500 mt-3 hover:bg-orange-500 hover:text-white">
+                    Remove from Desire Course
+                  </button>
+                ) : (
+                  <>
+                    <button
+                      className="px-8 py-[18px] w-[309px] h-[60px] border-solid border-[1px] rounded-[12px] border-orange-500 font-bold text-orange-500 mt-3 hover:bg-orange-500 hover:text-white"
+                      onClick={() => openDesireModal(course.course_name)}
+                    >
+                      Get in Desire Course
+                    </button>
+                    <DesireCourseModal
+                      isOpen={showDesireModal}
+                      onRequestClose={closeDesireModal}
+                      courseName={courseNameForModal}
+                      onConfirm={handleConfirmGetInDesire}
+                    />
+                  </>
+                )}
+
+                <br /> */}
                 <button
                   className="px-8 py-[18px] w-[309px] h-[60px] border-solid border-[1px] rounded-[12px] bg-blue-500 font-bold text-white mt-5 hover:bg-blue-600"
                   onClick={() => openSubscribeModal(course.course_name)}
@@ -142,7 +187,7 @@ function CourseDetailPage() {
                   isOpen2={showSubscribeModal}
                   onRequestClose2={closeSubscribeModal}
                   courseName={courseNameForModal}
-                  onConfirm={handleConfirmSubscribe}
+                  onConfirm2={handleConfirmSubscribe}
                 />
               </>
             )}
@@ -154,12 +199,16 @@ function CourseDetailPage() {
           Other Interesting Course
         </div>
 
-        <div className="flex mb-20 gap-10">
+        <div className="flex mb-20 gap-10 relative z-1">
           <DisplayCards searchList={searchList} />
         </div>
       </div>
-      {/* {!session ? <SubFooter /> : ""} */}
-      <Footer />
+      <div className="relative z-1">
+        {!auth.session.user ? <SubFooter /> : ""}
+      </div>
+      <div className="relative z-1">
+        <Footer />
+      </div>
     </>
   );
 }

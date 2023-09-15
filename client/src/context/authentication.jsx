@@ -27,7 +27,13 @@ function AuthProvider(props) {
         const token = results.data.token;
         const userDataFromToken = jwtDecode(token);
         session.user = userDataFromToken;
-        navigate("/");
+        if (Boolean(localStorage.getItem("previousCourse"))) {
+          const redirectPage = localStorage.getItem("previousCourse");
+          navigate(redirectPage);
+          localStorage.removeItem("previousCourse");
+        } else {
+          navigate("/");
+        }
         localStorage.setItem("token", token);
       }
     } catch (error) {
