@@ -115,7 +115,7 @@ function MyCoursePage() {
             </div>
           </div>
           <div className="course-cards-container flex justify-center mb-[150px]">
-            <div className="course-cards-container grid grid-cols-2 gap-10">
+            <div className="course-cards-container w-[740px] grid grid-cols-2 gap-10">
               <DisplayCardsMyCourses
                 myCourses={
                   status === "in_progress"
