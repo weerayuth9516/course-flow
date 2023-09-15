@@ -4,7 +4,7 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import ToggleLesson from "../components/ToggleLesson";
 import SubFooter from "../components/SubFooter";
-import { DesireCourseModal, SubscribeModal } from "../components/ConfirmMadal";
+import { SubscribeModal } from "../components/ConfirmMadal";
 import useGetsearch from "../hook/useGetsearch";
 import axios from "axios";
 import DisplayCards from "../components/DisplayCards";
@@ -41,24 +41,24 @@ function CourseDetailPage() {
     return "";
   }
 
-  const [showDesireModal, setShowDesireModal] = useState(false);
+  // const [showDesireModal, setShowDesireModal] = useState(false);
   const [showSubscribeModal, setShowSubscribeModal] = useState(false);
   const [courseNameForModal, setCourseNameForModal] = useState("");
   const [isSubscribed, setIsSubscribed] = useState(false);
-  const [isDesired, setIsDesired] = useState(false);
+  // const [isDesired, setIsDesired] = useState(false);
 
-  const openDesireModal = (courseName) => {
-    setCourseNameForModal(courseName);
-    setShowDesireModal(true);
-  };
-  const closeDesireModal = () => {
-    setShowDesireModal(false);
-  };
+  // const openDesireModal = (courseName) => {
+  //   setCourseNameForModal(courseName);
+  //   setShowDesireModal(true);
+  // };
+  // const closeDesireModal = () => {
+  //   setShowDesireModal(false);
+  // };
 
-  const handleConfirmGetInDesire = () => {
-    setIsDesired(true);
-    closeDesireModal();
-  };
+  // const handleConfirmGetInDesire = () => {
+  //   setIsDesired(true);
+  //   closeDesireModal();
+  // };
 
   const openSubscribeModal = (courseName) => {
     setCourseNameForModal(courseName);
@@ -155,7 +155,7 @@ function CourseDetailPage() {
               </button>
             ) : (
               <>
-                {isDesired ? (
+                {/* {isDesired ? (
                   <button className="px-8 py-[18px] w-[309px] h-[60px] border-solid border-[1px] rounded-[12px] border-orange-500 font-bold text-orange-500 mt-3 hover:bg-orange-500 hover:text-white">
                     Remove from Desire Course
                   </button>
@@ -176,7 +176,7 @@ function CourseDetailPage() {
                   </>
                 )}
 
-                <br />
+                <br /> */}
                 <button
                   className="px-8 py-[18px] w-[309px] h-[60px] border-solid border-[1px] rounded-[12px] bg-blue-500 font-bold text-white mt-5 hover:bg-blue-600"
                   onClick={() => openSubscribeModal(course.course_name)}
