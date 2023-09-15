@@ -36,10 +36,6 @@ function App() {
         path="/course/courseDetail/:courseId"
         element={<CourseDetailPage />}
       />
-      <Route
-        path="/courselearning/:courseId"
-        element={<CourseLearningPage />}
-      />
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );

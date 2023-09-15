@@ -214,9 +214,8 @@ function CourseLearningPage() {
                 </p>
               </div>
               <div className="power-level mb-3 w-[309px] h-[39px] flex flex-col justify-start items-start">
-                {/* <img src={percent} alt="progress image" /> */}
                 <div className="text-body3 mb-2 text-gray-700">
-                  {powerLevel}% Complete
+                  {powerLevel}% Completed
                 </div>
                 <div className="w-[309px] h-[10px] bg-gray-300 rounded-lg">
                   <div

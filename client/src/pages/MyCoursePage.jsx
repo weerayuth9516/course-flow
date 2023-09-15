@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useEffect } from "react";
-import useGetuser from "../hook/useGetuser";
 import DisplayCardsMyCourses from "../components/DisplayCardsMyCourses";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
@@ -13,7 +12,6 @@ function MyCoursePage() {
   const [completedCourses, setCompletedCourses] = useState([]);
   const [status, setStatus] = useState("");
   const [userId, setUserId] = useState("");
-  const { user, getCurrentUser } = useGetuser();
   const auth = useAuth();
 
   const getAllMyCourses = async (userId) => {
@@ -37,11 +35,8 @@ function MyCoursePage() {
 
   useEffect(() => {
     if (auth.isAuthenicated) {
-      getCurrentUser(auth.session.user.user_id);
       setUserId(auth.session.user.user_id);
-    } else {
-      getCurrentUser(null);
-    }
+    } 
   }, [auth.isAuthenicated]);
 
   useEffect(() => {
@@ -85,7 +80,7 @@ function MyCoursePage() {
             </div>
           </div>
         </div>
-        <div className="user-image-and-course-container flex justify-center">
+        <div className="user-image-and-course-container flex justify-center mb-10">
           <div className="user-box sticky top-20 w-[357px] h-[396px] rounded-lg shadow-lg mr-10 flex flex-col justify-center items-center">
             <div className="w-[120px] h-[120px]">
               <img
