@@ -29,20 +29,24 @@ function CourseDetailPage() {
         `http://localhost:4001/courses/${params.courseId}`
       );
       setCourse(courseResult.data.data[0]);
-      console.log(courseResult.data.data[0]);
+      // console.log(courseResult.data.data[0]);
     } catch (error) {
       console.log("request error");
     }
   };
 
   useEffect(() => {
-    if (auth.isAuthenicated) {
-      getCurrentUser(auth.session.user.user_id);
-    } else {
-      getCurrentUser(null);
-    }
-    getCourse();
-    getSearchList("", 3);
+    const fetchData = async () => {
+      if (auth.isAuthenicated) {
+        await getCurrentUser(auth.session.user.user_id);
+      } else {
+        getCurrentUser(null);
+      }
+      getCourse();
+      getSearchList("", 3);
+      checkSubscription();
+    };
+    fetchData();
   }, [params.courseId, auth.isAuthenicated]);
 
   function addCommasToNumber(number) {
@@ -79,6 +83,25 @@ function CourseDetailPage() {
     setShowSubscribeModal(false);
   };
 
+  const checkSubscription = async () => {
+    try {
+      const userId = auth.session.user.user_id;
+      const courseId = params.courseId;
+      console.log(userId);
+      const response = await axios.get(
+        `http://localhost:4001/courses/${userId}/${courseId}`
+      );
+      console.log(response.data.isSubscribed.data);
+      if (response.data.isSubscribed.data.length === 0) {
+        setIsSubscribed(false);
+      } else {
+        setIsSubscribed(true);
+      }
+    } catch (error) {
+      console.error("Error checking subscription status:", error);
+    }
+  };
+
   const handleConfirmSubscribe = async () => {
     try {
       const userId = auth.session.user.user_id;
@@ -93,7 +116,7 @@ function CourseDetailPage() {
         dataToSend
       );
       console.log(request);
-      if (request.status === 201) {
+      if (request.status === 200) {
         setIsSubscribed(true);
         closeSubscribeModal();
         console.log("Subscribed successfully");

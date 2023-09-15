@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
+import { useAuth } from "../context/authentication";
 
 function useGetsearch() {
   const [searchList, setSearchList] = useState([]);
@@ -7,6 +8,8 @@ function useGetsearch() {
   const [course, setCourse] = useState([]);
   const [lesson, setLesson] = useState([]);
   const [subLessonArray, setSubLessonArray] = useState([]);
+
+  const auth = useAuth();
 
   const getSearchList = async (input, limit) => {
     try {

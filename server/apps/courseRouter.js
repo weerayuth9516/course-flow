@@ -166,15 +166,16 @@ courseRouter.post("/:courseId/mycourses", async (req, res) => {
     if (findUserSubscribeCourse.data.length > 0) {
       res.status(403).send("User already subscribed this course");
     } else {
-      await supabase.from("user_course_details").insert([
-        {
-          course_id: req.body.course_id,
-          user_id: req.body.user_id,
-          status_id: 1,
-          subscription_id: 1,
-        },
-      ]);
-      // console.log(courseSubscription);
+      const subscribeCourse = await supabase
+        .from("user_course_details")
+        .insert([
+          {
+            course_id: req.body.course_id,
+            user_id: req.body.user_id,
+            status_id: 1,
+            subscription_id: 1,
+          },
+        ]);
 
       const userCourseDetailId = await supabase
         .from("user_course_details")
@@ -194,6 +195,7 @@ courseRouter.post("/:courseId/mycourses", async (req, res) => {
         .from("sub_lessons")
         .select("*")
         .in("lesson_id", lessonArray);
+
       const insertSubUserDeatil = subLessonArray.data.map((value) => ({
         user_course_detail_id: userCourseDetailId.data[0].user_course_detail_id,
         sub_lesson_id: value.sub_lesson_id,
@@ -204,14 +206,16 @@ courseRouter.post("/:courseId/mycourses", async (req, res) => {
         lesson_id: lesson.lesson_id,
         status_id: 1,
       }));
-      await supabase.from("user_lesson_details").insert(lessonsData);
-      await supabase
+      const subscribeLessons = await supabase
+        .from("user_lesson_details")
+        .insert(lessonsData);
+      const subscribeSubLessons = await supabase
         .from("user_sub_lesson_details")
         .insert(insertSubUserDeatil);
       if (
-        courseSubscription.statusText ===
-        // lessonSubscription.statusText
-        "Created"
+        subscribeCourse.statusText &&
+        subscribeLessons.statusText &&
+        subscribeSubLessons.statusText === "Created"
       ) {
         return res.json({ message: "Subscription course successfully" });
       } else {
@@ -222,6 +226,20 @@ courseRouter.post("/:courseId/mycourses", async (req, res) => {
     console.error("An error occurred:", error);
     return res.status(500).json({ error: "Internal Server Error" });
   }
+});
+
+//check subscriptions status
+courseRouter.get("/:userId/:courseId", async (req, res) => {
+  console.log("req", req);
+  const { userId, courseId } = req.params;
+  console.log(userId, courseId);
+  const isSubscribed = await supabase
+    .from("user_course_details")
+    .select("course_id,user_id")
+    .eq("course_id", courseId)
+    .eq("user_id", userId);
+  console.log(isSubscribed);
+  return res.json({ isSubscribed });
 });
 
 export default courseRouter;
