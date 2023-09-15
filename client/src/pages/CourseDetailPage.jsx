@@ -9,10 +9,15 @@ import useGetsearch from "../hook/useGetsearch";
 import axios from "axios";
 import DisplayCards from "../components/DisplayCards";
 import { useAuth } from "../context/authentication";
+import useGetuser from "../hook/useGetuser";
 
 function CourseDetailPage() {
   const [course, setCourse] = useState({});
   const params = useParams();
+
+  const { user, getCurrentUser } = useGetuser();
+
+  // const [session, setSession] = useState(auth.session.user);
 
   const { searchList, getSearchList } = useGetsearch();
   const auth = useAuth();
@@ -24,15 +29,25 @@ function CourseDetailPage() {
         `http://localhost:4001/courses/${params.courseId}`
       );
       setCourse(courseResult.data.data[0]);
+      // console.log(courseResult.data.data[0]);
     } catch (error) {
       console.log("request error");
     }
   };
 
   useEffect(() => {
-    getCourse();
-    getSearchList("", 3);
-  }, [params.courseId]);
+    const fetchData = async () => {
+      if (auth.isAuthenicated) {
+        await getCurrentUser(auth.session.user.user_id);
+      } else {
+        getCurrentUser(null);
+      }
+      getCourse();
+      getSearchList("", 3);
+      checkSubscription();
+    };
+    fetchData();
+  }, [params.courseId, auth.isAuthenicated]);
 
   function addCommasToNumber(number) {
     if (typeof number === "number") {
@@ -68,6 +83,25 @@ function CourseDetailPage() {
     setShowSubscribeModal(false);
   };
 
+  const checkSubscription = async () => {
+    try {
+      const userId = auth.session.user.user_id;
+      const courseId = params.courseId;
+      console.log(userId);
+      const response = await axios.get(
+        `http://localhost:4001/courses/${userId}/${courseId}`
+      );
+
+      if (response.data.isSubscribed.data.length === 0) {
+        setIsSubscribed(false);
+      } else {
+        setIsSubscribed(true);
+      }
+    } catch (error) {
+      console.error("Error checking subscription status:", error);
+    }
+  };
+
   const handleConfirmSubscribe = async () => {
     try {
       const userId = auth.session.user.user_id;
@@ -76,13 +110,13 @@ function CourseDetailPage() {
         user_id: userId,
         course_id: courseId,
       };
-      // console.log(dataToSend);
+
       const request = await axios.post(
         `http://localhost:4001/courses/${params.courseId}/mycourses`,
         dataToSend
       );
-      // console.log(request);
-      if (request.status === 201) {
+
+      if (request.status === 200) {
         setIsSubscribed(true);
         closeSubscribeModal();
         console.log("Subscribed successfully");
@@ -90,9 +124,10 @@ function CourseDetailPage() {
         console.log("Subscribed error");
       }
     } catch (error) {
-      console.log("Invalid to request:", error);
+      console.error("Invalid to request:", error);
     }
   };
+
   return (
     <>
       <div className="relative z-1">

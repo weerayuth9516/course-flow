@@ -14,11 +14,13 @@ courseRouter.get("/", async (req, res) => {
       .from("courses")
       .select("*")
       .ilike("course_name", `%${title}%`)
+      .eq("public_status", 1)
       .limit(limit == null ? 12 : limit);
   } else {
     results = await supabase
       .from("courses")
       .select("*")
+      .eq("public_status", 1)
       .limit(limit == null ? 12 : limit);
   }
   if (results.statusText === "OK") {
@@ -150,6 +152,91 @@ courseRouter.get("/:userId/mycourses", async (req, res) => {
     console.error("An error occurred:", error);
     return res.status(500).json({ error: "Internal Server Error" });
   }
+});
+
+// subscipt_course
+courseRouter.post("/:courseId/mycourses", async (req, res) => {
+  try {
+    const { user_id, course_id } = req.body;
+    const findUserSubscribeCourse = await supabase
+      .from("user_course_details")
+      .select("*")
+      .eq("user_id", user_id)
+      .eq("course_id", course_id);
+    if (findUserSubscribeCourse.data.length > 0) {
+      res.status(403).send("User already subscribed this course");
+    } else {
+      const subscribeCourse = await supabase
+        .from("user_course_details")
+        .insert([
+          {
+            course_id: req.body.course_id,
+            user_id: req.body.user_id,
+            status_id: 1,
+            subscription_id: 1,
+          },
+        ]);
+
+      const userCourseDetailId = await supabase
+        .from("user_course_details")
+        .select("user_course_detail_id")
+        .eq("course_id", req.body.course_id)
+        .eq("user_id", req.body.user_id);
+
+      // // All lessons
+      const lesson = await supabase
+        .from("lessons")
+        .select("lesson_id")
+        .eq("course_id", req.body.course_id);
+      const lessonArray = lesson.data.map((value) => {
+        return value.lesson_id;
+      });
+      const subLessonArray = await supabase
+        .from("sub_lessons")
+        .select("*")
+        .in("lesson_id", lessonArray);
+
+      const insertSubUserDeatil = subLessonArray.data.map((value) => ({
+        user_course_detail_id: userCourseDetailId.data[0].user_course_detail_id,
+        sub_lesson_id: value.sub_lesson_id,
+        status_id: 1,
+      }));
+      const lessonsData = lesson.data.map((lesson) => ({
+        user_course_detail_id: userCourseDetailId.data[0].user_course_detail_id,
+        lesson_id: lesson.lesson_id,
+        status_id: 1,
+      }));
+      const subscribeLessons = await supabase
+        .from("user_lesson_details")
+        .insert(lessonsData);
+      const subscribeSubLessons = await supabase
+        .from("user_sub_lesson_details")
+        .insert(insertSubUserDeatil);
+      if (
+        subscribeCourse.statusText &&
+        subscribeLessons.statusText &&
+        subscribeSubLessons.statusText === "Created"
+      ) {
+        return res.json({ message: "Subscription course successfully" });
+      } else {
+        return res.status(400).send("API ERROR");
+      }
+    }
+  } catch (error) {
+    console.error("An error occurred:", error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+//check subscriptions status
+courseRouter.get("/:userId/:courseId", async (req, res) => {
+  const { userId, courseId } = req.params;
+  const isSubscribed = await supabase
+    .from("user_course_details")
+    .select("course_id,user_id")
+    .eq("course_id", courseId)
+    .eq("user_id", userId);
+  return res.json({ isSubscribed });
 });
 
 export default courseRouter;
