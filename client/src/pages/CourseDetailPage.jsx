@@ -14,11 +14,7 @@ import useGetuser from "../hook/useGetuser";
 function CourseDetailPage() {
   const [course, setCourse] = useState({});
   const params = useParams();
-
   const { user, getCurrentUser } = useGetuser();
-
-  // const [session, setSession] = useState(auth.session.user);
-
   const { searchList, getSearchList } = useGetsearch();
   const auth = useAuth();
   const navigate = useNavigate();
@@ -142,7 +138,7 @@ function CourseDetailPage() {
           <iframe
             width="739px"
             height="460px"
-            src="https://qlxsggpxpucbrqcywrkm.supabase.co/storage/v1/object/public/course_video_trailers/A-Class%20trailer.mp4?t=2023-09-07T10%3A12%3A00.864Z"
+            src={course.course_video_trailer}
             allowFullScreen
           ></iframe>
 
