@@ -242,8 +242,9 @@ courseRouter.get("/subscription/:userId/:courseId", async (req, res) => {
 
 courseRouter.get("/coursedetail/learning", protect, async (req, res) => {
   try {
-    const user_id = req.body.user_id;
-    const course_id = req.body.course_id;
+    console.log(req.query);
+    const user_id = req.query.user_id;
+    const course_id = req.query.course_id;
     const userCourseDetails = await supabase
       .from("user_course_details")
       .select("*")

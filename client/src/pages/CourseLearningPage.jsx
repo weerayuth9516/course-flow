@@ -6,6 +6,7 @@ import inprogress from "../assets/courseLearning/inprogress.png";
 import notStart from "../assets/courseLearning/notStart.png";
 import axios from "axios";
 import { useParams } from "react-router-dom";
+import { useAuth } from "../context/authentication";
 
 function CourseLearningPage() {
   const [course, setCourse] = useState([]);
@@ -18,61 +19,73 @@ function CourseLearningPage() {
   });
   const [subLessonStatus, setSubLessonStatus] = useState([]);
   const [powerLevel, setPowerLevel] = useState(0);
-
+  const auth = useAuth();
   const videoRef = useRef(null);
   const params = useParams();
-
+  const course_id = params.courseId;
   const getCourseAndLessonAndSubLesson = async () => {
+    const body = {
+      user_id: auth.session.user.user_id,
+      course_id,
+    };
     try {
       const courseResult = await axios.get(
-        `http://localhost:4001/courses/${params.courseId}`
+        `http://localhost:4001/courses/coursedetail/learning?user_id=${body.user_id}&course_id=${body.course_id}`
       );
-      setCourse(courseResult.data.data[0]);
+      setCourse(courseResult.data.data[0].course_detail);
+      setLesson(courseResult.data.data[0].lesson_detail);
+      const subLesson = courseResult.data.data[0].lesson_detail.flatMap(
+        (lesson) => lesson.sub_lesson
+      );
+      console.log(subLesson);
+      setSubLessonArray(subLesson);
     } catch (error) {
-      console.log("request error");
+      console.log(error);
     }
-    try {
-      const lessonResult = await axios.get(
-        `http://localhost:4001/courses/${params.courseId}/lessons`
-      );
-      setLesson(lessonResult.data.data);
-      const subLessons = lessonResult.data.data.flatMap(
-        (lesson) => lesson.sub_lessons
-      );
-      setSubLessonArray(subLessons);
-    } catch (error) {
-      console.log("request error");
-    }
+    // try {
+    //   // const lessonResult = await axios.get(
+    //   //   `http://localhost:4001/courses/${params.courseId}/lessons`
+    //   // );
+    //   // setLesson(lessonResult.data.data);
+    //   // const subLessons = lessonResult.data.data.flatMap(
+    //   //   (lesson) => lesson.sub_lessons
+    //   // );
+    //   // setSubLessonArray(subLessons);
+    // } catch (error) {
+    //   console.log("request error");
+    // }
   };
-
   useEffect(() => {
     getCourseAndLessonAndSubLesson();
-  }, [params.courseId]);
+  }, [auth.session.user.user_id]);
+  // useEffect(() => {
+  //   getCourseAndLessonAndSubLesson();
+  // }, [params.courseId]);
 
-  useEffect(() => {
-    if (subLessonArray.length > 0) {
-      setCurrentSubLesson({
-        subLessonName: subLessonArray[0].sub_lesson_name,
-        subLessonVideo: subLessonArray[0].sub_lesson_video,
-      });
-    }
-    if (subLessonArray.length > 0) {
-      setSubLessonStatus(subLessonArray.map(() => "notStart"));
-    }
-  }, [subLessonArray]);
+  // useEffect(() => {
+  //   if (subLessonArray.length > 0) {
+  //     setCurrentSubLesson({
+  //       subLessonName: subLessonArray[0].sub_lesson_name,
+  //       subLessonVideo: subLessonArray[0].sub_lesson_video,
+  //     });
+  //   }
+  //   if (subLessonArray.length > 0) {
+  //     setSubLessonStatus(subLessonArray.map(() => "notStart"));
+  //   }
+  // }, [subLessonArray]);
 
-  useEffect(() => {
-    calculatePowerLevel();
-  }, [subLessonStatus]);
+  // useEffect(() => {
+  //   calculatePowerLevel();
+  // }, [subLessonStatus]);
 
-  useEffect(() => {
-    if (lessonPage >= 1 && lessonPage <= subLessonArray.length) {
-      setCurrentSubLesson({
-        subLessonName: subLessonArray[lessonPage - 1].sub_lesson_name,
-        subLessonVideo: subLessonArray[lessonPage - 1].sub_lesson_video,
-      });
-    }
-  }, [lessonPage, subLessonArray]);
+  // useEffect(() => {
+  //   if (lessonPage >= 1 && lessonPage <= subLessonArray.length) {
+  //     setCurrentSubLesson({
+  //       subLessonName: subLessonArray[lessonPage - 1].sub_lesson_name,
+  //       subLessonVideo: subLessonArray[lessonPage - 1].sub_lesson_video,
+  //     });
+  //   }
+  // }, [lessonPage, subLessonArray]);
 
   const [toggleStates, setToggleStates] = useState(lesson.map(() => false));
   const toggle = (index) => {
