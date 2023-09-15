@@ -30,6 +30,7 @@ function AuthProvider(props) {
         if (Boolean(localStorage.getItem("previousCourse"))) {
           const redirectPage = localStorage.getItem("previousCourse");
           navigate(redirectPage);
+          localStorage.removeItem("previousCourse");
         } else {
           navigate("/");
         }

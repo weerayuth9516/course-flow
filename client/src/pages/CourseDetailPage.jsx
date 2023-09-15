@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import ToggleLesson from "../components/ToggleLesson";
@@ -16,6 +16,7 @@ function CourseDetailPage() {
 
   const { searchList, getSearchList } = useGetsearch();
   const auth = useAuth();
+  const navigate = useNavigate();
 
   const getCourse = async () => {
     try {
@@ -60,10 +61,6 @@ function CourseDetailPage() {
   const closeSubscribeModal = () => {
     setShowSubscribeModal(false);
   };
-  // const handleConfirmSubscribe = () => {
-  //   setIsSubscribed(true);
-  //   closeSubscribeModal();
-  // };
 
   const handleConfirmSubscribe = async () => {
     try {
@@ -144,7 +141,10 @@ function CourseDetailPage() {
             <hr className="mb-6" />
 
             {isSubscribed ? (
-              <button className="px-8 py-[18px] w-[309px] h-[60px] border-solid border-[1px] rounded-[12px] bg-blue-500 font-bold text-white mt-5 hover:bg-blue-600">
+              <button
+                className="px-8 py-[18px] w-[309px] h-[60px] border-solid border-[1px] rounded-[12px] bg-blue-500 font-bold text-white mt-5 hover:bg-blue-600"
+                onClick={navigate("/courselearning/:courseId")}
+              >
                 Start Learning
               </button>
             ) : (
