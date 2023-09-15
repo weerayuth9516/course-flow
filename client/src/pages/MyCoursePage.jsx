@@ -50,10 +50,6 @@ function MyCoursePage() {
     getAllMyCourses(userId);
   }, [userId]);
 
-  const handleInProgressClick = () => {
-    setStatus("in_progress");
-  };
-
   return (
     <>
       <Header />
@@ -109,14 +105,14 @@ function MyCoursePage() {
                   <div>Course</div>
                   <div>Inprogress</div>
                 </div>
-                <div className="ml-3 mb-3 font-bold text-header3">3</div>
+                <div className="ml-3 mb-3 font-bold text-header3">{inProgressCourses.length}</div>
               </div>
               <div className="w-[143px] h-[134px] border-2 rounded-lg shadow-lg bg-gray-200 flex flex-col space-y-8  transform hover:scale-110 transition-transform duration-300 ease-in-out hover:shadow-lg">
                 <div className="mt-3 ml-3 text-body2 text-gray-700">
                   <div>Course</div>
-                  <div>Complete</div>
+                  <div>Completed</div>
                 </div>
-                <div className="ml-3 mb-3 font-bold text-header3">2</div>
+                <div className="ml-3 mb-3 font-bold text-header3">{completedCourses.length}</div>
               </div>
             </div>
           </div>
