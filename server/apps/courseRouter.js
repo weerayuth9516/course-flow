@@ -50,7 +50,6 @@ courseRouter.get("/:id/lessons/", async (req, res) => {
   try {
     const courseId = req.params.id;
 
-    // Check if the course with courseId exists
     const { data: courseData, error: courseError } = await supabase
       .from("courses")
       .select("course_id")
@@ -89,50 +88,6 @@ courseRouter.get("/:id/lessons/", async (req, res) => {
   }
 });
 
-//here
-//myCoursesPage/BE sprint2 get all_courses
-// courseRouter.get("/:userId/mycourses", async (req, res) => {
-//   try {
-//     const userId = req.params.userId;
-
-//     // Validate the userId format (assuming it should be a valid UUID)
-//     const isValidUUID = /^\w{8}-\w{4}-\w{4}-\w{4}-\w{12}$/.test(userId);
-
-//     if (!isValidUUID) {
-//       return res.status(400).json({ error: "Invalid userId format" });
-//     }
-
-//     // Query the user_course_details table to fetch courses in progress for the user
-//     const { data, error } = await supabase
-//       .from("user_course_details")
-//       .select(
-//         `course_id:courses( course_name, course_summary, course_duration ) , subscription_id:subscriptions( subscription_status )`
-//       )
-//       .eq("user_id", userId);
-
-//     if (error) {
-//       return res.status(500).json({ error: error.message });
-//     }
-
-//     const myCourseData = data.map((value) => {
-//       return {
-//         course_name: value.course_id.course_name,
-//         course_summary: value.course_id.course_summary,
-//         course_duration: value.course_id.course_duration,
-//         subscription_status: value.subscription_id.subscription_status,
-//       };
-//     });
-
-//     return res.json({
-//       data: myCourseData,
-//     });
-//   } catch (error) {
-//     console.error("An error occurred:", error);
-//     return res.status(500).json({ error: "Internal Server Error" });
-//   }
-// });
-
-//"in_progress"
 courseRouter.get("/:userId/mycourses", async (req, res) => {
   try {
     const userId = req.params.userId;

@@ -11,6 +11,7 @@ import CoursePage from "./pages/CoursePage";
 import MyCoursePage from "./pages/MyCoursePage";
 import CourseLearningPage from "./pages/CourseLearningPage"
 import { useAuth } from "./context/authentication";
+import CourseLearningPage from "./pages/CourseLearningPage";
 // export const SessionContext = React.createContext();
 
 function App() {
@@ -31,6 +32,10 @@ function App() {
       <Route
         path="/course/courseDetail/:courseId"
         element={<CourseDetailPage />}
+      />
+      <Route
+        path="/courselearning/:courseId"
+        element={<CourseLearningPage />}
       />
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
