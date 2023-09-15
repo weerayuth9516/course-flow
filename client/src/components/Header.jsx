@@ -46,7 +46,7 @@ function Header() {
             id="logo"
             src={logo}
             alt="Logo"
-            className="scale-100 hover:scale-110"
+            className="scale-100 hover:scale-110 transform  transition-transform duration-300 ease-in-out"
           />
         </Link>
         <div

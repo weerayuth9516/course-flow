@@ -62,7 +62,7 @@ function MyCoursePage() {
                 onClick={() => {
                   setStatus("myCourses");
                 }}
-                className="transform hover:scale-110 transition-transform duration-300 ease-in-out hover:shadow-lg text-gray-700 focus:text-black focus:border-b focus:border-b-1 focus: border-black p-2"
+                className="transform  transition-transform duration-300 ease-in-out hover:border-b hover:border-b-1 hover:text-black text-gray-600 focus:text-black focus:border-b focus:border-b-1 focus: border-black p-2"
               >
                 All Course
               </button>
@@ -70,7 +70,7 @@ function MyCoursePage() {
                 onClick={() => {
                   setStatus("in_progress");
                 }}
-                className="transform hover:scale-110 transition-transform duration-300 ease-in-out hover:shadow-lg text-gray-700 focus:text-black focus:border-b focus:border-b-1 focus: border-black p-2"
+                className="transform  transition-transform duration-300 ease-in-out hover:border-b hover:border-b-1 hover:text-black text-gray-600 focus:text-black focus:border-b focus:border-b-1 focus: border-black p-2"
               >
                 Inprogress
               </button>
@@ -78,7 +78,7 @@ function MyCoursePage() {
                 onClick={() => {
                   setStatus("completed");
                 }}
-                className="transform hover:scale-110 transition-transform duration-300 ease-in-out hover:shadow-lg text-gray-700 focus:text-black focus:border-b focus:border-b-1 focus: border-black p-2"
+                className="transform  transition-transform duration-300 ease-in-out hover:border-b hover:border-b-1 hover:text-black text-gray-600 focus:text-black focus:border-b focus:border-b-1 focus: border-black p-2"
               >
                 Completed
               </button>
@@ -103,14 +103,18 @@ function MyCoursePage() {
                   <div>Course</div>
                   <div>Inprogress</div>
                 </div>
-                <div className="ml-3 mb-3 font-bold text-header3">{inProgressCourses.length}</div>
+                <div className="ml-3 mb-3 font-bold text-header3">
+                  {inProgressCourses.length}
+                </div>
               </div>
               <div className="w-[143px] h-[134px] border-2 rounded-lg shadow-lg bg-gray-200 flex flex-col space-y-8  transform hover:scale-110 transition-transform duration-300 ease-in-out hover:shadow-lg">
                 <div className="mt-3 ml-3 text-body2 text-gray-700">
                   <div>Course</div>
                   <div>Completed</div>
                 </div>
-                <div className="ml-3 mb-3 font-bold text-header3">{completedCourses.length}</div>
+                <div className="ml-3 mb-3 font-bold text-header3">
+                  {completedCourses.length}
+                </div>
               </div>
             </div>
           </div>
