@@ -240,14 +240,113 @@ courseRouter.get("/subscription/:userId/:courseId", async (req, res) => {
   return res.json({ isSubscribed });
 });
 
-courseRouter.get("/coursedetail/learning", async (req, res) => {
-  const user_id = req.query.user_id;
-  const course_id = req.body.course_id;
-  const userDetails = await supabase
-    .from("user_course_details")
-    .select("*")
-    .eq("user_id", user_id);
-  console.log(userDetails);
+courseRouter.get("/coursedetail/learning", protect, async (req, res) => {
+  try {
+    const user_id = req.body.user_id;
+    const course_id = req.body.course_id;
+    const userCourseDetails = await supabase
+      .from("user_course_details")
+      .select("*")
+      .eq("user_id", user_id)
+      .eq("course_id", course_id);
+    if (userCourseDetails.data[0].length === 0) {
+      return res.json({
+        message: "Not found.",
+      });
+    } else {
+      const userLessonDetail = await supabase
+        .from("user_lesson_details")
+        .select("*")
+        .eq(
+          "user_course_detail_id",
+          userCourseDetails.data[0].user_course_detail_id
+        );
+      const courseDetailOnThisCourse = await supabase
+        .from("courses")
+        .select("course_name,course_summary")
+        .eq("course_id", course_id);
+      const mapForFetchLessonName = userLessonDetail.data.map((value) => {
+        return value.lesson_id;
+      });
+      const lessonDetailOnThisCourse = await supabase
+        .from("lessons")
+        .select("*")
+        .in("lesson_id", mapForFetchLessonName);
+      const userSubLessonDetail = await supabase
+        .from("user_sub_lesson_details")
+        .select("*")
+        .eq(
+          "user_course_detail_id",
+          userCourseDetails.data[0].user_course_detail_id
+        );
+      const subLessonDetailOnThisCourse = await supabase
+        .from("sub_lessons")
+        .select("*")
+        .in("lesson_id", mapForFetchLessonName);
+
+      const subLessonMap = subLessonDetailOnThisCourse.data.map((mainValue) => {
+        return {
+          sub_lesson_id: mainValue.sub_lesson_id,
+          sub_lesson_name: mainValue.sub_lesson_name,
+          sub_lesson_video: mainValue.sub_lesson_video,
+          lesson_id: mainValue.lesson_id,
+          status_value: userSubLessonDetail.data.filter(
+            (subValue) => mainValue.sub_lesson_id === subValue.sub_lesson_id
+          )[0].status_id,
+        };
+      });
+      const lessonMap = lessonDetailOnThisCourse.data.map((value) => {
+        return {
+          lesson_name: `${value.lesson_name}`,
+          status_value: userLessonDetail.data.filter(
+            (subValue) => subValue.lesson_id === value.lesson_id
+          )[0].status_id,
+          sub_lesson: subLessonMap.filter(
+            (subValue) => subValue.lesson_id === value.lesson_id
+          ),
+        };
+      });
+      return res.json({
+        data: [
+          {
+            user_course_detail_id:
+              userCourseDetails.data[0].user_course_detail_id,
+            course_detail: {
+              course_id: courseDetailOnThisCourse.data[0].course_id,
+              course_name: courseDetailOnThisCourse.data[0].course_name,
+              course_summary: courseDetailOnThisCourse.data[0].course_summary,
+              status_value: userCourseDetails.data[0].status_id,
+            },
+            lesson_detail: lessonMap,
+          },
+        ],
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    return res.status(401).json({
+      message: "Invalid API",
+    });
+  }
+});
+
+courseRouter.put("/update/sub_lesson", protect, async (req, res) => {
+  const user_course_detail_id = req.body.user_course_detail_id;
+  const sub_lesson_id = req.body.sub_lesson_id;
+  const { data, error } = await supabase
+    .from("user_sub_lesson_details")
+    .update("status_id", 2)
+    .eq("sub_lesson_id", sub_lesson_id)
+    .eq("user_course_detail_id", user_course_detail_id);
+  if (error) {
+    return res.status(404).json({
+      message: "API INVALID",
+    });
+  } else {
+    return res.json({
+      message: `sub lesson ID:${sub_lesson_id} on ${user_course_detail_id} updated successfully`,
+    });
+  }
 });
 
 export default courseRouter;
