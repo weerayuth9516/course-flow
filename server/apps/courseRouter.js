@@ -230,15 +230,12 @@ courseRouter.post("/:courseId/mycourses", async (req, res) => {
 
 //check subscriptions status
 courseRouter.get("/:userId/:courseId", async (req, res) => {
-  console.log("req", req);
   const { userId, courseId } = req.params;
-  console.log(userId, courseId);
   const isSubscribed = await supabase
     .from("user_course_details")
     .select("course_id,user_id")
     .eq("course_id", courseId)
     .eq("user_id", userId);
-  console.log(isSubscribed);
   return res.json({ isSubscribed });
 });
 

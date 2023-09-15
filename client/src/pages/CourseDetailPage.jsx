@@ -91,7 +91,7 @@ function CourseDetailPage() {
       const response = await axios.get(
         `http://localhost:4001/courses/${userId}/${courseId}`
       );
-      console.log(response.data.isSubscribed.data);
+
       if (response.data.isSubscribed.data.length === 0) {
         setIsSubscribed(false);
       } else {
@@ -115,7 +115,7 @@ function CourseDetailPage() {
         `http://localhost:4001/courses/${params.courseId}/mycourses`,
         dataToSend
       );
-      console.log(request);
+
       if (request.status === 200) {
         setIsSubscribed(true);
         closeSubscribeModal();
