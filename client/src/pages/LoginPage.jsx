@@ -40,7 +40,7 @@ function LoginPage() {
       }
       localStorage.removeItem("previousCourse");
     }
-  }, []);
+  });
   return (
     <div className="font-inter w-screen h-screen bg-[url('src/assets/loginPage/bg-login.png')] bg-cover bg-no-repeat">
       <Header />

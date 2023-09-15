@@ -45,6 +45,7 @@ function CourseDetailPage() {
   const [showSubscribeModal, setShowSubscribeModal] = useState(false);
   const [courseNameForModal, setCourseNameForModal] = useState("");
   const [isSubscribed, setIsSubscribed] = useState(false);
+  const [isDesired, setIsDesired] = useState(false);
 
   const openDesireModal = (courseName) => {
     setCourseNameForModal(courseName);
@@ -52,6 +53,11 @@ function CourseDetailPage() {
   };
   const closeDesireModal = () => {
     setShowDesireModal(false);
+  };
+
+  const handleConfirmGetInDesire = () => {
+    setIsDesired(true);
+    closeDesireModal();
   };
 
   const openSubscribeModal = (courseName) => {
@@ -149,17 +155,27 @@ function CourseDetailPage() {
               </button>
             ) : (
               <>
-                <button
-                  className="px-8 py-[18px] w-[309px] h-[60px] border-solid border-[1px] rounded-[12px] border-orange-500 font-bold text-orange-500 mt-3 hover:bg-orange-500 hover:text-white"
-                  onClick={() => openDesireModal(course.course_name)}
-                >
-                  Get in Desire Course
-                </button>
-                <DesireCourseModal
-                  isOpen={showDesireModal}
-                  onRequestClose={closeDesireModal}
-                  courseName={courseNameForModal}
-                />
+                {isDesired ? (
+                  <button className="px-8 py-[18px] w-[309px] h-[60px] border-solid border-[1px] rounded-[12px] border-orange-500 font-bold text-orange-500 mt-3 hover:bg-orange-500 hover:text-white">
+                    Remove from Desire Course
+                  </button>
+                ) : (
+                  <>
+                    <button
+                      className="px-8 py-[18px] w-[309px] h-[60px] border-solid border-[1px] rounded-[12px] border-orange-500 font-bold text-orange-500 mt-3 hover:bg-orange-500 hover:text-white"
+                      onClick={() => openDesireModal(course.course_name)}
+                    >
+                      Get in Desire Course
+                    </button>
+                    <DesireCourseModal
+                      isOpen={showDesireModal}
+                      onRequestClose={closeDesireModal}
+                      courseName={courseNameForModal}
+                      onConfirm={handleConfirmGetInDesire}
+                    />
+                  </>
+                )}
+
                 <br />
                 <button
                   className="px-8 py-[18px] w-[309px] h-[60px] border-solid border-[1px] rounded-[12px] bg-blue-500 font-bold text-white mt-5 hover:bg-blue-600"
@@ -171,7 +187,7 @@ function CourseDetailPage() {
                   isOpen2={showSubscribeModal}
                   onRequestClose2={closeSubscribeModal}
                   courseName={courseNameForModal}
-                  onConfirm={handleConfirmSubscribe}
+                  onConfirm2={handleConfirmSubscribe}
                 />
               </>
             )}

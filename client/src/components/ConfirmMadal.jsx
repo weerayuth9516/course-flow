@@ -2,7 +2,25 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/authentication";
 
-export function DesireCourseModal({ isOpen, onRequestClose, courseName }) {
+export function DesireCourseModal({
+  isOpen,
+  onRequestClose,
+  courseName,
+  onConfirm,
+}) {
+  const navigate = useNavigate();
+  const auth = useAuth();
+
+  const handleConfirm = () => {
+    if (auth.session.user !== null) {
+      onConfirm();
+      onRequestClose();
+    } else {
+      localStorage.setItem("previousCourse", window.location.pathname);
+      navigate("/login");
+    }
+  };
+
   return (
     <>
       {isOpen && (
@@ -33,7 +51,7 @@ export function DesireCourseModal({ isOpen, onRequestClose, courseName }) {
               </button>
               <button
                 className="font-bold text-white bg-blue-500 w-[142px] h-[55px] rounded-xl hover:bg-blue-600"
-                onClick={onRequestClose}
+                onClick={handleConfirm}
               >
                 Confirm
               </button>
@@ -49,14 +67,14 @@ export function SubscribeModal({
   isOpen2,
   onRequestClose2,
   courseName,
-  onConfirm,
+  onConfirm2,
 }) {
   const navigate = useNavigate();
   const auth = useAuth();
 
-  const handleConfirm = () => {
+  const handleConfirm2 = () => {
     if (auth.session.user !== null) {
-      onConfirm();
+      onConfirm2();
       onRequestClose2();
     } else {
       localStorage.setItem("previousCourse", window.location.pathname);
@@ -94,7 +112,7 @@ export function SubscribeModal({
               </button>
               <button
                 className="font-bold text-white bg-blue-500 w-[250px] h-[55px] rounded-xl hover:bg-blue-600"
-                onClick={handleConfirm}
+                onClick={handleConfirm2}
               >
                 Yes, I want to subscribe
               </button>
