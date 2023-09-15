@@ -4,6 +4,7 @@ import Footer from "../components/Footer";
 import completed from "../assets/courseLearning/completed.png";
 import inprogress from "../assets/courseLearning/inprogress.png";
 import notStart from "../assets/courseLearning/notStart.png";
+import ToggleList from "../components/ToggleList";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 
@@ -18,6 +19,7 @@ function CourseLearningPage() {
   });
   const [subLessonStatus, setSubLessonStatus] = useState([]);
   const [powerLevel, setPowerLevel] = useState(0);
+  const [toggleStates, setToggleStates] = useState(lesson.map(() => false));
 
   const videoRef = useRef(null);
   const params = useParams();
@@ -74,7 +76,6 @@ function CourseLearningPage() {
     }
   }, [lessonPage, subLessonArray]);
 
-  const [toggleStates, setToggleStates] = useState(lesson.map(() => false));
   const toggle = (index) => {
     const newToggleStates = [...toggleStates];
     newToggleStates[index] = !newToggleStates[index];
@@ -155,34 +156,6 @@ function CourseLearningPage() {
       return true;
     }
     return false;
-  };
-
-  const ToggleList = ({ title, content, isOpen, toggle, index }) => {
-    return (
-      <div className="ml-5 w-[309px] relative">
-        <div
-          className="toggle-header flex justify-start items-center w-full h-[72px] border-1 border-b border-gray-400 overflow-hidden"
-          onClick={toggle}
-        >
-          <div className="toggle-title mr-10 text-body2 flex justify-start">
-            <div className="mr-6 text-gray-700">0{index + 1}</div>
-            <div className="text-black">{title}</div>
-          </div>
-          <button className="toggle-button inline absolute right-0">
-            {isOpen ? (
-              <img src="/src/assets/registerPage/arrow-down.svg" />
-            ) : (
-              <img src="/src/assets/registerPage/arrow-down.svg" />
-            )}
-          </button>
-        </div>
-        {isOpen && (
-          <div className="toggle-content mt-4 mb-5 ml-1">
-            <ul className="text-body2 text-gray-700">{content}</ul>
-          </div>
-        )}
-      </div>
-    );
   };
 
   return (
@@ -318,19 +291,23 @@ function CourseLearningPage() {
           {lessonPage > 1 ? (
             <button
               onClick={handlePreviousClick}
-              className="ml-20 mt-5 mb-5 text-blue-500 "
+              className="w-[161px] h-[60px] ml-20 mt-5 mb-5 text-blue-500 "
             >
               Previous Lesson
             </button>
           ) : (
             <div></div>
           )}
-          <button
-            onClick={handleNextClick}
-            className="w-[161px] h-[60px] mr-10 mt-5 mb-5 text-white bg-blue-500 rounded-lg"
-          >
-            Next Lesson
-          </button>
+          {lessonPage < subLessonArray.length ? (
+            <button
+              onClick={handleNextClick}
+              className="w-[161px] h-[60px] mr-10 mt-5 mb-5 text-white bg-blue-500 rounded-lg"
+            >
+              Next Lesson
+            </button>
+          ) : (
+            <div></div>
+          )}
         </div>
       </div>
       <Footer />
