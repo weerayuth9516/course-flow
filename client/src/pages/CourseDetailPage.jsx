@@ -83,9 +83,8 @@ function CourseDetailPage() {
     try {
       const userId = auth.session.user.user_id;
       const courseId = params.courseId;
-      console.log(userId);
       const response = await axios.get(
-        `http://localhost:4001/courses/${userId}/${courseId}`
+        `http://localhost:4001/courses/subscription/${userId}/${courseId}`
       );
 
       if (response.data.isSubscribed.data.length === 0) {
@@ -108,7 +107,7 @@ function CourseDetailPage() {
       };
 
       const request = await axios.post(
-        `http://localhost:4001/courses/${params.courseId}/mycourses`,
+        `http://localhost:4001/courses/mycourses/${params.courseId}`,
         dataToSend
       );
 

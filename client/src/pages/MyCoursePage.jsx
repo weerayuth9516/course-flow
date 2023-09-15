@@ -19,7 +19,7 @@ function MyCoursePage() {
   const getAllMyCourses = async (userId) => {
     try {
       const response = await axios.get(
-        `http://localhost:4001/courses/${userId}/mycourses`
+        `http://localhost:4001/courses/mycourses/${userId}`
       );
       setMyCourses(response.data.data);
       const createInProgressCourses = response.data.data.filter(

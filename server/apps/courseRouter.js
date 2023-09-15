@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { supabase } from "../utils/db.js";
+import { protect } from "../middlewares/protect.js";
 import "dotenv/config";
 
 const courseRouter = Router();
@@ -48,7 +49,7 @@ courseRouter.get("/:id", async (req, res) => {
 });
 
 //courseDetailPage/BE sprint2Edited
-courseRouter.get("/:id/lessons/", async (req, res) => {
+courseRouter.get("/lessons/:id", async (req, res) => {
   try {
     const courseId = req.params.id;
 
@@ -90,7 +91,7 @@ courseRouter.get("/:id/lessons/", async (req, res) => {
   }
 });
 
-courseRouter.get("/:userId/mycourses", async (req, res) => {
+courseRouter.get("/mycourses/:userId", async (req, res) => {
   try {
     const userId = req.params.userId;
 
@@ -155,7 +156,7 @@ courseRouter.get("/:userId/mycourses", async (req, res) => {
 });
 
 // subscipt_course
-courseRouter.post("/:courseId/mycourses", async (req, res) => {
+courseRouter.post("mycourses/:courseId", async (req, res) => {
   try {
     const { user_id, course_id } = req.body;
     const findUserSubscribeCourse = await supabase
@@ -229,7 +230,7 @@ courseRouter.post("/:courseId/mycourses", async (req, res) => {
 });
 
 //check subscriptions status
-courseRouter.get("/:userId/:courseId", async (req, res) => {
+courseRouter.get("/subscription/:userId/:courseId", async (req, res) => {
   const { userId, courseId } = req.params;
   const isSubscribed = await supabase
     .from("user_course_details")
@@ -237,6 +238,16 @@ courseRouter.get("/:userId/:courseId", async (req, res) => {
     .eq("course_id", courseId)
     .eq("user_id", userId);
   return res.json({ isSubscribed });
+});
+
+courseRouter.get("/coursedetail/learning", async (req, res) => {
+  const user_id = req.query.user_id;
+  const course_id = req.body.course_id;
+  const userDetails = await supabase
+    .from("user_course_details")
+    .select("*")
+    .eq("user_id", user_id);
+  console.log(userDetails);
 });
 
 export default courseRouter;
