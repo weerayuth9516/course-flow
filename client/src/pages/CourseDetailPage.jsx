@@ -83,7 +83,6 @@ function CourseDetailPage() {
     try {
       const userId = auth.session.user.user_id;
       const courseId = params.courseId;
-      console.log(userId);
       const response = await axios.get(
         `http://localhost:4001/courses/subscription/${userId}/${courseId}`
       );

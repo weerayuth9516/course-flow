@@ -499,4 +499,14 @@ courseRouter.put("/update/sub_lesson", protect, async (req, res) => {
   }
 });
 
+courseRouter.get("/coursedetail/learning", async (req, res) => {
+  const user_id = req.query.user_id;
+  const course_id = req.body.course_id;
+  const userDetails = await supabase
+    .from("user_course_details")
+    .select("*")
+    .eq("user_id", user_id);
+  console.log(userDetails);
+});
+
 export default courseRouter;

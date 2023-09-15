@@ -13,23 +13,24 @@ function DisplayCards({ searchList }) {
             ? item.course_summary.substring(0, 60) + "..."
             : item.course_summary;
         return (
-          <Link key={index}
-          to={`/course/courseDetail/${item.course_id}`}
-          target="_blank"
-        >
+          <Link
+            key={index}
+            to={`/course/courseDetail/${item.course_id}`}
+            target="_blank"
+          >
             <div className="course-cards-box font-inter ">
               <div className="course-card w-[357px] h-[475px] rounded-lg shadow-lg border border-gray-100 mb-8 hover:scale-105 hover:shadow-lg transform  transition-transform duration-300 ease-in-out">
                 <div className="course-card-thumbnail">
-                    <img
-                      src={item.course_cover_img}
-                      alt="course-image"
-                      className="w-[357px] h-[240px] object-fit rounded-lg shadow-lg"
-                    />
+                  <img
+                    src={item.course_cover_img}
+                    alt="course-image"
+                    className="w-[357px] h-[240px] object-fit rounded-lg shadow-lg"
+                  />
                 </div>
                 <div className="description-box m-4">
                   <h3 className="mb-2 text-orange-500 text-body3">Course</h3>
                   <h2 className="font-bold mb-2 text-header3 text-black ">
-                      {item.course_name}
+                    {item.course_name}
                   </h2>
                   <div className="course-detail text-body2 text-gray-700">
                     <p>{limitLetter}</p>
@@ -56,7 +57,7 @@ function DisplayCards({ searchList }) {
                 </div>
               </div>
             </div>
-            </Link>
+          </Link>
         );
       })}
       {/* End display course cards */}
