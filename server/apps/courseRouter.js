@@ -378,7 +378,7 @@ courseRouter.put("/update/sub_lesson", protect, async (req, res) => {
         : req.body.status_value === "not_started"
         ? 1
         : 3;
-    const results = await supabase
+    const { data, error } = await supabase
       .from("user_sub_lesson_details")
       .update({ status_id: status_value })
       .match({
