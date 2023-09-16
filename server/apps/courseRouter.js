@@ -24,9 +24,32 @@ courseRouter.get("/", async (req, res) => {
       .eq("public_status", 1)
       .limit(limit == null ? 12 : limit);
   }
+  const course_idArray = results.data.map((value) => value.course_id);
+  console.log(course_idArray);
+  const lessonCount = await supabase
+    .from("lessons")
+    .select("course_id")
+    .in("course_id", course_idArray);
+  const lessonCountArrayFilter = course_idArray.map((value) => {
+    return {
+      course_id: value,
+      lesson_count: lessonCount.data.filter(
+        (subValue) => subValue.course_id === value
+      ).length,
+    };
+  });
+  const newMap = results.data.map((value) => {
+    return {
+      ...value,
+      lesson_count: lessonCountArrayFilter.filter((subValue) => {
+        return subValue.course_id === value.course_id;
+      })[0].lesson_count,
+    };
+  });
+  console.log(newMap);
   if (results.statusText === "OK") {
     return res.json({
-      data: results.data,
+      data: newMap,
     });
   } else {
     return res.status(400).send(`API ERROR: ${results.error.message}`);
@@ -332,7 +355,7 @@ courseRouter.get("/coursedetail/learning", protect, async (req, res) => {
               course_summary: courseDetailOnThisCourse.data[0].course_summary,
               status_value:
                 userCourseDetails.data[0].status_id === 1
-                  ? "not_start"
+                  ? "not_started"
                   : userCourseDetails.data[0].status_id === 2
                   ? "in_progress"
                   : "completed",
@@ -356,7 +379,14 @@ courseRouter.put("/update/sub_lesson", protect, async (req, res) => {
   const status_value = req.body.status_value;
   const { data, error } = await supabase
     .from("user_sub_lesson_details")
-    .update("status_id", status_value === "in_progress" ? 2 : 3)
+    .update(
+      "status_id",
+      status_value === "in_progress"
+        ? 2
+        : status_value === "not_started"
+        ? 1
+        : 3
+    )
     .eq("sub_lesson_id", sub_lesson_id)
     .eq("user_course_detail_id", user_course_detail_id);
   if (error) {
