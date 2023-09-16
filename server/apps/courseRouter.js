@@ -291,17 +291,23 @@ courseRouter.get("/coursedetail/learning", protect, async (req, res) => {
           sub_lesson_name: mainValue.sub_lesson_name,
           sub_lesson_video: mainValue.sub_lesson_video,
           lesson_id: mainValue.lesson_id,
-          status_value: userSubLessonDetail.data.filter(
-            (subValue) => mainValue.sub_lesson_id === subValue.sub_lesson_id
-          )[0].status_id,
+          status_value:
+            userSubLessonDetail.data.filter(
+              (subValue) => mainValue.sub_lesson_id === subValue.sub_lesson_id
+            )[0].status_id === 1
+              ? "not_started"
+              : "in_progress",
         };
       });
       const lessonMap = lessonDetailOnThisCourse.data.map((value) => {
         return {
           lesson_name: `${value.lesson_name}`,
-          status_value: userLessonDetail.data.filter(
-            (subValue) => subValue.lesson_id === value.lesson_id
-          )[0].status_id,
+          status_value:
+            userLessonDetail.data.filter(
+              (subValue) => subValue.lesson_id === value.lesson_id
+            )[0].status_id === 1
+              ? "not_started"
+              : "in_progress",
           sub_lesson: subLessonMap.filter(
             (subValue) => subValue.lesson_id === value.lesson_id
           ),
@@ -316,7 +322,10 @@ courseRouter.get("/coursedetail/learning", protect, async (req, res) => {
               course_id: courseDetailOnThisCourse.data[0].course_id,
               course_name: courseDetailOnThisCourse.data[0].course_name,
               course_summary: courseDetailOnThisCourse.data[0].course_summary,
-              status_value: userCourseDetails.data[0].status_id,
+              status_value:
+                userCourseDetails.data[0].status_id === 1
+                  ? "not_started"
+                  : "in_progress",
             },
             lesson_detail: lessonMap,
           },
