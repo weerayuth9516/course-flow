@@ -1,83 +1,42 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect } from "react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import completed from "../assets/courseLearning/completed.png";
 import inprogress from "../assets/courseLearning/inprogress.png";
 import notStart from "../assets/courseLearning/notStart.png";
 import ToggleList from "../components/ToggleList";
-import axios from "axios";
-import { useParams } from "react-router-dom";
 import { useAuth } from "../context/authentication";
+import useCourselearning from "../hook/useCourselearning";
 
 function CourseLearningPage() {
-  const [userCourseDetailId,SetUserCourseDetailId] = useState("");
-  const [course, setCourse] = useState([]);
-  const [lesson, setLesson] = useState([]);
-  const [subLessonArray, setSubLessonArray] = useState([]);
-  const [lessonPage, setLessonPage] = useState(1);
-  const [currentSubLesson, setCurrentSubLesson] = useState({
-    subLessonName: "",
-    subLessonVideo: "",
-    subLessonId: "",
-  });
-  const [subLessonStatus, setSubLessonStatus] = useState([]);
-  const [powerLevel, setPowerLevel] = useState(0);
-  const [toggleStates, setToggleStates] = useState(lesson.map(() => false));
-
   const videoRef = useRef(null);
-  const params = useParams();
   const auth = useAuth();
-
-  const getUserCoursesLearning = async (userId) => {
-    try {
-      const token = localStorage.getItem("token");
-      const headers = {
-        Authorization: `Bearer ${token}`,
-      };
-      const courseResult = await axios.get(
-        `http://localhost:4001/courses/coursedetail/learning?user_id=${userId}&course_id=${params.courseId}`,{ headers }
-      );
-      SetUserCourseDetailId(courseResult.data.data[0].user_course_detail_id)
-      setCourse(courseResult.data.data[0].course_detail);
-      setLesson(courseResult.data.data[0].lesson_detail);
-      const subLessons = courseResult.data.data[0].lesson_detail.flatMap(
-        (lesson) => lesson.sub_lesson
-      );
-      console.log(subLessons)
-      setSubLessonArray(subLessons);
-    } catch (error) {
-      console.log("request error");
-    }
-  };
-
-// Update Status
-const updateLearningStatus = async (userCourseDetailId,sublessonId,statusValue) => {
-  try {
-    const token = localStorage.getItem("token");
-    const headers = {
-      Authorization: `Bearer ${token}`,
-    };
-    const body = {
-      user_course_detail_id: userCourseDetailId,
-      sub_lesson_id: sublessonId,
-      status_value: statusValue,
-    };
-    const courseResult = await axios.put(
-      'http://localhost:4001/courses/update/sub_lesson',
-      body,
-      { headers }
-    );
-    console.log(courseResult.data);
-  } catch (error) {
-    console.error(error);
-  }
-};
+  const {
+    course,
+    lesson,
+    subLessonArray,
+    lessonPage,
+    setLessonPage,
+    currentSubLesson,
+    setCurrentSubLesson,
+    subLessonStatus,
+    setSubLessonStatus,
+    powerLevel,
+    toggleStates,
+    getUserCoursesLearning,
+    toggle,
+    calculatePowerLevel,
+    handleTitleClick,
+    handleVideoEnd,
+    handleVideoStart,
+    handleAssignment,
+  } = useCourselearning();
 
   useEffect(() => {
     if (auth.isAuthenicated) {
       const userId = auth.session.user.user_id;
       getUserCoursesLearning(userId);
-    } 
+    }
   }, [auth.isAuthenicated]);
 
   useEffect(() => {
@@ -106,93 +65,6 @@ const updateLearningStatus = async (userCourseDetailId,sublessonId,statusValue) 
       });
     }
   }, [lessonPage, subLessonArray]);
-
-  const toggle = (index) => {
-    const newToggleStates = [...toggleStates];
-    newToggleStates[index] = !newToggleStates[index];
-    setToggleStates(newToggleStates);
-  };
-
-  const calculatePowerLevel = () => {
-    const totalSublesson = subLessonArray.length;
-    const countCompleted = subLessonStatus.filter(
-      (status) => status === "completed"
-    ).length;
-    if (totalSublesson === 0) {
-      setPowerLevel(0);
-    } else {
-      const percentProgress = Math.floor(
-        (countCompleted / totalSublesson) * 100
-      );
-      setPowerLevel(percentProgress);
-    }
-  };
-
-  const handleTitleClick = (subLesson, subVideo, subLessonId) => {
-    setCurrentSubLesson({
-      subLessonName: subLesson,
-      subLessonVideo: subVideo,
-      subLessonId: subLessonId,
-    });
-
-    const currentIndex = subLessonArray.indexOf(
-      subLessonArray.find((item) => item.sub_lesson_name === subLesson)
-    );
-    setLessonPage(currentIndex + 1);
-  };
-
-  const handleNextClick = () => {
-    if (lessonPage < subLessonArray.length) {
-      setLessonPage(lessonPage + 1);
-    }
-  };
-
-  const handlePreviousClick = () => {
-    if (lessonPage > 1) {
-      setLessonPage(lessonPage - 1);
-    }
-  };
-
-  const handleVideoEnd = () => {
-    const currentIndex = subLessonArray.findIndex(
-      (subLesson) =>
-        subLesson.sub_lesson_name === currentSubLesson.subLessonName
-    );
-    if (currentIndex !== -1) {
-      const newStatusArray = [...subLessonStatus];
-      newStatusArray[currentIndex] = "completed";
-      setSubLessonStatus(newStatusArray);
-      updateLearningStatus(userCourseDetailId,currentSubLesson.subLessonId,"completed")
-    }
-  };
-
-  const handleVideoStart = () => {
-    const currentIndex = subLessonArray.findIndex(
-      (subLesson) =>
-        subLesson.sub_lesson_name === currentSubLesson.subLessonName
-    );
-    if (currentIndex !== -1) {
-      const newStatusArray = [...subLessonStatus];
-      newStatusArray[currentIndex] =
-      newStatusArray[currentIndex] === "not_started"
-        ? "in_progress"
-        : newStatusArray[currentIndex];
-      setSubLessonStatus(newStatusArray);
-
-      newStatusArray[currentIndex] === "not_started"?updateLearningStatus(userCourseDetailId,currentSubLesson.subLessonId,"in_progress"):"";
-    }
-  };
-
-  const handleAssignment = () => {
-    const currentIndex = subLessonArray.findIndex(
-      (subLesson) =>
-        subLesson.sub_lesson_name === currentSubLesson.subLessonName
-    );
-    if (currentIndex !== -1 && subLessonStatus[currentIndex] === "completed") {
-      return true;
-    }
-    return false;
-  };
 
   return (
     <>
@@ -276,7 +148,7 @@ const updateLearningStatus = async (userCourseDetailId,sublessonId,statusValue) 
                                   handleTitleClick(
                                     item.sub_lesson_name,
                                     item.sub_lesson_video,
-                                    item.sub_lesson_id,
+                                    item.sub_lesson_id
                                   )
                                 }
                                 className="w-[257px] h-[48px] text-left ml-3 whitespace-normal"
@@ -327,7 +199,9 @@ const updateLearningStatus = async (userCourseDetailId,sublessonId,statusValue) 
         <div className="w-[1440px] font-inter font-bold text-body2 flex justify-between items-center">
           {lessonPage > 1 ? (
             <button
-              onClick={handlePreviousClick}
+              onClick={() => {
+                lessonPage > 1 ? setLessonPage(lessonPage - 1) : null;
+              }}
               className="w-[161px] h-[60px] ml-20 mt-5 mb-5 text-blue-500 "
             >
               Previous Lesson
@@ -337,7 +211,11 @@ const updateLearningStatus = async (userCourseDetailId,sublessonId,statusValue) 
           )}
           {lessonPage < subLessonArray.length ? (
             <button
-              onClick={handleNextClick}
+              onClick={() => {
+                lessonPage < subLessonArray.length
+                  ? setLessonPage(lessonPage + 1)
+                  : null;
+              }}
               className="w-[161px] h-[60px] mr-10 mt-5 mb-5 text-white bg-blue-500 rounded-lg"
             >
               Next Lesson
