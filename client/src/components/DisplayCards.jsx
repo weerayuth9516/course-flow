@@ -49,7 +49,7 @@ function DisplayCards({ searchList }) {
                       alt="Image icon"
                       className="inline mr-2 ml-4"
                     />
-                    6 Lessons
+                    {item.lesson_count} Lessons
                   </span>
                   <span className="ml-5">
                     <img

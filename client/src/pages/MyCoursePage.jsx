@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useEffect } from "react";
-import DisplayCardsMyCourses from "../components/DisplayCardsMyCourses";
+import DisplayCards from "../components/DisplayCards";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { useAuth } from "../context/authentication";
@@ -115,8 +115,8 @@ function MyCoursePage() {
           </div>
           <div className="course-cards-container flex justify-center mb-[150px]">
             <div className="course-cards-container w-[740px] grid grid-cols-2 gap-10">
-              <DisplayCardsMyCourses
-                myCourses={
+              <DisplayCards
+                searchList={
                   status === "in_progress"
                     ? inProgressCourses
                     : status === "completed"
