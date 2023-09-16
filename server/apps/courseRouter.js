@@ -296,7 +296,11 @@ courseRouter.get("/coursedetail/learning", protect, async (req, res) => {
               (subValue) => mainValue.sub_lesson_id === subValue.sub_lesson_id
             )[0].status_id === 1
               ? "not_started"
-              : "in_progress",
+              : userLessonDetail.data.filter(
+                  (subValue) => subValue.lesson_id === value.lesson_id
+                )[0].status_id === 2
+              ? "in_progress"
+              : "completed",
         };
       });
       const lessonMap = lessonDetailOnThisCourse.data.map((value) => {
@@ -307,7 +311,11 @@ courseRouter.get("/coursedetail/learning", protect, async (req, res) => {
               (subValue) => subValue.lesson_id === value.lesson_id
             )[0].status_id === 1
               ? "not_started"
-              : "in_progress",
+              : userLessonDetail.data.filter(
+                  (subValue) => subValue.lesson_id === value.lesson_id
+                )[0].status_id === 2
+              ? "in_progress"
+              : "completed",
           sub_lesson: subLessonMap.filter(
             (subValue) => subValue.lesson_id === value.lesson_id
           ),
@@ -324,8 +332,10 @@ courseRouter.get("/coursedetail/learning", protect, async (req, res) => {
               course_summary: courseDetailOnThisCourse.data[0].course_summary,
               status_value:
                 userCourseDetails.data[0].status_id === 1
-                  ? "not_started"
-                  : "in_progress",
+                  ? "not_start"
+                  : userCourseDetails.data[0].status_id === 2
+                  ? "in_progress"
+                  : "completed",
             },
             lesson_detail: lessonMap,
           },
