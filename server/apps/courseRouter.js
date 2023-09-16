@@ -262,7 +262,7 @@ courseRouter.get("/subscription/:userId/:courseId", async (req, res) => {
   return res.json({ isSubscribed });
 });
 
-courseRouter.get("/coursedetail/learning", async (req, res) => {
+courseRouter.get("/coursedetail/learning", protect, async (req, res) => {
   try {
     const user_id = req.query.user_id;
     const course_id = req.query.course_id;
@@ -368,7 +368,7 @@ courseRouter.get("/coursedetail/learning", async (req, res) => {
   }
 });
 
-courseRouter.put("/update/sub_lesson", async (req, res) => {
+courseRouter.put("/update/sub_lesson", protect, async (req, res) => {
   try {
     const user_course_detail_id = req.body.user_course_detail_id;
     const sub_lesson_id = req.body.sub_lesson_id;
