@@ -386,16 +386,15 @@ courseRouter.put("/update/sub_lesson", protect, async (req, res) => {
         user_course_detail_id: user_course_detail_id,
       })
       .select();
-    console.log(results);
-    // if (error) {
-    //   return res.status(404).json({
-    //     message: "API INVALID",
-    //   });
-    // } else {
-    //   return res.json({
-    //     message: `sub lesson ID:${sub_lesson_id} on ${user_course_detail_id} updated successfully`,
-    //   });
-    // }
+    if (error) {
+      return res.status(404).json({
+        message: "API INVALID",
+      });
+    } else {
+      return res.json({
+        message: `sub lesson ID:${sub_lesson_id} on ${user_course_detail_id} updated successfully`,
+      });
+    }
   } catch (error) {
     console.log(error);
     return res.status(400).json({
