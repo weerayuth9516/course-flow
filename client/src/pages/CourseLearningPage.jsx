@@ -7,6 +7,7 @@ import notStart from "../assets/courseLearning/notStart.png";
 import ToggleList from "../components/ToggleList";
 import axios from "axios";
 import { useParams } from "react-router-dom";
+import { useAuth } from "../context/authentication";
 
 function CourseLearningPage() {
   const [course, setCourse] = useState([]);
@@ -23,24 +24,23 @@ function CourseLearningPage() {
 
   const videoRef = useRef(null);
   const params = useParams();
+  const auth = useAuth();
 
-  const getCourseAndLessonAndSubLesson = async () => {
+  const getUserCoursesLearning = async (userId) => {
     try {
+      const token = localStorage.getItem("token");
+      const headers = {
+        Authorization: `Bearer ${token}`,
+      };
       const courseResult = await axios.get(
-        `http://localhost:4001/courses/${params.courseId}`
+        `http://localhost:4001/courses/coursedetail/learning?user_id=${userId}&course_id=${params.courseId}`,{ headers }
       );
-      setCourse(courseResult.data.data[0]);
-    } catch (error) {
-      console.log("request error");
-    }
-    try {
-      const lessonResult = await axios.get(
-        `http://localhost:4001/courses/${params.courseId}/lessons`
+      setCourse(courseResult.data.data[0].course_detail);
+      setLesson(courseResult.data.data[0].lesson_detail);
+      const subLessons = courseResult.data.data[0].lesson_detail.flatMap(
+        (lesson) => lesson.sub_lesson
       );
-      setLesson(lessonResult.data.data);
-      const subLessons = lessonResult.data.data.flatMap(
-        (lesson) => lesson.sub_lessons
-      );
+      console.log(subLessons)
       setSubLessonArray(subLessons);
     } catch (error) {
       console.log("request error");
@@ -48,8 +48,11 @@ function CourseLearningPage() {
   };
 
   useEffect(() => {
-    getCourseAndLessonAndSubLesson();
-  }, [params.courseId]);
+    if (auth.isAuthenicated) {
+      const userId = auth.session.user.user_id;
+      getUserCoursesLearning(userId);
+    } 
+  }, [auth.isAuthenicated]);
 
   useEffect(() => {
     if (subLessonArray.length > 0) {
@@ -59,7 +62,7 @@ function CourseLearningPage() {
       });
     }
     if (subLessonArray.length > 0) {
-      setSubLessonStatus(subLessonArray.map(() => "notStart"));
+      setSubLessonStatus(subLessonArray.map(() => "not_started"));
     }
   }, [subLessonArray]);
 
@@ -181,8 +184,8 @@ function CourseLearningPage() {
               <div className="course-detail mb-5">
                 <p>
                   {typeof course.course_summary === "string" &&
-                  course.course_summary.length > 60
-                    ? course.course_summary.substring(0, 60) + "..."
+                  course.course_summary.length > 100
+                    ? course.course_summary.substring(0, 100) + "..."
                     : course.course_summary}
                 </p>
               </div>
@@ -206,8 +209,8 @@ function CourseLearningPage() {
                   index={index}
                   title={data.lesson_name}
                   content={
-                    data.sub_lessons && data.sub_lessons.length !== 0
-                      ? data.sub_lessons.map((item, index) => {
+                    data.sub_lesson && data.sub_lesson.length !== 0
+                      ? data.sub_lesson.map((item, index) => {
                           const currentIndex = subLessonArray.findIndex(
                             (subLesson) =>
                               subLesson.sub_lesson_name === item.sub_lesson_name
@@ -215,7 +218,7 @@ function CourseLearningPage() {
                           const subLessonStatusClass =
                             subLessonStatus[currentIndex] === "completed"
                               ? completed
-                              : subLessonStatus[currentIndex] === "inprogress"
+                              : subLessonStatus[currentIndex] === "in_progress"
                               ? inprogress
                               : notStart;
                           return (
