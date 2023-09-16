@@ -262,15 +262,14 @@ courseRouter.get("/subscription/:userId/:courseId", async (req, res) => {
   return res.json({ isSubscribed });
 });
 
-courseRouter.get("/coursedetail/learning", protect, async (req, res) => {
+courseRouter.get("/coursedetail/learning", async (req, res) => {
   try {
     const user_id = req.query.user_id;
     const course_id = req.query.course_id;
     const userCourseDetails = await supabase
       .from("user_course_details")
       .select("*")
-      .eq("user_id", user_id)
-      .eq("course_id", course_id);
+      .match({ user_id: user_id, course_id: course_id });
     if (userCourseDetails.data[0].length === 0) {
       return res.json({
         message: "Not found.",
@@ -368,7 +367,7 @@ courseRouter.get("/coursedetail/learning", protect, async (req, res) => {
   }
 });
 
-courseRouter.put("/update/sub_lesson", protect, async (req, res) => {
+courseRouter.put("/update/sub_lesson", async (req, res) => {
   try {
     const user_course_detail_id = req.body.user_course_detail_id;
     const sub_lesson_id = req.body.sub_lesson_id;
@@ -378,21 +377,67 @@ courseRouter.put("/update/sub_lesson", protect, async (req, res) => {
         : req.body.status_value === "not_started"
         ? 1
         : 3;
-    const { data, error } = await supabase
+    const checkCompleted = await supabase
       .from("user_sub_lesson_details")
-      .update({ status_id: status_value })
+      .select("status_id")
       .match({
-        sub_lesson_id: sub_lesson_id,
         user_course_detail_id: user_course_detail_id,
-      })
-      .select();
-    if (error) {
-      return res.status(404).json({
-        message: "API INVALID",
+        sub_lesson_id: sub_lesson_id,
       });
+    if (checkCompleted.data[0].status_id === 1) {
+      const { data, error } = await supabase
+        .from("user_sub_lesson_details")
+        .update({ status_id: status_value })
+        .match({
+          sub_lesson_id: sub_lesson_id,
+          user_course_detail_id: user_course_detail_id,
+        })
+        .select();
+      const lessonID = await supabase
+        .from("sub_lessons")
+        .select("lesson_id")
+        .eq("sub_lesson_id", sub_lesson_id);
+      const subLessonIdArray = await supabase
+        .from("sub_lessons")
+        .select("sub_lesson_id")
+        .eq("lesson_id", lessonID.data[0].lesson_id);
+      const pureArrayForFetch = subLessonIdArray.data.map((value) => {
+        return value.sub_lesson_id;
+      });
+      const lessonChecker = await supabase
+        .from("user_sub_lesson_details")
+        .select("status_id, user_course_detail_id")
+        .in("sub_lesson_id", pureArrayForFetch);
+      const lessonCheckerFilter = lessonChecker.data.filter((value) => {
+        return value.user_course_detail_id === user_course_detail_id;
+      });
+      if (
+        lessonCheckerFilter.length ===
+        lessonCheckerFilter.filter((value) => value.status_id === 3).length
+      ) {
+        await supabase
+          .from("user_lesson_details")
+          .update({ status_id: 3 })
+          .match({
+            user_course_detail_id: user_course_detail_id,
+            lesson_id: lessonID.data[0].lesson_id,
+          });
+      }
+      if (error) {
+        return res.status(404).json({
+          message: "API INVALID",
+        });
+      } else {
+        return res.json({
+          message: `sub lesson ID:${sub_lesson_id} on ${user_course_detail_id} updated successfully`,
+        });
+      }
     } else {
       return res.json({
-        message: `sub lesson ID:${sub_lesson_id} on ${user_course_detail_id} updated successfully`,
+        message:
+          checkCompleted === 3
+            ? "On this sub lesson already completed."
+            : "On this sub lesson already in progress.",
       });
     }
   } catch (error) {
