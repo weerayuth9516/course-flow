@@ -384,7 +384,7 @@ courseRouter.put("/update/sub_lesson", async (req, res) => {
         user_course_detail_id: user_course_detail_id,
         sub_lesson_id: sub_lesson_id,
       });
-    if (checkCompleted.data[0].status_id === 1) {
+    if (checkCompleted.data[0].status_id === 1 || status_value === 3) {
       const { data, error } = await supabase
         .from("user_sub_lesson_details")
         .update({ status_id: status_value })
