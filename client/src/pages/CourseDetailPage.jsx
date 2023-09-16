@@ -99,6 +99,8 @@ function CourseDetailPage() {
 
   const handleConfirmSubscribe = async () => {
     try {
+      setIsSubscribed(true);
+      closeSubscribeModal();
       const userId = auth.session.user.user_id;
       const courseId = course.course_id;
       const dataToSend = {
@@ -112,8 +114,8 @@ function CourseDetailPage() {
       );
 
       if (request.status === 200) {
-        setIsSubscribed(true);
-        closeSubscribeModal();
+        // setIsSubscribed(true);
+        // closeSubscribeModal();
         console.log("Subscribed successfully");
       } else {
         console.log("Subscribed error");
@@ -179,7 +181,7 @@ function CourseDetailPage() {
             {isSubscribed ? (
               <button
                 className="px-8 py-[18px] w-[309px] h-[60px] border-solid border-[1px] rounded-[12px] bg-blue-500 font-bold text-white mt-5 hover:bg-blue-600"
-                onClick={navigate(`/courselearning/${course.course_id}`)}
+                onClick={() => navigate("/courselearning/:courseId")}
               >
                 Start Learning
               </button>
