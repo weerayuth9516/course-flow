@@ -41,7 +41,6 @@ function useCourselearning() {
       const subLessons = courseResult.data.data[0].lesson_detail.flatMap(
         (lesson) => lesson.sub_lesson
       );
-      console.log(subLessons);
       setSubLessonArray(subLessons);
     } catch (error) {
       console.log("request error");
