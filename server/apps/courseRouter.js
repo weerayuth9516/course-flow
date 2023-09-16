@@ -353,6 +353,7 @@ courseRouter.get("/coursedetail/learning", protect, async (req, res) => {
 courseRouter.put("/update/sub_lesson", protect, async (req, res) => {
   const user_course_detail_id = req.body.user_course_detail_id;
   const sub_lesson_id = req.body.sub_lesson_id;
+  const status_value = req.body.status_value;
   const { data, error } = await supabase
     .from("user_sub_lesson_details")
     .update("status_id", 2)
