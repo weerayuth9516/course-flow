@@ -10,6 +10,7 @@ import { useParams } from "react-router-dom";
 import { useAuth } from "../context/authentication";
 
 function CourseLearningPage() {
+  const [userCourseDetailId,SetUserCourseDetailId] = useState("");
   const [course, setCourse] = useState([]);
   const [lesson, setLesson] = useState([]);
   const [subLessonArray, setSubLessonArray] = useState([]);
@@ -17,6 +18,7 @@ function CourseLearningPage() {
   const [currentSubLesson, setCurrentSubLesson] = useState({
     subLessonName: "",
     subLessonVideo: "",
+    subLessonId: "",
   });
   const [subLessonStatus, setSubLessonStatus] = useState([]);
   const [powerLevel, setPowerLevel] = useState(0);
@@ -35,6 +37,7 @@ function CourseLearningPage() {
       const courseResult = await axios.get(
         `http://localhost:4001/courses/coursedetail/learning?user_id=${userId}&course_id=${params.courseId}`,{ headers }
       );
+      SetUserCourseDetailId(courseResult.data.data[0].user_course_detail_id)
       setCourse(courseResult.data.data[0].course_detail);
       setLesson(courseResult.data.data[0].lesson_detail);
       const subLessons = courseResult.data.data[0].lesson_detail.flatMap(
@@ -46,6 +49,29 @@ function CourseLearningPage() {
       console.log("request error");
     }
   };
+
+// Update Status
+const updateLearningStatus = async (userCourseDetailId,sublessonId,statusValue) => {
+  try {
+    const token = localStorage.getItem("token");
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
+    const body = {
+      user_course_detail_id: userCourseDetailId,
+      sub_lesson_id: sublessonId,
+      status_value: statusValue,
+    };
+    const courseResult = await axios.put(
+      'http://localhost:4001/courses/update/sub_lesson',
+      body,
+      { headers }
+    );
+    console.log(courseResult.data);
+  } catch (error) {
+    console.error(error);
+  }
+};
 
   useEffect(() => {
     if (auth.isAuthenicated) {
@@ -59,10 +85,11 @@ function CourseLearningPage() {
       setCurrentSubLesson({
         subLessonName: subLessonArray[0].sub_lesson_name,
         subLessonVideo: subLessonArray[0].sub_lesson_video,
+        subLessonId: subLessonArray[0].sub_lesson_id,
       });
     }
     if (subLessonArray.length > 0) {
-      setSubLessonStatus(subLessonArray.map(() => "not_started"));
+      setSubLessonStatus(subLessonArray.map((initial) => initial.status_value));
     }
   }, [subLessonArray]);
 
@@ -75,6 +102,7 @@ function CourseLearningPage() {
       setCurrentSubLesson({
         subLessonName: subLessonArray[lessonPage - 1].sub_lesson_name,
         subLessonVideo: subLessonArray[lessonPage - 1].sub_lesson_video,
+        subLessonId: subLessonArray[lessonPage - 1].sub_lesson_id,
       });
     }
   }, [lessonPage, subLessonArray]);
@@ -100,10 +128,11 @@ function CourseLearningPage() {
     }
   };
 
-  const handleTitleClick = (subLesson, subVideo) => {
+  const handleTitleClick = (subLesson, subVideo, subLessonId) => {
     setCurrentSubLesson({
       subLessonName: subLesson,
       subLessonVideo: subVideo,
+      subLessonId: subLessonId,
     });
 
     const currentIndex = subLessonArray.indexOf(
@@ -133,6 +162,7 @@ function CourseLearningPage() {
       const newStatusArray = [...subLessonStatus];
       newStatusArray[currentIndex] = "completed";
       setSubLessonStatus(newStatusArray);
+      updateLearningStatus(userCourseDetailId,currentSubLesson.subLessonId,"completed")
     }
   };
 
@@ -143,10 +173,13 @@ function CourseLearningPage() {
     );
     if (currentIndex !== -1) {
       const newStatusArray = [...subLessonStatus];
-      newStatusArray[currentIndex] !== "completed"
-        ? (newStatusArray[currentIndex] = "inprogress")
-        : "";
+      newStatusArray[currentIndex] =
+      newStatusArray[currentIndex] === "not_started"
+        ? "in_progress"
+        : newStatusArray[currentIndex];
       setSubLessonStatus(newStatusArray);
+
+      newStatusArray[currentIndex] === "not_started"?updateLearningStatus(userCourseDetailId,currentSubLesson.subLessonId,"in_progress"):"";
     }
   };
 
@@ -242,7 +275,8 @@ function CourseLearningPage() {
                                 onClick={() =>
                                   handleTitleClick(
                                     item.sub_lesson_name,
-                                    item.sub_lesson_video
+                                    item.sub_lesson_video,
+                                    item.sub_lesson_id,
                                   )
                                 }
                                 className="w-[257px] h-[48px] text-left ml-3 whitespace-normal"

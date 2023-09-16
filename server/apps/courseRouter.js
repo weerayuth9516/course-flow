@@ -265,7 +265,6 @@ courseRouter.get("/subscription/:userId/:courseId", async (req, res) => {
 
 courseRouter.get("/coursedetail/learning", protect, async (req, res) => {
   try {
-    console.log(req.query);
     const user_id = req.query.user_id;
     const course_id = req.query.course_id;
     const userCourseDetails = await supabase
@@ -307,36 +306,33 @@ courseRouter.get("/coursedetail/learning", protect, async (req, res) => {
         .from("sub_lessons")
         .select("*")
         .in("lesson_id", mapForFetchLessonName);
-
       const subLessonMap = subLessonDetailOnThisCourse.data.map((mainValue) => {
+        const status = userSubLessonDetail.data.filter(
+          (subValue) => mainValue.sub_lesson_id === subValue.sub_lesson_id
+        )[0].status_id;
         return {
           sub_lesson_id: mainValue.sub_lesson_id,
           sub_lesson_name: mainValue.sub_lesson_name,
           sub_lesson_video: mainValue.sub_lesson_video,
           lesson_id: mainValue.lesson_id,
           status_value:
-            userSubLessonDetail.data.filter(
-              (subValue) => mainValue.sub_lesson_id === subValue.sub_lesson_id
-            )[0].status_id === 1
+            status === 1
               ? "not_started"
-              : userLessonDetail.data.filter(
-                  (subValue) => subValue.lesson_id === value.lesson_id
-                )[0].status_id === 2
+              : status === 2
               ? "in_progress"
               : "completed",
         };
       });
       const lessonMap = lessonDetailOnThisCourse.data.map((value) => {
+        const status = userLessonDetail.data.filter(
+          (subValue) => subValue.lesson_id === value.lesson_id
+        )[0].status_id;
         return {
           lesson_name: `${value.lesson_name}`,
           status_value:
-            userLessonDetail.data.filter(
-              (subValue) => subValue.lesson_id === value.lesson_id
-            )[0].status_id === 1
+            status === 1
               ? "not_started"
-              : userLessonDetail.data.filter(
-                  (subValue) => subValue.lesson_id === value.lesson_id
-                )[0].status_id === 2
+              : status === 2
               ? "in_progress"
               : "completed",
           sub_lesson: subLessonMap.filter(
@@ -374,29 +370,36 @@ courseRouter.get("/coursedetail/learning", protect, async (req, res) => {
 });
 
 courseRouter.put("/update/sub_lesson", protect, async (req, res) => {
-  const user_course_detail_id = req.body.user_course_detail_id;
-  const sub_lesson_id = req.body.sub_lesson_id;
-  const status_value = req.body.status_value;
-  const { data, error } = await supabase
-    .from("user_sub_lesson_details")
-    .update({
-      status_id:
-        status_value === "in_progress"
-          ? 2
-          : status_value === "not_started"
-          ? 1
-          : 3,
-    })
-    .eq("sub_lesson_id", sub_lesson_id)
-    .eq("user_course_detail_id", user_course_detail_id);
-
-  if (error) {
-    return res.status(404).json({
-      message: "API INVALID",
-    });
-  } else {
-    return res.json({
-      message: `sub lesson ID:${sub_lesson_id} on ${user_course_detail_id} updated successfully`,
+  try {
+    const user_course_detail_id = req.body.user_course_detail_id;
+    const sub_lesson_id = req.body.sub_lesson_id;
+    const status_value =
+      req.body.status_value === "in_progress"
+        ? 2
+        : req.body.status_value === "not_started"
+        ? 1
+        : 3;
+    const { data, error } = await supabase
+      .from("user_sub_lesson_details")
+      .update({ status_id: status_value })
+      .match({
+        sub_lesson_id: sub_lesson_id,
+        user_course_detail_id: user_course_detail_id,
+      })
+      .select();
+    if (error) {
+      return res.status(404).json({
+        message: "API INVALID",
+      });
+    } else {
+      return res.json({
+        message: `sub lesson ID:${sub_lesson_id} on ${user_course_detail_id} updated successfully`,
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({
+      message: error,
     });
   }
 });
