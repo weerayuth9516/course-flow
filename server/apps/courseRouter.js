@@ -25,7 +25,6 @@ courseRouter.get("/", async (req, res) => {
       .limit(limit == null ? 12 : limit);
   }
   const course_idArray = results.data.map((value) => value.course_id);
-  console.log(course_idArray);
   const lessonCount = await supabase
     .from("lessons")
     .select("course_id")
@@ -421,6 +420,24 @@ courseRouter.put("/update/sub_lesson", async (req, res) => {
           .match({
             user_course_detail_id: user_course_detail_id,
             lesson_id: lessonID.data[0].lesson_id,
+          });
+      }
+      const lessonStatusArray = await supabase
+        .from("user_lesson_details")
+        .select("status_id")
+        .eq("user_course_detail_id", user_course_detail_id);
+      if (
+        lessonStatusArray.data.length ===
+        lessonStatusArray.data.filter((value) => {
+          return value.status_id === 3;
+        }).length
+      ) {
+        await supabase
+          .from("user_course_details")
+          .update({ status_id: 3 })
+          .match({
+            user_course_detail_id: user_course_detail_id,
+            user_id: user_id,
           });
       }
       if (error) {
