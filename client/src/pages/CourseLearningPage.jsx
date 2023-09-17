@@ -46,8 +46,6 @@ function CourseLearningPage() {
         subLessonVideo: subLessonArray[0].sub_lesson_video,
         subLessonId: subLessonArray[0].sub_lesson_id,
       });
-    }
-    if (subLessonArray.length > 0) {
       setSubLessonStatus(subLessonArray.map((initial) => initial.status_value));
     }
   }, [subLessonArray]);
@@ -106,7 +104,7 @@ function CourseLearningPage() {
                 </div>
               </div>
             </div>
-            <div id="toggle-list-box" className="">
+            <div id="toggle-list-box">
               {lesson.map((data, index) => (
                 <ToggleList
                   className="text-lg"
@@ -202,7 +200,7 @@ function CourseLearningPage() {
               onClick={() => {
                 lessonPage > 1 ? setLessonPage(lessonPage - 1) : null;
               }}
-              className="w-[161px] h-[60px] ml-20 mt-5 mb-5 text-blue-500 "
+              className="w-[161px] h-[60px] ml-20 mt-5 mb-5 text-blue-500"
             >
               Previous Lesson
             </button>

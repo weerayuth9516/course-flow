@@ -8,22 +8,21 @@ function useCourselearning() {
   const [lesson, setLesson] = useState([]);
   const [subLessonArray, setSubLessonArray] = useState([]);
   const [lessonPage, setLessonPage] = useState(1);
+  const [subLessonStatus, setSubLessonStatus] = useState([]);
+  const [powerLevel, setPowerLevel] = useState(0);
+  const [toggleStates, setToggleStates] = useState(lesson.map(() => false));
   const [currentSubLesson, setCurrentSubLesson] = useState({
     subLessonName: "",
     subLessonVideo: "",
     subLessonId: "",
   });
-  const [subLessonStatus, setSubLessonStatus] = useState([]);
-  const [powerLevel, setPowerLevel] = useState(0);
-  const [toggleStates, setToggleStates] = useState(lesson.map(() => false));
+  const params = useParams();
 
   const toggle = (index) => {
     const newToggleStates = [...toggleStates];
     newToggleStates[index] = !newToggleStates[index];
     setToggleStates(newToggleStates);
   };
-
-  const params = useParams();
 
   const getUserCoursesLearning = async (userId) => {
     try {
