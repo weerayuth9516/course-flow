@@ -388,20 +388,6 @@ courseRouter.put("/update/sub_lesson", async (req, res) => {
         sub_lesson_id: sub_lesson_id,
       });
     if (checkCompleted.data[0].status_id === 1 || status_value === 3) {
-      const checkCourse = await supabase
-        .from("user_course_details")
-        .select("status_id")
-        .match({
-          user_course_detail_id: user_course_detail_id,
-        });
-      if (checkCourse.data[0].status_id === 1) {
-        await supabase
-          .from("user_course_details")
-          .update({ status_id: 2 })
-          .match({
-            user_course_detail_id: user_course_detail_id,
-          });
-      }
       const { data, error } = await supabase
         .from("user_sub_lesson_details")
         .update({ status_id: status_value })
@@ -428,21 +414,7 @@ courseRouter.put("/update/sub_lesson", async (req, res) => {
       const lessonCheckerFilter = lessonChecker.data.filter((value) => {
         return value.user_course_detail_id === user_course_detail_id;
       });
-      const checkLesson = await supabase
-        .from("user_lesson_details")
-        .select("status_id")
-        .match({
-          user_course_detail_id: user_course_detail_id,
-          lesson_id: lessonID.data[0].lesson_id,
-        });
-      if (checkCourse.data[0].status_id === 1) {
-        await supabase
-          .from("user_course_details")
-          .update({ status_id: 2 })
-          .match({
-            user_course_detail_id: user_course_detail_id,
-          });
-      }
+
       if (
         lessonCheckerFilter.length ===
         lessonCheckerFilter.filter((value) => value.status_id === 3).length
@@ -454,6 +426,22 @@ courseRouter.put("/update/sub_lesson", async (req, res) => {
             user_course_detail_id: user_course_detail_id,
             lesson_id: lessonID.data[0].lesson_id,
           });
+      } else {
+        const checkLesson = await supabase
+          .from("user_lesson_details")
+          .select("status_id")
+          .match({
+            user_course_detail_id: user_course_detail_id,
+            lesson_id: lessonID.data[0].lesson_id,
+          });
+        if (checkLesson.data[0].status_id === 1) {
+          await supabase
+            .from("user_lesson_details")
+            .update({ status_id: 2 })
+            .match({
+              user_course_detail_id: user_course_detail_id,
+            });
+        }
       }
       const lessonStatusArray = await supabase
         .from("user_lesson_details")
@@ -471,8 +459,22 @@ courseRouter.put("/update/sub_lesson", async (req, res) => {
           .match({
             user_course_detail_id: user_course_detail_id,
           });
+      } else {
+        const checkCourse = await supabase
+          .from("user_course_details")
+          .select("status_id")
+          .match({
+            user_course_detail_id: user_course_detail_id,
+          });
+        if (checkCourse.data[0].status_id === 1) {
+          await supabase
+            .from("user_course_details")
+            .update({ status_id: 2 })
+            .match({
+              user_course_detail_id: user_course_detail_id,
+            });
+        }
       }
-
       if (error) {
         return res.status(404).json({
           message: "API INVALID",
