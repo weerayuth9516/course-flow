@@ -1,8 +1,8 @@
 import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
-import userRouter from "./apps/userRouter.js";
 import dotenv from "dotenv";
+import userRouter from "./apps/userRouter.js";
 import courseRouter from "./apps/courseRouter.js";
 import authRouter from "./apps/authRouter.js";
 
