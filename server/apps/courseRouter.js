@@ -436,6 +436,7 @@ courseRouter.put("/update/sub_lesson", async (req, res) => {
             .update({ status_id: 2 })
             .match({
               user_course_detail_id: user_course_detail_id,
+              lesson_id: lessonID.data[0].lesson_id,
             });
         }
       }
