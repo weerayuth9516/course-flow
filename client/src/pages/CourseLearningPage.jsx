@@ -116,7 +116,7 @@ function CourseLearningPage() {
                       ? data.sub_lesson.map((item, index) => {
                           const currentIndex = subLessonArray.findIndex(
                             (subLesson) =>
-                              subLesson.sub_lesson_name === item.sub_lesson_name
+                              subLesson.sub_lesson_id === item.sub_lesson_id
                           );
                           const subLessonStatusClass =
                             subLessonStatus[currentIndex] === "completed"
@@ -128,8 +128,8 @@ function CourseLearningPage() {
                             <li
                               key={index}
                               className={`w-[309px] h-[60px] flex justify-start items-center pr-2 pl-2 ${
-                                currentSubLesson.subLessonName ===
-                                item.sub_lesson_name
+                                currentSubLesson.subLessonId ===
+                                item.sub_lesson_id
                                   ? "bg-gray-100 rounded-lg"
                                   : ""
                               }`}

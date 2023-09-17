@@ -94,15 +94,14 @@ function useCourselearning() {
     });
 
     const currentIndex = subLessonArray.indexOf(
-      subLessonArray.find((item) => item.sub_lesson_name === subLesson)
+      subLessonArray.find((item) => item.sub_lesson_id === subLessonId)
     );
     setLessonPage(currentIndex + 1);
   };
 
   const handleVideoEnd = () => {
     const currentIndex = subLessonArray.findIndex(
-      (subLesson) =>
-        subLesson.sub_lesson_name === currentSubLesson.subLessonName
+      (subLesson) => subLesson.sub_lesson_id === currentSubLesson.subLessonId
     );
     if (currentIndex !== -1) {
       const newStatusArray = [...subLessonStatus];
@@ -118,8 +117,7 @@ function useCourselearning() {
 
   const handleVideoStart = () => {
     const currentIndex = subLessonArray.findIndex(
-      (subLesson) =>
-        subLesson.sub_lesson_name === currentSubLesson.subLessonName
+      (subLesson) => subLesson.sub_lesson_id === currentSubLesson.subLessonId
     );
     if (currentIndex !== -1) {
       const newStatusArray = [...subLessonStatus];
@@ -141,8 +139,7 @@ function useCourselearning() {
 
   const handleAssignment = () => {
     const currentIndex = subLessonArray.findIndex(
-      (subLesson) =>
-        subLesson.sub_lesson_name === currentSubLesson.subLessonName
+      (subLesson) => subLesson.sub_lesson_id === currentSubLesson.subLessonId
     );
     if (currentIndex !== -1 && subLessonStatus[currentIndex] === "completed") {
       return true;
