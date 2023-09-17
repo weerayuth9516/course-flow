@@ -251,21 +251,17 @@ courseRouter.post("mycourses/:courseId", async (req, res) => {
 });
 
 //check subscriptions status
-courseRouter.get(
-  "/subscription/:userId/:courseId",
-  protect,
-  async (req, res) => {
-    const { userId, courseId } = req.params;
-    const isSubscribed = await supabase
-      .from("user_course_details")
-      .select("course_id,user_id")
-      .eq("course_id", courseId)
-      .eq("user_id", userId);
-    return res.json({ isSubscribed });
-  }
-);
+courseRouter.get("/subscription/:userId/:courseId", async (req, res) => {
+  const { userId, courseId } = req.params;
+  const isSubscribed = await supabase
+    .from("user_course_details")
+    .select("course_id,user_id")
+    .eq("course_id", courseId)
+    .eq("user_id", userId);
+  return res.json({ isSubscribed });
+});
 
-courseRouter.get("/coursedetail/learning", protect, async (req, res) => {
+courseRouter.get("/coursedetail/learning", async (req, res) => {
   try {
     const user_id = req.query.user_id;
     const course_id = req.query.course_id;
