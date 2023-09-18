@@ -90,7 +90,6 @@ courseRouter.get("/lessons/:id", async (req, res) => {
       .from("lessons")
       .select("lesson_name, sub_lessons(*)")
       .eq("course_id", courseId);
-
     if (error) {
       return res.status(500).json({ error: error.message });
     }
