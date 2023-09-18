@@ -5,7 +5,7 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { useAuth } from "../context/authentication";
 import axios from "axios";
-
+import imagebg from "../assets/ourCourses/image_background.png"
 function MyCoursePage() {
   const [myCourses, setMyCourses] = useState([]);
   const [inProgressCourses, setInProgressCourses] = useState([]);
@@ -36,7 +36,7 @@ function MyCoursePage() {
   useEffect(() => {
     if (auth.isAuthenicated) {
       setUserId(auth.session.user.user_id);
-    } 
+    }
   }, [auth.isAuthenicated]);
 
   useEffect(() => {
@@ -121,8 +121,8 @@ function MyCoursePage() {
                   status === "in_progress"
                     ? inProgressCourses
                     : status === "completed"
-                    ? completedCourses
-                    : myCourses
+                      ? completedCourses
+                      : myCourses
                 }
               />
             </div>

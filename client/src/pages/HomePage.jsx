@@ -372,7 +372,6 @@ export default function HomePage() {
     </div> */}
       <SubFooter />
       <Footer />
-      <Sidebar />
     </>
   );
 }
