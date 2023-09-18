@@ -3,13 +3,14 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { Link } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination, Autoplay } from "swiper/modules";
+import { Navigation, Pagination, Autoplay, } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/scrollbar";
 import "swiper/css/autoplay";
 import SubFooter from "../components/SubFooter";
+import SlideAuto from "../components/SlideAuto";
 
 import heart from "../assets/homepage/heart.png";
 import verify from "../assets/homepage/verify.png";
@@ -32,8 +33,10 @@ import instructor2 from "../assets/homepage/instructor2.png";
 import instructor3 from "../assets/homepage/instructor3.png";
 import programmer from "../assets/homepage/programmer.png";
 import programmer2 from "../assets/homepage/programmer2.png";
+import smallcircle from "../assets/homepage/smallcircle.png"
 import graduate1 from "../assets/homepage/graduate1.png";
 import graduate2 from "../assets/homepage/graduate2.png";
+import Sidebar from "../components/Sidebar";
 
 export default function HomePage() {
   return (
@@ -52,7 +55,7 @@ export default function HomePage() {
             system that caters to all your educational needs
           </div>
           <Link to="/course">
-            <button className="bg-blue-500 text-white font-semibold py-[14px] px-[35px] rounded-xl">
+            <button className="bg-blue-500 text-white font-semibold py-[14px] px-[35px] rounded-xl hover:bg-blue-400 active:bg-blue-300">
               Explore Courses
             </button>
           </Link>
@@ -166,7 +169,9 @@ export default function HomePage() {
         ></img>
       </div>
 
-      <div className=" flex flex-col justify-center items-center">
+      <div className=" flex flex-col justify-center items-center w-screen relative">
+        <img className="absolute right-[1%] bottom-[5%]" src={sec6}></img>
+        <img className="absolute right-[5%] bottom-0" src={smallcircle}></img>
         <h1 className="items-center justify-center mb-[25px] text-header2 text-bold font-semibold">
           Our Professional Instructor
         </h1>
@@ -256,10 +261,21 @@ export default function HomePage() {
       {/* <img className="absolute right-[5%] top-[-10%]" src={sec3}></img>
     <img className="absolute right-0 top-[-30%]" src={sec6}></img> */}
 
-      <Swiper
-        navigation={true}
-        modules={[Navigation]}
-        className="mySwiper w-[80%] mb-[200px]"
+      {/* <Swiper
+        slidesPerView={1}
+        spaceBetween={30}
+        freeMode={true}
+        centeredSlides={true}
+        autoplay={{
+          delay: 2500,
+          disableOnInteraction: false,
+        }}
+        // pagination={{
+        //     clickable: true,
+        // }}
+        // navigation={true}
+        modules={[Pagination, Navigation, FreeMode, Autoplay]}
+        className="w-[80%] mb-[200px]"
       >
         <SwiperSlide className="flex justify-center items-center w-[50%]">
           <div className="bg-blue-100 w-[738px] h-[312px] py-[5%] pl-[7%] pr-[20px] relative ">
@@ -332,15 +348,16 @@ export default function HomePage() {
               src={graduate2}
             ></img>
           </div>
-        </SwiperSlide>
-        {/* <SwiperSlide>Slide 4</SwiperSlide>
+        </SwiperSlide> */}
+      {/* <SwiperSlide>Slide 4</SwiperSlide>
       <SwiperSlide>Slide 5</SwiperSlide>
       <SwiperSlide>Slide 6</SwiperSlide>
       <SwiperSlide>Slide 7</SwiperSlide>
       <SwiperSlide>Slide 8</SwiperSlide>
       <SwiperSlide>Slide 9</SwiperSlide> */}
-      </Swiper>
+      {/* </Swiper > */}
       {/* </section> */}
+      <SlideAuto />
 
       {/* <div class="bg-gradient-to-r from-indigo-500 to-sky-500 h-auto relative flex justify-between">
       <div className="flex flex-col pl-[15%] pt-[120px] pb-[170px]">
@@ -355,6 +372,7 @@ export default function HomePage() {
     </div> */}
       <SubFooter />
       <Footer />
+      <Sidebar />
     </>
   );
 }
