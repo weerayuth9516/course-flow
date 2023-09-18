@@ -7,7 +7,6 @@ import inprogress from "../assets/courseLearning/inprogress.png";
 import notStart from "../assets/courseLearning/notStart.png";
 
 function DisplayCards({ searchList, userId }) {
-  console.log(searchList);
   return (
     <>
       {/* Display course cards */}

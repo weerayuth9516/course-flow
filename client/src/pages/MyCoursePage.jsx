@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import DisplayCards from "../components/DisplayCards";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import image_background from "../assets/ourCourses/image_background.png"
 import { useAuth } from "../context/authentication";
 import useMycourses from "../hook/useMycourses";
 
@@ -33,10 +34,9 @@ function MyCoursePage() {
   return (
     <>
       <Header />
-      <div id="container" className="font-inter mx-auto">
-        <div className="relative">
-          <img className="w-screen absolute" src={imagebg}></img>
-          <div className="search-box mb-2 flex flex-col items-center mt-20 h-[230px]">
+      <div id="container" className="font-inter relative mx-auto">
+      <img className="w-screen absolute" src={image_background}></img>
+          <div className="mb-2 flex flex-col items-center mt-20 h-[230px]">
             <div className="title text-black text-header2 font-bold mb-5">
               My Course
             </div>
@@ -66,7 +66,6 @@ function MyCoursePage() {
                 Completed
               </button>
             </div>
-          </div>
         </div>
         <div className="user-image-and-course-container flex justify-center mb-10">
           <div className="user-box sticky top-20 w-[357px] h-[396px] rounded-lg shadow-lg mr-10 flex flex-col justify-center items-center">
