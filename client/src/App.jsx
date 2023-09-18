@@ -11,7 +11,7 @@ import CoursePage from "./pages/CoursePage";
 import MyCoursePage from "./pages/MyCoursePage";
 import CourseLearningPage from "./pages/CourseLearningPage";
 import { useAuth } from "./context/authentication";
-
+import DesireCoursePage from "./pages/DesireCoursePage";
 // export const SessionContext = React.createContext();
 
 function App() {
@@ -22,6 +22,7 @@ function App() {
       <Route path="/register" element={<Register />} />
       <Route path="/login" element={<Login />} />
       <Route path="/editprofile" element={<EditProfilePage />} />
+      <Route path="/mydesirecourses" element={<DesireCoursePage />} />
       <Route path="/course" element={<CoursePage />} />
       {auth.isAuthenicated ? (
         <Route path="/mycourses" element={<MyCoursePage />} />
