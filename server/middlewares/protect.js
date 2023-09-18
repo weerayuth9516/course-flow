@@ -13,7 +13,7 @@ export const protect = async (req, res, next) => {
         message: "Token is invalid",
       });
     }
-    req.user;
+    req.user = payload;
     next();
   });
 };

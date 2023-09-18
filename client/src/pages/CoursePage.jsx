@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 import { DebounceInput } from "react-debounce-input";
 import useGetsearch from "../hook/useGetsearch";
 import { useEffect } from "react";

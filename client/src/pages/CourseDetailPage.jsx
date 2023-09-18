@@ -85,7 +85,7 @@ function CourseDetailPage() {
       const courseId = params.courseId;
       console.log(userId);
       const response = await axios.get(
-        `http://localhost:4001/courses/${userId}/${courseId}`
+        `http://localhost:4001/courses/subscription/${userId}/${courseId}`
       );
 
       if (response.data.isSubscribed.data.length === 0) {
@@ -108,7 +108,7 @@ function CourseDetailPage() {
       };
 
       const request = await axios.post(
-        `http://localhost:4001/courses/${params.courseId}/mycourses`,
+        `http://localhost:4001/courses/mycourses/${params.courseId}`,
         dataToSend
       );
 
@@ -180,7 +180,7 @@ function CourseDetailPage() {
             {isSubscribed ? (
               <button
                 className="px-8 py-[18px] w-[309px] h-[60px] border-solid border-[1px] rounded-[12px] bg-blue-500 font-bold text-white mt-5 hover:bg-blue-600"
-                onClick={navigate("/courselearning/:courseId")}
+                onClick={navigate(`/courselearning/${course.course_id}`)}
               >
                 Start Learning
               </button>
