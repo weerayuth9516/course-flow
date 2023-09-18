@@ -41,6 +41,7 @@ function CourseDetailPage() {
       getCourse();
       getSearchList("", 3);
       checkSubscription();
+      checkDesireCourse();
     };
     fetchData();
   }, [params.courseId, auth.isAuthenicated]);
@@ -66,17 +67,71 @@ function CourseDetailPage() {
     setShowDesireModal(false);
   };
 
-  const handleConfirmGetInDesire = () => {
-    setIsDesired(true);
-    closeDesireModal();
-  };
-
   const openSubscribeModal = (courseName) => {
     setCourseNameForModal(courseName);
     setShowSubscribeModal(true);
   };
   const closeSubscribeModal = () => {
     setShowSubscribeModal(false);
+  };
+
+  const handleConfirmGetInDesire = async () => {
+    try {
+      const userId = auth.session.user.user_id;
+      const courseId = course.course_id;
+      const dataSend = {
+        user_id: userId,
+        course_id: courseId,
+      };
+      const desireRequest = await axios.post(
+        `http://localhost:4001/courses/mydesirecourses/${params.courseId}`,
+        dataSend
+      );
+      console.log(desireRequest);
+      if (desireRequest && desireRequest.status === 200) {
+        setIsDesired(true);
+        closeDesireModal();
+        console.log("Desired successfully");
+      } else {
+        console.log("Desired error");
+      }
+    } catch (error) {
+      console.error("Error desired this course:", error);
+    }
+  };
+
+  const checkDesireCourse = async () => {
+    try {
+      const userId = auth.session.user.user_id;
+      const courseId = params.courseId;
+      const response = await axios.get(
+        `http://localhost:4001/courses/mydesirecourses/${userId}/${courseId}`
+      );
+      if (response.data.isDesired.data.length === 0) {
+        setIsDesired(false);
+      } else {
+        setIsDesired(true);
+      }
+    } catch (error) {
+      console.error("Error checking desired status:", error);
+    }
+  };
+
+  const handleRemoveDesireCourse = async () => {
+    try {
+      const userId = auth.session.user.user_id;
+      const courseId = params.courseId;
+      const response = await axios.delete(
+        `http://localhost:4001/courses/mydesirecourses/${userId}/${courseId}`
+      );
+      if (response.status === 200) {
+        setIsDesired(false);
+      } else {
+        setIsDesired(true);
+      }
+    } catch (error) {
+      console.error("Error removing desired course:", error);
+    }
   };
 
   const checkSubscription = async () => {
@@ -187,7 +242,10 @@ function CourseDetailPage() {
             ) : (
               <>
                 {isDesired ? (
-                  <button className="px-8 py-[18px] w-[309px] h-[60px] border-solid border-[1px] rounded-[12px] border-orange-500 font-bold text-orange-500 mt-3 hover:bg-orange-500 hover:text-white">
+                  <button
+                    className="px-8 py-[18px] w-[309px] h-[60px] border-solid border-[1px] rounded-[12px] border-orange-500 font-bold text-orange-500 mt-3 hover:bg-orange-500 hover:text-white"
+                    onClick={() => handleRemoveDesireCourse()}
+                  >
                     Remove from Desire Course
                   </button>
                 ) : (

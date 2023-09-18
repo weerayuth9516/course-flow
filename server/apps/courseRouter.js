@@ -248,14 +248,15 @@ courseRouter.post("/mycourses/:courseId", protect, async (req, res) => {
 //check subscriptions status
 courseRouter.get(
   "/subscription/:userId/:courseId",
-  protect,
+
   async (req, res) => {
     const { userId, courseId } = req.params;
     const isSubscribed = await supabase
       .from("user_course_details")
-      .select("course_id,user_id")
+      .select("course_id,user_id,subscription_id")
       .eq("course_id", courseId)
-      .eq("user_id", userId);
+      .eq("user_id", userId)
+      .eq("subscription_id", 1);
     return res.json({ isSubscribed });
   }
 );
@@ -529,7 +530,7 @@ courseRouter.get("/mydesirecourses/:userId", async (req, res) => {
 });
 
 //Deisre course
-courseRouter.post("/mydesirecourses/:courseId", async (req, res) => {
+courseRouter.post("/mydesirecourses/:courseId", protect, async (req, res) => {
   try {
     const { user_id, course_id } = req.body;
     const findUserDesireCourse = await supabase
@@ -561,14 +562,30 @@ courseRouter.post("/mydesirecourses/:courseId", async (req, res) => {
 });
 
 //check desire status
-courseRouter.get("/desire/:userId/:courseId", async (req, res) => {
+courseRouter.get("/mydesirecourses/:userId/:courseId", async (req, res) => {
   const { userId, courseId } = req.params;
   const isDesired = await supabase
     .from("user_course_details")
-    .select("course_id,user_id")
+    .select("course_id,user_id", "subscription_id")
     .eq("course_id", courseId)
-    .eq("user_id", userId);
+    .eq("user_id", userId)
+    .eq("subscription_id", 2);
   return res.json({ isDesired });
+});
+
+//remove desired course
+courseRouter.delete("/mydesirecourses/:userId/:courseId", async (req, res) => {
+  const { userId, courseId } = req.params;
+  const result = await supabase
+    .from("user_course_details")
+    .delete()
+    .eq("user_id", userId)
+    .eq("course_id", courseId);
+  if (result.status === 204) {
+    return res.json({ message: "Remove desired course successfully." });
+  } else {
+    return res.status(400).send(`API ERROR`);
+  }
 });
 
 export default courseRouter;

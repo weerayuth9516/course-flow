@@ -1,12 +1,15 @@
 import { useState } from "react";
 import axios from "axios";
+import { useAuth } from "../context/authentication";
 
 function useGetsearch() {
+  const auth = useAuth();
   const [searchList, setSearchList] = useState([]);
   const [inputText, setInputText] = useState("");
   const [course, setCourse] = useState([]);
   const [lesson, setLesson] = useState([]);
   const [subLessonArray, setSubLessonArray] = useState([]);
+  const [allDesireCourse, setAllDesireCourse] = useState([]);
 
   const getSearchList = async (input, limit) => {
     try {
@@ -44,6 +47,18 @@ function useGetsearch() {
     }
   };
 
+  const getDesireCourse = async () => {
+    try {
+      const userId = auth.session.user.user_id;
+      const desireCourseResult = await axios.get(
+        `http://localhost:4001/courses/mydesirecourses/${userId}`
+      );
+      setAllDesireCourse(desireCourseResult.data.data);
+    } catch (error) {
+      console.error("Error get desire course:", error);
+    }
+  };
+
   return {
     searchList,
     setSearchList,
@@ -57,6 +72,9 @@ function useGetsearch() {
     subLessonArray,
     setSubLessonArray,
     getCourseAndLessonAndSubLesson,
+    getDesireCourse,
+    allDesireCourse,
+    setAllDesireCourse,
   };
 }
 
