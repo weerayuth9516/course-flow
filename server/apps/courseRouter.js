@@ -499,4 +499,76 @@ courseRouter.put("/update/sub_lesson", protect, async (req, res) => {
   }
 });
 
+// get desire courses
+courseRouter.get("/mydesirecourses/:userId", async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const isValidUUID = /^\w{8}-\w{4}-\w{4}-\w{4}-\w{12}$/.test(userId);
+
+    const { data: userDesireCourses, error: userDesireError } = await supabase
+      .from("user_course_details")
+      .select(
+        `course_id:courses( course_id, course_name, course_summary, course_duration, course_cover_img ), subscription_id:subscriptions( subscription_status ), status_id:status( status_value )`
+      )
+      .eq("user_id", userId)
+      .eq("subscription_id", 2);
+
+    if (userDesireError) {
+      return res.status(500).json({ error: userDesireError });
+    }
+    if (userDesireCourses.length === 0) {
+      return res
+        .status(404)
+        .json({ error: "No desired courses found for this user" });
+    }
+    return res.json({ data: userDesireCourses });
+  } catch (error) {
+    console.error("An error occurred: " + error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+//Deisre course
+courseRouter.post("/mydesirecourses/:courseId", async (req, res) => {
+  try {
+    const { user_id, course_id } = req.body;
+    const findUserDesireCourse = await supabase
+      .from("user_course_details")
+      .select("*")
+      .eq("user_id", user_id)
+      .eq("course_id", course_id);
+    if (findUserDesireCourse.length > 0) {
+      res.status(403).send("User already desired this course");
+    } else {
+      const desireCourse = await supabase.from("user_course_details").insert([
+        {
+          course_id: req.body.course_id,
+          user_id: req.body.user_id,
+          status_id: 1,
+          subscription_id: 2,
+        },
+      ]);
+      if (desireCourse.statusText === "Created") {
+        return res.json({ message: "Desire course successfully" });
+      } else {
+        return res.status(400).send("API ERROR");
+      }
+    }
+  } catch (error) {
+    console.error("An error occurred: " + error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+//check desire status
+courseRouter.get("/desire/:userId/:courseId", async (req, res) => {
+  const { userId, courseId } = req.params;
+  const isDesired = await supabase
+    .from("user_course_details")
+    .select("course_id,user_id")
+    .eq("course_id", courseId)
+    .eq("user_id", userId);
+  return res.json({ isDesired });
+});
+
 export default courseRouter;
