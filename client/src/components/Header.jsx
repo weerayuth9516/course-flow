@@ -5,6 +5,7 @@ import homework from "../assets/header/homework.png";
 import frames from "../assets/header/Frame.png";
 import star from "../assets/header/star.png";
 import logout from "../assets/header/logout.png";
+import image from "../assets/header/image.png";
 import { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import useGetuser from "../hook/useGetuser";
@@ -13,6 +14,7 @@ function Header() {
   // const { session, setSession } = useContext(SessionContext);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [hasImage, setHasImage] = useState(false);
   const params = useParams();
   const { user, getCurrentUser } = useGetuser();
   const auth = useAuth();
@@ -25,6 +27,11 @@ function Header() {
   useEffect(() => {
     if (auth.isAuthenicated) {
       setIsLoggedIn(true);
+      if (auth.session.user && auth.session.user.user_avatar !== null) {
+        setHasImage(true);
+      } else {
+        setHasImage(false); // ตั้งค่า hasImage เป็น false ถ้าไม่มีรูปภาพ
+      }
     } else {
       getCurrentUser(null);
       setIsLoggedIn(false);
@@ -68,12 +75,22 @@ function Header() {
                 id="nav-items"
                 className="flex items-center justify-between relative group"
               >
-                <img
-                  id="image-profile"
-                  className="w-10 h-10 m-2 rounded-full"
-                  src={auth.session.user.user_avatar}
-                  alt="image profile"
-                />
+                {hasImage ? (
+                  <img
+                    id="image-profile"
+                    className="w-10 h-10 m-2 rounded-full"
+                    src={auth.session.user.user_avatar}
+                    // src={hasImage ? auth.session.user.user_avatar : image}
+                  />
+                ) : (
+                  <img
+                    id="image-profile"
+                    className="w-10 h-10 m-2 rounded-full"
+                    src={image}
+                    alt="image profile"
+                  />
+                )}
+
                 <span
                   id="username"
                   className="text-body2 font-normal text-gray-800 m-2 group-hover:text-black cursor-pointer"

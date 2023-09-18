@@ -53,7 +53,7 @@ const useGetuser = () => {
       } else {
         newData = { ...inputData, user_avatar: null, avatarObj: null };
       }
-      console.log(newData);
+      // console.log(newData);
       const axiosResult = await axios.put(
         `http://localhost:4001/users/${id}`,
         newData
