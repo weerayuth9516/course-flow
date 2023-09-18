@@ -46,7 +46,7 @@ courseRouter.get("/", async (req, res) => {
     };
   });
   if (results.statusText === "OK") {
-    return res.json({
+    return res.status(200).json({
       data: newMap,
     });
   } else {
@@ -61,7 +61,7 @@ courseRouter.get("/:id", async (req, res) => {
     .select("*")
     .eq("course_id", id);
   if (results.statusText === "OK") {
-    return res.json({
+    return res.status(200).json({
       data: results.data,
     });
   } else {
@@ -73,13 +73,11 @@ courseRouter.get("/:id", async (req, res) => {
 courseRouter.get("/lessons/:id", async (req, res) => {
   try {
     const courseId = req.params.id;
-
     const { data: courseData, error: courseError } = await supabase
       .from("courses")
       .select("course_id")
       .eq("course_id", courseId)
       .single();
-
     if (courseError) {
       return res.status(500).json({ error: courseError.message });
     }
@@ -107,7 +105,6 @@ courseRouter.get("/lessons/:id", async (req, res) => {
       data: lessonData,
     });
   } catch (error) {
-    console.error("An error occurred:", error);
     return res.status(500).json({ error: "Internal Server Error" });
   }
 });
@@ -171,7 +168,6 @@ courseRouter.get("/mycourses/:userId", async (req, res) => {
       data: myCourseData,
     });
   } catch (error) {
-    console.error("An error occurred:", error);
     return res.status(500).json({ error: "Internal Server Error" });
   }
 });
@@ -245,7 +241,6 @@ courseRouter.post("mycourses/:courseId", async (req, res) => {
       }
     }
   } catch (error) {
-    console.error("An error occurred:", error);
     return res.status(500).json({ error: "Internal Server Error" });
   }
 });
@@ -262,6 +257,11 @@ courseRouter.get("/subscription/:userId/:courseId", async (req, res) => {
 });
 
 courseRouter.get("/coursedetail/learning", async (req, res) => {
+  if (!req.query.user_id || !req.query.course_id) {
+    return res.status(400).json({
+      error: "Query parameter invalid",
+    });
+  }
   try {
     const user_id = req.query.user_id;
     const course_id = req.query.course_id;
@@ -359,8 +359,7 @@ courseRouter.get("/coursedetail/learning", async (req, res) => {
       });
     }
   } catch (error) {
-    console.log(error);
-    return res.status(401).json({
+    return res.status(400).json({
       message: "Invalid API",
     });
   }
@@ -474,7 +473,7 @@ courseRouter.put("/update/sub_lesson", async (req, res) => {
       }
       if (error) {
         return res.status(404).json({
-          message: "API INVALID",
+          message: "Sub lesson not found.",
         });
       } else {
         return res.json({
@@ -490,9 +489,8 @@ courseRouter.put("/update/sub_lesson", async (req, res) => {
       });
     }
   } catch (error) {
-    console.log(error);
     return res.status(400).json({
-      message: error,
+      error: error,
     });
   }
 });
