@@ -1,37 +1,24 @@
-import React, { useState } from "react";
+import React from "react";
 import { useEffect } from "react";
 import DisplayCards from "../components/DisplayCards";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { useAuth } from "../context/authentication";
-import axios from "axios";
-import imagebg from "../assets/ourCourses/image_background.png"
-function MyCoursePage() {
-  const [myCourses, setMyCourses] = useState([]);
-  const [inProgressCourses, setInProgressCourses] = useState([]);
-  const [completedCourses, setCompletedCourses] = useState([]);
-  const [status, setStatus] = useState("");
-  const [userId, setUserId] = useState("");
-  const auth = useAuth();
+import useMycourses from "../hook/useMycourses";
 
-  const getAllMyCourses = async (userId) => {
-    try {
-      const response = await axios.get(
-        `http://localhost:4001/courses/mycourses/${userId}`
-      );
-      setMyCourses(response.data.data);
-      const createInProgressCourses = response.data.data.filter(
-        (course) => course.status_value === "in_progress"
-      );
-      setInProgressCourses(createInProgressCourses);
-      const createCompleteCourses = response.data.data.filter(
-        (course) => course.status_value === "completed"
-      );
-      setCompletedCourses(createCompleteCourses);
-    } catch (error) {
-      console.log("request error");
-    }
-  };
+function MyCoursePage() {
+  const {
+    myCourses,
+    inProgressCourses,
+    completedCourses,
+    status,
+    setStatus,
+    userId,
+    setUserId,
+    getAllMyCourses,
+  } = useMycourses();
+
+  const auth = useAuth();
 
   useEffect(() => {
     if (auth.isAuthenicated) {
