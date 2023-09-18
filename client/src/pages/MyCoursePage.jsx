@@ -111,6 +111,7 @@ function MyCoursePage() {
                       ? completedCourses
                       : myCourses
                 }
+                userId={userId}
               />
             </div>
           </div>
