@@ -125,8 +125,8 @@ courseRouter.get("/mycourses/:userId", protect, async (req, res) => {
         `course_id:courses( course_id, course_name, course_summary, course_duration, course_cover_img ), subscription_id:subscriptions( subscription_status ), status_id:status( status_value )`
       )
       .eq("user_id", userId)
-      .eq("subscription_id", 1);
-
+      .eq("subscription_id", 1)
+      .order("status_id", { ascending: true });
     if (userCourseError) {
       return res.status(500).json({ error: userCourseError.message });
     }
@@ -312,7 +312,8 @@ courseRouter.get("/coursedetail/learning", protect, async (req, res) => {
       const lessonDetailOnThisCourse = await supabase
         .from("lessons")
         .select("*")
-        .in("lesson_id", mapForFetchLessonName);
+        .in("lesson_id", mapForFetchLessonName)
+        .order("priority", { ascending: true });
       const userSubLessonDetail = await supabase
         .from("user_sub_lesson_details")
         .select("*")
@@ -323,7 +324,8 @@ courseRouter.get("/coursedetail/learning", protect, async (req, res) => {
       const subLessonDetailOnThisCourse = await supabase
         .from("sub_lessons")
         .select("*")
-        .in("lesson_id", mapForFetchLessonName);
+        .in("lesson_id", mapForFetchLessonName)
+        .order("priority", { ascending: true });
       const subLessonMap = subLessonDetailOnThisCourse.data.map((mainValue) => {
         const status = userSubLessonDetail.data.filter(
           (subValue) => mainValue.sub_lesson_id === subValue.sub_lesson_id
