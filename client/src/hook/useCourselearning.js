@@ -127,7 +127,7 @@ function useCourselearning() {
           : newStatusArray[currentIndex];
       setSubLessonStatus(newStatusArray);
 
-      newStatusArray[currentIndex] === "not_started"
+      newStatusArray[currentIndex] === "in_progress"
         ? updateLearningStatus(
             userCourseDetailId,
             currentSubLesson.subLessonId,
