@@ -10,7 +10,7 @@ function SubFooter() {
                 <div className="text-white text-4xl">Interested in Becoming</div>
                 <div className="text-white text-4xl mb-[40px] ">a Software Developer?</div>
                 <Link to="/course">
-                    <button className="text-orange-400 bg-white w-[80%] py-[20px] rounded-md font-semibold">Check Out Our Course</button>
+                    <button className="text-orange-400 bg-white w-[80%] py-[20px] rounded-md font-semibold hover:bg-orange-400 hover:text-white active:bg-orange-300">Check Out Our Course</button>
                 </Link>
             </div>
             <img className=" object-cover absolute right-[12%]" src={vector}></img>
