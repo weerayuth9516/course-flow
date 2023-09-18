@@ -1,25 +1,63 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import axios from "axios";
 
 function useGetsearch() {
   const [searchList, setSearchList] = useState([]);
   const [inputText, setInputText] = useState("");
+  const [course, setCourse] = useState([]);
+  const [lesson, setLesson] = useState([]);
+  const [subLessonArray, setSubLessonArray] = useState([]);
 
-  useEffect(() => {
-    getSearchList("");
-  }, []);
-
-  const getSearchList = async (input) => {
+  const getSearchList = async (input, limit) => {
     try {
       const response = await axios.get(
-        `http://localhost:4001/courses?title=${input}`
+        `http://localhost:4001/courses?title=${input}&limit=${limit}`
       );
       setSearchList(response.data.data);
     } catch (error) {
       console.log("request error");
     }
   };
-  return { searchList, setSearchList, inputText, setInputText, getSearchList };
+
+  const getCourseAndLessonAndSubLesson = async () => {
+    try {
+      const courseResult = await axios.get(
+        `http://localhost:4001/courses/${params.courseId}`
+      );
+      setCourse(courseResult.data.data[0]);
+    } catch (error) {
+      console.log("request error");
+    }
+
+    // Get lessons and subLesson by courseId
+    try {
+      const lessonResult = await axios.get(
+        `http://localhost:4001/courses/${params.courseId}/lessons`
+      );
+      setLesson(lessonResult.data.data);
+      const subLessons = lessonResult.data.data.flatMap(
+        (lesson) => lesson.sub_lessons
+      );
+      setSubLessonArray(subLessons);
+    } catch (error) {
+      console.log("request error");
+    }
+  };
+
+  return {
+    searchList,
+    setSearchList,
+    inputText,
+    setInputText,
+    getSearchList,
+    course,
+    setCourse,
+    lesson,
+    setLesson,
+    subLessonArray,
+    setSubLessonArray,
+    getCourseAndLessonAndSubLesson,
+  };
 }
 
 export default useGetsearch;

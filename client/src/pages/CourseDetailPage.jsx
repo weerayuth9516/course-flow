@@ -1,191 +1,135 @@
-import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import React, { useEffect, useState, useContext } from "react";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-
-import Accordion from "@mui/material/Accordion";
-import AccordionSummary from "@mui/material/AccordionSummary";
-import AccordionDetails from "@mui/material/AccordionDetails";
-import Typography from "@mui/material/Typography";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-
+import ToggleLesson from "../components/ToggleLesson";
+import SubFooter from "../components/SubFooter";
+import { SubscribeModal } from "../components/ConfirmMadal";
+import useGetsearch from "../hook/useGetsearch";
 import axios from "axios";
-
-const ToggleList = ({ title, content, isOpen, toggle }) => {
-  return (
-    <div className="mt-5 mb-5">
-      <div className="toggle-header" onClick={toggle}>
-        <h2 className="inline toggle-title mr-10 text-2xl">{title}</h2>
-        <button className="toggle-button inline">
-          {isOpen ? (
-            <img src="/src/assets/registerPage/arrow-down.svg" />
-          ) : (
-            <img src="/src/assets/registerPage/arrow-down.svg" />
-          )}
-        </button>
-      </div>
-      {isOpen && <div className="toggle-content">{content}</div>}
-    </div>
-  );
-};
+import DisplayCards from "../components/DisplayCards";
+import { useAuth } from "../context/authentication";
+import useGetuser from "../hook/useGetuser";
 
 function CourseDetailPage() {
   const [course, setCourse] = useState({});
-  const [lesson, setLesson] = useState([]);
-  const [subLesson, setSubLesson] = useState([]);
   const params = useParams();
+  const { user, getCurrentUser } = useGetuser();
+  const { searchList, getSearchList } = useGetsearch();
+  const auth = useAuth();
+  const navigate = useNavigate();
 
-  const getCourseAndLessonAndSubLesson = async () => {
-    const courseResult = await axios.get(
-      `http://localhost:4001/courses/${params.courseId}`
-    );
-    setCourse(courseResult.data.data[0]);
-    const lessonResult = await axios.get(
-      `http://localhost:4001/courses/${params.courseId}/lessons`
-    );
-    if (lesson.length < lessonResult.data.data.length) {
-      setLesson(
-        lessonResult.data.data.map((value, index) => {
-          lesson.push(value);
-        })
+  const getCourse = async () => {
+    try {
+      const courseResult = await axios.get(
+        `http://localhost:4001/courses/${params.courseId}`
       );
+      setCourse(courseResult.data.data[0]);
+      // console.log(courseResult.data.data[0]);
+    } catch (error) {
+      console.log("request error");
     }
-    const subLessonResult = async (lessonArr) => {
-      lessonArr.map(async (value) => {
-        const lessonName = value.lesson_name;
-        const subResult = await axios
-          .get(
-            `http://localhost:4001/courses/${params.courseId}/lessons/${value.lesson_id}/sublessons`
-          )
-          .then((value) => {
-            return { [lessonName]: value.data.data };
-          });
-
-        setSubLesson(subLesson.push(subResult));
-      });
-    };
-    subLessonResult(lesson);
   };
 
   useEffect(() => {
-    getCourseAndLessonAndSubLesson();
-    console.log(subLesson);
-  }, [params.courseId]);
+    const fetchData = async () => {
+      if (auth.isAuthenicated) {
+        await getCurrentUser(auth.session.user.user_id);
+      } else {
+        getCurrentUser(null);
+      }
+      getCourse();
+      getSearchList("", 3);
+      checkSubscription();
+    };
+    fetchData();
+  }, [params.courseId, auth.isAuthenicated]);
 
-  const toggleData = [
-    {
-      title: "01 Introduction",
-      content: (
-        <ul>
-          <li>
-            <p className="text-lg text-gray-700 ml-5 mt-5">
-              ● Welcome to the course{" "}
-            </p>
-          </li>
-          <li>
-            <p className="text-lg text-gray-700 ml-5 ">● Course Overview </p>
-          </li>
-          <li>
-            <p className="text-lg text-gray-700 ml-5 ">
-              ● Getting to Know You{" "}
-            </p>
-          </li>
-        </ul>
-      ),
-    },
-    {
-      title: "02 Service Design Theories and Principles",
-      content: (
-        <ul>
-          <li>
-            <p className="text-lg text-gray-700 ml-5 mt-5">
-              ● Welcome to the course{" "}
-            </p>
-          </li>
-          <li>
-            <p className="text-lg text-gray-700 ml-5 ">● Course Overview </p>
-          </li>
-          <li>
-            <p className="text-lg text-gray-700 ml-5 ">
-              ● Getting to Know You{" "}
-            </p>
-          </li>
-        </ul>
-      ),
-    },
-    {
-      title: "03 Understanding Users and Finding Opportunities",
-      content: (
-        <ul>
-          <li>
-            <p className="text-lg text-gray-700 ml-5 mt-5">
-              ● Welcome to the course{" "}
-            </p>
-          </li>
-          <li>
-            <p className="text-lg text-gray-700 ml-5 ">● Course Overview </p>
-          </li>
-          <li>
-            <p className="text-lg text-gray-700 ml-5 ">
-              ● Getting to Know You{" "}
-            </p>
-          </li>
-        </ul>
-      ),
-    },
-    {
-      title: "04 Identifying and Validatiing Opportunities for Design",
-      content: (
-        <ul>
-          <li>
-            <p className="text-lg text-gray-700 ml-5 mt-5">
-              ● Welcome to the course{" "}
-            </p>
-          </li>
-          <li>
-            <p className="text-lg text-gray-700 ml-5 ">● Course Overview </p>
-          </li>
-          <li>
-            <p className="text-lg text-gray-700 ml-5 ">
-              ● Getting to Know You{" "}
-            </p>
-          </li>
-        </ul>
-      ),
-    },
-    {
-      title: "05 Prototyping",
-      content: (
-        <ul>
-          <li>
-            <p className="text-lg text-gray-700 ml-5 mt-5">
-              ● Welcome to the course{" "}
-            </p>
-          </li>
-          <li>
-            <p className="text-lg text-gray-700 ml-5 ">● Course Overview </p>
-          </li>
-          <li>
-            <p className="text-lg text-gray-700 ml-5 ">
-              ● Getting to Know You{" "}
-            </p>
-          </li>
-        </ul>
-      ),
-    },
-  ];
+  function addCommasToNumber(number) {
+    if (typeof number === "number") {
+      return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+    return "";
+  }
 
-  const [toggleStates, setToggleStates] = useState(toggleData.map(() => false));
+  // const [showDesireModal, setShowDesireModal] = useState(false);
+  const [showSubscribeModal, setShowSubscribeModal] = useState(false);
+  const [courseNameForModal, setCourseNameForModal] = useState("");
+  const [isSubscribed, setIsSubscribed] = useState(false);
+  // const [isDesired, setIsDesired] = useState(false);
 
-  const toggle = (index) => {
-    const newToggleStates = [...toggleStates];
-    newToggleStates[index] = !newToggleStates[index];
-    setToggleStates(newToggleStates);
+  // const openDesireModal = (courseName) => {
+  //   setCourseNameForModal(courseName);
+  //   setShowDesireModal(true);
+  // };
+  // const closeDesireModal = () => {
+  //   setShowDesireModal(false);
+  // };
+
+  // const handleConfirmGetInDesire = () => {
+  //   setIsDesired(true);
+  //   closeDesireModal();
+  // };
+
+  const openSubscribeModal = (courseName) => {
+    setCourseNameForModal(courseName);
+    setShowSubscribeModal(true);
+  };
+  const closeSubscribeModal = () => {
+    setShowSubscribeModal(false);
+  };
+
+  const checkSubscription = async () => {
+    try {
+      const userId = auth.session.user.user_id;
+      const courseId = params.courseId;
+      console.log(userId);
+      const response = await axios.get(
+        `http://localhost:4001/courses/subscription/${userId}/${courseId}`
+      );
+
+      if (response.data.isSubscribed.data.length === 0) {
+        setIsSubscribed(false);
+      } else {
+        setIsSubscribed(true);
+      }
+    } catch (error) {
+      console.error("Error checking subscription status:", error);
+    }
+  };
+
+  const handleConfirmSubscribe = async () => {
+    try {
+      const userId = auth.session.user.user_id;
+      const courseId = course.course_id;
+      const dataToSend = {
+        user_id: userId,
+        course_id: courseId,
+      };
+
+      const request = await axios.post(
+        `http://localhost:4001/courses/mycourses/${params.courseId}`,
+        dataToSend
+      );
+
+      if (request.status === 200) {
+        setIsSubscribed(true);
+        closeSubscribeModal();
+        console.log("Subscribed successfully");
+      } else {
+        console.log("Subscribed error");
+      }
+    } catch (error) {
+      console.error("Invalid to request:", error);
+    }
   };
 
   return (
     <>
-      <Header />
+      <div className="relative z-1">
+        <Header />
+      </div>
+
       <div className="flex justify-center mt-9">
         <div className="flex flex-col mr-5">
           <Link to="/course" className="text-blue-500 mb-4 font-bold">
@@ -194,39 +138,32 @@ function CourseDetailPage() {
           <iframe
             width="739px"
             height="460px"
-            src="https://qlxsggpxpucbrqcywrkm.supabase.co/storage/v1/object/public/course_video_trailers/A-Class%20trailer.mp4?t=2023-09-07T10%3A12%3A00.864Z"
-            // frameBorder="0"
+            src={course.course_video_trailer}
             allowFullScreen
           ></iframe>
 
-          {/* <div className="w-[739px] h-[460px] bg-gray-500 rounded-lg"></div> */}
           <div className="w-[735px]">
             <p className="text-4xl font-medium mb-6 mt-20">
               {course.course_name}
             </p>
-            <p className="text-gray-700">{course.course_detail}</p>
+            <p className="text-gray-700">
+              {typeof course.course_detail === "string" &&
+              course.course_detail.length > 1500
+                ? course.course_detail.substring(0, 1500) + "..."
+                : course.course_detail}
+            </p>
           </div>
           <div className="w-[739px]">
             <header className="font-medium text-4xl mt-16">
               Module Samples
             </header>
-            <div className="flex flex-col items-start mb-[100px] ">
-              {toggleData.map((data, index) => (
-                <ToggleList
-                  className="text-lg "
-                  key={index}
-                  title={data.title}
-                  content={data.content}
-                  isOpen={toggleStates[index]}
-                  toggle={() => toggle(index)}
-                />
-              ))}
-            </div>
+
+            <ToggleLesson />
           </div>
         </div>
 
         <div className="h-full mt-7 sticky top-16">
-          <div className="w-[357px] h-[449px] py-8 px-6 shadow-lg rounded-lg ml-10">
+          <div className="w-[357px] py-8 px-6 shadow-lg rounded-lg ml-10">
             <p className="text-sm text-orange-500 mb-4">Course</p>
             <p className="text-2xl text-black font-medium mb-2">
               {course.course_name}
@@ -236,20 +173,73 @@ function CourseDetailPage() {
               <br /> ctetur adipiscing elit.
             </p>
             <p className="text-gray-700 text-2xl font-medium mb-6">
-              THB {course.course_price}.00
+              THB {addCommasToNumber(course.course_price)}.00
             </p>
             <hr className="mb-6" />
-            <button className="px-8 py-[18px] w-[309px] h-[60px] border-solid border-[1px] rounded-[12px] border-orange-500 font-bold text-orange-500 mt-3 hover:bg-orange-500 hover:text-white">
-              Get in Desire Course
-            </button>
-            <br />
-            <button className="px-8 py-[18px] w-[309px] h-[60px] border-solid border-[1px] rounded-[12px] bg-blue-500 font-bold text-white mt-5 hover:opacity-75 ">
-              Subscribe This Course
-            </button>
+
+            {isSubscribed ? (
+              <button
+                className="px-8 py-[18px] w-[309px] h-[60px] border-solid border-[1px] rounded-[12px] bg-blue-500 font-bold text-white mt-5 hover:bg-blue-600"
+                onClick={() => navigate(`/courselearning/${course.course_id}`)}
+              >
+                Start Learning
+              </button>
+            ) : (
+              <>
+                {/* {isDesired ? (
+                  <button className="px-8 py-[18px] w-[309px] h-[60px] border-solid border-[1px] rounded-[12px] border-orange-500 font-bold text-orange-500 mt-3 hover:bg-orange-500 hover:text-white">
+                    Remove from Desire Course
+                  </button>
+                ) : (
+                  <>
+                    <button
+                      className="px-8 py-[18px] w-[309px] h-[60px] border-solid border-[1px] rounded-[12px] border-orange-500 font-bold text-orange-500 mt-3 hover:bg-orange-500 hover:text-white"
+                      onClick={() => openDesireModal(course.course_name)}
+                    >
+                      Get in Desire Course
+                    </button>
+                    <DesireCourseModal
+                      isOpen={showDesireModal}
+                      onRequestClose={closeDesireModal}
+                      courseName={courseNameForModal}
+                      onConfirm={handleConfirmGetInDesire}
+                    />
+                  </>
+                )}
+
+                <br /> */}
+                <button
+                  className="px-8 py-[18px] w-[309px] h-[60px] border-solid border-[1px] rounded-[12px] bg-blue-500 font-bold text-white mt-5 hover:bg-blue-600"
+                  onClick={() => openSubscribeModal(course.course_name)}
+                >
+                  Subscribe This Course
+                </button>
+                <SubscribeModal
+                  isOpen2={showSubscribeModal}
+                  onRequestClose2={closeSubscribeModal}
+                  courseName={courseNameForModal}
+                  onConfirm2={handleConfirmSubscribe}
+                />
+              </>
+            )}
           </div>
         </div>
       </div>
-      <Footer />
+      <div className="mt-20 flex flex-col justify-center items-center">
+        <div className="text-header2 font-bold mb-12">
+          Other Interesting Course
+        </div>
+
+        <div className="flex mb-20 gap-10 relative z-1">
+          <DisplayCards searchList={searchList} />
+        </div>
+      </div>
+      <div className="relative z-1">
+        {!auth.session.user ? <SubFooter /> : ""}
+      </div>
+      <div className="relative z-1">
+        <Footer />
+      </div>
     </>
   );
 }

@@ -1,100 +1,126 @@
 import { useState, useEffect } from "react";
 import useGetuser from "../hook/useGetuser";
 import remove from "../assets/header/remove.png";
-import { useContext } from "react";
-import { SessionContext } from "../App";
-import { supabase } from "../supabase/client.js";
 import addImage from "../assets/header/add.png";
-
+import error from "../assets/header/error.png";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import dayjs from "dayjs";
+import { Stack } from "@mui/material";
+import { useAuth } from "../context/authentication";
+import { useNavigate } from "react-router-dom";
 
 function EditProfileForm() {
-  const { user, getCurrentUser, updateUserProfileById } = useGetuser();
+  const navigate = useNavigate();
+  const auth = useAuth();
+  const { updateUserProfileById } = useGetuser();
+  const [images, setImages] = useState("");
+  const [fileBody, setFileBody] = useState({});
+  const [hasImage, setHasImage] = useState(false);
+  const [fileErrorMessage, setfileErrorMessage] = useState(null);
+  const [dateErrorMessage, setDateErrorMessage] = useState(null);
+  const [session, setSession] = useState(auth.session.user);
   const [name, setName] = useState("");
   const [birthDate, setBirthDate] = useState("");
   const [education, setEducation] = useState("");
   const [email, setEmail] = useState("");
-  const [images, setImages] = useState("");
-  const [fileBody, setFileBody] = useState({});
-  const [hasImage, setHasImage] = useState(false);
-  const { session, setSession } = useContext(SessionContext);
+  const initialValues = {
+    name,
+    birthDate,
+    education,
+    email,
+  };
+  const validationSchema = Yup.object().shape({
+    name: Yup.string()
+      .matches(/^[a-zA-Z\s]+$/, "Name must contain only letters")
+      .required("Name is required"),
+    birthDate: Yup.date()
+      .max(new Date(), "Date of Birth cannot be in the future")
+      .required("Date of Birth is required"),
+    education: Yup.string()
+      .matches(/^[a-zA-Z\s]+$/, "Education must only contain letters")
+      .required("Educational Background is required"),
+    email: Yup.string()
+      .email("Invalid email address")
+      .required("Email is required"),
+  });
 
-  // const validationSchema = Yup.object({
-  //   name: Yup.string().required("Name is required"),
-  //   birthDate: Yup.date()
-  //     .max(new Date(), "Date of Birth cannot be in the future")
-  //     .required("Date of Birth is required"),
-  //   education: Yup.string().required("Educational Background is required"),
-  //   email: Yup.string()
-  //     .email("Invalid email address")
-  //     .required("Email is required"),
-  // });
-
-  // function validateText(value) {
-  //   let error;
-  //   if (value === null) {
-  //     error = "Requried !";
-  //   } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value)) {
-  //     error = "Invalid email address !";
-  //   }
-  //   return error;
-  // }
+  const validateBirthDate = (birthDate) => {
+    if (!birthDate) {
+      setDateErrorMessage("Required!!!");
+    } else if (new Date(birthDate) > new Date()) {
+      setDateErrorMessage("Date of Birth cannot be in the future.");
+    } else {
+      setDateErrorMessage(null);
+    }
+  };
 
   const handleRemoveImage = async (event) => {
     event.preventDefault();
     setImages({});
     setHasImage(false);
   };
-
   useEffect(() => {
-    if (session) {
-      getCurrentUser(session.user.id);
-    } else {
-      getCurrentUser(null);
-    }
-  }, [session]);
-
-  useEffect(() => {
-    if (user) {
-      setName(user.user_name);
-      setBirthDate(user.user_dob);
-      setEducation(user.user_education);
-      setEmail(user.user_email);
-      if (user.user_avatar === null) {
+    if (auth.isAuthenicated) {
+      setName(auth.session.user.user_name);
+      setBirthDate(auth.session.user.user_dob);
+      setEducation(auth.session.user.user_education);
+      setEmail(auth.session.user.user_email);
+      if (auth.session.user.user_avatar === null) {
         setHasImage(false);
       } else {
         setHasImage(true);
         try {
-          setImages(user.user_avatar);
+          setImages(auth.session.user.user_avatar);
         } catch {
           console.log("Awaiting for loading Img Path");
         }
       }
+    } else {
+      navigate("/login");
     }
-  }, [user]);
+  }, [auth.isAuthenicated]);
 
   const handleSubmit = (event) => {
-    event.preventDefault();
     const data = {
       user_name: name,
       user_dob: birthDate,
       user_education: education,
+      user_email: email,
       avatarObj: fileBody,
     };
-    updateUserProfileById(session.user.id, data);
+    if (dateErrorMessage === null && fileErrorMessage === null) {
+      updateUserProfileById(auth.session.user.user_id, data);
+    }
   };
 
   const handleFileChange = (event) => {
     const file = event.target.files[event.target.files.length - 1];
-    try {
-      if (file) {
-        setImages(URL.createObjectURL(file));
-        setFileBody(file);
-        setHasImage(true);
+    const typeFile = file.name.substring(file.name.lastIndexOf(".") + 1);
+    if (file.size > 2097152) {
+      setHasImage(false);
+      setfileErrorMessage("File too large! (max 2MB)");
+    } else if (
+      typeFile.toLowerCase() === "jpg" ||
+      typeFile.toLowerCase() === "png" ||
+      typeFile.toLowerCase() === "jpeg"
+    ) {
+      try {
+        if (file) {
+          setImages(URL.createObjectURL(file));
+          setFileBody(file);
+          setHasImage(true);
+          setfileErrorMessage(null);
+        }
+      } catch (error) {
+        console.log(error);
       }
-    } catch (error) {
-      console.log(error);
+    } else {
+      setHasImage(false);
+      setfileErrorMessage("File Only JPG, PNG, JPEG !");
     }
   };
 
@@ -104,152 +130,243 @@ function EditProfileForm() {
       className=" flex flex-col items-center justify-center bg-[url('src/assets/ourCourses/image_background.png')] bg-no-repeat bg-[length:100%_190px] bg-[center_top_5rem] h-[955px]"
     >
       <span className=" text-header2  font-medium">Profile</span>
-      {/* <Formik initialValues={{ email: "" }}> */}
-      <Formik>
-        <Form
-          onSubmit={handleSubmit}
-          className="flex flex-row items-start justify-between text-body2 mt-[100px] w-[930px] h-[521px]"
-        >
-          <div id="image-preview" className="col-span-full">
-            <label>
-              {hasImage ? (
-                <div id="user-image" className="relative">
-                  <img
-                    src={images}
-                    alt="User image"
-                    className="flex items-center justify-center rounded-2xl w-[358px] h-[358px]"
-                  />
-                  <button
-                    className="absolute top-[6px] left-[320px] bg-purple-600 w-[32px] h-[32px] rounded-full flex justify-center items-center text-white text-header3 font-light"
-                    onClick={(event) => handleRemoveImage(event)}
-                  >
-                    <img src={remove} alt="Remove Image" />
-                  </button>
-                </div>
-              ) : (
-                <div
-                  id="hasnot-image"
-                  className="flex items-center justify-center rounded-2xl border border-dashed bg-gray-100 border-gray-900/25 px-6 py-10 w-[358px] h-[358px]"
-                >
-                  <div className="flex flex-col justify-center items-center">
-                    <img src={addImage} />
-                    <div className="mt-4 flex text-sm leading-6 text-gray-600">
-                      <label
-                        htmlFor="file-upload"
-                        className="relative cursor-pointer rounded-md bg-white font-semibold text-blue-400 hover:text-blue-600"
-                      >
-                        <span>Upload image</span>
-                        <input
-                          id="file-upload"
-                          name="file-upload"
-                          type="file"
-                          className="sr-only"
-                          onChange={handleFileChange}
-                        />
-                      </label>
-                    </div>
-                    <p className="text-xs leading-5 text-gray-600">
-                      PNG, JPG, JPEG up to 2MB
-                    </p>
-                  </div>
-                </div>
-              )}
-            </label>
-          </div>
+      <Formik
+        enableReinitialize={true}
+        initialValues={initialValues}
+        onSubmit={handleSubmit}
+        validationSchema={validationSchema}
+      >
+        {({ errors, touched }) => (
+          <Form className="flex flex-row items-start justify-between text-body2 mt-[100px] w-[930px] h-[521px]">
+            <div id="image-preview" className="col-span-full">
+              <label>
+                {hasImage ? (
+                  <div id="user-image" className="relative">
+                    <img
+                      src={images}
+                      alt="User image"
+                      className="flex items-center justify-center rounded-2xl w-[358px] h-[358px]"
+                    />
 
-          <div
-            id="input-container"
-            className="flex flex-col justify-between w-[453px] h-[521px] "
-          >
-            <div className="flex-col">
-              <label>Name</label>
-              <div>
-                <Field
-                  id="name"
-                  name="name"
-                  type="text"
-                  className="border border-gray-500 w-[453px] h-[48px] rounded-lg p-3 focus:border-orange-500 focus:outline-none"
-                  onChange={(e) => {
-                    setName(e.target.value);
-                  }}
-                  value={name}
-                />
-                {/* <ErrorMessage
-                  name="name"
-                  component="div"
-                  className="text-red-500"
-                /> */}
+                    <button
+                      className="absolute top-[6px] left-[320px] bg-purple-600 w-[32px] h-[32px] rounded-full flex justify-center items-center text-white text-header3 font-light"
+                      onClick={(event) => handleRemoveImage(event)}
+                    >
+                      <img src={remove} alt="Remove Image" />
+                    </button>
+                  </div>
+                ) : (
+                  <div
+                    id="hasnot-image"
+                    className={`flex items-center justify-center rounded-2xl border border-dashed bg-gray-100 border-gray-900/25 px-6 py-10 w-[358px] h-[358px]  ${
+                      fileErrorMessage && "border-purple-500 border-2"
+                    }`}
+                  >
+                    <div className="flex flex-col justify-center items-center group">
+                      <img
+                        src={addImage}
+                        className="scale-100 group-hover:scale-110"
+                      />
+
+                      <div className="mt-4 flex text-sm leading-6 text-gray-600">
+                        <label
+                          htmlFor="file-upload"
+                          className={`relative cursor-pointer rounded-md bg-white font-semibold text-blue-400 scale-100 group-hover:scale-110 ${
+                            fileErrorMessage && "text-purple-500"
+                          }`}
+                        >
+                          <span>Upload image</span>
+                          <input
+                            id="file-upload"
+                            name="file-upload"
+                            type="file"
+                            className="sr-only"
+                            onChange={handleFileChange}
+                          />
+                        </label>
+                      </div>
+                      <p
+                        className={`text-xs leading-5 text-gray-600 ${
+                          fileErrorMessage && "text-purple-500"
+                        }`}
+                      >
+                        PNG, JPG, JPEG up to 2MB
+                      </p>
+                    </div>
+                  </div>
+                )}
+                {fileErrorMessage && (
+                  <div className="text-purple-500 font-bold p-5">
+                    {fileErrorMessage}
+                  </div>
+                )}
+              </label>
+            </div>
+
+            <div
+              id="input-container"
+              className="flex flex-col justify-between w-[453px] h-[521px] "
+            >
+              <div className="flex-col relative">
+                <label>Name</label>
+                <div>
+                  <Field
+                    id="name"
+                    name="name"
+                    type="text"
+                    className={`border border-gray-500 w-[453px] h-[48px] rounded-lg p-3 focus:border-orange-500 focus:outline-none ${
+                      errors.name && touched.name
+                        ? "border-2 border-purple-500"
+                        : ""
+                    }`}
+                    onChange={(e) => {
+                      setName(e.target.value);
+                    }}
+                  />
+                  <ErrorMessage
+                    name="name"
+                    component="div"
+                    className="text-purple-500 text-body3"
+                  />
+                  {errors.name && touched.name ? (
+                    <img
+                      src={error}
+                      alt="Error Icon"
+                      className="ml-4 absolute top-10 right-4"
+                    />
+                  ) : (
+                    ""
+                  )}
+                </div>
               </div>
-            </div>
-            <div>
-              <label>
-                Date of Birth
-                <div>
-                  <Field
-                    id="birthDate"
-                    name="birthDate"
-                    type="date"
-                    className="border border-gray-500 w-[453px] h-[48px] rounded-lg p-3 focus:border-orange-500 focus:outline-none"
-                    onChange={(e) => {
-                      setBirthDate(e.target.value);
+              <div>
+                <label>Date of Birth</label>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <Stack
+                    sx={{
+                      "& .MuiOutlinedInput-root": {
+                        "& fieldset": {
+                          borderColor: "rgb(200 204 219",
+                          borderColor: dateErrorMessage && "rgb(168 85 247)",
+                          borderWidth: dateErrorMessage && "2px",
+                          borderRadius: "8px",
+                        },
+                        "&.Mui-focused fieldset": {
+                          borderColor: "rgb(244 126 32)",
+                        },
+                      },
+                      "& .MuiInputBase-root.Mui-error": {
+                        color: "rgb(200 204 219) !important",
+                      },
+
+                      "& .MuiOutlinedInput-root.Mui-error": {
+                        "& fieldset": {
+                          borderColor: "rgb(200 204 219) !important",
+                        },
+                      },
+                      "& .Mui-focused.Mui-error": {
+                        "& fieldset": {
+                          borderColor: "rgb(244 126 32) !important",
+                        },
+                      },
+                      "& .MuiInputBase-input": {
+                        padding: "0 0 0 12px",
+                        width: "453px",
+                        height: "48px",
+                      },
                     }}
-                    value={birthDate}
-                  />
-                  {/* <ErrorMessage
-                    name="birthDate"
-                    component="div"
-                    className="text-red-500"
-                  /> */}
-                </div>
-              </label>
+                  >
+                    <DatePicker
+                      value={dayjs(session.user_dob)}
+                      onChange={(date) => {
+                        setBirthDate(date);
+                        validateBirthDate(date);
+                      }}
+                    />
+                  </Stack>
+                  {dateErrorMessage && (
+                    <div className="text-purple-500 text-body3">
+                      {dateErrorMessage}
+                    </div>
+                  )}
+                </LocalizationProvider>
+              </div>
+              <div
+                className="
+              relative"
+              >
+                <label>
+                  Education Background
+                  <div>
+                    <Field
+                      id="education"
+                      name="education"
+                      type="text"
+                      className={`border border-gray-500 w-[453px] h-[48px] rounded-lg p-3 focus:border-orange-500 focus:outline-none ${
+                        errors.education && touched.education
+                          ? "border-2 border-purple-500"
+                          : ""
+                      }`}
+                      onChange={(e) => setEducation(e.target.value)}
+                    />
+                    <ErrorMessage
+                      name="education"
+                      component="div"
+                      className="text-purple-500 text-body3"
+                    />
+                    {errors.education && touched.education ? (
+                      <img
+                        src={error}
+                        alt="Error Icon"
+                        className="ml-4 absolute top-10 right-4"
+                      />
+                    ) : (
+                      ""
+                    )}
+                  </div>
+                </label>
+              </div>
+              <div>
+                <label>
+                  Email
+                  <div>
+                    <Field
+                      id="email"
+                      name="email"
+                      type="text"
+                      className={`border border-gray-500 w-[453px] h-[48px] rounded-lg p-3 focus:border-orange-500 focus:outline-none${
+                        errors.email && touched.email
+                          ? "border-2 border-purple-500"
+                          : ""
+                      }`}
+                      onChange={(e) => setEmail(e.target.value)}
+                    />
+                    <ErrorMessage
+                      name="email"
+                      component="div"
+                      className="text-purple-500 text-body3"
+                    />
+                    {error.email && touched.email ? (
+                      <img
+                        src={error}
+                        alt="Error Icon"
+                        className="ml-4 absolute top-10 right-4"
+                      />
+                    ) : (
+                      ""
+                    )}
+                  </div>
+                </label>
+              </div>
+              <button
+                type="submit"
+                className="bg-blue-500 rounded-xl h-[60px] text-white font-bold hover:bg-blue-600"
+              >
+                Update Profile
+              </button>
             </div>
-            <div>
-              <label>
-                Education Background
-                <div>
-                  <Field
-                    id="education"
-                    name="education"
-                    type="text"
-                    className="border border-gray-500 w-[453px] h-[48px] rounded-lg p-3 focus:border-orange-500 focus:outline-none"
-                    onChange={(e) => {
-                      setEducation(e.target.value);
-                    }}
-                    value={education}
-                  />
-                  {/* <ErrorMessage
-                    name="education"
-                    component="div"
-                    className="text-red-500"
-                  /> */}
-                </div>
-              </label>
-            </div>
-            <div>
-              <label>
-                Email
-                <div>
-                  <Field
-                    id="email"
-                    name="email"
-                    type="text"
-                    className="border border-gray-500 w-[453px] h-[48px] rounded-lg p-3 focus:border-orange-500 focus:outline-none"
-                    value={email}
-                    // validate={validateText}
-                  />
-                  {/* <ErrorMessage
-                    name="email"
-                    component="div"
-                    className="text-red-500"
-                  /> */}
-                </div>
-              </label>
-            </div>
-            <button className="bg-blue-500 rounded-xl h-[60px] text-white font-bold hover:bg-blue-600">
-              Update Profile
-            </button>
-          </div>
-        </Form>
+          </Form>
+        )}
       </Formik>
     </div>
   );

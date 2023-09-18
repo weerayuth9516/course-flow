@@ -2,13 +2,15 @@ import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../supabase/client";
+import { useAuth } from "../context/authentication";
+import jwtDecode from "jwt-decode";
 
 const useGetuser = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState({});
   const [isError, setIsError] = useState(null);
   const [isLoading, setIsLoading] = useState(null);
-
+  const auth = useAuth();
   const getCurrentUser = async (id) => {
     try {
       if (id !== null) {
@@ -27,55 +29,43 @@ const useGetuser = () => {
     }
   };
 
-  const updateAvatarProfilById = async (id, data) => {
+  const updateUserProfileById = async (id, inputData) => {
     try {
       setIsError(false);
       setIsLoading(true);
-      await axios.put(`http://localhost:4001/users/avatar/${id}`, data);
-      setIsLoading(false);
-    } catch (error) {
-      setIsError(true);
-      setIsLoading(false);
-    }
-  };
+      let newData;
+      if (inputData.avatarObj.name) {
+        const results = await supabase.storage
+          .from("user_avatars")
+          .upload(`${inputData.avatarObj.name}`, inputData.avatarObj, {
+            cachesControl: "3600",
+            upsert: true,
+            contentType: `${inputData.avatarObj.type}`,
+          });
 
-  const updateUserProfileById = async (id, data) => {
-    try {
-      let results;
-      setIsError(false);
-      setIsLoading(true);
-      console.log(data.avatarObj.size);
-      if (data.avatarObj.size > 2097152) {
-        alert("File too large");
+        results.error === null
+          ? (newData = {
+              ...inputData,
+              user_avatar: `${inputData.avatarObj.name}`,
+              avatarObj: null,
+            })
+          : setIsLoading(false);
       } else {
-        const typeFile = data.avatarObj.name.substring(
-          data.avatarObj.name.lastIndexOf(".") + 1
-        );
-
-        if (
-          typeFile.toLowerCase() === "jpg" ||
-          typeFile.toLowerCase() === "png" ||
-          typeFile.toLowerCase() === "jpeg"
-        ) {
-          results = await supabase.storage
-            .from("user_avatars")
-            .upload(`${data.avatarObj.name}`, data.avatarObj, {
-              cacheControl: "3600",
-              upsert: true,
-              contentType: `${data.avatarObj.type}`,
-            });
-          if (results.error === null) {
-            data = { ...data, user_avatar: `${data.avatarObj.name}` };
-            await axios.put(`http://localhost:4001/users/${id}`, data);
-            setIsLoading(false);
-            navigate("/");
-          } else {
-            console.log(results.error);
-          }
-        } else {
-          alert("Type File invalid.");
-        }
+        newData = { ...inputData, user_avatar: null, avatarObj: null };
       }
+      console.log(newData);
+      const axiosResult = await axios.put(
+        `http://localhost:4001/users/${id}`,
+        newData
+      );
+      if (axiosResult.data.message == "Update users successfully") {
+        const fetching = await axios.get(`http://localhost:4001/users/${id}`);
+        const userDataFromToken = jwtDecode(fetching.data.token);
+        auth.session.user = userDataFromToken;
+        localStorage.setItem("token", fetching.data.token);
+      }
+      setIsLoading(false);
+      navigate("/");
     } catch (error) {
       console.log(error);
       setIsError(true);
@@ -87,7 +77,6 @@ const useGetuser = () => {
     setUser,
     getCurrentUser,
     updateUserProfileById,
-    updateAvatarProfilById,
     isError,
     isLoading,
   };

@@ -1,33 +1,43 @@
 import React from "react";
 import { DebounceInput } from "react-debounce-input";
 import useGetsearch from "../hook/useGetsearch";
-import { Link } from 'react-router-dom'
+import { useEffect } from "react";
+import search from "../assets/ourCourses/search.png";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import DisplayCards from "../components/DisplayCards";
+import SubFooter from "../components/SubFooter";
+import { useAuth } from "../context/authentication";
 
 function CoursePage() {
   const { searchList, inputText, setInputText, getSearchList } = useGetsearch();
+  const auth = useAuth();
+  const limit = 12;
 
   const handleInputChange = (e) => {
     const newInputText = e.target.value;
     setInputText(newInputText);
-    getSearchList(newInputText);
+    getSearchList(newInputText, limit);
   };
 
-  return (
+  useEffect(() => {
+    getSearchList("", limit);
+  }, []);
 
-    <div
-      id="container"
-    >
+  return (
+    <>
       <Header />
-      <div className="bg-[url('src/assets/ourCourses/image_background.png')] bg-[length:100%_190px] bg-no-repeat">
+      <div
+        id="container"
+        className="font-inter bg-[url('src/assets/ourCourses/image_background.png')] bg-[length:100%_190px] bg-no-repeat"
+      >
         <div className="search-box mb-2 flex flex-col items-center mt-20 h-[230px]">
           <label htmlFor="input" className="text-black text-header2 font-bold">
             Our Courses
           </label>
           <div className="relative mt-12">
             <img
-              src="src/assets/ourCourses/search.png"
+              src={search}
               alt="Image icon"
               className="inline absolute left-2 top-3"
             />
@@ -37,75 +47,22 @@ function CoursePage() {
               name="message-text"
               type="text"
               value={inputText}
-              className="w-[357px] h-[48px] pl-10 border rounded-lg py-2 px-3 focus:outline-none focus:border-blue-400"
+              className="w-[357px] h-[48px] pl-10 border rounded-lg py-2 px-3 focus:outline-none hover:border-orange-300 focus:border-orange-300"
               placeholder="Search..."
               debounceTimeout={500}
               onChange={handleInputChange}
             />
           </div>
         </div>
-      </div>
-
-      <div className="course-cards-container flex justify-center mb-20">
-        <div className="course-cards-container grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-7">
-          {/* Display course cards */}
-          {searchList.map((item, index) => {
-            const limitLetter =
-              item.course_summary.length > 60
-                ? item.course_summary.substring(0, 60) + "..."
-                : item.course_summary;
-              item.course_summary.length > 60
-                ? item.course_summary.substring(0, 60) + "..."
-                : item.course_summary;
-            return (
-              <div key={index} className="course-cards-box">
-                <div className="course-card w-[357px] h-[475px] rounded-lg shadow-lg border border-gray-100 mb-8">
-                  <div className="course-card-thumbnail">
-                    <Link to={`/course/courseDetail/${item.course_id}`}>
-                      <img
-                        src={item.course_cover_img}
-                        alt="course-image"
-                        className="w-[357px] h-[240px] object-fit rounded-lg shadow-lg"
-                      />
-                    </Link>
-                  </div>
-                  <div className="description-box m-4">
-                    <h3 className="mb-2 text-orange-500 text-body3">Course</h3>
-                    <h2 className="font-bold mb-2 text-header3">
-                    <Link to={`/course/courseDetail/${item.course_id}`}>{item.course_name}</Link>
-                    </h2>
-                    <div className="course-detail">
-                      <p>{limitLetter}</p>
-                    </div>
-                  </div>
-                  <div className="course-card-footer mt-10">
-                    <hr className="border-t border-gray-300 my-4 w-full" />
-                    <span>
-                      <img
-                        src="src/assets/ourCourses/Frame.png"
-                        alt="Image icon"
-                        className="inline mr-2 ml-4"
-                      />
-                      6 Lessons
-                    </span>
-                    <span className="ml-5">
-                      <img
-                        src="src/assets/ourCourses/Vectors.png"
-                        alt="Image icon"
-                        className="inline mr-2 ml-4"
-                      />
-                      {item.course_duration} Hours
-                    </span>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-          {/* End display course cards */}
+        <div className="course-cards-container flex justify-center mb-[150px]">
+          <div className="sub-container grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-10">
+            <DisplayCards searchList={searchList} />
+          </div>
         </div>
+        <div>{!auth.session.user ? <SubFooter /> : ""}</div>
+        <Footer />
       </div>
-      <Footer />
-    </div>
+    </>
   );
 }
 
