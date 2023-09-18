@@ -25,7 +25,6 @@ courseRouter.get("/", async (req, res) => {
       .limit(limit == null ? 12 : limit);
   }
   const course_idArray = results.data.map((value) => value.course_id);
-  console.log(course_idArray);
   const lessonCount = await supabase
     .from("lessons")
     .select("course_id")
@@ -46,7 +45,6 @@ courseRouter.get("/", async (req, res) => {
       })[0].lesson_count,
     };
   });
-  console.log(newMap);
   if (results.statusText === "OK") {
     return res.json({
       data: newMap,
@@ -263,7 +261,7 @@ courseRouter.get("/subscription/:userId/:courseId", async (req, res) => {
   return res.json({ isSubscribed });
 });
 
-courseRouter.get("/coursedetail/learning", async (req, res) => {
+courseRouter.get("/coursedetail/learning", protect, async (req, res) => {
   try {
     const user_id = req.query.user_id;
     const course_id = req.query.course_id;
@@ -368,7 +366,7 @@ courseRouter.get("/coursedetail/learning", async (req, res) => {
   }
 });
 
-courseRouter.put("/update/sub_lesson", async (req, res) => {
+courseRouter.put("/update/sub_lesson", protect, async (req, res) => {
   try {
     const user_course_detail_id = req.body.user_course_detail_id;
     const sub_lesson_id = req.body.sub_lesson_id;

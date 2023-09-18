@@ -11,7 +11,7 @@ function ToggleLesson() {
   const getLessonAndSubLesson = async () => {
     try {
       const lessonResult = await axios.get(
-        `http://localhost:4001/courses/${params.courseId}/lessons`
+        `http://localhost:4001/courses/lessons/${params.courseId}`
       );
       setLesson(lessonResult.data.data);
     } catch (error) {
