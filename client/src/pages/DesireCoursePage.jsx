@@ -31,7 +31,7 @@ function DesireCoursePage() {
       <Header />
       <div id="container">
         <div className="font-inter relative">
-          <img className="w-screen absolute" src={imagebg}></img>
+          <img className="w-screen absolute top-20" src={imagebg}></img>
           <div className="search-box mb-2 flex flex-col items-center h-[230px]">
             <label
               htmlFor="input"
