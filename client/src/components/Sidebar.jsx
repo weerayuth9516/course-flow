@@ -6,25 +6,26 @@ import logout from "../assets/Sidebar/logout.png"
 
 function Sidebar() {
     return (
-        <section className="mt-[1000px] mb-[1000px] ml-[50px]">
-            <div className="flex flex-col ">
-                <img className="w-[10%] mb-[15px]" src={logo}></img>
-                <div className="mb-[100px]">Admin Panel Control</div>
+        <aside className="w-[15%] h-screen top-0 bottom-0">
+            <div className="sidebar h-[100%] overflow-y-auto border-r-2">
+                <div className=" mt-1 flex flex-col items-center mb-16 py-10 px-10">
+                    <img className="mb-6 cursor-pointer" src={logo}></img>
+                    <h2 className="text-sm">Admin Panel Control</h2>
+                </div>
+                <div className="p-0 m-0 h-12 flex items-center duration-300 cursor-pointer hover:bg-gray-200">
+                    <img className="pl-10" src={book}></img>
+                    <span className="ml-4 font-semibold">Course</span>
+                </div>
+                <div className="p-0 m-0 h-12 flex items-center duration-300 cursor-pointer hover:bg-gray-200 mb-96">
+                    <img className="pl-10" src={assignment}></img>
+                    <span className="ml-4 font-semibold">Assignment</span>
+                </div>
+                <div className="p-0 m-0 h-12 flex items-center duration-300 cursor-pointer hover:bg-gray-200 ">
+                    <img className="pl-10" src={logout}></img>
+                    <span className="ml-4 font-semibold">Log out</span>
+                </div>
             </div>
-            <div className="flex items-center mb-5">
-                <img className="mr-[10px]" src={book}></img>
-                <div className="">Course</div>
-
-            </div>
-            <div className="flex items-center mb-[150px]">
-                <img className="mr-[10px]" src={assignment}></img>
-                <div className="">Assignment</div>
-            </div>
-            <div className="flex items-center">
-                <img className="mr-[10px]" src={logout}></img>
-                <div>Log out</div>
-            </div>
-        </section>
+        </aside>
     )
 }
 
