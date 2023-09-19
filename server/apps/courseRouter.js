@@ -176,13 +176,29 @@ courseRouter.get("/mycourses/:userId", protect, async (req, res) => {
 courseRouter.post("/mycourses/:courseId", protect, async (req, res) => {
   try {
     const { user_id, course_id } = req.body;
-    const findUserSubscribeCourse = await supabase
+    const findUserDesireCourse = await supabase
       .from("user_course_details")
       .select("*")
       .eq("user_id", user_id)
       .eq("course_id", course_id);
-    if (findUserSubscribeCourse.data.length > 0) {
-      res.status(403).send("User already subscribed this course");
+
+    if (findUserDesireCourse.data.length > 0) {
+      const userCourseDetailsId =
+        findUserDesireCourse.data[0].user_course_detail_id;
+      const updateSubscriptionStatus = await supabase
+        .from("user_course_details")
+        .upsert([
+          {
+            user_course_detail_id: userCourseDetailsId,
+            subscription_id: 1,
+          },
+        ]);
+
+      if (updateSubscriptionStatus.status === 201) {
+        return res.json({ message: "Subscription updated successfully" });
+      } else {
+        return res.status(400).send("Failed to update subscription status");
+      }
     } else {
       const subscribeCourse = await supabase
         .from("user_course_details")
@@ -581,6 +597,7 @@ courseRouter.delete("/mydesirecourses/:userId/:courseId", async (req, res) => {
     .delete()
     .eq("user_id", userId)
     .eq("course_id", courseId);
+  console.log(result);
   if (result.status === 204) {
     return res.json({ message: "Remove desired course successfully." });
   } else {

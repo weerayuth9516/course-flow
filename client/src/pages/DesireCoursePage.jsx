@@ -12,14 +12,14 @@ import DisplayCardsDesireCourse from "../components/DisplayCardsDesireCourse";
 
 function DesireCoursePage() {
   // const { searchList, getSearchList } = useGetsearch();
-  const { allDesireCourse, getDesireCourse } = useGetsearch();
+  const { allDesireCourse, getDesireCourse, hasDesireCourse } = useGetsearch();
   const limit = 12;
 
-  const handleInputChange = (e) => {
-    const newInputText = e.target.value;
-    setInputText(newInputText);
-    getSearchList(newInputText, limit);
-  };
+  // const handleInputChange = (e) => {
+  //   const newInputText = e.target.value;
+  //   setInputText(newInputText);
+  //   getSearchList(newInputText, limit);
+  // };
 
   useEffect(() => {
     // getSearchList("", limit);
@@ -39,13 +39,13 @@ function DesireCoursePage() {
             >
               Desire Course
             </label>
-            <div className="relative mt-12">
+            {/* <div className="relative mt-12">
               <img
                 src={search}
                 alt="Image icon"
                 className="inline absolute left-2 top-3"
               />
-              {/* <DebounceInput
+              <DebounceInput
                                 minLength={2}
                                 id="message-text"
                                 name="message-text"
@@ -55,11 +55,14 @@ function DesireCoursePage() {
                                 placeholder="Search..."
                                 debounceTimeout={500}
                                 onChange={handleInputChange}
-                            /> */}
-            </div>
+                            />
+            </div> */}
           </div>
         </div>
-        <DisplayCardsDesireCourse allDesireCourse={allDesireCourse} />
+        <DisplayCardsDesireCourse
+          allDesireCourse={allDesireCourse}
+          hasDesireCourse={hasDesireCourse}
+        />
         <Footer />
       </div>
     </>

@@ -10,6 +10,7 @@ function useGetsearch() {
   const [lesson, setLesson] = useState([]);
   const [subLessonArray, setSubLessonArray] = useState([]);
   const [allDesireCourse, setAllDesireCourse] = useState([]);
+  const [hasDesireCourse, setHasDesireCourse] = useState(false);
 
   const getSearchList = async (input, limit) => {
     try {
@@ -54,6 +55,12 @@ function useGetsearch() {
         `http://localhost:4001/courses/mydesirecourses/${userId}`
       );
       setAllDesireCourse(desireCourseResult.data.data);
+      console.log(desireCourseResult);
+      if (desireCourseResult.status === 404) {
+        setHasDesireCourse(false);
+      } else {
+        setHasDesireCourse(true);
+      }
     } catch (error) {
       console.error("Error get desire course:", error);
     }
@@ -75,6 +82,8 @@ function useGetsearch() {
     getDesireCourse,
     allDesireCourse,
     setAllDesireCourse,
+    hasDesireCourse,
+    setHasDesireCourse,
   };
 }
 
