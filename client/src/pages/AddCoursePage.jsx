@@ -65,13 +65,13 @@ function AddCoursePage() {
       .required("Image is required")
       .test(
         "fileSize",
-        "Image file is too large. Maximum size is 5MB",
+        "Maximum size is 5MB",
         (value) => value && value.size <= 5242880 // 5MB
         // (value) => !value || value.size <= 10240 //10K
       )
       .test(
         "fileType",
-        "Invalid file format. Only JPEG, PNG, and GIF formats are allowed",
+        "Only JPEG, PNG & GIF",
         (value) =>
           value && ["image/jpg", "image/png", "image/jpeg"].includes(value.type)
       ),
@@ -84,7 +84,7 @@ function AddCoursePage() {
       )
       .test(
         "fileType",
-        "Invalid file format. Only MP4, MOV, and API formats are allowed",
+        "Only MP4, MOV, and API formats are allowed",
         (value) =>
           value && ["video/mp4", "video/mov", "video/avi"].includes(value.type)
       ),
@@ -360,7 +360,7 @@ function AddCoursePage() {
                         />
                       </div>
 
-                      <div className="w-[240px] h-[272px] mt-[40px] mb-[200px]">
+                      <div className="w-[240px] h-[272px] mt-[60px] mb-[200px]">
                         <label htmlFor="videoTrailer">Video Trailer *</label>
                         <input
                           type="file"
