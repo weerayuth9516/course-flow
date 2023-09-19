@@ -28,6 +28,7 @@ function MyCoursePage() {
         (course) => course.status_value === "completed"
       );
       setCompletedCourses(createCompleteCourses);
+      localStorage.setItem("previousPage", window.location.pathname);
     } catch (error) {
       console.log("request error");
     }
