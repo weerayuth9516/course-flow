@@ -75,7 +75,9 @@ function DisplayCardsDesireCourse({ allDesireCourse, hasDesireCourse }) {
           {/* End display course cards */}
         </div>
       ) : (
-        <p className="text-body1 text-gray-700">...No desire course exist...</p>
+        <p className="text-body1 text-gray-700 p-[10%]">
+          ...No desire course exist...
+        </p>
       )}
     </div>
   );
