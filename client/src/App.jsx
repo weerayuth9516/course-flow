@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import "./App.css";
-import { BrowserRouter, Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import Home from "./pages/HomePage";
 import Register from "./pages/RegisterPage";
 import Login from "./pages/LoginPage";
@@ -13,6 +13,8 @@ import CourseLearningPage from "./pages/CourseLearningPage";
 import { useAuth } from "./context/authentication";
 import DesireCoursePage from "./pages/DesireCoursePage";
 import CourseListPage from "./pages/CourseList";
+import AddCoursePage from "./pages/AddCoursePage";
+
 // export const SessionContext = React.createContext();
 
 function App() {
@@ -39,6 +41,7 @@ function App() {
         path="/course/courseDetail/:courseId"
         element={<CourseDetailPage />}
       />
+      <Route path="/addcourse" element={<AddCoursePage />} />
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
