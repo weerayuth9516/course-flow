@@ -8,6 +8,7 @@ import searchicon from "../assets/courselist/search.png"
 import ex1 from "../assets/courselist/ex1.png"
 import edit from "../assets/courselist/edit.png"
 import deleteLogo from "../assets/courselist/delete.png"
+import greenstatus from "../assets/courselist/greenstatus.png"
 
 function CourseListPage() {
 
@@ -29,7 +30,7 @@ function CourseListPage() {
                     </div>
                 </div>
                 <div className="bg-gray-100 h-screen relative">
-                    <table className="table-auto absolute right-[5%] top-[6%] w-[90%]">
+                    <table className="table-auto absolute right-[5%] top-[5%] w-[90%]">
                         <thead className="bg-gray-300">
                             <tr>
                                 <th className="py-3 px-5 tracking-wide text-start"></th>
@@ -44,7 +45,9 @@ function CourseListPage() {
                         </thead>
                         <tbody className="bg-white">
                             <tr className="border-b-2">
-                                <td className="p-5">8</td>
+                                <td className="p-5">
+                                    <img className="w-3" src={greenstatus}></img>
+                                </td>
                                 <td className="p-5">
                                     <img src={ex1}></img>
                                 </td>
@@ -59,7 +62,9 @@ function CourseListPage() {
                                 </td>
                             </tr>
                             <tr className="border-b-2">
-                                <td className="p-5">8</td>
+                                <td className="p-5">
+                                    <img className="w-3" src={greenstatus}></img>
+                                </td>
                                 <td className="p-5">
                                     <img src={ex1}></img>
                                 </td>
@@ -74,7 +79,9 @@ function CourseListPage() {
                                 </td>
                             </tr>
                             <tr className="border-b-2">
-                                <td className="p-5">8</td>
+                                <td className="p-5">
+                                    <img className="w-3" src={greenstatus}></img>
+                                </td>
                                 <td className="p-5">
                                     <img src={ex1}></img>
                                 </td>
@@ -89,7 +96,9 @@ function CourseListPage() {
                                 </td>
                             </tr>
                             <tr className="border-b-2">
-                                <td className="p-5">8</td>
+                                <td className="p-5">
+                                    <img className="w-3" src={greenstatus}></img>
+                                </td>
                                 <td className="p-5">
                                     <img src={ex1}></img>
                                 </td>
