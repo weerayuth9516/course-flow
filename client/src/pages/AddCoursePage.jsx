@@ -1,25 +1,23 @@
-import React from "react";
-import { useState } from "react";
+import React, { useState ,useEffect} from "react";
 import { Formik, Field, Form, ErrorMessage } from "formik";
+import { Link } from "react-router-dom";
 import * as Yup from "yup";
 import errorIcon from "../assets/loginPage/exclamation.png";
 import plusIcon from "../assets/addCourse/plus.png";
 import deleteIcon from "../assets/addCourse/delete.png";
+import useFormData from "../context/formDataContext";
 
 function AddCoursePage() {
-  const [imagePreview, setImagePreview] = useState(null);
-  const [videoPreview, setVideoPreview] = useState(null);
-  const [videoType, setVideoType] = useState("video/mp4");
-
-  const initialValues = {
-    courseName: "",
-    price: "",
-    totalLearningTime: "",
-    courseSummary: "",
-    courseDetail: "",
-    coverImage: null,
-    videoTrailer: null,
-  };
+  const {
+    formValues,
+    setFormValues,
+    imagePreview,
+    setImagePreview,
+    videoPreview,
+    setVideoPreview,
+    videoType,
+    setVideoType,
+  } = useFormData();
 
   const validationSchema = Yup.object().shape({
     courseName: Yup.mixed()
@@ -51,14 +49,14 @@ function AddCoursePage() {
       .required("Course summary is required")
       .test(
         "max-length",
-        "Course name must be at most 60 characters",
+        "Course name must be at most 3000 characters",
         (value) => value && value.length <= 3000
       ),
     courseDetail: Yup.string()
       .required("Course detail is required")
       .test(
         "max-length",
-        "Course name must be at most 60 characters",
+        "Course name must be at most 5000 characters",
         (value) => value && value.length <= 5000
       ),
     coverImage: Yup.mixed()
@@ -93,7 +91,6 @@ function AddCoursePage() {
   const handleSubmit = (values) => {
     // Handle form submission
     console.log(values);
-
   };
 
   const handleImagePreview = (e) => {
@@ -152,7 +149,7 @@ function AddCoursePage() {
                 <button
                   type="submit"
                   form="add-course"
-                  onClick={handleSubmit} 
+                  onClick={handleSubmit}
                   className="text-white w-[117px] h-[60px] bg-[#2f5fac] rounded-xl ml-[20px] mr-[15px]"
                 >
                   Create
@@ -164,11 +161,11 @@ function AddCoursePage() {
             <div className="w-[1120px] bg-white mt-[80px] mr-[80px] ml-[80px] border border-gray-400 rounded-2xl flex justify-center items-start">
               <div className="w-[920px] text-body1 text-black">
                 <Formik
-                  initialValues={initialValues}
+                  initialValues={formValues}
                   validationSchema={validationSchema}
                   onSubmit={handleSubmit}
                 >
-                  {({ errors, touched, setFieldValue}) => (
+                  {({ errors, touched, setFieldValue }) => (
                     <Form id="add-course">
                       <div className="mt-[40px] relative">
                         <label htmlFor="courseName">Course name *</label>
@@ -176,6 +173,12 @@ function AddCoursePage() {
                           type="text"
                           id="courseName"
                           name="courseName"
+                          onBlur={(e) => {
+                            setFormValues({
+                              ...formValues,
+                              courseName: e.target.value,
+                            });
+                          }}
                           className={`w-[920px] h-[48px] border-2 border-[D6D9E4] rounded-xl text-[16px] pl-4 focus:border-orange-500 focus:outline-none mt-1 ${
                             errors.courseName && touched.courseName
                               ? "border-purple-500 border-2"
@@ -201,6 +204,12 @@ function AddCoursePage() {
                             type="number"
                             id="price"
                             name="price"
+                            onBlur={(e) => {
+                              setFormValues({
+                                ...formValues,
+                                price: e.target.value,
+                              });
+                            }}
                             className={`w-[420px] h-[48px] border-2 border-[D6D9E4] rounded-xl text-[16px] pl-4 focus:border-orange-500 focus:outline-none mt-1 ${
                               errors.price && touched.price
                                 ? "border-purple-500 border-2"
@@ -228,6 +237,12 @@ function AddCoursePage() {
                             type="number"
                             id="totalLearningTime"
                             name="totalLearningTime"
+                            onBlur={(e) => {
+                              setFormValues({
+                                ...formValues,
+                                totalLearningTime: e.target.value,
+                              });
+                            }}
                             className={`w-[420px] h-[48px] border-2 border-[D6D9E4] rounded-xl text-[16px] pl-4 focus:border-orange-500 focus:outline-none mt-1 ${
                               errors.totalLearningTime &&
                               touched.totalLearningTime
@@ -256,6 +271,12 @@ function AddCoursePage() {
                           as="textarea"
                           id="courseSummary"
                           name="courseSummary"
+                          onBlur={(e) => {
+                            setFormValues({
+                              ...formValues,
+                              courseSummary: e.target.value,
+                            });
+                          }}
                           className={`w-[920px] h-[72px] border-2 border-[D6D9E4] rounded-xl text-[16px] pl-4 pt-4 focus:border-orange-500 focus:outline-none resize-none mt-1 ${
                             errors.courseSummary && touched.courseSummary
                               ? "border-purple-500 border-2"
@@ -283,6 +304,12 @@ function AddCoursePage() {
                           as="textarea"
                           id="courseDetail"
                           name="courseDetail"
+                          onBlur={(e) => {
+                            setFormValues({
+                              ...formValues,
+                              courseDetail: e.target.value,
+                            });
+                          }}
                           className={`w-[920px] h-[220px] border-2 border-[D6D9E4] rounded-xl text-[16px] pl-4 pt-4 focus:border-orange-500 focus:outline-none resize-none mt-1 ${
                             errors.courseDetail && touched.courseDetail
                               ? "border-purple-500 border-2"
@@ -316,8 +343,10 @@ function AddCoursePage() {
                             );
                             handleImagePreview(e);
                           }}
+
                           style={{ display: "none" }}
                         />
+
                         <button
                           type="button"
                           onClick={() =>
@@ -345,10 +374,7 @@ function AddCoursePage() {
                                 className="mt-2 text-red-500 hover:text-red-700 absolute top-0 right-0"
                                 onClick={clearImagePreview}
                               >
-                                <img
-                                  src={deleteIcon}
-                                  alt="Remove Icon"
-                                />
+                                <img src={deleteIcon} alt="Remove Icon" />
                               </div>
                             </div>
                           )}
@@ -404,10 +430,7 @@ function AddCoursePage() {
                                 className="mt-2 text-red-500 hover:text-red-700 absolute top-0 right-0"
                                 onClick={clearVideoPreview}
                               >
-                                <img
-                                  src={deleteIcon}
-                                  alt="Remove Icon"
-                                />
+                                <img src={deleteIcon} alt="Remove Icon" />
                               </div>
                             </div>
                           )}
@@ -421,6 +444,7 @@ function AddCoursePage() {
                     </Form>
                   )}
                 </Formik>
+                <Link to="/addlesson">Go to Homepage</Link>
               </div>
             </div>
           </section>
