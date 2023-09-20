@@ -1,12 +1,13 @@
-import React, { useState ,useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import { Link } from "react-router-dom";
 import * as Yup from "yup";
+import axios from "axios";
 import errorIcon from "../assets/loginPage/exclamation.png";
 import plusIcon from "../assets/addCourse/plus.png";
 import deleteIcon from "../assets/addCourse/delete.png";
 import useFormData from "../context/formDataContext";
-
+import { supabase } from "../supabase/client.js";
 function AddCoursePage() {
   const {
     formValues,
@@ -88,9 +89,37 @@ function AddCoursePage() {
       ),
   });
 
-  const handleSubmit = (values) => {
+  const handleSubmit = async (values) => {
     // Handle form submission
     console.log(values);
+    if (values.videoTrailer !== null || values.coverImage === null) {
+      const uploadVideoResult = await supabase.storage
+        .from("course_video_trailers")
+        .upload(`${values.videoTrailer.name}`, values.videoTrailer, {
+          cacheControl: "3600",
+          upsert: true,
+          contentType: `${values.videoTrailer.type}`,
+        });
+      const uploadImgResult = await supabase.storage
+        .from("course_images")
+        .upload(`${values.coverImage.name}`, values.coverImage, {
+          cacheControl: "3600",
+          upsert: true,
+          contentType: `${values.coverImage.type}`,
+        });
+      if (uploadImgResult.error === null && uploadVideoResult === null) {
+        ////direct to admin api.
+        const courseResult = await axios.get(
+          `http://localhost:4001/admin/course/created`,
+          values
+        );
+        console.log(courseResult);
+      } else {
+        alert("can upload to supabase");
+      }
+    } else {
+      alert("please select you'r video or cover image first");
+    }
   };
 
   const handleImagePreview = (e) => {
@@ -340,7 +369,10 @@ function AddCoursePage() {
                             const selectedFile = e.currentTarget.files[0];
                             setFieldValue("coverImage", selectedFile);
                             handleImagePreview(e);
-                            localStorage.setItem("selectedFile", JSON.stringify(selectedFile));
+                            localStorage.setItem(
+                              "selectedFile",
+                              JSON.stringify(selectedFile)
+                            );
                           }}
                           style={{ display: "none" }}
                         />

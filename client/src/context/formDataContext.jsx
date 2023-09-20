@@ -13,7 +13,7 @@ export function FormDataProvider({ children }) {
     totalLearningTime: "",
     courseSummary: "",
     courseDetail: "",
-    coverImage: JSON.parse(localStorage.getItem("selectedFile")) || null,
+    // coverImage: JSON.parse(localStorage.getItem("selectedFile")) || null,
     videoTrailer: null,
   });
 
@@ -21,7 +21,6 @@ export function FormDataProvider({ children }) {
   const [videoPreview, setVideoPreview] = useState(null);
   const [videoType, setVideoType] = useState("video/mp4");
   const [selectedFile, setSelectedFile] = useState(null);
-
   return (
     <FormDataContext.Provider
       value={{
