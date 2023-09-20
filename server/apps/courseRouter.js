@@ -176,13 +176,29 @@ courseRouter.get("/mycourses/:userId", protect, async (req, res) => {
 courseRouter.post("/mycourses/:courseId", protect, async (req, res) => {
   try {
     const { user_id, course_id } = req.body;
-    const findUserSubscribeCourse = await supabase
+    const findUserDesireCourse = await supabase
       .from("user_course_details")
       .select("*")
       .eq("user_id", user_id)
       .eq("course_id", course_id);
-    if (findUserSubscribeCourse.data.length > 0) {
-      res.status(403).send("User already subscribed this course");
+
+    if (findUserDesireCourse.data.length > 0) {
+      const userCourseDetailsId =
+        findUserDesireCourse.data[0].user_course_detail_id;
+      const updateSubscriptionStatus = await supabase
+        .from("user_course_details")
+        .upsert([
+          {
+            user_course_detail_id: userCourseDetailsId,
+            subscription_id: 1,
+          },
+        ]);
+
+      if (updateSubscriptionStatus.status === 201) {
+        return res.json({ message: "Subscription updated successfully" });
+      } else {
+        return res.status(400).send("Failed to update subscription status");
+      }
     } else {
       const subscribeCourse = await supabase
         .from("user_course_details")
@@ -248,14 +264,15 @@ courseRouter.post("/mycourses/:courseId", protect, async (req, res) => {
 //check subscriptions status
 courseRouter.get(
   "/subscription/:userId/:courseId",
-  protect,
+
   async (req, res) => {
     const { userId, courseId } = req.params;
     const isSubscribed = await supabase
       .from("user_course_details")
-      .select("course_id,user_id")
+      .select("course_id,user_id,subscription_id")
       .eq("course_id", courseId)
-      .eq("user_id", userId);
+      .eq("user_id", userId)
+      .eq("subscription_id", 1);
     return res.json({ isSubscribed });
   }
 );
@@ -496,6 +513,95 @@ courseRouter.put("/update/sub_lesson", protect, async (req, res) => {
     return res.status(400).json({
       error: error,
     });
+  }
+});
+
+// get desire courses
+courseRouter.get("/mydesirecourses/:userId", async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const isValidUUID = /^\w{8}-\w{4}-\w{4}-\w{4}-\w{12}$/.test(userId);
+
+    const { data: userDesireCourses, error: userDesireError } = await supabase
+      .from("user_course_details")
+      .select(
+        `course_id:courses( course_id, course_name, course_summary, course_duration, course_cover_img ), subscription_id:subscriptions( subscription_status ), status_id:status( status_value )`
+      )
+      .eq("user_id", userId)
+      .eq("subscription_id", 2);
+
+    if (userDesireError) {
+      return res.status(500).json({ error: userDesireError });
+    }
+    if (userDesireCourses.length === 0) {
+      return res
+        .status(404)
+        .json({ error: "No desired courses found for this user" });
+    }
+    return res.json({ data: userDesireCourses });
+  } catch (error) {
+    console.error("An error occurred: " + error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+//Deisre course
+courseRouter.post("/mydesirecourses/:courseId", protect, async (req, res) => {
+  try {
+    const { user_id, course_id } = req.body;
+    const findUserDesireCourse = await supabase
+      .from("user_course_details")
+      .select("*")
+      .eq("user_id", user_id)
+      .eq("course_id", course_id);
+    if (findUserDesireCourse.length > 0) {
+      res.status(403).send("User already desired this course");
+    } else {
+      const desireCourse = await supabase.from("user_course_details").insert([
+        {
+          course_id: req.body.course_id,
+          user_id: req.body.user_id,
+          status_id: 1,
+          subscription_id: 2,
+        },
+      ]);
+      if (desireCourse.statusText === "Created") {
+        return res.json({ message: "Desire course successfully" });
+      } else {
+        return res.status(400).send("API ERROR");
+      }
+    }
+  } catch (error) {
+    console.error("An error occurred: " + error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+//check desire status
+courseRouter.get("/mydesirecourses/:userId/:courseId", async (req, res) => {
+  const { userId, courseId } = req.params;
+  const isDesired = await supabase
+    .from("user_course_details")
+    .select("course_id,user_id", "subscription_id")
+    .eq("course_id", courseId)
+    .eq("user_id", userId)
+    .eq("subscription_id", 2);
+  return res.json({ isDesired });
+});
+
+//remove desired course
+courseRouter.delete("/mydesirecourses/:userId/:courseId", async (req, res) => {
+  const { userId, courseId } = req.params;
+  const result = await supabase
+    .from("user_course_details")
+    .delete()
+    .eq("user_id", userId)
+    .eq("course_id", courseId);
+  console.log(result);
+  if (result.status === 204) {
+    return res.json({ message: "Remove desired course successfully." });
+  } else {
+    return res.status(400).send(`API ERROR`);
   }
 });
 

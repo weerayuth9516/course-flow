@@ -17,6 +17,11 @@ userRouter.get("/", async (req, res) => {
 userRouter.get("/:id", async (req, res) => {
   const id = req.params.id;
   const results = await supabase.from("users").select("*").eq("user_id", id);
+  // const hasAvatar = await supabase
+  //   .from("users")
+  //   .select("user_avatar")
+  //   .eq("user_id", id);
+
   if (results.statusText === "OK") {
     const avatarPath = await supabase.storage
       .from("user_avatars")
@@ -62,7 +67,7 @@ userRouter.post("/", async (req, res) => {
 
 userRouter.put("/:id", async (req, res) => {
   const id = req.params.id;
-  console.log(req.body.user_email);
+  // console.log(req.body.user_email);
   const oldPath = await supabase
     .from("users")
     .select("user_avatar")
