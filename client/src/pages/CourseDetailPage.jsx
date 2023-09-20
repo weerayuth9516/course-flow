@@ -178,15 +178,16 @@ function CourseDetailPage() {
       console.error("Invalid to request:", error);
     }
   };
+
+  const previousPage = localStorage.getItem("previousPage");
   const handleBack = () => {
-    if (Boolean(localStorage.getItem("previousPage"))) {
-      const goBack = localStorage.getItem("previousPage");
-      navigate(goBack);
-      localStorage.removeItem("previousPage");
+    if (previousPage === "/mycourses") {
+      navigate("/mycourses");
     } else {
       navigate("/course");
     }
   };
+
   return (
     <>
       <div className="relative z-1">

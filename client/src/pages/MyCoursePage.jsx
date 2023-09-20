@@ -5,7 +5,7 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { useAuth } from "../context/authentication";
 import axios from "axios";
-import imagebg from "../assets/ourCourses/image_background.png"
+import imagebg from "../assets/ourCourses/image_background.png";
 function MyCoursePage() {
   const [myCourses, setMyCourses] = useState([]);
   const [inProgressCourses, setInProgressCourses] = useState([]);
@@ -28,7 +28,6 @@ function MyCoursePage() {
         (course) => course.status_value === "completed"
       );
       setCompletedCourses(createCompleteCourses);
-      localStorage.setItem("previousPage", window.location.pathname);
     } catch (error) {
       console.log("request error");
     }
@@ -42,6 +41,7 @@ function MyCoursePage() {
 
   useEffect(() => {
     getAllMyCourses(userId);
+    localStorage.setItem("previousPage", "/mycourses");
   }, [userId]);
 
   return (
@@ -122,8 +122,8 @@ function MyCoursePage() {
                   status === "in_progress"
                     ? inProgressCourses
                     : status === "completed"
-                      ? completedCourses
-                      : myCourses
+                    ? completedCourses
+                    : myCourses
                 }
               />
             </div>
