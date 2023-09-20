@@ -27,9 +27,7 @@ export function DesireCourseModal({
         <div className="fixed top-0 left-0 w-screen h-screen bg-black opacity-70 z-20"></div>
       )}
       <div
-        className={`fixed top-[250px] left-[380px] z-30 ${
-          isOpen ? "" : "hidden"
-        }`}
+        className={`fixed top-[40%] left-[35%] z-30 ${isOpen ? "" : "hidden"}`}
       >
         <div className="bg-white shadow-lg rounded-3xl w-[470px] pb-5">
           <div className="pt-5 pb-3 pl-7 pr-8 flex justify-between border-b border-1">
@@ -88,9 +86,7 @@ export function SubscribeModal({
         <div className="fixed top-0 left-0 w-screen h-screen bg-black opacity-70 z-90"></div>
       )}
       <div
-        className={`fixed top-[250px] left-[380px] z-99 ${
-          isOpen2 ? "" : "hidden"
-        }`}
+        className={`fixed top-[40%] left-[35%] z-99 ${isOpen2 ? "" : "hidden"}`}
       >
         <div className="bg-white shadow-lg rounded-3xl w-[528px] pb-5">
           <div className="pt-5 pb-3 pl-7 pr-8 flex justify-between border-b border-1">

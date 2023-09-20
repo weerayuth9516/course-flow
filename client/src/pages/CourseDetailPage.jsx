@@ -256,12 +256,6 @@ function CourseDetailPage() {
                     >
                       Get in Desire Course
                     </button>
-                    <DesireCourseModal
-                      isOpen={showDesireModal}
-                      onRequestClose={closeDesireModal}
-                      courseName={courseNameForModal}
-                      onConfirm={handleConfirmGetInDesire}
-                    />
                   </>
                 )}
 
@@ -272,12 +266,6 @@ function CourseDetailPage() {
                 >
                   Subscribe This Course
                 </button>
-                <SubscribeModal
-                  isOpen2={showSubscribeModal}
-                  onRequestClose2={closeSubscribeModal}
-                  courseName={courseNameForModal}
-                  onConfirm2={handleConfirmSubscribe}
-                />
               </>
             )}
           </div>
@@ -298,6 +286,18 @@ function CourseDetailPage() {
       <div className="relative z-1">
         <Footer />
       </div>
+      <DesireCourseModal
+        isOpen={showDesireModal}
+        onRequestClose={closeDesireModal}
+        courseName={courseNameForModal}
+        onConfirm={handleConfirmGetInDesire}
+      />
+      <SubscribeModal
+        isOpen2={showSubscribeModal}
+        onRequestClose2={closeSubscribeModal}
+        courseName={courseNameForModal}
+        onConfirm2={handleConfirmSubscribe}
+      />
     </>
   );
 }
