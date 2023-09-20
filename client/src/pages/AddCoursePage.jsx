@@ -337,13 +337,11 @@ function AddCoursePage() {
                           name="coverImage"
                           accept="image/*"
                           onChange={(e) => {
-                            setFieldValue(
-                              "coverImage",
-                              e.currentTarget.files[0]
-                            );
+                            const selectedFile = e.currentTarget.files[0];
+                            setFieldValue("coverImage", selectedFile);
                             handleImagePreview(e);
+                            localStorage.setItem("selectedFile", JSON.stringify(selectedFile));
                           }}
-
                           style={{ display: "none" }}
                         />
 
@@ -444,7 +442,7 @@ function AddCoursePage() {
                     </Form>
                   )}
                 </Formik>
-                <Link to="/addlesson">Go to Homepage</Link>
+                <Link to="/addlesson">Add Lesson</Link>
               </div>
             </div>
           </section>

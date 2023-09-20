@@ -13,7 +13,7 @@ export function FormDataProvider({ children }) {
     totalLearningTime: "",
     courseSummary: "",
     courseDetail: "",
-    coverImage: null,
+    coverImage: JSON.parse(localStorage.getItem("selectedFile")) || null,
     videoTrailer: null,
   });
 

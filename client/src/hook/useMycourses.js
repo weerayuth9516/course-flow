@@ -10,18 +10,25 @@ function useMycourses() {
 
   const getAllMyCourses = async (userId) => {
     try {
-      const response = await axios.get(
-        `http://localhost:4001/courses/mycourses/${userId}`
-      );
-      setMyCourses(response.data.data);
-      const createInProgressCourses = response.data.data.filter(
-        (course) => course.status_value === "in_progress"
-      );
-      setInProgressCourses(createInProgressCourses);
-      const createCompleteCourses = response.data.data.filter(
-        (course) => course.status_value === "completed"
-      );
-      setCompletedCourses(createCompleteCourses);
+      const token = localStorage.getItem("token");
+      const headers = {
+        Authorization: `Bearer ${token}`,
+      };
+      if (userId) {
+        const response = await axios.get(
+          `http://localhost:4001/courses/mycourses/${userId}`,
+          { headers }
+        );
+        setMyCourses(response.data.data);
+        const createInProgressCourses = response.data.data.filter(
+          (course) => course.status_value === "in_progress"
+        );
+        setInProgressCourses(createInProgressCourses);
+        const createCompleteCourses = response.data.data.filter(
+          (course) => course.status_value === "completed"
+        );
+        setCompletedCourses(createCompleteCourses);
+      }
     } catch (error) {
       console.log("request error");
     }
