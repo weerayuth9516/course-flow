@@ -1,6 +1,12 @@
+<<<<<<< HEAD
 import React, { useEffect, useState } from "react";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import { Link, useNavigate } from "react-router-dom";
+=======
+import React from "react";
+import { Formik, Field, Form, ErrorMessage } from "formik";
+import { Link } from "react-router-dom";
+>>>>>>> c725a1d (refactor: arrange code)
 import axios from "axios";
 import errorIcon from "../../assets/loginPage/exclamation.png";
 import plusIcon from "../../assets/addCourse/plus.png";
@@ -21,6 +27,7 @@ function AddCoursePage() {
     handleVideoPreview,
     clearImagePreview,
     clearVideoPreview,
+<<<<<<< HEAD
     selectedImage,
     setSelectedImage,
     imageUrl,
@@ -113,11 +120,44 @@ function AddCoursePage() {
     videoTrailerUrl ? setVideoTrailerError(false) : setVideoTrailerError(true);
     if (imageUrl && videoTrailerUrl) {
       handleSubmit(values);
+=======
+  } = useFormData();
+
+  const handleSubmit = async (values) => {
+    // Handle form submission
+    console.log(values);
+    if (values.videoTrailer !== null || values.coverImage === null) {
+      const uploadVideoResult = await supabase.storage
+        .from("course_video_trailers")
+        .upload(`${values.videoTrailer.name}`, values.videoTrailer, {
+          cacheControl: "3600",
+          upsert: true,
+          contentType: `${values.videoTrailer.type}`,
+        });
+      const uploadImgResult = await supabase.storage
+        .from("course_images")
+        .upload(`${values.coverImage.name}`, values.coverImage, {
+          cacheControl: "3600",
+          upsert: true,
+          contentType: `${values.coverImage.type}`,
+        });
+      if (uploadImgResult.error === null && uploadVideoResult === null) {
+        ////direct to admin api.
+        const courseResult = await axios.get(
+          `http://localhost:4001/admin/course/created`,
+          values
+        );
+        console.log(courseResult);
+      } else {
+        alert("can upload to supabase");
+      }
+>>>>>>> c725a1d (refactor: arrange code)
     } else {
       console.log("Please fill in all require information");
     }
   };
 
+<<<<<<< HEAD
   const handleSubmit = (values) => {
     // Handle form submission
     values.coverImage = imageUrl;
@@ -202,6 +242,8 @@ function AddCoursePage() {
     deleteImage();
   };
 
+=======
+>>>>>>> c725a1d (refactor: arrange code)
   return (
     <main className=" flex">
       <Sidebar />
