@@ -3,7 +3,7 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { Link } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination, Autoplay, } from "swiper/modules";
+import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
@@ -33,7 +33,7 @@ import instructor2 from "../assets/homepage/instructor2.png";
 import instructor3 from "../assets/homepage/instructor3.png";
 import programmer from "../assets/homepage/programmer.png";
 import programmer2 from "../assets/homepage/programmer2.png";
-import smallcircle from "../assets/homepage/smallcircle.png"
+import smallcircle from "../assets/homepage/smallcircle.png";
 import graduate1 from "../assets/homepage/graduate1.png";
 import graduate2 from "../assets/homepage/graduate2.png";
 import Sidebar from "../components/Sidebar";
@@ -169,7 +169,7 @@ export default function HomePage() {
         ></img>
       </div>
 
-      <div className=" flex flex-col justify-center items-center w-screen relative">
+      <div className=" flex flex-col justify-center items-center relative">
         <img className="absolute right-[1%] bottom-[5%]" src={sec6}></img>
         <img className="absolute right-[5%] bottom-0" src={smallcircle}></img>
         <h1 className="items-center justify-center mb-[25px] text-header2 text-bold font-semibold">
