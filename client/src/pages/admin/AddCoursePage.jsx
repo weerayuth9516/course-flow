@@ -35,8 +35,78 @@ function AddCoursePage() {
     setVideoTrailerUrl,
   } = useFormData();
 
+<<<<<<< HEAD
   const navigate = useNavigate();
   const supabaseStorageUrl = `https://sxnmelktycywskodrejx.supabase.co/storage/v1/object/public/test_upload`;
+=======
+  const validationSchema = Yup.object().shape({
+    courseName: Yup.mixed()
+      .required("Course name is required")
+      .test(
+        "max-length",
+        "Course name must be at most 60 characters",
+        (value) => value && value.length <= 60
+      ),
+    price: Yup.number()
+      .required("Price is required")
+      .positive("Price must be positive")
+      .test(
+        "is-decimal",
+        "Price must have exactly 2 decimal places",
+        (value) => {
+          if (!value) {
+            return false;
+          }
+          const decimalCount = (value.toString().split(".")[1] || "").length;
+          return decimalCount <= 2;
+        }
+      ),
+    totalLearningTime: Yup.number()
+      .integer("Total learning time must be an integer")
+      .positive("Total learning must be positive")
+      .required("Total learning time is required"),
+    courseSummary: Yup.string()
+      .required("Course summary is required")
+      .test(
+        "max-length",
+        "Course name must be at most 3000 characters",
+        (value) => value && value.length <= 3000
+      ),
+    courseDetail: Yup.string()
+      .required("Course detail is required")
+      .test(
+        "max-length",
+        "Course name must be at most 5000 characters",
+        (value) => value && value.length <= 5000
+      ),
+    coverImage: Yup.mixed()
+      .required("Image is required")
+      .test(
+        "fileSize",
+        "Maximum size is 5MB",
+        (value) => value && value.size <= 5242880 // 5MB
+      )
+      .test(
+        "fileType",
+        "Only JPEG, PNG & GIF",
+        (value) =>
+          value && ["image/jpg", "image/png", "image/jpeg"].includes(value.type)
+      ),
+    videoTrailer: Yup.mixed()
+      .required("Video file is required")
+      .test(
+        "fileSize",
+        "Video file is too large. Maximum size is 20MB",
+        (value) => value && value.size <= 20971520 // 20MB
+      )
+      .test(
+        "fileType",
+        "Only MP4, MOV, and API formats are allowed",
+        (value) =>
+          value && ["video/mp4", "video/mov", "video/avi"].includes(value.type)
+      ),
+  });
+>>>>>>> bec07af (feat: basic addCourse version)
 
   const filterSubmit = (values) => {
     imageUrl ? setCoverImageError(false) : setCoverImageError(true);
@@ -331,6 +401,7 @@ function AddCoursePage() {
                           className="text-purple-500 mt-2"
                         />
                       </div>
+<<<<<<< HEAD
                     </Form>
                   )}
                 </Formik>
@@ -477,6 +548,121 @@ function AddCoursePage() {
                 <div className="mt-[150px] mb-[50px]">
                   <Link to="/admin/addlesson">Go to Add Lesson</Link>
                 </div>
+=======
+
+                      <div className="w-[240px] h-[272px] mt-[40px]">
+                        <label htmlFor="coverImage">Cover image *</label>
+                        <input
+                          type="file"
+                          id="coverImage"
+                          name="coverImage"
+                          accept="image/*"
+                          onChange={(e) => {
+                            const selectedFile = e.currentTarget.files[0];
+                            setFieldValue("coverImage", selectedFile);
+                            handleImagePreview(e);
+                          }}
+                          style={{ display: "none" }}
+                        />
+
+                        <button
+                          type="button"
+                          onClick={() =>
+                            document.getElementById("coverImage").click()
+                          }
+                        >
+                          {!imagePreview && (
+                            <div className="w-[240px] h-[240px] bg-gray-100 flex justify-center items-center rounded-xl mt-2">
+                              <div className="w-[93px] h-[53px] text-blue-400 flex flex-col justify-center items-center space-y-3">
+                                <img src={plusIcon} />
+                                <div className="text-[14px]">Upload Image</div>
+                              </div>
+                            </div>
+                          )}
+
+                          {imagePreview && (
+                            <div className="w-[240px] h-[240px] bg-gray-100 flex justify-center items-center rounded-xl mt-2 relative">
+                              <img
+                                src={imagePreview}
+                                alt="Preview"
+                                className="object-cover w-[240px] h-[240px]"
+                              />
+                              <div
+                                type="button"
+                                className="mt-2 text-red-500 hover:text-red-700 absolute top-0 right-0"
+                                onClick={clearImagePreview}
+                              >
+                                <img src={deleteIcon} alt="Remove Icon" />
+                              </div>
+                            </div>
+                          )}
+                        </button>
+                        <ErrorMessage
+                          name="coverImage"
+                          component="div"
+                          className="text-purple-500 mt-2"
+                        />
+                      </div>
+
+                      <div className="w-[240px] h-[272px] mt-[60px] mb-[200px]">
+                        <label htmlFor="videoTrailer">Video Trailer *</label>
+                        <input
+                          type="file"
+                          id="videoTrailer"
+                          name="videoTrailer"
+                          accept=".mp4,.avi,.mov"
+                          onChange={(e) => {
+                            setFieldValue(
+                              "videoTrailer",
+                              e.currentTarget.files[0]
+                            );
+                            handleVideoPreview(e);
+                          }}
+                          style={{ display: "none" }}
+                        />
+                        <button
+                          type="button"
+                          onClick={() =>
+                            document.getElementById("videoTrailer").click()
+                          }
+                        >
+                          {!videoPreview && (
+                            <div className="w-[240px] h-[240px] bg-gray-100 flex justify-center items-center rounded-xl mt-2">
+                              <div className="w-[93px] h-[53px] text-blue-400 flex flex-col justify-center items-center space-y-3">
+                                <img src={plusIcon} />
+                                <div className="text-[14px]">Upload Video</div>
+                              </div>
+                            </div>
+                          )}
+
+                          {videoPreview && (
+                            <div className="w-[240px] h-[240px] bg-gray-100 flex justify-center items-center rounded-xl mt-2 relative">
+                              <video
+                                controls
+                                className="w-full h-full object-cover"
+                              >
+                                <source src={videoPreview} type={videoType} />
+                              </video>
+                              <div
+                                type="button"
+                                className="mt-2 text-red-500 hover:text-red-700 absolute top-0 right-0"
+                                onClick={clearVideoPreview}
+                              >
+                                <img src={deleteIcon} alt="Remove Icon" />
+                              </div>
+                            </div>
+                          )}
+                        </button>
+                        <ErrorMessage
+                          name="videoTrailer"
+                          component="div"
+                          className="text-purple-500 mt-2"
+                        />
+                      </div>
+                    </Form>
+                  )}
+                </Formik>
+>>>>>>> bec07af (feat: basic addCourse version)
               </div>
             </div>
             <LessonAdmin />
