@@ -68,7 +68,6 @@ function AddCoursePage() {
         "fileSize",
         "Maximum size is 5MB",
         (value) => value && value.size <= 5242880 // 5MB
-        // (value) => !value || value.size <= 10240 //10K
       )
       .test(
         "fileType",
@@ -369,10 +368,6 @@ function AddCoursePage() {
                             const selectedFile = e.currentTarget.files[0];
                             setFieldValue("coverImage", selectedFile);
                             handleImagePreview(e);
-                            localStorage.setItem(
-                              "selectedFile",
-                              JSON.stringify(selectedFile)
-                            );
                           }}
                           style={{ display: "none" }}
                         />
@@ -474,7 +469,6 @@ function AddCoursePage() {
                     </Form>
                   )}
                 </Formik>
-                {/* <Link to="/addlesson">Add Lesson</Link> */}
               </div>
             </div>
             <LessonAdmin />

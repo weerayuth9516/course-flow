@@ -7,20 +7,19 @@ export default function useFormData() {
 }
 
 export function FormDataProvider({ children }) {
+  const [imagePreview, setImagePreview] = useState(null);
+  const [videoPreview, setVideoPreview] = useState(null);
+  const [videoType, setVideoType] = useState("video/mp4");
   const [formValues, setFormValues] = useState({
     courseName: "",
     price: "",
     totalLearningTime: "",
     courseSummary: "",
     courseDetail: "",
-    // coverImage: JSON.parse(localStorage.getItem("selectedFile")) || null,
+    coverImage: null,
     videoTrailer: null,
   });
 
-  const [imagePreview, setImagePreview] = useState(null);
-  const [videoPreview, setVideoPreview] = useState(null);
-  const [videoType, setVideoType] = useState("video/mp4");
-  const [selectedFile, setSelectedFile] = useState(null);
   return (
     <FormDataContext.Provider
       value={{
@@ -32,8 +31,6 @@ export function FormDataProvider({ children }) {
         setVideoPreview,
         videoType,
         setVideoType,
-        selectedFile,
-        setSelectedFile,
       }}
     >
       {children}
