@@ -1,37 +1,27 @@
-function LessonAdmin() {
-  const lessons = [
-    {
-      id: 1,
-      name: "Introduction",
-      subLesson: 10,
-    },
-    {
-      id: 2,
-      name: "Service Design Theories and Principles",
-      subLesson: 10,
-    },
-    {
-      id: 3,
-      name: "Understanding Users and Finding Opportunities",
-      subLesson: 10,
-    },
-    {
-      id: 4,
-      name: "Identifying and Validating Opportunities for Design",
-      subLesson: 10,
-    },
-    {
-      id: 5,
-      name: "Prototyping",
-      subLesson: 10,
-    },
-    {
-      id: 6,
-      name: "Course Summary",
-      subLesson: 10,
-    },
-  ];
+import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import axios from "axios";
 
+function LessonAdmin() {
+  const params = useParams();
+
+  const [lessons, setLessons] = useState([]);
+  const getLesson = async () => {
+    try {
+      const lessonsResult = await axios.get(
+        `http://localhost:4001/admin/courses/${params.courseId}`
+        // "http://localhost:4001/admin"
+      );
+      setLessons(lessonsResult.data.data);
+      console.log(lessonsResult.data.data);
+    } catch (error) {
+      console.log("request lesson error", error);
+    }
+  };
+
+  useEffect(() => {
+    getLesson();
+  }, []);
   return (
     <>
       <div className="w-[1120px] mx-auto">
@@ -59,13 +49,13 @@ function LessonAdmin() {
           </thead>
           <tbody>
             {lessons.map((lesson) => (
-              <tr key={lesson.id} className="border-b border-gray-200">
+              <tr key={lesson.lesson_id} className="border-b border-gray-200">
                 <td>
                   <img src="src/assets/registerPage/drag.svg" />
                 </td>
-                <td className="pl-5">{lesson.id}</td>
-                <td className="pl-5">{lesson.name}</td>
-                <td className="pl-5">{lesson.subLesson}</td>
+                <td className="pl-5">{lesson.lesson_id}</td>
+                <td className="pl-5">{lesson.lesson_name}</td>
+                <td className="pl-5">10</td>
                 <td>
                   <div className="flex justify-evenly">
                     <img

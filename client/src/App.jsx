@@ -14,6 +14,7 @@ import { useAuth } from "./context/authentication";
 import DesireCoursePage from "./pages/DesireCoursePage";
 import CourseListPage from "./pages/CourseList";
 import AdminLoginPage from "./pages/AdminLoginPage";
+import LessonAdmin from "./components/LessonAdmin";
 
 // export const SessionContext = React.createContext();
 
@@ -43,6 +44,7 @@ function App() {
         element={<CourseDetailPage />}
       />
       <Route path="*" element={<NotFoundPage />} />
+      <Route path="/admin/course/:courseId" element={<LessonAdmin />} />
     </Routes>
   );
 }
