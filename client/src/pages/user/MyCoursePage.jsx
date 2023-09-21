@@ -74,7 +74,7 @@ function MyCoursePage() {
               <img
                 src={auth.session.user.user_avatar}
                 alt="user image"
-                className="object-contain w-full h-full"
+                className="object-cover w-full h-full rounded-full"
               />
             </div>
             <div className="mt-5 text-header3 text-gray-800">

@@ -42,6 +42,7 @@ adminRouter.get("/", async (req, res) => {
         .from("lessons")
         .select("course_id, lesson_name")
         .in("course_id", courseIdMaping);
+      console.log(lesson);
       const newMap = courses.data.map((value) => {
         return {
           ...value,
@@ -169,4 +170,75 @@ adminRouter.put("/updated/:courseId", async (req, res) => {
     });
   }
 });
+
+//get all lessons and sub-lesson details
+adminRouter.get("/lessons/:lessonId", async (req, res) => {
+  try {
+    const lessonId = req.params.lessonId;
+    const lessonName = await supabase
+      .from("lessons")
+      .select("lesson_name")
+      .eq("lesson_id", lessonId);
+
+    const sublessonResult = await supabase
+      .from("sub_lessons")
+      .select("*")
+      .eq("lesson_id ", lessonId)
+      .order("priority", { ascending: true });
+
+    if (lessonName.data.length === 0) {
+      return res.status(404).json({ error: "Lesson not exist" });
+    } else if (sublessonResult.data.length === 0) {
+      return (
+        res.json({
+          data: lessonName.data[0].lesson_name,
+        }),
+        res.json({ message: "Sub lesson not exsit" })
+      );
+    } else {
+      return res.json({
+        data: {
+          lesson_name: lessonName.data[0].lesson_name,
+          sub_lessons: sublessonResult.data,
+        },
+      });
+    }
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+});
+
+adminRouter.post("/lesson/created", async (res, req) => {
+  const lessonName = {
+    lesson_name: req.body.lesson_name,
+  };
+  const allSublessons = req.body.sub_lessons.map((sub_lesson) => {
+    return {
+      lesson_id: req.body.lesson_id,
+      sub_lesson_name: req.body.sub_lesson_name,
+      sub_lesson_video: req.body.sub_lesson_video,
+      priority: req.body.priority,
+    };
+  });
+});
+
+adminRouter.put("/updated/:lessonId", async (res, req) => {
+  const lessonName = {
+    lesson_name: req.body.lesson_name,
+    lesson_created_at: new Date(),
+  };
+  const allSublessons = req.body.sub_lessons.map((sub_lesson) => {
+    return {
+      lesson_id: req.body.lesson_id,
+      sub_lesson_name: req.body.sub_lesson_name,
+      sub_lesson_video: req.body.sub_lesson_video,
+      priority: req.body.priority,
+    };
+  });
+  try {
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+});
+
 export default adminRouter;

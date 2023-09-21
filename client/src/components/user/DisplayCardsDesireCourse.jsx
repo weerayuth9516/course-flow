@@ -13,7 +13,7 @@ function DisplayCardsDesireCourse({ allDesireCourse, hasDesireCourse }) {
   return (
     <div className="course-cards-container flex justify-center mb-20">
       {hasDesireCourse ? (
-        <div className="course-cards-container grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-10">
+        <div className="course-cards-container grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-10 ">
           {/* Display course cards */}
           {allDesireCourse.map((item, index) => {
             const limitLetter =
@@ -21,8 +21,11 @@ function DisplayCardsDesireCourse({ allDesireCourse, hasDesireCourse }) {
                 ? item.course_id.course_summary.substring(0, 60) + "..."
                 : item.course_id.course_summary;
             return (
-              <div key={index} className="course-cards-box">
-                <div className="course-card w-[357px] h-[475px] rounded-lg shadow-lg border border-gray-100 mb-8 relative">
+              <div
+                key={index}
+                className="course-cards-box w-[357px] h-[475px] rounded-lg shadow-lg border border-gray-100"
+              >
+                <div className="course-card   mb-8 relative">
                   <div className="course-card-thumbnail">
                     <Link
                       to={`/course/courseDetail/${item.course_id.course_id}`}
@@ -49,7 +52,7 @@ function DisplayCardsDesireCourse({ allDesireCourse, hasDesireCourse }) {
                     </div>
                     {/* <button className="bg-red-600 text-white py-1 px-5 rounded-lg ml-[70%] hover:bg-red-500 active:bg-red-400">DELETE</button> */}
                   </div>
-                  <div className="course-card-footer">
+                  <div className="course-card-footer mt-10">
                     <hr className="border-t border-gray-300 my-3 w-full" />
                     <span>
                       <img
