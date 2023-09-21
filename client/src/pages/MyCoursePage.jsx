@@ -1,37 +1,25 @@
-import React, { useState } from "react";
+import React from "react";
 import { useEffect } from "react";
 import DisplayCards from "../components/DisplayCards";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import image_background from "../assets/ourCourses/image_background.png"
 import { useAuth } from "../context/authentication";
-import axios from "axios";
-import imagebg from "../assets/ourCourses/image_background.png";
-function MyCoursePage() {
-  const [myCourses, setMyCourses] = useState([]);
-  const [inProgressCourses, setInProgressCourses] = useState([]);
-  const [completedCourses, setCompletedCourses] = useState([]);
-  const [status, setStatus] = useState("");
-  const [userId, setUserId] = useState("");
-  const auth = useAuth();
+import useMycourses from "../hook/useMycourses";
 
-  const getAllMyCourses = async (userId) => {
-    try {
-      const response = await axios.get(
-        `http://localhost:4001/courses/mycourses/${userId}`
-      );
-      setMyCourses(response.data.data);
-      const createInProgressCourses = response.data.data.filter(
-        (course) => course.status_value === "in_progress"
-      );
-      setInProgressCourses(createInProgressCourses);
-      const createCompleteCourses = response.data.data.filter(
-        (course) => course.status_value === "completed"
-      );
-      setCompletedCourses(createCompleteCourses);
-    } catch (error) {
-      console.log("request error");
-    }
-  };
+function MyCoursePage() {
+  const {
+    myCourses,
+    inProgressCourses,
+    completedCourses,
+    status,
+    setStatus,
+    userId,
+    setUserId,
+    getAllMyCourses,
+  } = useMycourses();
+
+  const auth = useAuth();
 
   useEffect(() => {
     if (auth.isAuthenicated) {
@@ -47,10 +35,9 @@ function MyCoursePage() {
   return (
     <>
       <Header />
-      <div id="container" className="font-inter mx-auto">
-        <div className="relative">
-          <img className="w-screen absolute" src={imagebg}></img>
-          <div className="search-box mb-2 flex flex-col items-center mt-20 h-[230px]">
+      <div id="container" className="font-inter relative mx-auto">
+      <img className="w-screen absolute" src={image_background}></img>
+          <div className="mb-2 flex flex-col items-center mt-20 h-[230px]">
             <div className="title text-black text-header2 font-bold mb-5">
               My Course
             </div>
@@ -80,7 +67,6 @@ function MyCoursePage() {
                 Completed
               </button>
             </div>
-          </div>
         </div>
         <div className="user-image-and-course-container flex justify-center mb-10">
           <div className="user-box sticky top-20 w-[357px] h-[396px] rounded-lg shadow-lg mr-10 flex flex-col justify-center items-center">
@@ -125,6 +111,7 @@ function MyCoursePage() {
                     ? completedCourses
                     : myCourses
                 }
+                userId={userId}
               />
             </div>
           </div>

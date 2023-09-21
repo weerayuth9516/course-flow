@@ -3,12 +3,12 @@ import { DebounceInput } from "react-debounce-input";
 import useGetsearch from "../hook/useGetsearch";
 import { useEffect } from "react";
 import search from "../assets/ourCourses/search.png";
+import image_background from "../assets/ourCourses/image_background.png"
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import DisplayCards from "../components/DisplayCards";
 import SubFooter from "../components/SubFooter";
 import { useAuth } from "../context/authentication";
-import imagebg from "../assets/ourCourses/image_background.png";
 
 function CoursePage() {
   const { searchList, inputText, setInputText, getSearchList } = useGetsearch();
@@ -29,8 +29,11 @@ function CoursePage() {
   return (
     <>
       <Header />
-      <div id="container" className="font-inter relative">
-        <img className="w-screen absolute" src={imagebg}></img>
+      <div
+        id="container"
+        className="font-inter relative"
+      >
+        <img className="w-screen absolute" src={image_background}></img>
         <div className="search-box mb-2 flex flex-col items-center mt-20 h-[230px]">
           <label htmlFor="input" className="text-black text-header2 font-bold">
             Our Courses
