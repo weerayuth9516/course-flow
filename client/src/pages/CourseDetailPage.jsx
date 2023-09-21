@@ -179,6 +179,15 @@ function CourseDetailPage() {
     }
   };
 
+  const previousPage = localStorage.getItem("previousPage");
+  const handleBack = () => {
+    if (previousPage === "/mycourses") {
+      navigate("/mycourses");
+    } else {
+      navigate("/course");
+    }
+  };
+
   return (
     <>
       <div className="relative z-1">
@@ -187,9 +196,12 @@ function CourseDetailPage() {
 
       <div className="flex justify-center mt-9">
         <div className="flex flex-col mr-5">
-          <Link to="/course" className="text-blue-500 mb-4 font-bold">
-            <span className="font-semibold text-xs pr-2">🡠</span> Back
-          </Link>
+          <button
+            onClick={handleBack}
+            className="text-blue-500 mb-4 font-bold flex justify-start"
+          >
+            🡠 Back
+          </button>
           <iframe
             width="739px"
             height="460px"
