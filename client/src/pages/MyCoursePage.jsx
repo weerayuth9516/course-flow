@@ -29,6 +29,7 @@ function MyCoursePage() {
 
   useEffect(() => {
     getAllMyCourses(userId);
+    localStorage.setItem("previousPage", "/mycourses");
   }, [userId]);
 
   return (
@@ -107,8 +108,8 @@ function MyCoursePage() {
                   status === "in_progress"
                     ? inProgressCourses
                     : status === "completed"
-                      ? completedCourses
-                      : myCourses
+                    ? completedCourses
+                    : myCourses
                 }
                 userId={userId}
               />

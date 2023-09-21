@@ -23,6 +23,7 @@ function CoursePage() {
 
   useEffect(() => {
     getSearchList("", limit);
+    localStorage.setItem("previousPage", "/course");
   }, []);
 
   return (

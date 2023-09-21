@@ -60,6 +60,7 @@ function AuthProvider(props) {
   };
   const logout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("previousPage");
     setSession({ ...session, user: null, error: null });
   };
 
