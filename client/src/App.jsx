@@ -28,9 +28,7 @@ function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/editprofile" element={<EditProfilePage />} />
       <Route path="/mydesirecourses" element={<DesireCoursePage />} />
-      <Route path="/courselist" element={<CourseListPage />} />
       <Route path="/course" element={<CoursePage />} />
-      <Route path="/adminlogin" element={<AdminLoginPage />} />
       {auth.isAuthenicated ? (
         <Route path="/mycourses" element={<MyCoursePage />} />
       ) : (
@@ -45,10 +43,11 @@ function App() {
         element={<CourseDetailPage />}
       />
       AddLessonPage
-      <Route path="/addcourse" element={<AddCoursePage />} />
-      <Route path="/addlesson" element={<AddLessonPage />} />
+      <Route path="/admin/login" element={<AdminLoginPage />} />
+      <Route path="/admin/courselist" element={<CourseListPage />} />
+      <Route path="/admin/addcourse" element={<AddCoursePage />} />
+      <Route path="/admin/addlesson" element={<AddLessonPage />} />
       <Route path="*" element={<NotFoundPage />} />
-      <Route path="/admin/course/:courseId" element={<LessonAdmin />} />
     </Routes>
   );
 }

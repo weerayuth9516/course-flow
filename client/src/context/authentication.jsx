@@ -22,7 +22,6 @@ function AuthProvider(props) {
       if (!results.data.token) {
         session.error = results.data.message;
       } else {
-        console.log(results);
         session.error = null;
         const token = results.data.token;
         const userDataFromToken = jwtDecode(token);

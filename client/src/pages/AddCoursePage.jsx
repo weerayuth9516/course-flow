@@ -8,6 +8,8 @@ import plusIcon from "../assets/addCourse/plus.png";
 import deleteIcon from "../assets/addCourse/delete.png";
 import useFormData from "../context/formDataContext";
 import { supabase } from "../supabase/client.js";
+import Sidebar from "../components/Sidebar";
+import LessonAdmin from "../components/LessonAdmin";
 function AddCoursePage() {
   const {
     formValues,
@@ -158,10 +160,8 @@ function AddCoursePage() {
 
   return (
     <main className="w-screen flex justify-center items-center">
+      <Sidebar />
       <section className="font-inter flex justify-center items-center">
-        <section id="side-bar" className="w-[240px]">
-          SideBar
-        </section>
         <section id="right-content w-[1200px]">
           <div className="w-full h-[92px] flex justify-center items-center border border-gray-400 border-b-0">
             <section
@@ -186,7 +186,7 @@ function AddCoursePage() {
               </div>
             </section>
           </div>
-          <section className="w-full bg-[#f6f7fc] flex justify-center items-center border border-gray-400">
+          <section className="w-full bg-[#f6f7fc] flex justify-center flex-col items-center border border-gray-400">
             <div className="w-[1120px] bg-white mt-[80px] mr-[80px] ml-[80px] border border-gray-400 rounded-2xl flex justify-center items-start">
               <div className="w-[920px] text-body1 text-black">
                 <Formik
@@ -474,9 +474,10 @@ function AddCoursePage() {
                     </Form>
                   )}
                 </Formik>
-                <Link to="/addlesson">Add Lesson</Link>
+                {/* <Link to="/addlesson">Add Lesson</Link> */}
               </div>
             </div>
+            <LessonAdmin />
           </section>
         </section>
       </section>
