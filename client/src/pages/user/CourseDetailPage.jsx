@@ -1,15 +1,18 @@
 import React, { useEffect, useState, useContext } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
-import ToggleLesson from "../components/ToggleLesson";
-import SubFooter from "../components/SubFooter";
-import { SubscribeModal, DesireCourseModal } from "../components/ConfirmMadal";
-import useGetsearch from "../hook/useGetsearch";
+import Header from "../../components/Header";
+import Footer from "../../components/Footer";
+import ToggleLesson from "../../components/user/ToggleLesson";
+import SubFooter from "../../components/SubFooter";
+import {
+  SubscribeModal,
+  DesireCourseModal,
+} from "../../components/user/ConfirmMadal";
+import useGetsearch from "../../hook/useGetsearch";
 import axios from "axios";
-import DisplayCards from "../components/DisplayCards";
-import { useAuth } from "../context/authentication";
-import useGetuser from "../hook/useGetuser";
+import DisplayCards from "../../components/user/DisplayCards";
+import { useAuth } from "../../context/authentication";
+import useGetuser from "../../hook/useGetuser";
 
 function CourseDetailPage() {
   const [course, setCourse] = useState({});
@@ -42,6 +45,10 @@ function CourseDetailPage() {
       getSearchList("", 3);
       checkSubscription();
       checkDesireCourse();
+      // localStorage.setItem(
+      //   "previousPage",
+      //   `/course/courseDetail/${params.courseId}`
+      // );
     };
     fetchData();
   }, [params.courseId, auth.isAuthenicated]);
@@ -181,10 +188,8 @@ function CourseDetailPage() {
 
   const previousPage = localStorage.getItem("previousPage");
   const handleBack = () => {
-    if (previousPage === "/mycourses") {
-      navigate("/mycourses");
-    } else {
-      navigate("/course");
+    if (Boolean(localStorage.getItem("previousPage"))) {
+      navigate(localStorage.getItem("previousPage"));
     }
   };
 

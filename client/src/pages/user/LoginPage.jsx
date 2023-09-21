@@ -3,9 +3,9 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import Header from "../components/Header";
-import { useAuth } from "../context/authentication";
-import errorIcon from "../assets/loginPage/exclamation.png";
+import Header from "../../components/Header";
+import { useAuth } from "../../context/authentication";
+import errorIcon from "../../assets/loginPage/exclamation.png";
 function LoginPage() {
   const navigate = useNavigate();
   const auth = useAuth();
@@ -24,7 +24,11 @@ function LoginPage() {
   const handleSubmit = async (values, { setErrors }) => {
     try {
       await auth.login(values);
-      setErrors(auth.session.error)
+      setErrors(auth.session.error);
+      if (Boolean(localStorage.getItem("previousCourse"))) {
+        const redirectPage = localStorage.getItem("previousCourse");
+        navigate(redirectPage);
+      }
     } catch (error) {
       console.log(error);
       navigate("/login");
@@ -64,7 +68,7 @@ function LoginPage() {
                     Email:
                   </label>
                   <div className="input-email-container relative">
-                      <Field
+                    <Field
                       type="email"
                       id="email"
                       name="email"
@@ -76,12 +80,9 @@ function LoginPage() {
                       placeholder="Enter Email"
                       required
                     />
-                      {errors.email && touched.email && (
+                    {errors.email && touched.email && (
                       <div className="error-icon absolute right-4 top-4">
-                        <img
-                          src={errorIcon}
-                          alt="Error Icon"
-                        />
+                        <img src={errorIcon} alt="Error Icon" />
                       </div>
                     )}
                   </div>
@@ -100,24 +101,21 @@ function LoginPage() {
                     Password:
                   </label>
                   <div className="input-password-container relative">
-                  <Field
-                    type="password"
-                    id="password"
-                    name="password"
-                    className={`w-full border border-gray-300 py-2 pl-3 pr-4 rounded-lg focus:border-orange-500 focus:outline-none ${
-                      errors.password && touched.password
-                        ? "border-purple-500 border-2"
-                        : ""
-                    }`}
-                    placeholder="Enter password"
-                    required
-                  />
-                  {errors.password && touched.password && (
+                    <Field
+                      type="password"
+                      id="password"
+                      name="password"
+                      className={`w-full border border-gray-300 py-2 pl-3 pr-4 rounded-lg focus:border-orange-500 focus:outline-none ${
+                        errors.password && touched.password
+                          ? "border-purple-500 border-2"
+                          : ""
+                      }`}
+                      placeholder="Enter password"
+                      required
+                    />
+                    {errors.password && touched.password && (
                       <div className="error-icon absolute right-4 top-4">
-                        <img
-                          src={errorIcon}
-                          alt="Error Icon"
-                        />
+                        <img src={errorIcon} alt="Error Icon" />
                       </div>
                     )}
                   </div>

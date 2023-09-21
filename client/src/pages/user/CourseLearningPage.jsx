@@ -1,12 +1,12 @@
 import React, { useRef, useEffect } from "react";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
-import completed from "../assets/courseLearning/completed.png";
-import inprogress from "../assets/courseLearning/inprogress.png";
-import notStart from "../assets/courseLearning/notStart.png";
-import ToggleList from "../components/ToggleList";
-import { useAuth } from "../context/authentication";
-import useCourselearning from "../hook/useCourselearning";
+import Header from "../../components/Header";
+import Footer from "../../components/Footer";
+import completed from "../../assets/courseLearning/completed.png";
+import inprogress from "../../assets/courseLearning/inprogress.png";
+import notStart from "../../assets/courseLearning/notStart.png";
+import ToggleList from "../../components/user/ToggleList";
+import { useAuth } from "../../context/authentication";
+import useCourselearning from "../../hook/useCourselearning";
 
 function CourseLearningPage() {
   const videoRef = useRef(null);

@@ -1,14 +1,14 @@
 import React from "react";
 import { DebounceInput } from "react-debounce-input";
-import useGetsearch from "../hook/useGetsearch";
+import useGetsearch from "../../hook/useGetsearch";
 import { useEffect } from "react";
-import search from "../assets/ourCourses/search.png";
-import imagebg from "../assets/ourCourses/image_background.png";
+import search from "../../assets/ourCourses/search.png";
+import imagebg from "../../assets/ourCourses/image_background.png";
 
-import Header from "../components/Header";
-import Footer from "../components/Footer";
-import DisplayCards from "../components/DisplayCards";
-import DisplayCardsDesireCourse from "../components/DisplayCardsDesireCourse";
+import Header from "../../components/Header";
+import Footer from "../../components/Footer";
+import DisplayCards from "../../components/user/DisplayCards";
+import DisplayCardsDesireCourse from "../../components/user/DisplayCardsDesireCourse";
 
 function DesireCoursePage() {
   // const { searchList, getSearchList } = useGetsearch();
@@ -24,6 +24,7 @@ function DesireCoursePage() {
   useEffect(() => {
     // getSearchList("", limit);
     getDesireCourse();
+    localStorage.setItem("previousPage", "/mydesirecourses");
   }, []);
 
   return (

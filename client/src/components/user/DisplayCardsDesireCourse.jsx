@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import Vector from "../assets/ourCourses/Vectors.png";
-import Frame from "../assets/ourCourses/Frame.png";
+import Vector from "../../assets/ourCourses/Vectors.png";
+import Frame from "../../assets/ourCourses/Frame.png";
 
 // const [hasDesireCourse, setHasDesireCourse] = useState(false);
 // const handleDelete = (deletingItem) => {

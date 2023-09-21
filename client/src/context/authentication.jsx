@@ -26,10 +26,10 @@ function AuthProvider(props) {
         const token = results.data.token;
         const userDataFromToken = jwtDecode(token);
         session.user = userDataFromToken;
-        if (Boolean(localStorage.getItem("previousCourse"))) {
-          const redirectPage = localStorage.getItem("previousCourse");
+        if (Boolean(localStorage.getItem("previousPage"))) {
+          const redirectPage = localStorage.getItem("previousPage");
           navigate(redirectPage);
-          localStorage.removeItem("previousCourse");
+          localStorage.removeItem("previousPage");
         } else {
           navigate("/");
         }

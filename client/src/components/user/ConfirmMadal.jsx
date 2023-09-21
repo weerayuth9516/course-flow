@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../context/authentication";
+import { useAuth } from "../../context/authentication";
 
 export function DesireCourseModal({
   isOpen,
@@ -16,7 +16,7 @@ export function DesireCourseModal({
       onConfirm();
       onRequestClose();
     } else {
-      localStorage.setItem("previousCourse", window.location.pathname);
+      localStorage.setItem("previousPage", window.location.pathname);
       navigate("/login");
     }
   };

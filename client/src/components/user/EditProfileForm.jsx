@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import useGetuser from "../hook/useGetuser";
-import remove from "../assets/header/remove.png";
-import addImage from "../assets/header/add.png";
-import error from "../assets/header/error.png";
+import useGetuser from "../../hook/useGetuser";
+import remove from "../../assets/header/remove.png";
+import addImage from "../../assets/header/add.png";
+import error from "../../assets/header/error.png";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
@@ -10,9 +10,9 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import dayjs from "dayjs";
 import { Stack } from "@mui/material";
-import { useAuth } from "../context/authentication";
+import { useAuth } from "../../context/authentication";
 import { useNavigate } from "react-router-dom";
-import imagebg from "../assets/ourCourses/image_background.png"
+import imagebg from "../../assets/ourCourses/image_background.png";
 
 function EditProfileForm() {
   const navigate = useNavigate();
@@ -130,7 +130,7 @@ function EditProfileForm() {
       id="edit-profile-container"
       className=" flex flex-col items-center justify-center h-[955px] relative"
     >
-      <img className="w-screen absolute" src={imagebg}></img>
+      <img className="w-screen absolute top-20" src={imagebg}></img>
       <span className=" text-header2  font-medium">Profile</span>
       <Formik
         enableReinitialize={true}
@@ -160,8 +160,9 @@ function EditProfileForm() {
                 ) : (
                   <div
                     id="hasnot-image"
-                    className={`flex items-center justify-center rounded-2xl border border-dashed bg-gray-100 border-gray-900/25 px-6 py-10 w-[358px] h-[358px]  ${fileErrorMessage && "border-purple-500 border-2"
-                      }`}
+                    className={`flex items-center justify-center rounded-2xl border border-dashed bg-gray-100 border-gray-900/25 px-6 py-10 w-[358px] h-[358px]  ${
+                      fileErrorMessage && "border-purple-500 border-2"
+                    }`}
                   >
                     <div className="flex flex-col justify-center items-center group">
                       <img
@@ -172,8 +173,9 @@ function EditProfileForm() {
                       <div className="mt-4 flex text-sm leading-6 text-gray-600">
                         <label
                           htmlFor="file-upload"
-                          className={`relative cursor-pointer rounded-md bg-white font-semibold text-blue-400 scale-100 group-hover:scale-110 ${fileErrorMessage && "text-purple-500"
-                            }`}
+                          className={`relative cursor-pointer rounded-md bg-white font-semibold text-blue-400 scale-100 group-hover:scale-110 ${
+                            fileErrorMessage && "text-purple-500"
+                          }`}
                         >
                           <span>Upload image</span>
                           <input
@@ -186,8 +188,9 @@ function EditProfileForm() {
                         </label>
                       </div>
                       <p
-                        className={`text-xs leading-5 text-gray-600 ${fileErrorMessage && "text-purple-500"
-                          }`}
+                        className={`text-xs leading-5 text-gray-600 ${
+                          fileErrorMessage && "text-purple-500"
+                        }`}
                       >
                         PNG, JPG, JPEG up to 2MB
                       </p>
@@ -213,10 +216,11 @@ function EditProfileForm() {
                     id="name"
                     name="name"
                     type="text"
-                    className={`border border-gray-500 w-[453px] h-[48px] rounded-lg p-3 focus:border-orange-500 focus:outline-none ${errors.name && touched.name
-                      ? "border-2 border-purple-500"
-                      : ""
-                      }`}
+                    className={`border border-gray-500 w-[453px] h-[48px] rounded-lg p-3 focus:border-orange-500 focus:outline-none ${
+                      errors.name && touched.name
+                        ? "border-2 border-purple-500"
+                        : ""
+                    }`}
                     onChange={(e) => {
                       setName(e.target.value);
                     }}
@@ -300,10 +304,11 @@ function EditProfileForm() {
                       id="education"
                       name="education"
                       type="text"
-                      className={`border border-gray-500 w-[453px] h-[48px] rounded-lg p-3 focus:border-orange-500 focus:outline-none ${errors.education && touched.education
-                        ? "border-2 border-purple-500"
-                        : ""
-                        }`}
+                      className={`border border-gray-500 w-[453px] h-[48px] rounded-lg p-3 focus:border-orange-500 focus:outline-none ${
+                        errors.education && touched.education
+                          ? "border-2 border-purple-500"
+                          : ""
+                      }`}
                       onChange={(e) => setEducation(e.target.value)}
                     />
                     <ErrorMessage
@@ -331,10 +336,11 @@ function EditProfileForm() {
                       id="email"
                       name="email"
                       type="text"
-                      className={`border border-gray-500 w-[453px] h-[48px] rounded-lg p-3 focus:border-orange-500 focus:outline-none${errors.email && touched.email
-                        ? "border-2 border-purple-500"
-                        : ""
-                        }`}
+                      className={`border border-gray-500 w-[453px] h-[48px] rounded-lg p-3 focus:border-orange-500 focus:outline-none${
+                        errors.email && touched.email
+                          ? "border-2 border-purple-500"
+                          : ""
+                      }`}
                       onChange={(e) => setEmail(e.target.value)}
                     />
                     <ErrorMessage

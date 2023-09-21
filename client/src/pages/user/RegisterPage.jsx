@@ -1,8 +1,8 @@
 import { Link, useNavigate } from "react-router-dom";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import Header from "../components/Header";
-import { useAuth } from "../context/authentication.jsx";
+import Header from "../../components/Header";
+import { useAuth } from "../../context/authentication.jsx";
 import { useEffect } from "react";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";

@@ -1,4 +1,4 @@
-import logo from "../assets/registerPage/CourseFlow.svg";
+import logo from "../../assets/registerPage/CourseFlow.svg";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 

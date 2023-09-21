@@ -36,7 +36,7 @@ import programmer2 from "../assets/homepage/programmer2.png";
 import smallcircle from "../assets/homepage/smallcircle.png";
 import graduate1 from "../assets/homepage/graduate1.png";
 import graduate2 from "../assets/homepage/graduate2.png";
-import Sidebar from "../components/Sidebar";
+import Sidebar from "../components/admin/Sidebar";
 
 export default function HomePage() {
   return (

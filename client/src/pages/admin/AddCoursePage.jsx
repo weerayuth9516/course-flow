@@ -3,13 +3,13 @@ import { Formik, Field, Form, ErrorMessage } from "formik";
 import { Link } from "react-router-dom";
 import * as Yup from "yup";
 import axios from "axios";
-import errorIcon from "../assets/loginPage/exclamation.png";
-import plusIcon from "../assets/addCourse/plus.png";
-import deleteIcon from "../assets/addCourse/delete.png";
-import useFormData from "../context/formDataContext";
-import { supabase } from "../supabase/client.js";
-import Sidebar from "../components/Sidebar";
-import LessonAdmin from "../components/LessonAdmin";
+import errorIcon from "../../assets/loginPage/exclamation.png";
+import plusIcon from "../../assets/addCourse/plus.png";
+import deleteIcon from "../../assets/addCourse/delete.png";
+import useFormData from "../../context/formDataContext";
+import { supabase } from "../../supabase/client.js";
+import Sidebar from "../../components/admin/Sidebar";
+import LessonAdmin from "../../components/admin/LessonAdmin";
 function AddCoursePage() {
   const {
     formValues,
