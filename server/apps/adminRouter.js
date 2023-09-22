@@ -253,12 +253,12 @@ adminRouter.post("/:courseId/lesson/created", async (req, res) => {
 
     // console.log(findAllSublesson);
 
-    const lessonMap = allSublessons.map((value, index) => {
+    const lessonMap = allSublessons.map((value, findAllSublesson) => {
       return {
         sub_lesson_name: value.sub_lesson_name,
         sub_lesson_video: value.sub_lesson_video,
         lesson_id: findLessonId.data[0].lesson_id,
-        priority: findAllLesson.data.length + 1,
+        priority: findAllSublesson.data.length + 1,
       };
     });
     const sublessonsCreatedAt = await supabase
