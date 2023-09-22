@@ -1,6 +1,5 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { useState, useEffect } from "react";
 import DisplayCards from "../../components/user/DisplayCards";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
@@ -22,7 +21,6 @@ function MyCoursePage() {
   const [getFocus, setGetFocus] = useState(true);
 
   const auth = useAuth();
-  const [getFocus, setGetFocus] = useState(true);
 
   useEffect(() => {
     if (auth.isAuthenicated) {
