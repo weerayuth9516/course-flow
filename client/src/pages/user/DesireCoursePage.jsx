@@ -9,12 +9,13 @@ import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import DisplayCards from "../../components/user/DisplayCards";
 import DisplayCardsDesireCourse from "../../components/user/DisplayCardsDesireCourse";
+import { useAuth } from "../../context/authentication";
 
 function DesireCoursePage() {
   // const { searchList, getSearchList } = useGetsearch();
   const { allDesireCourse, getDesireCourse, hasDesireCourse } = useGetsearch();
   const limit = 12;
-
+  const auth = useAuth();
   // const handleInputChange = (e) => {
   //   const newInputText = e.target.value;
   //   setInputText(newInputText);
@@ -23,7 +24,7 @@ function DesireCoursePage() {
 
   useEffect(() => {
     // getSearchList("", limit);
-    getDesireCourse();
+    getDesireCourse(auth.session.user.user_id);
     localStorage.setItem("previousPage", "/mydesirecourses");
   }, []);
 
