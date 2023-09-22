@@ -1,11 +1,12 @@
 import logo from "../../assets/registerPage/CourseFlow.svg";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import errorIcon from "../../assets/registerPage/errorIcon.svg";
 
 function AdminLoginPage() {
-  const initialValues = { username: "", password: "" };
+  const initialValues = { email: "", password: "" };
   const validationSchema = Yup.object({
-    username: Yup.string().required("username is required"),
+    email: Yup.string().required("email is required"),
     password: Yup.string().required("password is required"),
   });
 
@@ -50,7 +51,7 @@ function AdminLoginPage() {
                     />
                     {errors.email && touched.email ? (
                       <img
-                        src="src/assets/registerPage/errorIcon.svg"
+                        src={errorIcon}
                         className="absolute right-3 top-[60%] z-10"
                       />
                     ) : (
@@ -79,7 +80,7 @@ function AdminLoginPage() {
                     />
                     {errors.password && touched.password ? (
                       <img
-                        src="src/assets/registerPage/errorIcon.svg"
+                        src={errorIcon}
                         className="absolute right-3 top-[60%] z-10"
                       />
                     ) : (
