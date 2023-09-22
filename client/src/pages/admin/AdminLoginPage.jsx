@@ -29,26 +29,26 @@ function AdminLoginPage() {
               {({ errors, touched }) => (
                 <Form>
                   <div className=" relative">
-                    <label htmlFor="username" className="text-base font-400">
-                      Username
+                    <label htmlFor="email" className="text-base font-400">
+                      Email
                     </label>
                     <Field
-                      type="text"
-                      id="username"
-                      name="username"
-                      placeholder="Enter Username"
+                      type="email"
+                      id="email"
+                      name="email"
+                      placeholder="Enter Email"
                       className={`w-full h-[48px] mt-1 border border-gray-300 py-2 pl-3 pr-4 rounded-lg focus:border-orange-500 focus:outline-none ${
-                        errors.username && touched.username
+                        errors.email && touched.email
                           ? "border-purple-500 border-2"
                           : ""
                       }`}
                     />
                     <ErrorMessage
-                      name="username"
+                      name="email"
                       component="div"
                       className="text-purple-500 text-body3 pl-2 absolute"
                     />
-                    {errors.username && touched.username ? (
+                    {errors.email && touched.email ? (
                       <img
                         src="src/assets/registerPage/errorIcon.svg"
                         className="absolute right-3 top-[60%] z-10"
