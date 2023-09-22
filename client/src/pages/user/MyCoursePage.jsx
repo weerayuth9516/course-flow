@@ -1,5 +1,5 @@
 import React from "react";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import DisplayCards from "../../components/user/DisplayCards";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
@@ -20,6 +20,7 @@ function MyCoursePage() {
   } = useMycourses();
 
   const auth = useAuth();
+  const [getFocus, setGetFocus] = useState(true);
 
   useEffect(() => {
     if (auth.isAuthenicated) {
@@ -45,22 +46,25 @@ function MyCoursePage() {
             <button
               onClick={() => {
                 setStatus("myCourses");
+                setGetFocus(true);
               }}
-              className="transform  transition-transform duration-300 ease-in-out hover:border-b hover:border-b-1 hover:text-black text-gray-600 focus:text-black focus:border-b focus:border-b-1 focus: border-black p-2"
+              className={`text-gray-600 p-2 ${getFocus ? "border-b border-black" : ""} transform transition-transform duration-300 ease-in-out hover:border-b hover:border-b-1 hover:text-black focus:text-black focus:border-b focus:border-b-1 focus:border-black`}
             >
               All Course
             </button>
             <button
               onClick={() => {
                 setStatus("in_progress");
+                setGetFocus(false);
               }}
-              className="transform  transition-transform duration-300 ease-in-out hover:border-b hover:border-b-1 hover:text-black text-gray-600 focus:text-black focus:border-b focus:border-b-1 focus: border-black p-2"
+              className="transform transition-transform duration-300 ease-in-out hover:border-b hover:border-b-1 hover:text-black text-gray-600 focus:text-black focus:border-b focus:border-b-1 focus: border-black p-2"
             >
               Inprogress
             </button>
             <button
               onClick={() => {
                 setStatus("completed");
+                setGetFocus(false);
               }}
               className="transform  transition-transform duration-300 ease-in-out hover:border-b hover:border-b-1 hover:text-black text-gray-600 focus:text-black focus:border-b focus:border-b-1 focus: border-black p-2"
             >
