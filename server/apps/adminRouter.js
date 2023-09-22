@@ -208,18 +208,80 @@ adminRouter.get("/lessons/:lessonId", async (req, res) => {
   }
 });
 
-adminRouter.post("/lesson/created", async (res, req) => {
+adminRouter.post("/:courseId/lesson/created", async (req, res) => {
+  const courseId = req.params.courseId;
   const lessonName = {
     lesson_name: req.body.lesson_name,
   };
-  const allSublessons = req.body.sub_lessons.map((sub_lesson) => {
-    return {
-      lesson_id: req.body.lesson_id,
-      sub_lesson_name: req.body.sub_lesson_name,
-      sub_lesson_video: req.body.sub_lesson_video,
-      priority: req.body.priority,
-    };
-  });
+  const allSublessons = req.body.sub_lessons;
+  try {
+    const courseIdUpdatedAt = await supabase
+      .from("courses")
+      .update({ course_created_at: new Date() })
+      .eq("course_id", courseId)
+      .select("course_created_at");
+
+    // console.log(courseIdUpdatedAt);
+
+    const findAllLesson = await supabase
+      .from("lessons")
+      .select("*")
+      .eq("course_id", courseId);
+    console.log(findAllLesson.data.length);
+    const lessonCreated = await supabase.from("lessons").upsert([
+      {
+        ...lessonName,
+        course_id: courseId,
+        priority: findAllLesson.data.length + 1,
+      },
+    ]);
+
+    // console.log(lessonCreated);
+
+    const findLessonId = await supabase
+      .from("lessons")
+      .select("lesson_id")
+      .eq("lesson_name", req.body.lesson_name)
+      .eq("course_id", courseId);
+
+    // console.log(findLessonId.data[0].lesson_id);
+
+    const findAllSublesson = await supabase
+      .from("sub_lessons")
+      .select("*")
+      .eq("lesson_id", findLessonId.data[0].lesson_id);
+
+    // console.log(findAllSublesson);
+
+    const lessonMap = allSublessons.map((value, index) => {
+      return {
+        sub_lesson_name: value.sub_lesson_name,
+        sub_lesson_video: value.sub_lesson_video,
+        lesson_id: findLessonId.data[0].lesson_id,
+        priority: findAllLesson.data.length + 1,
+      };
+    });
+    const sublessonsCreatedAt = await supabase
+      .from("sub_lessons")
+      .upsert(lessonMap);
+    console.log(sublessonsCreatedAt);
+
+    console.error("Error in courseIdUpdatedAt: ", courseIdUpdatedAt);
+    console.error("Error in lessonCreated: ", lessonCreated);
+    console.error("Error in findLessonId: ", findLessonId);
+
+    if (
+      courseIdUpdatedAt.status === 200 &&
+      lessonCreated.status === 201 &&
+      sublessonsCreatedAt.status === 201
+    ) {
+      return res.json({ message: "Lesson created successfully" });
+    } else {
+      return res.status(400).send("API error");
+    }
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
 });
 
 adminRouter.put("/updated/:lessonId", async (res, req) => {
