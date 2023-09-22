@@ -6,7 +6,7 @@ import logout from "../../assets/Sidebar/logout.png";
 
 function Sidebar() {
   return (
-    <aside className=" h-full w-[17%] top-0 bottom-0">
+    <aside className="w-[17%] top-0 border-r border-gray-400">
       <div className="sidebar overflow-y-auto">
         <div className=" w-full flex flex-col items-center mt-10 mb-24 px-5">
           <img

@@ -163,10 +163,10 @@ function AddCoursePage() {
       <Sidebar />
       <section className="font-inter flex justify-center items-center">
         <section id="right-content w-full">
-          <div className="w-full h-[92px] flex justify-center items-center border border-gray-400 border-b-0">
+          <div className="w-full h-[92px] flex justify-center items-center">
             <section
               id="navbar"
-              className="w-full h-[92px] flex justify-between items-center px-20"
+              className="w-full h-[92px] flex justify-between items-center px-20 border-b border-gray-400"
             >
               <div className="text-header3 text-[2A2E3F] overflow-hidden">
                 Add Course
@@ -186,7 +186,7 @@ function AddCoursePage() {
               </div>
             </section>
           </div>
-          <section className="w-full bg-[#f6f7fc] flex justify-center flex-col items-center border border-gray-400">
+          <section className="w-full bg-[#f6f7fc] flex justify-center flex-col items-center">
             <div className="w-[85%] bg-white mt-[80px] mx-auto border border-gray-400 rounded-2xl flex justify-center items-start">
               <div className="px-20 text-body1 text-black">
                 <Formik

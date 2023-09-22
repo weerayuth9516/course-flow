@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import editIcon from "../../assets/registerPage/edit.svg";
 import deleteIcon from "../../assets/registerPage/delete.svg";
@@ -7,6 +7,7 @@ import dragIcon from "../../assets/registerPage/drag.svg";
 
 function LessonAdmin() {
   const params = useParams();
+  const navigate = useNavigate();
 
   const [lessons, setLessons] = useState([]);
   const getLesson = async () => {
@@ -29,7 +30,10 @@ function LessonAdmin() {
       <div className="w-[85%] mx-auto">
         <div className="flex justify-between h-[60px] items-center mt-5">
           <div className="font-medium text-gray-900 text-2xl">Lesson</div>
-          <button className="h-full bg-blue-500 px-[32px] py-[18px] rounded-xl font-bold text-white hover:bg-blue-600">
+          <button
+            className="h-full bg-blue-500 px-[32px] py-[18px] rounded-xl font-bold text-white hover:bg-blue-600"
+            onClick={() => navigate("/admin/addlesson")}
+          >
             + Add Lesson
           </button>
         </div>
