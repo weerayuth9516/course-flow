@@ -19,7 +19,7 @@ function DisplayCards({ searchList, userId }) {
           <Link
             key={index}
             to={`/course/courseDetail/${item.course_id}`}
-            target="_blank"
+            // target="_blank"
           >
             <div className="course-cards-box font-inter">
               <div className="course-card w-[357px] h-[475px] rounded-lg shadow-lg border border-gray-100 mb-8 hover:scale-105 hover:shadow-lg transform  transition-transform duration-300 ease-in-out">

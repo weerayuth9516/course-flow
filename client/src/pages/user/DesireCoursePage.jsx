@@ -60,11 +60,11 @@ function DesireCoursePage() {
             </div> */}
           </div>
         </div>
-        {/* <DisplayCardsDesireCourse
+        <DisplayCardsDesireCourse
           allDesireCourse={allDesireCourse}
           hasDesireCourse={hasDesireCourse}
-        /> */}
-        <DisplayCards searchList={allDesireCourse} />
+        />
+        {/* <DisplayCards searchList={allDesireCourse} /> */}
         <Footer />
       </div>
     </>

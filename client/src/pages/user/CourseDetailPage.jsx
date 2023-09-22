@@ -43,8 +43,8 @@ function CourseDetailPage() {
       }
       getCourse();
       getSearchList("", 3);
-      checkSubscription();
-      checkDesireCourse();
+      checkSubscription(auth.session.user.user_id);
+      checkDesireCourse(auth.session.user.user_id);
       // localStorage.setItem(
       //   "previousPage",
       //   `/course/courseDetail/${params.courseId}`
@@ -107,9 +107,9 @@ function CourseDetailPage() {
     }
   };
 
-  const checkDesireCourse = async () => {
+  const checkDesireCourse = async (userId) => {
     try {
-      const userId = auth.session.user.user_id;
+      // const userId = auth.session.user.user_id;
       const courseId = params.courseId;
       const response = await axios.get(
         `http://localhost:4001/courses/mydesirecourses/${userId}/${courseId}`
@@ -141,9 +141,9 @@ function CourseDetailPage() {
     }
   };
 
-  const checkSubscription = async () => {
+  const checkSubscription = async (userId) => {
     try {
-      const userId = auth.session.user.user_id;
+      // const userId = auth.session.user.user_id;
       const courseId = params.courseId;
 
       const response = await axios.get(

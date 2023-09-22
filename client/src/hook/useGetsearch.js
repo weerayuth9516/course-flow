@@ -48,18 +48,21 @@ function useGetsearch() {
     }
   };
 
-  const getDesireCourse = async () => {
+  const getDesireCourse = async (userId) => {
     try {
-      const userId = auth.session.user.user_id;
-      const desireCourseResult = await axios.get(
-        `http://localhost:4001/courses/mydesirecourses/${userId}`
-      );
-      setAllDesireCourse(desireCourseResult.data.data);
-      console.log(desireCourseResult);
-      if (desireCourseResult.status === 404) {
-        setHasDesireCourse(false);
+      // const userId = auth.session.user.user_id;
+      if (userId) {
+        const desireCourseResult = await axios.get(
+          `http://localhost:4001/courses/mydesirecourses/${userId}`
+        );
+        setAllDesireCourse(desireCourseResult.data.data);
+        if (desireCourseResult.status === 404) {
+          setHasDesireCourse(false);
+        } else {
+          setHasDesireCourse(true);
+        }
       } else {
-        setHasDesireCourse(true);
+        setHasDesireCourse(false);
       }
     } catch (error) {
       console.error("Error get desire course:", error);

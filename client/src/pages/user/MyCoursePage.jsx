@@ -46,7 +46,10 @@ function MyCoursePage() {
               onClick={() => {
                 setStatus("myCourses");
               }}
-              className="transform  transition-transform duration-300 ease-in-out hover:border-b hover:border-b-1 hover:text-black text-gray-600 focus:text-black focus:border-b focus:border-b-1 focus: border-black p-2"
+              // className="transform  transition-transform duration-300 ease-in-out "
+              className="transform transition-transform duration-300 ease-in-out hover:border-b hover:border-b-1 hover:text-black text-gray-600 focus:text-black focus:border-b focus:border-b-1 focus: border-black p-2"
+              // autoFocus="border-b border-b-1"
+              // className = "transform transition-transform duration-300 ease-in-out border-b border-b-1 text-black"
             >
               All Course
             </button>
