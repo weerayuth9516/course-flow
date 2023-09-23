@@ -5,7 +5,7 @@ function AddLessonPage() {
   return (
     <>
     <div>AddLessonPage</div>
-    <Link to="/addcourse">Back to AddCoursePage</Link>
+    <Link to="/admin/addcourse">Back to AddCoursePage</Link>
     </>
   )
 }
