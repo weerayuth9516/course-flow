@@ -16,7 +16,7 @@ function LessonAdmin() {
         `http://localhost:4001/admin/courses/${params.courseId}`
       );
       setLessons(lessonsResult.data.data.lessons);
-      // console.log(lessonsResult.data.data.lessons);
+      console.log(lessonsResult.data.data.lessons);
     } catch (error) {
       console.log("request lesson error", error);
     }

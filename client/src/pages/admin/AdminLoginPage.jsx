@@ -6,11 +6,14 @@ import errorIcon from "../../assets/registerPage/errorIcon.svg";
 function AdminLoginPage() {
   const initialValues = { email: "", password: "" };
   const validationSchema = Yup.object({
-    email: Yup.string().required("email is required"),
-    password: Yup.string().required("password is required"),
+    email: Yup.string()
+      .email("Invalid email address")
+      .required("Email is required"),
+    password: Yup.string()
+      .required("Password is required")
+      .min(12, "Password must be at least 12 characters"),
   });
 
-  //   const handleSubmit = async (values) => {};
   return (
     <>
       <div className="bg-gradient-to-r from-[#2559dd] to-[#5596fe] h-screen flex justify-center">

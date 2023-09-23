@@ -1,3 +1,0 @@
-function AddLessonForm() {
-  return <></>;
-}

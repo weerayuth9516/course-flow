@@ -1,16 +1,16 @@
 import React from "react";
 import Sidebar from "../../components/admin/Sidebar";
-import LessonAdmin from "../../components/admin/LessonAdmin";
 import { Link } from "react-router-dom";
+import LessonForm from "../../components/admin/LessonForm";
 
 function AddLessonPage() {
   return (
     <>
-      <div className="add-lesson-container">
+      <div className="flex">
         <Sidebar />
-        <div className="add-lesson-and-navbar">
-          <div className="navbar">navbar</div>
-          <div className="add-lesson-form">add lesson form</div>
+        <div className="flex flex-col w-screen bg-gray-100 items-center">
+          <div className="h-[70px] w-full border-gray-500 border-b">navbar</div>
+          <LessonForm />
         </div>
       </div>
       {/* <div>AddLessonPage</div>
