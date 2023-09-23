@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect} from "react";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import { Link } from "react-router-dom";
 import axios from "axios";
@@ -21,40 +21,53 @@ function AddCoursePage() {
     handleVideoPreview,
     clearImagePreview,
     clearVideoPreview,
+    selectedImage,
+    setSelectedImage,
   } = useFormData();
 
   const handleSubmit = async (values) => {
     // Handle form submission
     console.log(values);
-    if (values.videoTrailer !== null || values.coverImage === null) {
-      const uploadVideoResult = await supabase.storage
-        .from("course_video_trailers")
-        .upload(`${values.videoTrailer.name}`, values.videoTrailer, {
-          cacheControl: "3600",
-          upsert: true,
-          contentType: `${values.videoTrailer.type}`,
-        });
-      const uploadImgResult = await supabase.storage
-        .from("course_images")
-        .upload(`${values.coverImage.name}`, values.coverImage, {
-          cacheControl: "3600",
-          upsert: true,
-          contentType: `${values.coverImage.type}`,
-        });
-      if (uploadImgResult.error === null && uploadVideoResult === null) {
-        ////direct to admin api.
-        const courseResult = await axios.get(
-          `http://localhost:4001/admin/course/created`,
-          values
-        );
-        console.log(courseResult);
-      } else {
-        alert("can upload to supabase");
-      }
+  };
+
+  const uploadImage = async (folderName, file) => {
+    const timestamp = Date.now();
+    const randomString = Math.random().toString(36).substring(7); 
+    const fileName = `${timestamp}_${randomString}`;
+
+    const filePath = `${folderName}/${fileName}`;
+    const { data, error } = await supabase.storage
+      .from('test_upload')
+      .upload(filePath, file);
+  
+    if (error) {
+      console.error('Error uploading image:', error);
     } else {
-      alert("please select you'r video or cover image first");
+      console.log('Image uploaded successfully:', data);
+      setSelectedImage(filePath)
     }
   };
+
+  const deleteImage = async () => {
+    const { error } = await supabase.storage
+      .from('test_upload')
+      .remove([selectedImage]);
+  
+    if (error) {
+      console.error('Error deleting image:', error);
+    } else {
+      console.log('Image deleted successfully:');
+    }
+  };
+
+  const handleButtonClick = () => {
+    clearImagePreview();
+    deleteImage();
+  };
+
+  useEffect(() => {
+    console.log(selectedImage)
+  }, []);
 
   return (
     <main className=" flex">
@@ -264,11 +277,15 @@ function AddCoursePage() {
                           name="coverImage"
                           accept="image/*"
                           onChange={(e) => {
-                            const selectedFile = e.currentTarget.files[0];
-                            setFieldValue("coverImage", selectedFile);
-                            handleImagePreview(e);
+                              const selectedFile = e.currentTarget.files[0];
+                              console.log(selectedFile)
+                              setFieldValue("coverImage", selectedFile);
+                              if(selectedFile){
+                                uploadImage("image", selectedFile)
+                              }
+                              handleImagePreview(e);
                           }}
-                          style={{ display: "none" }}
+                          // style={{ display: "none" }}
                         />
 
                         <button
@@ -296,7 +313,7 @@ function AddCoursePage() {
                               <div
                                 type="button"
                                 className="mt-2 text-red-500 hover:text-red-700 absolute top-0 right-0"
-                                onClick={clearImagePreview}
+                                onClick={handleButtonClick}
                               >
                                 <img src={deleteIcon} alt="Remove Icon" />
                               </div>
@@ -368,6 +385,7 @@ function AddCoursePage() {
                     </Form>
                   )}
                 </Formik>
+                <Link to="/admin/addlesson">Go to Add Lesson</Link>
               </div>
             </div>
             <LessonAdmin />
