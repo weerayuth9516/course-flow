@@ -44,9 +44,6 @@ function App() {
         element={<CourseDetailPage />}
       />
       AddLessonPage
-      {/* <Route element={<RequireAuth allowedRoles={[ROLES.Admin]} />}>
-        <Route path="/admin/login" element={<AdminLoginPage />} />
-      </Route> */}
       <Route path="/admin/login" element={<AdminLoginPage />} />
       <Route path="/admin/courselist" element={<CourseListPage />} />
       <Route path="/admin/addcourse" element={<AddCoursePage />} />
