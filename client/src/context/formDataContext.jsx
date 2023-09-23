@@ -20,6 +20,7 @@ export function FormDataProvider({ children }) {
     coverImage: null,
     videoTrailer: null,
   });
+  const [selectedImage,setSelectedImage] = useState();
 
   const validationSchema = Yup.object().shape({
     courseName: Yup.mixed()
@@ -139,6 +140,8 @@ export function FormDataProvider({ children }) {
         handleVideoPreview,
         clearImagePreview,
         clearVideoPreview,
+        selectedImage,
+        setSelectedImage,
       }}
     >
       {children}
