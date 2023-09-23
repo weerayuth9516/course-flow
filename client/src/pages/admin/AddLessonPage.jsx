@@ -6,6 +6,7 @@ import LessonForm from "../../components/admin/LessonForm";
 function AddLessonPage() {
   return (
     <>
+<<<<<<< HEAD
       <div className="flex">
         <Sidebar />
         <div className="flex flex-col w-screen bg-gray-100 items-center">
@@ -13,6 +14,10 @@ function AddLessonPage() {
           <LessonForm />
         </div>
       </div>
+=======
+    <div>AddLessonPage</div>
+    <Link to="/admin/addcourse">Back to AddCoursePage</Link>
+>>>>>>> c9e6b8a (basic test)
     </>
   );
 }
