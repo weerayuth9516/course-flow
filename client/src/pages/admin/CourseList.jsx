@@ -21,7 +21,7 @@ function CourseListPage() {
           <div className="pl-[5%] text-header3">Course</div>
           <div className="flex gap-3 items-center pr-[5%]">
             <label
-              for="default-search"
+              htmlFor="default-search"
               className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
             ></label>
             <div className="relative">
