@@ -41,42 +41,42 @@ function AddCoursePage() {
   const filterSubmit = (values) => {
     imageUrl ? setCoverImageError(false) : setCoverImageError(true);
     videoTrailerUrl ? setVideoTrailerError(false) : setVideoTrailerError(true);
-      if (imageUrl && videoTrailerUrl) {
-        handleSubmit(values);
-      } else {
-        console.log("Please fill in all require information");
-      }
+    if (imageUrl && videoTrailerUrl) {
+      handleSubmit(values);
+    } else {
+      console.log("Please fill in all require information");
     }
+  };
 
   const handleSubmit = (values) => {
     // Handle form submission
     values.coverImage = imageUrl;
     values.videoTrailer = videoTrailerUrl;
     console.log(values);
-    if(values.hasOwnProperty('coverImage')&&values.hasOwnProperty('videoTrailer'))
-    setTimeout(() => {
-  // window.location.reload();
-    }, 2000);
+    if (
+      values.hasOwnProperty("coverImage") &&
+      values.hasOwnProperty("videoTrailer")
+    )
+      setTimeout(() => {
+        window.location.reload();
+        navigate("/admin/courselist");
+      }, 2000);
   };
 
   const uploadImage = async (folderName, file) => {
     const timestamp = Date.now();
     const randomString = Math.random().toString(36).substring(7);
     const fileName = `${timestamp}_${randomString}`;
-
     const filePath = `${folderName}/${fileName}`;
     const { data, error } = await supabase.storage
       .from("test_upload")
       .upload(filePath, file);
-
     if (error) {
       console.error("Error uploading image:", error);
     } else {
       console.log("Image uploaded successfully:", data);
       setSelectedImage(filePath);
-      setImageUrl(
-        `https://sxnmelktycywskodrejx.supabase.co/storage/v1/object/public/test_upload/${filePath}`
-      );
+      setImageUrl(`${supabaseStorageUrl}/${filePath}`);
     }
   };
 
@@ -84,20 +84,16 @@ function AddCoursePage() {
     const timestamp = Date.now();
     const randomString = Math.random().toString(36).substring(7);
     const fileName = `${timestamp}_${randomString}`;
-
     const filePath = `${folderName}/${fileName}`;
     const { data, error } = await supabase.storage
       .from("test_upload")
       .upload(filePath, file);
-
     if (error) {
       console.error("Error uploading video:", error);
     } else {
       console.log("Video uploaded successfully:", data);
       setSelectedVideoTrailer(filePath);
-      setVideoTrailerUrl(
-        `https://sxnmelktycywskodrejx.supabase.co/storage/v1/object/public/test_upload/${filePath}`
-      );
+      setVideoTrailerUrl(`${supabaseStorageUrl}/${filePath}`);
     }
   };
 
@@ -483,9 +479,7 @@ function AddCoursePage() {
                   </div>
                 )}
                 <div className="mt-[150px] mb-[50px]">
-                <Link to="/admin/addlesson">
-                  Go to Add Lesson
-                </Link>
+                  <Link to="/admin/addlesson">Go to Add Lesson</Link>
                 </div>
               </div>
             </div>
