@@ -1,4 +1,5 @@
 import React from "react";
+import { Link ,useNavigate} from "react-router-dom";
 import logo from "../../assets/header/CourseFlow.png";
 import book from "../../assets/Sidebar/book.png";
 import assignment from "../../assets/Sidebar/assignment.png";
@@ -11,6 +12,7 @@ import deleteLogo from "../../assets/courselist/delete.png";
 import greenstatus from "../../assets/courselist/greenstatus.png";
 
 function CourseListPage() {
+  const navigate = useNavigate();
   return (
     <div className="flex flex-row">
       <Sidebar />
@@ -32,7 +34,7 @@ function CourseListPage() {
                 placeholder="Search..."
               ></input>
             </div>
-            <button className="bg-blue-500 hover:bg-blue-400 active:bg-blue-300 py-3.5 px-8 rounded-md text-white">
+            <button onClick={()=>{navigate('/admin/addcourse')}} className="bg-blue-500 hover:bg-blue-400 active:bg-blue-300 py-3.5 px-8 rounded-md text-white">
               + Add Course
             </button>
           </div>

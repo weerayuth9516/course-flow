@@ -11,16 +11,19 @@ export function FormDataProvider({ children }) {
   const [imagePreview, setImagePreview] = useState(null);
   const [videoPreview, setVideoPreview] = useState(null);
   const [videoType, setVideoType] = useState("video/mp4");
+  const [imageUrl, setImageUrl] = useState("");
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedVideoTrailer, setSelectedVideoTrailer] = useState(null);
+  const [coverImageError, setCoverImageError] = useState(false);
+  const [videoTrailerError, setVideoTrailerError] = useState(false);
+  const [videoTrailerUrl, setVideoTrailerUrl] = useState("");
   const [formValues, setFormValues] = useState({
     courseName: "",
     price: "",
     totalLearningTime: "",
     courseSummary: "",
     courseDetail: "",
-    coverImage: null,
-    videoTrailer: null,
   });
-  const [selectedImage,setSelectedImage] = useState();
 
   const validationSchema = Yup.object().shape({
     courseName: Yup.mixed()
@@ -61,32 +64,6 @@ export function FormDataProvider({ children }) {
         "max-length",
         "Course name must be at most 5000 characters",
         (value) => value && value.length <= 5000
-      ),
-    coverImage: Yup.mixed()
-      .required("Image is required")
-      .test(
-        "fileSize",
-        "Maximum size is 5MB",
-        (value) => value && value.size <= 5242880 // 5MB
-      )
-      .test(
-        "fileType",
-        "Only JPEG, PNG & GIF",
-        (value) =>
-          value && ["image/jpg", "image/png", "image/jpeg"].includes(value.type)
-      ),
-    videoTrailer: Yup.mixed()
-      .required("Video file is required")
-      .test(
-        "fileSize",
-        "Video file is too large. Maximum size is 20MB",
-        (value) => value && value.size <= 20971520 // 20MB
-      )
-      .test(
-        "fileType",
-        "Only MP4, MOV, and API formats are allowed",
-        (value) =>
-          value && ["video/mp4", "video/mov", "video/avi"].includes(value.type)
       ),
   });
 
@@ -142,6 +119,16 @@ export function FormDataProvider({ children }) {
         clearVideoPreview,
         selectedImage,
         setSelectedImage,
+        imageUrl,
+        setImageUrl,
+        coverImageError,
+        setCoverImageError,
+        videoTrailerError,
+        setVideoTrailerError,
+        selectedVideoTrailer,
+        setSelectedVideoTrailer,
+        videoTrailerUrl,
+        setVideoTrailerUrl,
       }}
     >
       {children}
