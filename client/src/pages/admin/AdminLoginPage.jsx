@@ -2,8 +2,12 @@ import logo from "../../assets/registerPage/CourseFlow.svg";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import errorIcon from "../../assets/registerPage/errorIcon.svg";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/authentication";
 
 function AdminLoginPage() {
+  const navigate = useNavigate();
+  const auth = useAuth();
   const initialValues = { email: "", password: "" };
   const validationSchema = Yup.object({
     email: Yup.string()
@@ -13,6 +17,18 @@ function AdminLoginPage() {
       .required("Password is required")
       .min(12, "Password must be at least 12 characters"),
   });
+
+  const handleSubmit = async (values, { setErrors }) => {
+    console.log(values);
+    try {
+      await auth.adminLogin(values);
+      setErrors(auth.session.error);
+      navigate("/admin/courselist");
+    } catch (error) {
+      console.log(error);
+      navigate("/admin/login");
+    }
+  };
 
   return (
     <>
@@ -28,7 +44,7 @@ function AdminLoginPage() {
             <Formik
               initialValues={initialValues}
               validationSchema={validationSchema}
-              //   onSubmit={handleSubmit}
+              onSubmit={handleSubmit}
             >
               {({ errors, touched }) => (
                 <Form>

@@ -1,9 +1,7 @@
-import React from "react";
-import Sidebar from "../../components/admin/Sidebar";
-import { Link } from "react-router-dom";
 import LessonForm from "../../components/admin/LessonForm";
+import Sidebar from "../../components/admin/Sidebar";
 
-function AddLessonPage() {
+function EditLessonPage() {
   return (
     <>
       <div className="flex">
@@ -16,5 +14,4 @@ function AddLessonPage() {
     </>
   );
 }
-
-export default AddLessonPage;
+export default EditLessonPage;

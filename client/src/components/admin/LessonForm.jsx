@@ -6,19 +6,14 @@ import dragIcon from "../../assets/registerPage/drag-addlesson.svg";
 import videoSubLesson from "../../assets/registerPage/videoSubLesson.svg";
 
 function LessonForm() {
-  const [lessonName, setLessonName] = useState("");
-  const [subLessonName, setSubLessonName] = useState("");
+  // const [lessonName, setLessonName] = useState("");
+  // const [subLessonName, setSubLessonName] = useState("");
   const [video, setVideo] = useState(null);
   const [videoType, setVideoType] = useState("video/mp4");
 
   const initialValues = {
     lessonName: "",
-    subLessons: [
-      {
-        subLessonName: "",
-        video: null,
-      },
-    ],
+    subLessons: [{ subLessonName: "", video: null }],
   };
 
   const validationSchema = Yup.object().shape({
@@ -68,7 +63,7 @@ function LessonForm() {
           // onSubmit={handleSubmit}
           enableReinitialize={true}
         >
-          {({ errors, touched }) => (
+          {({ errors, touched, values }) => (
             <Form>
               <div className="flex flex-col relative">
                 <label htmlFor="lessonName">Lesson name *</label>
@@ -103,9 +98,12 @@ function LessonForm() {
                 name="subLessons"
                 render={(arrayHelpers) => (
                   <div>
-                    <div className="bg-gray-100 border border-gray-300 rounded-xl relative py-6 px-4">
-                      {initialValues.subLessons.map((subLesson, index) => (
-                        <div key={index} className="flex justify-between">
+                    {values.subLessons.map((subLesson, index) => (
+                      <div
+                        key={index}
+                        className="bg-gray-100 border border-gray-300 rounded-xl relative py-6 px-4 mb-3"
+                      >
+                        <div className="flex justify-between">
                           <div className="flex">
                             <img src={dragIcon} className="mr-3 h-[76px]" />
 
@@ -131,7 +129,7 @@ function LessonForm() {
                                 {errors.subLessons?.[index]?.subLessonName &&
                                   touched.subLessons?.[index]
                                     ?.subLessonName && (
-                                    <div className="error-icon absolute right-[35%] top-[21%] transform -translate-y-1/2">
+                                    <div className="error-icon absolute right-[35%] top-[19%] transform -translate-y-1/2">
                                       <img src={errorIcon} alt="Error Icon" />
                                     </div>
                                   )}
@@ -147,44 +145,54 @@ function LessonForm() {
                                 </label>
                                 <input
                                   type="file"
-                                  id="video"
-                                  name="video"
+                                  id={`subLessons[${index}].video`}
+                                  name={`subLessons[${index}].video`}
                                   accept=".mp4,.avi,.mov"
                                   style={{ display: "none" }}
                                   onChange={(event) => {
                                     const selectedVideo = event.target.files[0];
                                     if (selectedVideo.size <= 20971520) {
-                                      setVideo(
-                                        URL.createObjectURL(selectedVideo)
-                                      );
-                                      setVideoType(selectedVideo.type);
+                                      arrayHelpers.replace(index, {
+                                        ...subLesson,
+                                        video:
+                                          URL.createObjectURL(selectedVideo),
+                                        videoType: selectedVideo.type,
+                                      });
                                     }
                                   }}
                                 />
                                 <button
                                   type="button"
+                                  className="w-[160px] h-[160px]"
                                   onClick={() =>
-                                    document.getElementById("video").click()
+                                    document
+                                      .getElementById(
+                                        `subLessons[${index}].video`
+                                      )
+                                      .click()
                                   }
                                 >
-                                  {!video && (
-                                    <div>
+                                  {!subLesson.video && (
+                                    <div className="w-[160px] h-[160px]">
                                       <img src={videoSubLesson} />
                                     </div>
                                   )}
-                                  {video && (
+                                  {subLesson.video && (
                                     <div>
                                       <video
                                         controls
                                         className="w-[160px] h-[160px] rounded-lg object-cover"
                                       >
-                                        <source src={video} type={videoType} />
+                                        <source
+                                          src={subLesson.video}
+                                          type={subLesson.videoType}
+                                        />
                                       </video>
                                     </div>
                                   )}
                                 </button>
                                 <ErrorMessage
-                                  name="video"
+                                  name={`subLessons[${index}].video`}
                                   component="div"
                                   className="text-purple-500 mt-2"
                                 />
@@ -192,24 +200,30 @@ function LessonForm() {
                             </div>
                           </div>
 
-                          <button
-                            className="text-gray-500 font-semibold flex justify-start hover:text-black h-[24px]"
-                            onClick={() => arrayHelpers.remove(index)}
-                          >
-                            Delete
-                          </button>
+                          {values.subLessons.length > 1 ? (
+                            <button
+                              className="text-gray-500 font-semibold flex justify-start hover:text-black h-[24px]"
+                              onClick={() => arrayHelpers.remove(index)}
+                            >
+                              Delete
+                            </button>
+                          ) : (
+                            <button className="text-gray-500 font-semibold flex justify-start hover:text-black h-[24px]">
+                              Delete
+                            </button>
+                          )}
                         </div>
-                      ))}
-                    </div>
+                      </div>
+                    ))}
+
                     <button
                       type="button"
                       className="px-7 py-[15px] border border-orange-500 rounded-xl text-orange-500 font-bold mt-5 hover:bg-orange-500 hover:text-white"
-                      onClick={
-                        () =>
-                          arrayHelpers.push({
-                            subLessonName: "",
-                            video: null,
-                          }) // เพิ่ม Sub-Lesson ใหม่
+                      onClick={() =>
+                        arrayHelpers.insert(values.subLessons.length, {
+                          subLessonName: "",
+                          video: null,
+                        })
                       }
                     >
                       + Add Sub-Lesson
