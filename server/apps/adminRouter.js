@@ -3,6 +3,8 @@ import { supabase } from "../utils/db.js";
 import "dotenv/config";
 import jwt from "jsonwebtoken";
 import { protect } from "../middlewares/protect.js";
+// import { upload } from "../middlewares/multerConfig.js";
+import multer from "multer";
 
 const adminRouter = Router();
 // adminRouter.use(protect);
@@ -208,83 +210,88 @@ adminRouter.get("/lessons/:lessonId", async (req, res) => {
   }
 });
 
-adminRouter.post("/:courseId/lesson/created", async (req, res) => {
-  const courseId = req.params.courseId;
-  const lessonName = {
-    lesson_name: req.body.lesson_name,
-  };
-  const allSublessons = req.body.sub_lessons;
-  try {
-    const courseIdUpdatedAt = await supabase
-      .from("courses")
-      .update({ course_created_at: new Date() })
-      .eq("course_id", courseId)
-      .select("course_created_at");
+// add lesson ans sublesson * not finish*
+adminRouter.post("/:courseId/lesson/created", async (req, res) => {});
 
-    // console.log(courseIdUpdatedAt);
+// adminRouter.post("/:courseId/lesson/created", async (req, res) => {
+//   const courseId = req.params.courseId;
+//   const lessonName = {
+//     lesson_name: req.body.lesson_name,
+//   };
+//   const allSublessons = req.body.sub_lessons;
 
-    const findAllLesson = await supabase
-      .from("lessons")
-      .select("*")
-      .eq("course_id", courseId);
-    console.log(findAllLesson.data.length);
-    const lessonCreated = await supabase.from("lessons").upsert([
-      {
-        ...lessonName,
-        course_id: courseId,
-        priority: findAllLesson.data.length + 1,
-      },
-    ]);
+//   try {
+//     const courseIdUpdatedAt = await supabase
+//       .from("courses")
+//       .update({ course_created_at: new Date() })
+//       .eq("course_id", courseId)
+//       .select("course_created_at");
 
-    // console.log(lessonCreated);
+//     // console.log(courseIdUpdatedAt);
 
-    const findLessonId = await supabase
-      .from("lessons")
-      .select("lesson_id")
-      .eq("lesson_name", req.body.lesson_name)
-      .eq("course_id", courseId);
+//     const findAllLesson = await supabase
+//       .from("lessons")
+//       .select("*")
+//       .eq("course_id", courseId);
+//     console.log(findAllLesson.data.length);
+//     const lessonCreated = await supabase.from("lessons").upsert([
+//       {
+//         ...lessonName,
+//         course_id: courseId,
+//         priority: findAllLesson.data.length + 1,
+//       },
+//     ]);
 
-    // console.log(findLessonId.data[0].lesson_id);
+//     // console.log(lessonCreated);
 
-    const findAllSublesson = await supabase
-      .from("sub_lessons")
-      .select("*")
-      .eq("lesson_id", findLessonId.data[0].lesson_id);
+//     const findLessonId = await supabase
+//       .from("lessons")
+//       .select("lesson_id")
+//       .eq("lesson_name", req.body.lesson_name)
+//       .eq("course_id", courseId);
 
-    // console.log(findAllSublesson);
+//     // console.log(findLessonId.data[0].lesson_id);
 
-    const lessonMap = allSublessons.map((value, findAllSublesson) => {
-      return {
-        sub_lesson_name: value.sub_lesson_name,
-        sub_lesson_video: value.sub_lesson_video,
-        lesson_id: findLessonId.data[0].lesson_id,
-        priority: findAllSublesson.data.length + 1,
-      };
-    });
-    const sublessonsCreatedAt = await supabase
-      .from("sub_lessons")
-      .upsert(lessonMap);
-    console.log(sublessonsCreatedAt);
+//     const findAllSublesson = await supabase
+//       .from("sub_lessons")
+//       .select("*")
+//       .eq("lesson_id", findLessonId.data[0].lesson_id);
 
-    console.error("Error in courseIdUpdatedAt: ", courseIdUpdatedAt);
-    console.error("Error in lessonCreated: ", lessonCreated);
-    console.error("Error in findLessonId: ", findLessonId);
+//     // console.log(findAllSublesson);
 
-    if (
-      courseIdUpdatedAt.status === 200 &&
-      lessonCreated.status === 201 &&
-      sublessonsCreatedAt.status === 201
-    ) {
-      return res.json({ message: "Lesson created successfully" });
-    } else {
-      return res.status(400).send("API error");
-    }
-  } catch (error) {
-    return res.status(500).json({ error: error.message });
-  }
-});
+//     const lessonMap = allSublessons.map((value, findAllSublesson) => {
+//       return {
+//         sub_lesson_name: value.sub_lesson_name,
+//         sub_lesson_video: value.sub_lesson_video,
+//         lesson_id: findLessonId.data[0].lesson_id,
+//         priority: findAllSublesson.data.length + 1,
+//       };
+//     });
+//     const sublessonsCreatedAt = await supabase
+//       .from("sub_lessons")
+//       .upsert(lessonMap);
+//     console.log(sublessonsCreatedAt);
 
-adminRouter.put("/updated/:lessonId", async (res, req) => {
+//     console.error("Error in courseIdUpdatedAt: ", courseIdUpdatedAt);
+//     console.error("Error in lessonCreated: ", lessonCreated);
+//     console.error("Error in findLessonId: ", findLessonId);
+
+//     if (
+//       courseIdUpdatedAt.status === 200 &&
+//       lessonCreated.status === 201 &&
+//       sublessonsCreatedAt.status === 201
+//     ) {
+//       return res.json({ message: "Lesson created successfully" });
+//     } else {
+//       return res.status(400).send("API error");
+//     }
+//   } catch (error) {
+//     return res.status(500).json({ error: error.message });
+//   }
+// });
+
+// update lesson and sublesson *not finush*
+adminRouter.put("/updated/:lessonId", async (req, res) => {
   const lessonName = {
     lesson_name: req.body.lesson_name,
     lesson_created_at: new Date(),
@@ -301,6 +308,33 @@ adminRouter.put("/updated/:lessonId", async (res, req) => {
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
+});
+
+//test upload vedio file
+// const storage = multer.memoryStorage();
+// const upload = multer({ storage: storage });
+const multerUpload = multer({ storage: multer.memoryStorage() });
+const videosUpload = multerUpload.fields([{ name: "videos" }]);
+adminRouter.post("/upload", videosUpload, async (req, res) => {
+  const files = req.files["videos"];
+  console.log(files);
+  try {
+    for (const file of files) {
+      const { originalname, buffer } = file;
+      const { data, error } = await supabase.storage
+        .from("test_upload/video")
+        .upload(Date.now() + "_" + originalname, buffer);
+      console.log(data);
+      if (error) {
+        return res.status(500).json({ error: "Upload video error!" });
+      }
+    }
+    return res.status(200).json({ success: "Upload video successfully!" });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+  // console.log(req.files);
 });
 
 export default adminRouter;
