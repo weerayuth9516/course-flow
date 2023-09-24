@@ -9,6 +9,7 @@ import adminRouter from "./apps/adminRouter.js";
 
 async function init() {
   const app = express();
+
   const port = 4001;
   dotenv.config();
   app.use(cors());
