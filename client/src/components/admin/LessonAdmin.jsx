@@ -66,7 +66,11 @@ function LessonAdmin() {
                   <td>
                     <div className="flex justify-evenly">
                       <img src={deleteIcon} className="inline cursor-pointer" />
-                      <img src={editIcon} className="inline cursor-pointer" />
+                      <img
+                        src={editIcon}
+                        className="inline cursor-pointer"
+                        onClick={navigate("/admin/editlesson")}
+                      />
                     </div>
                   </td>
                 </tr>
