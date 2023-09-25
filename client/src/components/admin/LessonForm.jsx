@@ -56,7 +56,7 @@ function LessonForm() {
   };
   return (
     <>
-      <div className="bg-white w-[90%] border border-gray-200 rounded-2xl px-[100px] pt-[40px] pb-[60px] mt-8">
+      <div className="bg-white w-[90%] border border-gray-200 rounded-2xl px-[100px] pt-[40px] pb-[60px] mt-8 mb-8">
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
@@ -202,13 +202,17 @@ function LessonForm() {
 
                           {values.subLessons.length > 1 ? (
                             <button
+                              type="button"
                               className="text-gray-500 font-semibold flex justify-start hover:text-black h-[24px]"
                               onClick={() => arrayHelpers.remove(index)}
                             >
                               Delete
                             </button>
                           ) : (
-                            <button className="text-gray-500 font-semibold flex justify-start h-[24px] cursor-not-allowed">
+                            <button
+                              type="button"
+                              className="text-gray-500 font-semibold flex justify-start h-[24px] cursor-not-allowed"
+                            >
                               Delete
                             </button>
                           )}
