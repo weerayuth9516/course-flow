@@ -15,9 +15,7 @@ function AdminLoginPage() {
   const initialValues = { username: "", password: "" };
   const validationSchema = Yup.object({
     username: Yup.string().required("Email is required"),
-    password: Yup.string()
-      .required("Password is required")
-      .min(12, "Password must be at least 12 characters"),
+    password: Yup.string().required("Password is required"),
   });
 
   const handleSubmit = async (values, { setErrors }) => {
