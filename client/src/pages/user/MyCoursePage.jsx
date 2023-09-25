@@ -20,6 +20,7 @@ function MyCoursePage() {
   } = useMycourses();
 
   const auth = useAuth();
+  const [getFocus, setGetFocus] = useState(true);
 
   useEffect(() => {
     if (auth.isAuthenicated) {
