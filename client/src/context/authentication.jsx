@@ -10,8 +10,10 @@ function AuthProvider(props) {
     loading: null,
     error: null,
     user: null,
+    admin: null,
   });
   const navigate = useNavigate();
+
   const login = async (data) => {
     session.error = null;
     try {
@@ -42,6 +44,35 @@ function AuthProvider(props) {
       return error;
     }
   };
+
+  const adminLogin = async (data) => {
+    session.error = null;
+    try {
+      const results = await axios.post(
+        "http://localhost:4001/auth/admin/login",
+        data
+      );
+      if (!results.data.token) {
+        session.error = results.data.message;
+      } else {
+        session.error = null;
+        const token = results.data.token;
+        const userDataFromToken = jwtDecode(token);
+        session.admin = userDataFromToken;
+        if (results) {
+          navigate("/admin/courselist");
+        }
+        localStorage.setItem("token", token);
+      }
+      return results;
+    } catch (error) {
+      console.log(error);
+      session.error;
+      console.log(session.error);
+      return error;
+    }
+  };
+
   const register = async (data) => {
     const result = await axios.post(
       "http://localhost:4001/auth/register",
@@ -60,17 +91,32 @@ function AuthProvider(props) {
   const logout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("previousPage");
-    setSession({ ...session, user: null, error: null });
+    setSession({ ...session, user: null, admin: null, error: null });
   };
 
   const isAuthenicated = Boolean(localStorage.getItem("token"));
+  const isAdminAuthenticated =
+    Boolean(localStorage.getItem("token")) && session.admin !== null;
   if (isAuthenicated) {
     const token = localStorage.getItem("token");
     session.user = jwtDecode(token);
   }
+  if (isAdminAuthenticated) {
+    const token = localStorage.getItem("token");
+    session.admin = jwtDecode(token);
+  }
+
   return (
     <AuthContext.Provider
-      value={{ session, login, logout, register, isAuthenicated }}
+      value={{
+        session,
+        login,
+        logout,
+        register,
+        isAuthenicated,
+        isAdminAuthenticated,
+        adminLogin,
+      }}
     >
       {props.children}
     </AuthContext.Provider>

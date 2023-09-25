@@ -16,6 +16,7 @@ import CourseListPage from "./pages/admin/CourseList";
 import AddCoursePage from "./pages/admin/AddCoursePage";
 import AddLessonPage from "./pages/admin/AddLessonPage";
 import AdminLoginPage from "./pages/admin/AdminLoginPage";
+import EditLessonPage from "./pages/admin/EditLessonPage";
 
 // export const SessionContext = React.createContext();
 
@@ -47,6 +48,7 @@ function App() {
       <Route path="/admin/courselist" element={<CourseListPage />} />
       <Route path="/admin/addcourse" element={<AddCoursePage />} />
       <Route path="/admin/addlesson" element={<AddLessonPage />} />
+      <Route path="/admin/editlesson" element={<EditLessonPage />} />
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );

@@ -1,15 +1,32 @@
 import logo from "../../assets/registerPage/CourseFlow.svg";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import errorIcon from "../../assets/registerPage/errorIcon.svg";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/authentication";
 
 function AdminLoginPage() {
+  const navigate = useNavigate();
+  const auth = useAuth();
   const initialValues = { username: "", password: "" };
   const validationSchema = Yup.object({
-    username: Yup.string().required("username is required"),
-    password: Yup.string().required("password is required"),
+    username: Yup.string().required("Email is required"),
+    password: Yup.string()
+      .required("Password is required")
+      .min(12, "Password must be at least 12 characters"),
   });
 
-  //   const handleSubmit = async (values) => {};
+  const handleSubmit = async (values, { setErrors }) => {
+    console.log(values);
+    try {
+      await auth.adminLogin(values);
+      setErrors(auth.session.error);
+    } catch (error) {
+      console.log(error);
+      navigate("/admin/login");
+    }
+  };
+
   return (
     <>
       <div className="bg-gradient-to-r from-[#2559dd] to-[#5596fe] h-screen flex justify-center">
@@ -24,21 +41,21 @@ function AdminLoginPage() {
             <Formik
               initialValues={initialValues}
               validationSchema={validationSchema}
-              //   onSubmit={handleSubmit}
+              onSubmit={handleSubmit}
             >
               {({ errors, touched }) => (
                 <Form>
                   <div className=" relative">
                     <label htmlFor="username" className="text-base font-400">
-                      Username
+                      Email
                     </label>
                     <Field
                       type="text"
                       id="username"
                       name="username"
-                      placeholder="Enter Username"
+                      placeholder="Enter Email"
                       className={`w-full h-[48px] mt-1 border border-gray-300 py-2 pl-3 pr-4 rounded-lg focus:border-orange-500 focus:outline-none ${
-                        errors.username && touched.username
+                        errors.email && touched.email
                           ? "border-purple-500 border-2"
                           : ""
                       }`}
@@ -50,7 +67,7 @@ function AdminLoginPage() {
                     />
                     {errors.username && touched.username ? (
                       <img
-                        src="src/assets/registerPage/errorIcon.svg"
+                        src={errorIcon}
                         className="absolute right-3 top-[60%] z-10"
                       />
                     ) : (
@@ -79,7 +96,7 @@ function AdminLoginPage() {
                     />
                     {errors.password && touched.password ? (
                       <img
-                        src="src/assets/registerPage/errorIcon.svg"
+                        src={errorIcon}
                         className="absolute right-3 top-[60%] z-10"
                       />
                     ) : (

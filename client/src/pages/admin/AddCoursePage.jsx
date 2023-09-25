@@ -159,16 +159,16 @@ function AddCoursePage() {
   };
 
   return (
-    <main className="w-screen flex justify-center items-center">
+    <main className=" flex">
       <Sidebar />
       <section className="font-inter flex justify-center items-center">
-        <section id="right-content w-[1200px]">
-          <div className="w-full h-[92px] flex justify-center items-center border border-gray-400 border-b-0">
+        <section id="right-content w-full">
+          <div className="w-full h-[92px] flex justify-center items-center">
             <section
               id="navbar"
-              className="w-[1120px] h-[92px] flex justify-between items-center"
+              className="w-full h-[92px] flex justify-between items-center px-20 border-b border-gray-400"
             >
-              <div className="text-header3 text-[2A2E3F] ml-[40px]">
+              <div className="text-header3 text-[2A2E3F] overflow-hidden">
                 Add Course
               </div>
               <div className="flex justify-center items-center font-bold">
@@ -179,16 +179,16 @@ function AddCoursePage() {
                   type="submit"
                   form="add-course"
                   onClick={handleSubmit}
-                  className="text-white w-[117px] h-[60px] bg-[#2f5fac] rounded-xl ml-[20px] mr-[15px]"
+                  className="text-white w-[117px] h-[60px] bg-[#2f5fac] rounded-xl ml-[20px] "
                 >
                   Create
                 </button>
               </div>
             </section>
           </div>
-          <section className="w-full bg-[#f6f7fc] flex justify-center flex-col items-center border border-gray-400">
-            <div className="w-[1120px] bg-white mt-[80px] mr-[80px] ml-[80px] border border-gray-400 rounded-2xl flex justify-center items-start">
-              <div className="w-[920px] text-body1 text-black">
+          <section className="w-full bg-[#f6f7fc] flex justify-center flex-col items-center">
+            <div className="w-[85%] bg-white mt-[80px] mx-auto border border-gray-400 rounded-2xl flex justify-center items-start">
+              <div className="px-20 text-body1 text-black">
                 <Formik
                   initialValues={formValues}
                   validationSchema={validationSchema}

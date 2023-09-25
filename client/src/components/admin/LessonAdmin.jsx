@@ -1,19 +1,22 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
+import editIcon from "../../assets/registerPage/edit.svg";
+import deleteIcon from "../../assets/registerPage/delete.svg";
+import dragIcon from "../../assets/registerPage/drag.svg";
 
 function LessonAdmin() {
   const params = useParams();
+  const navigate = useNavigate();
 
   const [lessons, setLessons] = useState([]);
   const getLesson = async () => {
     try {
       const lessonsResult = await axios.get(
         `http://localhost:4001/admin/courses/${params.courseId}`
-        // "http://localhost:4001/admin"
       );
-      setLessons(lessonsResult.data.data);
-      console.log(lessonsResult.data.data);
+      setLessons(lessonsResult.data.data.lessons);
+      console.log(lessonsResult.data.data.lessons);
     } catch (error) {
       console.log("request lesson error", error);
     }
@@ -24,14 +27,17 @@ function LessonAdmin() {
   }, []);
   return (
     <>
-      <div className="w-[1120px] mx-auto">
+      <div className="w-[85%] mx-auto">
         <div className="flex justify-between h-[60px] items-center mt-5">
           <div className="font-medium text-gray-900 text-2xl">Lesson</div>
-          <button className="h-full bg-blue-500 px-[32px] py-[18px] rounded-xl font-bold text-white hover:bg-blue-600">
+          <button
+            className="h-full bg-blue-500 px-[32px] py-[18px] rounded-xl font-bold text-white hover:bg-blue-600"
+            onClick={() => navigate("/admin/addlesson")}
+          >
             + Add Lesson
           </button>
         </div>
-        <table className="w-[100%] mt-8 rounded-lg overflow-hidden">
+        <table className="w-[100%] mt-8 mb-8 rounded-lg overflow-hidden">
           <thead className=" h-[41px] bg-gray-300">
             <tr>
               <th className="w-[56px]"></th>
@@ -48,28 +54,33 @@ function LessonAdmin() {
             </tr>
           </thead>
           <tbody>
-            {lessons.map((lesson) => (
-              <tr key={lesson.lesson_id} className="border-b border-gray-200">
-                <td>
-                  <img src="src/assets/registerPage/drag.svg" />
-                </td>
-                <td className="pl-5">{lesson.lesson_id}</td>
-                <td className="pl-5">{lesson.lesson_name}</td>
-                <td className="pl-5">10</td>
-                <td>
-                  <div className="flex justify-evenly">
-                    <img
-                      src="src/assets/registerPage/delete.svg"
-                      className="inline cursor-pointer"
-                    />
-                    <img
-                      src="src/assets/registerPage/edit.svg"
-                      className="inline cursor-pointer"
-                    />
-                  </div>
+            {lessons.length > 0 ? (
+              lessons.map((item, index) => (
+                <tr key={index} className="border-b border-gray-200">
+                  <td>
+                    <img src={dragIcon} />
+                  </td>
+                  <td className="pl-5">{index + 1}</td>
+                  <td className="pl-5">{item.lesson_name}</td>
+                  <td className="pl-5">0</td>
+                  <td>
+                    <div className="flex justify-evenly">
+                      <img src={deleteIcon} className="inline cursor-pointer" />
+                      <img src={editIcon} className="inline cursor-pointer" />
+                    </div>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td
+                  colSpan="5"
+                  className=" text-center py-4 pt-4 bg-white text-sm font-medium text-gray-800"
+                >
+                  No lessons available
                 </td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       </div>
