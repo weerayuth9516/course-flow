@@ -194,7 +194,7 @@ function LessonForm() {
                                 <ErrorMessage
                                   name={`subLessons[${index}].video`}
                                   component="div"
-                                  className="text-purple-500 mt-2"
+                                  className="text-purple-500 mt-1 text-sm"
                                 />
                               </div>
                             </div>
@@ -208,7 +208,7 @@ function LessonForm() {
                               Delete
                             </button>
                           ) : (
-                            <button className="text-gray-500 font-semibold flex justify-start hover:text-black h-[24px]">
+                            <button className="text-gray-500 font-semibold flex justify-start h-[24px] cursor-not-allowed">
                               Delete
                             </button>
                           )}

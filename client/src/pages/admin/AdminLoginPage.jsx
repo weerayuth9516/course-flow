@@ -8,11 +8,9 @@ import { useAuth } from "../../context/authentication";
 function AdminLoginPage() {
   const navigate = useNavigate();
   const auth = useAuth();
-  const initialValues = { email: "", password: "" };
+  const initialValues = { username: "", password: "" };
   const validationSchema = Yup.object({
-    email: Yup.string()
-      .email("Invalid email address")
-      .required("Email is required"),
+    username: Yup.string().required("Email is required"),
     password: Yup.string()
       .required("Password is required")
       .min(12, "Password must be at least 12 characters"),
@@ -23,7 +21,6 @@ function AdminLoginPage() {
     try {
       await auth.adminLogin(values);
       setErrors(auth.session.error);
-      navigate("/admin/courselist");
     } catch (error) {
       console.log(error);
       navigate("/admin/login");
@@ -49,13 +46,13 @@ function AdminLoginPage() {
               {({ errors, touched }) => (
                 <Form>
                   <div className=" relative">
-                    <label htmlFor="email" className="text-base font-400">
+                    <label htmlFor="username" className="text-base font-400">
                       Email
                     </label>
                     <Field
-                      type="email"
-                      id="email"
-                      name="email"
+                      type="text"
+                      id="username"
+                      name="username"
                       placeholder="Enter Email"
                       className={`w-full h-[48px] mt-1 border border-gray-300 py-2 pl-3 pr-4 rounded-lg focus:border-orange-500 focus:outline-none ${
                         errors.email && touched.email
@@ -64,11 +61,11 @@ function AdminLoginPage() {
                       }`}
                     />
                     <ErrorMessage
-                      name="email"
+                      name="username"
                       component="div"
                       className="text-purple-500 text-body3 pl-2 absolute"
                     />
-                    {errors.email && touched.email ? (
+                    {errors.username && touched.username ? (
                       <img
                         src={errorIcon}
                         className="absolute right-3 top-[60%] z-10"
