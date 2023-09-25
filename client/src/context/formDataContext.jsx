@@ -1,5 +1,6 @@
 import { createContext, useContext, useState } from "react";
 import * as Yup from "yup";
+import { supabase } from "../supabase/client";
 
 const FormDataContext = createContext();
 
@@ -24,6 +25,8 @@ export function FormDataProvider({ children }) {
     courseSummary: "",
     courseDetail: "",
   });
+
+  const supabaseStorageUrl = `https://sxnmelktycywskodrejx.supabase.co/storage/v1/object/public/test_upload`;
 
   const validationSchema = Yup.object().shape({
     courseName: Yup.mixed()
@@ -101,6 +104,75 @@ export function FormDataProvider({ children }) {
     setVideoPreview(null);
   };
 
+  const uploadImage = async (folderName, file) => {
+    const timestamp = Date.now();
+    const randomString = Math.random().toString(36).substring(7);
+    const fileName = `${timestamp}_${randomString}`;
+    const filePath = `${folderName}/${fileName}`;
+    const { data, error } = await supabase.storage
+      .from("test_upload")
+      .upload(filePath, file);
+    if (error) {
+      console.error("Error uploading image:", error);
+    } else {
+      console.log("Image uploaded successfully:", data);
+      setSelectedImage(filePath);
+      setImageUrl(`${supabaseStorageUrl}/${filePath}`);
+    }
+  };
+
+  const uploadVideoTrailer = async (folderName, file) => {
+    const timestamp = Date.now();
+    const randomString = Math.random().toString(36).substring(7);
+    const fileName = `${timestamp}_${randomString}`;
+    const filePath = `${folderName}/${fileName}`;
+    const { data, error } = await supabase.storage
+      .from("test_upload")
+      .upload(filePath, file);
+    if (error) {
+      console.error("Error uploading video:", error);
+    } else {
+      console.log("Video uploaded successfully:", data);
+      setSelectedVideoTrailer(filePath);
+      setVideoTrailerUrl(`${supabaseStorageUrl}/${filePath}`);
+    }
+  };
+
+  const deleteImage = async () => {
+    const { error } = await supabase.storage
+      .from("test_upload")
+      .remove([selectedImage]);
+
+    if (error) {
+      console.error("Error deleting image:", error);
+    } else {
+      console.log("Image deleted successfully:");
+    }
+  };
+
+  const deleteVideoTrailer = async () => {
+    const { error } = await supabase.storage
+      .from("test_upload")
+      .remove([selectedVideoTrailer]);
+
+    if (error) {
+      console.error("Error deleting Video:", error);
+    } else {
+      console.log("Video deleted successfully:");
+    }
+  };
+
+  const handleClearVideoClick = () => {
+    setVideoTrailerError(false);
+    clearVideoPreview();
+    deleteVideoTrailer();
+  };
+  const handleClearImageClick = () => {
+    setCoverImageError(false);
+    clearImagePreview();
+    deleteImage();
+  };
+
   return (
     <FormDataContext.Provider
       value={{
@@ -129,6 +201,12 @@ export function FormDataProvider({ children }) {
         setSelectedVideoTrailer,
         videoTrailerUrl,
         setVideoTrailerUrl,
+        uploadImage,
+        uploadVideoTrailer,
+        deleteImage,
+        deleteVideoTrailer,
+        handleClearVideoClick,
+        handleClearImageClick,
       }}
     >
       {children}
