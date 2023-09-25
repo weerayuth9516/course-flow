@@ -58,8 +58,8 @@ adminRouter.get("/", async (req, res) => {
           courses.data.length === 0
             ? "not found"
             : courses.data.error
-              ? `${courses.data.error}`
-              : "API INVALID",
+            ? `${courses.data.error}`
+            : "API INVALID",
       });
     }
   } catch (err) {
@@ -241,4 +241,130 @@ adminRouter.put("/updated/:lessonId", async (res, req) => {
   }
 });
 
+// remove course
+
+// adminRouter.delete("/mydesirecourses/:userId/:courseId", async (req, res) => {
+//   const { userId, courseId } = req.params;
+//   const result = await supabase
+//     .from("user_course_details")
+//     .delete()
+//     .eq("user_id", userId)
+//     .eq("course_id", courseId);
+//   console.log(result);
+//   if (result.status === 204) {
+//     return res.json({ message: "Remove desired course successfully." });
+//   } else {
+//     return res.status(400).send(`API ERROR`);
+//   }
+// });
+
+adminRouter.delete("/courses/:courseId", async (req, res) => {
+  try {
+    const courseId = req.params.courseId;
+    console.log(req.params.courseId);
+
+    const isValidUUID = /^\w{8}-\w{4}-\w{4}-\w{4}-\w{12}$/.test(courseId);
+
+    if (!isValidUUID) {
+      return res.status(400).json({ error: "Invalid courseId format" });
+    }
+
+    if (!courseId) {
+      return res.status(400).json({
+        error: "courseId is required",
+      });
+    }
+
+    const result = await supabase
+      .from("courses")
+      .delete()
+      .eq("course_id", courseId);
+    console.log(result);
+
+    const lessonDeleteResult = await supabase
+      .from("lessons")
+      .delete()
+      .eq("course_id", courseId);
+    console.log(lessonDeleteResult);
+
+    // Delete sub-lessons related to the lessons of the deleted course
+    // const subLessonDeleteResult = await supabase
+    //   .from("sub_lessons")
+    //   .delete()
+    //   .eq(
+    //     "lesson_id",
+    //     lessonDeleteResult.data.map((lesson) => lesson.lesson_id)
+    //   );
+    // console.log(lessonDeleteResult.data.map((lesson) => lesson.lesson_id));
+
+    return res.json({
+      message: `Course with ID ${courseId} and its related content have been deleted.`,
+    });
+  } catch (error) {
+    console.error("error", error);
+    return res.status(500).json({
+      error: "An error occurred while processing the delete request.",
+    });
+  }
+});
+
+// this
+// DELETE route to delete a course and its related content
+// adminRouter.delete("/courses/:courseId", async (req, res) => {
+//   try {
+//     const courseId = req.params.courseId;
+
+//     // Check if courseId is provided
+//     if (!courseId) {
+//       return res.status(400).json({
+//         error: "courseId is required",
+//       });
+//     }
+
+//     // Fetch lesson IDs related to the course
+//     const { data: lessonIds, error: lessonIdsError } = await supabase
+//       .from("lessons")
+//       .select("lesson_id")
+//       .eq("course_id", courseId);
+
+//     if (lessonIdsError) {
+//       return res.status(500).json({
+//         error: "An error occurred while fetching lesson IDs.",
+//       });
+//     }
+
+//     // Delete the course and related content
+//     const { data: courseDeleteResult, error: courseDeleteError } =
+//       await supabase.from("courses").delete().eq("course_id", courseId);
+
+//     const { data: lessonDeleteResult, error: lessonDeleteError } =
+//       await supabase.from("lessons").delete().eq("course_id", courseId);
+
+//     // Delete sub-lessons related to lessons
+//     for (const lesson of lessonIds) {
+//       await supabase
+//         .from("sub_lessons")
+//         .delete()
+//         .eq("lesson_id", lesson.lesson_id);
+//     }
+
+//     // Check for errors in any of the delete operations
+//     if (courseDeleteError || lessonDeleteError) {
+//       return res.status(500).json({
+//         error:
+//           "An error occurred while deleting the course and related content.",
+//       });
+//     }
+
+//     // Assuming the delete operations were successful
+//     return res.json({
+//       message: `Course with ID ${courseId} and its related content have been deleted.`,
+//     });
+//   } catch (error) {
+//     console.error(error);
+//     return res.status(500).json({
+//       error: "An error occurred while processing the delete request.",
+//     });
+//   }
+// });
 export default adminRouter;
