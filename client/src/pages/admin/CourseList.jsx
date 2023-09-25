@@ -18,6 +18,7 @@ import { DeleteCourse } from "../../components/admin/ConfirmDeleteModal";
 function CourseListPage() {
   const auth = useAuth();
   const [courseList, setCourseList] = useState([]);
+  const navigate = useNavigate()
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleted, setDeleted] = useState(false);
   const params = useParams();
@@ -107,20 +108,14 @@ function CourseListPage() {
           <table className="table-auto absolute right-[5%] top-[5%] w-[90%]">
             <thead className="bg-gray-300">
               <tr>
-                <th className="py-3 px-5 tracking-wide text-start"></th>
-                <th className="py-3 px-5 tracking-wide text-start">Image</th>
-                <th className="py-3 px-5 tracking-wide text-start">
-                  Course name
-                </th>
-                <th className="py-3 px-5 tracking-wide text-start">Lesson</th>
-                <th className="py-3 px-5 tracking-wide text-start">Price</th>
-                <th className="py-3 px-5 tracking-wide text-start">
-                  Created date
-                </th>
-                <th className="py-3 px-5 tracking-wide text-start">
-                  Updated date
-                </th>
-                <th className="py-3 px-5 tracking-wide text-start">Action</th>
+                <th className="py-3 px-5 tracking-wide text-start text-gray-800 font-normal"></th>
+                <th className="py-3 px-5 tracking-wide text-start text-gray-800 font-normal">Image</th>
+                <th className="py-3 px-5 tracking-wide text-start text-gray-800 font-normal">Course name</th>
+                <th className="py-3 px-5 tracking-wide text-start text-gray-800 font-normal">Lesson</th>
+                <th className="py-3 px-5 tracking-wide text-start text-gray-800 font-normal">Price</th>
+                <th className="py-3 px-5 tracking-wide text-start text-gray-800 font-normal">Created date</th>
+                <th className="py-3 px-5 tracking-wide text-start text-gray-800 font-normal">Updated date</th>
+                <th className="py-3 px-5 tracking-wide text-start text-gray-800 font-normal">Action</th>
               </tr>
             </thead>
             <tbody className="bg-white">
