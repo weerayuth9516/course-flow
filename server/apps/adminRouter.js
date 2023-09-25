@@ -5,7 +5,7 @@ import jwt from "jsonwebtoken";
 import { protect } from "../middlewares/protect.js";
 
 const adminRouter = Router();
-// adminRouter.use(protect);
+adminRouter.use(protect);
 
 adminRouter.get("/", async (req, res) => {
   try {

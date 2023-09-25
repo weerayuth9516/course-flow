@@ -5,15 +5,17 @@ import errorIcon from "../../assets/registerPage/errorIcon.svg";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/authentication";
 
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/authentication";
+// import errorIcon from "../../assets/registerPage/errorIcon.svg";
+
 function AdminLoginPage() {
   const navigate = useNavigate();
   const auth = useAuth();
   const initialValues = { username: "", password: "" };
   const validationSchema = Yup.object({
     username: Yup.string().required("Email is required"),
-    password: Yup.string()
-      .required("Password is required")
-      .min(12, "Password must be at least 12 characters"),
+    password: Yup.string().required("Password is required"),
   });
 
   const handleSubmit = async (values, { setErrors }) => {

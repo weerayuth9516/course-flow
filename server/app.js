@@ -6,6 +6,7 @@ import dotenv from "dotenv";
 import courseRouter from "./apps/courseRouter.js";
 import authRouter from "./apps/authRouter.js";
 import adminRouter from "./apps/adminRouter.js";
+
 async function init() {
   const app = express();
   const port = 4001;
@@ -16,6 +17,7 @@ async function init() {
   app.use("/courses", courseRouter);
   app.use("/auth", authRouter);
   app.use("/admin", adminRouter);
+
   app.get("/", (req, res) => {
     return res.send("Course Flow API Running.");
   });
