@@ -5,10 +5,6 @@ import errorIcon from "../../assets/registerPage/errorIcon.svg";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/authentication";
 
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../context/authentication";
-// import errorIcon from "../../assets/registerPage/errorIcon.svg";
-
 function AdminLoginPage() {
   const navigate = useNavigate();
   const auth = useAuth();

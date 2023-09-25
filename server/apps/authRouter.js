@@ -167,7 +167,7 @@ authRouter.post("/admin/login", async (req, res) => {
       }
     } else {
       return res.status(200).json({
-        message: { username: "Username Invalid" },
+        message: { username: "Email Invalid" },
       });
     }
   } catch (error) {
