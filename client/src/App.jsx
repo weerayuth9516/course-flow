@@ -31,7 +31,7 @@ function App() {
       <Route path="/editprofile" element={<EditProfilePage />} />
       <Route path="/mydesirecourses" element={<DesireCoursePage />} />
       <Route path="/course" element={<CoursePage />} />
-      <Route path="/tester" element={<TesterComponent />} />
+      {/* <Route path="/tester" element={<TesterComponent />} /> */}
       {auth.isAuthenicated ? (
         <Route path="/mycourses" element={<MyCoursePage />} />
       ) : (

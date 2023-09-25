@@ -25,6 +25,8 @@ export function DataCenterProvider({ children }) {
     totalLearningTime: "",
     courseSummary: "",
     courseDetail: "",
+    coverImage: null,
+    videoTrailer: null,
   });
 
   const navigate = useNavigate();
