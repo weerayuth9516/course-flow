@@ -1,6 +1,9 @@
 import React from "react";
 import { useState, useEffect } from "react";
+<<<<<<< HEAD
 import { useState, useEffect } from "react";
+=======
+>>>>>>> 19ea5e46cb33ddf1be6875918f9e5fe78d45736b
 import DisplayCards from "../../components/user/DisplayCards";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
@@ -50,9 +53,13 @@ function MyCoursePage() {
                 setStatus("myCourses");
                 setGetFocus(true);
               }}
+<<<<<<< HEAD
               className={`text-black p-2 ${
                 getFocus ? "border-b border-black " : "text-gray-600"
               } transform transition-transform duration-300 ease-in-out  hover:border-b hover:border-b-1 hover:text-black focus:text-black focus:border-b focus:border-b-1 focus:border-black`}
+=======
+              className={`text-gray-600 p-2 ${getFocus ? "border-b border-black" : ""} transform transition-transform duration-300 ease-in-out hover:border-b hover:border-b-1 hover:text-black focus:text-black focus:border-b focus:border-b-1 focus:border-black`}
+>>>>>>> 19ea5e46cb33ddf1be6875918f9e5fe78d45736b
             >
               All Course
             </button>
