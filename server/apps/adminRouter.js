@@ -5,7 +5,7 @@ import jwt from "jsonwebtoken";
 import { protect } from "../middlewares/protect.js";
 
 const adminRouter = Router();
-adminRouter.use(protect);
+// adminRouter.use(protect);
 
 adminRouter.get("/", async (req, res) => {
   try {
@@ -58,8 +58,8 @@ adminRouter.get("/", async (req, res) => {
           courses.data.length === 0
             ? "not found"
             : courses.data.error
-            ? `${courses.data.error}`
-            : "API INVALID",
+              ? `${courses.data.error}`
+              : "API INVALID",
       });
     }
   } catch (err) {
