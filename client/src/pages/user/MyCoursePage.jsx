@@ -18,9 +18,9 @@ function MyCoursePage() {
     setUserId,
     getAllMyCourses,
   } = useMycourses();
-  const [getFocus, setGetFocus] = useState(true);
 
   const auth = useAuth();
+  const [getFocus, setGetFocus] = useState(true);
 
   useEffect(() => {
     if (auth.isAuthenicated) {
@@ -59,7 +59,7 @@ function MyCoursePage() {
                 setStatus("in_progress");
                 setGetFocus(false);
               }}
-              className="transform  transition-transform duration-300 ease-in-out hover:border-b hover:border-b-1 hover:text-black text-gray-600 focus:text-black focus:border-b focus:border-b-1 focus: border-black p-2"
+              className="transform transition-transform duration-300 ease-in-out hover:border-b hover:border-b-1 hover:text-black text-gray-600 focus:text-black focus:border-b focus:border-b-1 focus: border-black p-2"
             >
               Inprogress
             </button>
