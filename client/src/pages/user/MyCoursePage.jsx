@@ -18,7 +18,6 @@ function MyCoursePage() {
     setUserId,
     getAllMyCourses,
   } = useMycourses();
-  const [getFocus, setGetFocus] = useState(true);
 
   const auth = useAuth();
 
