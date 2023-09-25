@@ -10,12 +10,14 @@ import ex1 from "../../assets/courselist/ex1.png";
 import edit from "../../assets/courselist/edit.png";
 import deleteLogo from "../../assets/courselist/delete.png";
 import greenstatus from "../../assets/courselist/greenstatus.png";
+import redstatus from "../../assets/courselist/redstatus.png";
 import { useState, useEffect } from "react";
 import { useAuth } from "../../context/authentication";
 import axios from "axios";
 import { DeleteCourse } from "../../components/admin/ConfirmDeleteModal";
 
 function CourseListPage() {
+  const courseExists = true;
   const auth = useAuth();
   const [courseList, setCourseList] = useState([]);
   const navigate = useNavigate()
@@ -123,7 +125,12 @@ function CourseListPage() {
                 return (
                   <tr key={index} className="border-b-2">
                     <td className="p-5">
-                      <img className="w-3" src={greenstatus}></img>
+                      {courseExists
+                        ? (
+                          <img className="w-3" src={greenstatus} alt="Green Status"></img>
+                        ) : (
+                          <img className="w-3" src={redstatus} alt="Red Status"></img>
+                        )}
                     </td>
 
                     <td className="p-5">
