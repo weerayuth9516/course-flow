@@ -20,12 +20,22 @@ function EditCoursePage() {
     setVideoTrailerError,
     selectedImage,
     selectedVideoTrailer,
+    firstTimeFetch,
+    setFirstTimeFetch,
+    handleCancelButton,
   } = useDataCenter();
 
   const filterSubmit = (values) => {
-    selectedImage || imageServerUrl
+
+    selectedImage && imageServerUrl === ""
       ? setCoverImageError(false)
       : setCoverImageError(true);
+      
+        imageServerUrl && selectedImage === null
+        ? setCoverImageError(false)
+        : setCoverImageError(true);
+
+
     selectedVideoTrailer || videoTrailerServerUrl
       ? setVideoTrailerError(false)
       : setVideoTrailerError(true);
@@ -43,7 +53,6 @@ function EditCoursePage() {
     // Handle form submission
     values.course_cover_img = selectedImage.name;
     values.course_video_trailer = selectedVideoTrailer.name;
-    values.course_img = selectedImage;
     values.videoTrailer = selectedVideoTrailer;
     console.log(values);
     // if (
@@ -81,7 +90,10 @@ function EditCoursePage() {
   };
 
   useEffect(() => {
+    if (firstTimeFetch) {
     getCourseData();
+      setFirstTimeFetch(false);
+    }
   }, []);
 
   return (
@@ -98,19 +110,22 @@ function EditCoursePage() {
                 <Link to="/admin/courselist">
                   <img src={arrowBack} className="inline mr-4" />
                 </Link>
-                <div className="inline text-header3 text-[2A2E3F] overflow-hidden">
-                  Course {formValues.courseName}
+                <div className="inline text-header3 text-gray-600 mr-2">
+                  Course 
                 </div>
+                <div className="inline text-header3 text-[2A2E3F]">'{formValues.courseName}'</div>
               </div>
               <div className="flex justify-center items-center font-bold">
-                <Link to="/admin/courselist">
-                  <button className="text-orange-500 w-[117px] h-[60px] border border-orange-500 rounded-xl">
+                <button
+                  onClick={handleCancelButton}
+                  className="text-orange-500 w-[117px] h-[60px] border border-orange-500 rounded-xl"
+                >
                     Cancel
                   </button>
-                </Link>
                 <button
                   type="submit"
                   form="add-course"
+                  onClick={filterSubmit}
                   className="text-white w-[117px] h-[60px] bg-[#2f5fac] rounded-xl ml-[20px] mr-[15px]"
                 >
                   Edit

@@ -4,7 +4,8 @@ import { Formik, Field, Form, ErrorMessage } from "formik";
 import useDataCenter from "../../context/DataCenter";
 
 function CourseForm({ filterSubmit }) {
-  const { formValues, setFormValues, validationSchema } = useDataCenter();
+  const { formValues, setFormValues, validationSchema, firstTimeFetch } =
+    useDataCenter();
 
   return (
     <>
@@ -48,7 +49,7 @@ function CourseForm({ filterSubmit }) {
             </div>
             <div className="w-[920px] flex space-x-20 mt-[40px]">
               <div className="relative">
-                <label htmlFor="price">Price *</label>
+                <label htmlFor="price">Price (THB)*</label>
                 <Field
                   type="number"
                   id="price"
@@ -79,7 +80,9 @@ function CourseForm({ filterSubmit }) {
               </div>
 
               <div className="relative">
-                <label htmlFor="totalLearningTime">Total learning time *</label>
+                <label htmlFor="totalLearningTime">
+                  Total learning time (Hours)*
+                </label>
                 <Field
                   type="number"
                   id="totalLearningTime"
@@ -155,11 +158,11 @@ function CourseForm({ filterSubmit }) {
                     courseDetail: e.target.value,
                   });
                 }}
-                className={`w-[920px] h-[220px] border-2 border-[D6D9E4] rounded-xl text-[16px] pl-4 pt-4 focus:border-orange-500 focus:outline-none resize-none mt-1 ${
+                className={`w-[920px] border-2 border-[D6D9E4] rounded-xl text-[16px] pl-4 pt-4 focus:border-orange-500 focus:outline-none resize-none mt-1 ${
                   errors.courseDetail && touched.courseDetail
                     ? "border-purple-500 border-2"
                     : ""
-                }`}
+                } ${firstTimeFetch ? "h-[220px]" : "h-[436px]"}`}
                 placeholder="Enter Course detail"
               />
               {errors.courseDetail && touched.courseDetail && (
