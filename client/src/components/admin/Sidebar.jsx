@@ -21,7 +21,7 @@ function Sidebar() {
     navigate("/admin/login");
   };
   return (
-    <aside className="w-[17%] top-0 border-r border-gray-400">
+    <aside className="w-[16%] top-0 border-r border-gray-400">
       <div className="sidebar overflow-y-auto">
         <div className=" w-full flex flex-col items-center mt-10 mb-24 px-5">
           <Link to={"/admin/courselist"}>
@@ -52,7 +52,7 @@ function Sidebar() {
         </Link> */}
         <Link to={"/admin/courselist"}>
           <div
-            className={`py-4 px-6 h-12 w-full flex items-center duration-300 cursor-pointer 
+            className={`py-4 px-6 h-12 w-full flex items-center duration-300 cursor-pointer hover:bg-gray-200
             ${isCourseActive
                 ? "bg-gray-200"
                 : ""
