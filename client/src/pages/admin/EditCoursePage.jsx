@@ -106,9 +106,7 @@ function EditCoursePage() {
               className="w-full h-[92px] flex justify-between items-center px-20 border-b border-gray-400"
             >
               <div className="flex items-center">
-                <Link to="/admin/courselist">
-                  <img src={arrowBack} className="inline mr-4" />
-                </Link>
+                  <img src={arrowBack} onClick={handleCancelButton} className="inline mr-4 cursor-pointer" />
                 <div className="inline text-header3 text-gray-600 mr-2">
                   Course 
                 </div>

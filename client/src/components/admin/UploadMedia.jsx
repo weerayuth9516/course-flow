@@ -24,24 +24,14 @@ function UploadMedia() {
     setSelectedVideoTrailer,  
   } = useDataCenter();
 
-  const handleImageEditPreview = (imageServerUrl) => {
-    setImagePreview(imageServerUrl);
-  };
-
-  const handleVideoEditPreview = (videoTrailerServerUrl) => {
-    setVideoPreview(videoTrailerServerUrl);
-  };
-
   useEffect(() => {
     if(imageServerUrl){
-      handleImageEditPreview(imageServerUrl)
+      setImagePreview(imageServerUrl);
     }
     if(videoTrailerServerUrl){
-      handleVideoEditPreview(videoTrailerServerUrl)
+      setVideoPreview(videoTrailerServerUrl);
     }
   }, [videoTrailerServerUrl, imageServerUrl]);
-
-
 
   return (
     <>
