@@ -5,12 +5,14 @@ import useFormData from "../../context/formDataContext";
 
 function CourseForm({ filterSubmit }) {
   const { formValues, setFormValues, validationSchema } = useFormData();
+
   return (
     <>
       <Formik
         initialValues={formValues}
         validationSchema={validationSchema}
         onSubmit={filterSubmit}
+        enableReinitialize={true}
       >
         {({ errors, touched }) => (
           <Form id="add-course">

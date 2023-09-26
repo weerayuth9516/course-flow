@@ -17,6 +17,7 @@ import { DeleteCourse } from "../../components/admin/ConfirmDeleteModal";
 
 function CourseListPage() {
   const auth = useAuth();
+  const navigate = useNavigate();
   const [courseList, setCourseList] = useState([]);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleted, setDeleted] = useState(false);
@@ -50,6 +51,7 @@ function CourseListPage() {
   };
   useEffect(() => {
     getCourseList(1);
+    getCourseList(1);
   }, []);
 
   const handleDeleteCourse = async (courseId) => {
@@ -80,7 +82,7 @@ function CourseListPage() {
           <div className="pl-[5%] text-header3">Course</div>
           <div className="flex gap-3 items-center pr-[5%]">
             <label
-              for="default-search"
+              htmlFor="default-search"
               className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
             ></label>
             <div className="relative">
@@ -154,17 +156,7 @@ function CourseListPage() {
                       {item.course_updated_at}
                     </td>
                     <td className="pt-8 flex pl-4 gap-2 ">
-                      <img
-                        src={deleteLogo}
-                        onClick={() => openDeleteModal(item.course_id)}
-                        style={{ cursor: "pointer" }}
-                      ></img>
-                      {/* <img
-                        src={deleteLogo}
-                        alt="Delete"
-                        onClick={() => handleDeleteCourse(item.course_id)}
-                        style={{ cursor: "pointer" }}
-                      /> */}
+                      <img src={deleteLogo}></img>
                       <img src={edit}></img>
                     </td>
                   </tr>
@@ -174,11 +166,7 @@ function CourseListPage() {
           </table>
         </div>
       </div>
-      <DeleteCourse
-        isOpen2={showDeleteModal}
-        onRequestClose2={closeDeleteModal}
-        onConfirm2={() => handleDeleteCourse(courseId)}
-      />
+
     </div>
   );
 }

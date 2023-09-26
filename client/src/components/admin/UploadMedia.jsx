@@ -1,12 +1,15 @@
-import React from "react";
+import React, { useEffect } from "react";
 import deleteIcon from "../../assets/addCourse/delete.png";
 import useFormData from "../../context/formDataContext";
 import plusIcon from "../../assets/addCourse/plus.png";
 
 function UploadMedia() {
   const {
+    imageServerUrl,
     imagePreview,
+    setImagePreview,
     videoPreview,
+    setVideoPreview,
     videoType,
     handleImagePreview,
     handleVideoPreview,
@@ -18,7 +21,29 @@ function UploadMedia() {
     uploadVideoTrailer,
     handleClearVideoClick,
     handleClearImageClick,
+    videoTrailerServerUrl,
+       
   } = useFormData();
+
+  const handleImageEditPreview = (imageServerUrl) => {
+    setImagePreview(imageServerUrl);
+  };
+
+  const handleVideoEditPreview = (videoTrailerServerUrl) => {
+    setVideoPreview(videoTrailerServerUrl);
+  };
+
+  useEffect(() => {
+    if(imageServerUrl){
+      handleImageEditPreview(imageServerUrl)
+    }
+    if(videoTrailerServerUrl){
+      handleVideoEditPreview(videoTrailerServerUrl)
+    }
+  }, [videoTrailerServerUrl]);
+
+
+
   return (
     <>
       <div className="w-[240px] h-[272px] mt-[40px]">

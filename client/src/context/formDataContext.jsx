@@ -13,11 +13,13 @@ export function FormDataProvider({ children }) {
   const [videoPreview, setVideoPreview] = useState(null);
   const [videoType, setVideoType] = useState("video/mp4");
   const [imageUrl, setImageUrl] = useState("");
+  const [imageServerUrl, setImageServerUrl] = useState("");
   const [selectedImage, setSelectedImage] = useState(null);
   const [selectedVideoTrailer, setSelectedVideoTrailer] = useState(null);
   const [coverImageError, setCoverImageError] = useState(false);
   const [videoTrailerError, setVideoTrailerError] = useState(false);
   const [videoTrailerUrl, setVideoTrailerUrl] = useState("");
+  const [videoTrailerServerUrl, setVideoTrailerServerUrl] = useState("");
   const [formValues, setFormValues] = useState({
     courseName: "",
     price: "",
@@ -207,6 +209,10 @@ export function FormDataProvider({ children }) {
         deleteVideoTrailer,
         handleClearVideoClick,
         handleClearImageClick,
+        imageServerUrl,
+        setImageServerUrl,
+        videoTrailerServerUrl,
+        setVideoTrailerServerUrl,
         addLesson,
         setAddlesson,
         lessons,
