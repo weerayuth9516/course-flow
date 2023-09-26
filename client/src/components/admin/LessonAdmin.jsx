@@ -16,7 +16,10 @@ function LessonAdmin() {
         `http://localhost:4001/admin/courses/${params.courseId}`
       );
       setLessons(lessonsResult.data.data.lessons);
+<<<<<<< HEAD
       // console.log(lessonsResult.data.data.lessons);
+=======
+>>>>>>> 166b504 (feat: created prototype-2)
     } catch (error) {
       console.log("request lesson error", error);
     }

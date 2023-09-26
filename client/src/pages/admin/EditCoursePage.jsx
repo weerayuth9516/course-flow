@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import useFormData from "../../context/formDataContext";
+import useDataCenter from "../../context/DataCenter";
 import Sidebar from "../../components/admin/Sidebar";
 import LessonAdmin from "../../components/admin/LessonAdmin";
 import UploadMedia from "../../components/admin/UploadMedia";
@@ -9,29 +9,29 @@ import axios from "axios";
 import { Link, useParams } from "react-router-dom";
 
 function EditCoursePage() {
-  const { formValues, setFormValues } = useFormData();
+  const { formValues, setFormValues } = useDataCenter();
   const params = useParams();
   const {
     imageServerUrl,
-    imageUrl,
     setImageServerUrl,
     videoTrailerServerUrl,
     setVideoTrailerServerUrl,
     setCoverImageError,
     setVideoTrailerError,
-    videoTrailerUrl,
-  } = useFormData();
+    selectedImage,
+    selectedVideoTrailer,
+  } = useDataCenter();
 
   const filterSubmit = (values) => {
-    imageUrl || imageServerUrl
+    selectedImage || imageServerUrl
       ? setCoverImageError(false)
       : setCoverImageError(true);
-    videoTrailerUrl || videoTrailerServerUrl
+    selectedVideoTrailer || videoTrailerServerUrl
       ? setVideoTrailerError(false)
       : setVideoTrailerError(true);
     if (
-      (imageUrl || imageServerUrl) &&
-      (videoTrailerUrl || videoTrailerServerUrl)
+      (selectedImage || imageServerUrl) &&
+      (selectedVideoTrailer || videoTrailerServerUrl)
     ) {
       handleSubmit(values);
     } else {
@@ -41,18 +41,20 @@ function EditCoursePage() {
 
   const handleSubmit = (values) => {
     // Handle form submission
-    // values.coverImage = imageUrl;
-    // values.videoTrailer = videoTrailerUrl;
+    values.course_cover_img = selectedImage.name;
+    values.course_video_trailer = selectedVideoTrailer.name;
+    values.course_img = selectedImage;
+    values.videoTrailer = selectedVideoTrailer;
     console.log(values);
-    if (
-      values.hasOwnProperty("coverImage") &&
-      values.hasOwnProperty("videoTrailer")
-    ) {
-      setTimeout(() => {
-        // window.location.reload();
-        // navigate("/admin/courselist");
-      }, 2000);
-    }
+    // if (
+    //   values.hasOwnProperty("coverImage") &&
+    //   values.hasOwnProperty("videoTrailer")
+    // ) {
+    //   setTimeout(() => {
+    //     // window.location.reload();
+    //     // navigate("/admin/courselist");
+    //   }, 2000);
+    // }
   };
 
   const getCourseData = async () => {
@@ -109,7 +111,6 @@ function EditCoursePage() {
                 <button
                   type="submit"
                   form="add-course"
-                  onClick={filterSubmit}
                   className="text-white w-[117px] h-[60px] bg-[#2f5fac] rounded-xl ml-[20px] mr-[15px]"
                 >
                   Edit
