@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import logo from "../../assets/header/CourseFlow.png";
 import book from "../../assets/Sidebar/book.png";
 import assignment from "../../assets/Sidebar/assignment.png";
@@ -13,10 +13,23 @@ import greenstatus from "../../assets/courselist/greenstatus.png";
 import { useState, useEffect } from "react";
 import { useAuth } from "../../context/authentication";
 import axios from "axios";
+import { DeleteCourse } from "../../components/admin/ConfirmDeleteModal";
 
 function CourseListPage() {
   const auth = useAuth();
   const [courseList, setCourseList] = useState([]);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleted, setDeleted] = useState(false);
+  const params = useParams();
+  const [courseId, setCourseId] = useState(null);
+
+  const openDeleteModal = (courseId) => {
+    setCourseId(courseId);
+    setShowDeleteModal(true);
+  };
+  const closeDeleteModal = () => {
+    setShowDeleteModal(false);
+  };
 
   const getCourseList = async (
     page,
@@ -40,18 +53,19 @@ function CourseListPage() {
   }, []);
 
   const handleDeleteCourse = async (courseId) => {
+    console.log("courseId", courseId);
     try {
-      // Make an API call to delete the course
       const response = await axios.delete(
         `http://localhost:4001/admin/courses/${courseId}`
       );
+      console.log(response);
 
-      // Check if the deletion was successful (you can add more error handling here)
-      if (response.status === 200) {
-        // Remove the deleted course from the courseList state
+      if (response && response.status === 200) {
         setCourseList((prevCourseList) =>
           prevCourseList.filter((course) => course.course_id !== courseId)
         );
+        setDeleted(true);
+        closeDeleteModal();
       }
     } catch (error) {
       console.error("Error deleting course:", error);
@@ -140,13 +154,17 @@ function CourseListPage() {
                       {item.course_updated_at}
                     </td>
                     <td className="pt-8 flex pl-4 gap-2 ">
-                      {/* <img src={deleteLogo}></img> */}
                       <img
+                        src={deleteLogo}
+                        onClick={() => openDeleteModal(item.course_id)}
+                        style={{ cursor: "pointer" }}
+                      ></img>
+                      {/* <img
                         src={deleteLogo}
                         alt="Delete"
                         onClick={() => handleDeleteCourse(item.course_id)}
                         style={{ cursor: "pointer" }}
-                      />
+                      /> */}
                       <img src={edit}></img>
                     </td>
                   </tr>
@@ -156,6 +174,11 @@ function CourseListPage() {
           </table>
         </div>
       </div>
+      <DeleteCourse
+        isOpen2={showDeleteModal}
+        onRequestClose2={closeDeleteModal}
+        onConfirm2={() => handleDeleteCourse(courseId)}
+      />
     </div>
   );
 }
