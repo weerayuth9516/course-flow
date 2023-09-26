@@ -27,18 +27,14 @@ function EditCoursePage() {
 
   const filterSubmit = (values) => {
 
-    selectedImage && imageServerUrl === ""
+    selectedImage || imageServerUrl
       ? setCoverImageError(false)
       : setCoverImageError(true);
-      
-        imageServerUrl && selectedImage === null
-        ? setCoverImageError(false)
-        : setCoverImageError(true);
-
 
     selectedVideoTrailer || videoTrailerServerUrl
       ? setVideoTrailerError(false)
       : setVideoTrailerError(true);
+
     if (
       (selectedImage || imageServerUrl) &&
       (selectedVideoTrailer || videoTrailerServerUrl)
@@ -51,9 +47,12 @@ function EditCoursePage() {
 
   const handleSubmit = (values) => {
     // Handle form submission
-    values.course_cover_img = selectedImage.name;
-    values.course_video_trailer = selectedVideoTrailer.name;
-    values.videoTrailer = selectedVideoTrailer;
+    if(selectedImage){
+      values.course_cover_img = selectedImage.name;
+      values.course_video_trailer = selectedVideoTrailer.name;
+      values.course_img = selectedImage;
+      values.videoTrailer = selectedVideoTrailer;
+    }
     console.log(values);
     // if (
     //   values.hasOwnProperty("coverImage") &&
@@ -125,7 +124,6 @@ function EditCoursePage() {
                 <button
                   type="submit"
                   form="add-course"
-                  onClick={filterSubmit}
                   className="text-white w-[117px] h-[60px] bg-[#2f5fac] rounded-xl ml-[20px] mr-[15px]"
                 >
                   Edit

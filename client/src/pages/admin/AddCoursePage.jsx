@@ -65,7 +65,6 @@ function AddCoursePage() {
                 <button
                   type="submit"
                   form="add-course"
-                  onClick={filterSubmit}
                   className="text-white w-[117px] h-[60px] bg-[#2f5fac] rounded-xl ml-[20px] mr-[15px]"
                 >
                   Create
