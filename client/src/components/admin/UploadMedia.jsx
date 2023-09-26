@@ -21,8 +21,7 @@ function UploadMedia() {
     handleClearImageClick,
     videoTrailerServerUrl,
     setSelectedImage,
-    setSelectedVideoTrailer,
-       
+    setSelectedVideoTrailer,  
   } = useDataCenter();
 
   const handleImageEditPreview = (imageServerUrl) => {
