@@ -12,6 +12,7 @@ function AddCoursePage() {
     setVideoTrailerError,
     selectedImage,
     selectedVideoTrailer,
+    handleCancelButton,
   } = useDataCenter();
 
   const filterSubmit = (values) => {
@@ -58,14 +59,13 @@ function AddCoursePage() {
                 Add Course
               </div>
               <div className="flex justify-center items-center font-bold">
-                <Link to="/admin/courselist">
-                  <button className="text-orange-500 w-[117px] h-[60px] border border-orange-500 rounded-xl">
+                  <button onClick={handleCancelButton} className="text-orange-500 w-[117px] h-[60px] border border-orange-500 rounded-xl">
                     Cancel
                   </button>
-                </Link>
                 <button
                   type="submit"
                   form="add-course"
+                  onClick={filterSubmit}
                   className="text-white w-[117px] h-[60px] bg-[#2f5fac] rounded-xl ml-[20px] mr-[15px]"
                 >
                   Create

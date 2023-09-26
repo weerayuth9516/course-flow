@@ -1,5 +1,6 @@
 import { createContext, useContext, useState } from "react";
 import * as Yup from "yup";
+import { useNavigate } from "react-router-dom";
 
 const DataCenter = createContext();
 
@@ -15,8 +16,9 @@ export function DataCenterProvider({ children }) {
   const [selectedVideoTrailer, setSelectedVideoTrailer] = useState(null);
   const [coverImageError, setCoverImageError] = useState(false);
   const [videoTrailerError, setVideoTrailerError] = useState(false);
-  const [imageServerUrl, setImageServerUrl] = useState("");
-  const [videoTrailerServerUrl, setVideoTrailerServerUrl] = useState("");
+  const [imageServerUrl, setImageServerUrl] = useState(null);
+  const [videoTrailerServerUrl, setVideoTrailerServerUrl] = useState(null);
+  const [firstTimeFetch,setFirstTimeFetch] = useState(true)
   const [formValues, setFormValues] = useState({
     courseName: "",
     price: "",
@@ -24,6 +26,8 @@ export function DataCenterProvider({ children }) {
     courseSummary: "",
     courseDetail: "",
   });
+
+  const navigate = useNavigate();
 
   const validationSchema = Yup.object().shape({
     courseName: Yup.mixed()
@@ -59,12 +63,12 @@ export function DataCenterProvider({ children }) {
         (value) => value && value.length <= 3000
       ),
     courseDetail: Yup.string()
-      .required("Course detail is required")
-      .test(
-        "max-length",
-        "Course detail must be at most 5000 characters",
-        (value) => value && value.length <= 5000
-      ),
+      .required("Course detail is required"),
+      // .test(
+      //   "max-length",
+      //   "Course detail must be at most 10000 characters",
+      //   (value) => value && value.length <= 10000
+      // ),
   });
 
   const handleImagePreview = (e) => {
@@ -103,10 +107,20 @@ export function DataCenterProvider({ children }) {
   const handleClearVideoClick = () => {
     setVideoTrailerError(false);
     clearVideoPreview();
+    setSelectedVideoTrailer(null);
+    setVideoTrailerServerUrl(null);
   };
   const handleClearImageClick = () => {
     setCoverImageError(false);
     clearImagePreview();
+    setSelectedImage(null);
+    setImageServerUrl(null)
+  };
+  const handleCancelButton = () => {
+    setTimeout(() => {
+      window.location.reload();
+    }, 100);
+    navigate("/admin/courselist");
   };
 
   return (
@@ -139,6 +153,8 @@ export function DataCenterProvider({ children }) {
         setImageServerUrl,
         videoTrailerServerUrl,
         setVideoTrailerServerUrl,
+        firstTimeFetch,setFirstTimeFetch,
+        handleCancelButton,
       }}
     >
       {children}
