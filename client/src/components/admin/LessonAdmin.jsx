@@ -4,12 +4,13 @@ import axios from "axios";
 import editIcon from "../../assets/registerPage/edit.svg";
 import deleteIcon from "../../assets/registerPage/delete.svg";
 import dragIcon from "../../assets/registerPage/drag.svg";
-
+import useFormData from "../../context/formDataContext";
 function LessonAdmin() {
   const params = useParams();
   const navigate = useNavigate();
 
   const [lessons, setLessons] = useState([]);
+<<<<<<< HEAD
   const getLesson = async () => {
     try {
       const lessonsResult = await axios.get(
@@ -20,9 +21,23 @@ function LessonAdmin() {
       console.log("request lesson error", error);
     }
   };
+=======
+  const { setAddLesson } = useFormData();
+  // const getLesson = async () => {
+  //   try {
+  //     const lessonsResult = await axios.get(
+  //       `http://localhost:4001/admin/courses/${params.courseId}`
+  //     );
+  //     setLessons(lessonsResult.data.data.lessons);
+  //     console.log(lessonsResult.data.data.lessons);
+  //   } catch (error) {
+  //     console.log("request lesson error", error);
+  //   }
+  // };
+>>>>>>> 402f038 (feat: prototype file upload system)
 
   useEffect(() => {
-    getLesson();
+    // getLesson();
   }, []);
   return (
     <>
@@ -31,7 +46,7 @@ function LessonAdmin() {
           <div className="font-medium text-gray-900 text-2xl">Lesson</div>
           <button
             className="h-full bg-blue-500 px-[32px] py-[18px] rounded-xl font-bold text-white hover:bg-blue-600"
-            onClick={() => navigate("/admin/addlesson")}
+            onClick={() => setAddLesson(true)}
           >
             + Add Lesson
           </button>

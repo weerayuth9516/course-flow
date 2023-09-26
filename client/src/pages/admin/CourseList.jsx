@@ -55,6 +55,10 @@ function CourseListPage() {
         `http://localhost:4001/admin?page=${page}&publicStatus=${publicStatus}&price=${price}&createdat=${createdat}&updatedat=${updatedat}`
       );
       setCourseList(response.data.data);
+<<<<<<< HEAD
+=======
+      console.log(response.data.data);
+>>>>>>> 402f038 (feat: prototype file upload system)
     } catch (error) {
       console.log("request error");
     }
@@ -105,7 +109,14 @@ function CourseListPage() {
         <div className="flex items-center text-center w-[100%] justify-between pt-6 pb-4 border-b-2 max-2xl:pr-0">
           <div className="pl-[5%] text-header3">Course</div>
           <div className="flex gap-3 items-center pr-[5%]">
-            <label htmlFor="default-search" className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"></label>
+            <label
+<<<<<<< HEAD
+              htmlFor="default-search"
+=======
+              for="default-search"
+>>>>>>> 402f038 (feat: prototype file upload system)
+              className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
+            ></label>
             <div className="relative">
               <div className="absolute inset-y-0 left-2 flex items-center pl-3 pointer-events-none">
 
