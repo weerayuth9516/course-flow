@@ -47,6 +47,12 @@ function LessonForm() {
       .min(1, "At least one Sub-Lesson is required"),
   });
 
+  const handleSubmit = async (values) => {
+    lessons.push(values);
+    subLessonVideo.push(preArrayVideo);
+    navigate("/admin/addcourse");
+  };
+
   const clearVideo = () => {
     setVideo(null);
   };

@@ -22,7 +22,7 @@ function LessonAdmin() {
 
   useEffect(() => {
     // getLesson();
-    console.log(lessons);
+    // console.log(lessons);
   }, []);
   return (
     <>

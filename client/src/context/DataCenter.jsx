@@ -9,6 +9,7 @@ export default function useDataCenter() {
 }
 
 export function DataCenterProvider({ children }) {
+  const formData = new FormData();
   const [imagePreview, setImagePreview] = useState(null);
   const [videoPreview, setVideoPreview] = useState(null);
   const [videoType, setVideoType] = useState("video/mp4");

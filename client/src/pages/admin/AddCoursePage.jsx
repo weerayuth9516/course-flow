@@ -36,9 +36,69 @@ function AddCoursePage() {
     values.course_video_trailer = selectedVideoTrailer.name;
     values.course_img = selectedImage;
     values.videoTrailer = selectedVideoTrailer;
-    console.log(lessons);
-    console.log(subLessonVideo);
-
+    const courseDetail = {
+      course_name: values.courseName,
+      course_price: values.price,
+      course_summary: values.courseSummary,
+      course_detail: values.courseDetail,
+      course_cover_image: values.course_cover_img,
+      course_video_trailer: values.course_video_trailer,
+      course_duration: values.totalLearningTime,
+    };
+    const lessonsDetail = lessons.map((value) => {
+      return {
+        priority: value.priority,
+        lesson_name: value.lessonName,
+        sub_lesson: value.subLessons.map((subValue) => {
+          return {
+            priority: subValue.priority,
+            sub_lesson_name: subValue.subLessonName,
+            sub_lesson_video: subValue.sub_lesson_video,
+          };
+        }),
+      };
+    });
+    const courseCoverImgFile = values.course_img;
+    const courseVideoTrailerFile = values.videoTrailer;
+    const subLessonVideoFile = [...subLessonVideo];
+    const formData = new FormData();
+    for (let key in courseDetail) {
+      formData.append(`courseDetail[${key}]`, courseDetail[key]);
+    }
+    lessonsDetail.map((value, index) => {
+      for (let key in value) {
+        if (key === "sub_lesson") {
+          const newValue = value[key][0];
+          for (let subKey in newValue) {
+            formData.append(
+              `lessonsDetail[${index}][${key}][${subKey}]`,
+              newValue[subKey]
+            );
+          }
+        } else {
+          formData.append(`lessonsDetail[${index}][${key}]`, value[key]);
+        }
+      }
+    });
+    formData.append("courseCoverImgFile", courseCoverImgFile);
+    formData.append("courseVideoTrailerFile", courseVideoTrailerFile);
+    subLessonVideoFile.map((value) => {
+      formData.append("subLessonVideoFile", value);
+    });
+    ///** TOO EASY I DONT USE THAT. ***/
+    // formData.append("courseDetail", JSON.stringify(courseDetail));
+    // formData.append("lessonsDetail", JSON.stringify(lessonsDetail));
+    ///** TOO EASY I DONT USE THAT. ***/
+    const response = await axios.post(
+      "http://localhost:4001/admin/course/created",
+      formData,
+      {
+        headers: { "Content-Type": "multipart/form-data" },
+      }
+    );
+    // console.log(response);
+    // const lessons = [...lessons];
+    // console.log(course_detail);
     // if (
     //   values.hasOwnProperty("coverImage") &&
     //   values.hasOwnProperty("videoTrailer")
