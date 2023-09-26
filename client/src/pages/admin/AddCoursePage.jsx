@@ -1,23 +1,23 @@
 import React from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import useFormData from "../../context/formDataContext";
+import useDataCenter from "../../context/DataCenter";
 import Sidebar from "../../components/admin/Sidebar";
 import LessonAdmin from "../../components/admin/LessonAdmin";
 import UploadMedia from "../../components/admin/UploadMedia";
 import CourseForm from "../../components/admin/CourseForm";
 function AddCoursePage() {
   const {
-    imageUrl,
     setCoverImageError,
     setVideoTrailerError,
-    videoTrailerUrl,
-  } = useFormData();
+    selectedImage,
+    selectedVideoTrailer,
+  } = useDataCenter();
 
   const filterSubmit = (values) => {
-    imageUrl ? setCoverImageError(false) : setCoverImageError(true);
-    videoTrailerUrl ? setVideoTrailerError(false) : setVideoTrailerError(true);
-    if (imageUrl && videoTrailerUrl) {
+    selectedImage ? setCoverImageError(false) : setCoverImageError(true);
+    selectedVideoTrailer ? setVideoTrailerError(false) : setVideoTrailerError(true);
+    if (selectedImage && selectedVideoTrailer) {
       handleSubmit(values);
     } else {
       console.log("Please fill in all require information");
@@ -26,18 +26,22 @@ function AddCoursePage() {
 
   const handleSubmit = (values) => {
     // Handle form submission
-    values.coverImage = imageUrl;
-    values.videoTrailer = videoTrailerUrl;
+    values.course_cover_img = selectedImage.name;
+    values.course_video_trailer = selectedVideoTrailer.name;
+    values.course_img = selectedImage
+    values.videoTrailer = selectedVideoTrailer;
     console.log(values);
-    if (
-      values.hasOwnProperty("coverImage") &&
-      values.hasOwnProperty("videoTrailer")
-    ) {
-      setTimeout(() => {
-        window.location.reload();
-        navigate("/admin/courselist");
-      }, 2000);
-    }
+
+
+    // if (
+    //   values.hasOwnProperty("coverImage") &&
+    //   values.hasOwnProperty("videoTrailer")
+    // ) {
+    //   setTimeout(() => {
+    //     window.location.reload();
+    //     navigate("/admin/courselist");
+    //   }, 2000);
+    // }
   };
 
   return (
@@ -62,7 +66,6 @@ function AddCoursePage() {
                 <button
                   type="submit"
                   form="add-course"
-                  onClick={filterSubmit}
                   className="text-white w-[117px] h-[60px] bg-[#2f5fac] rounded-xl ml-[20px] mr-[15px]"
                 >
                   Create

@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import deleteIcon from "../../assets/addCourse/delete.png";
-import useFormData from "../../context/formDataContext";
+import useDataCenter from "../../context/DataCenter";
 import plusIcon from "../../assets/addCourse/plus.png";
 
 function UploadMedia() {
@@ -17,13 +17,13 @@ function UploadMedia() {
     setCoverImageError,
     videoTrailerError,
     setVideoTrailerError,
-    uploadImage,
-    uploadVideoTrailer,
     handleClearVideoClick,
     handleClearImageClick,
     videoTrailerServerUrl,
+    setSelectedImage,
+    setSelectedVideoTrailer,
        
-  } = useFormData();
+  } = useDataCenter();
 
   const handleImageEditPreview = (imageServerUrl) => {
     setImagePreview(imageServerUrl);
@@ -40,7 +40,7 @@ function UploadMedia() {
     if(videoTrailerServerUrl){
       handleVideoEditPreview(videoTrailerServerUrl)
     }
-  }, [videoTrailerServerUrl]);
+  }, [videoTrailerServerUrl, imageServerUrl]);
 
 
 
@@ -63,7 +63,7 @@ function UploadMedia() {
               selectedFile.size <= maxSize &&
               allowedImageTypes.includes(selectedFile.type)
             ) {
-              uploadImage("image", selectedFile);
+              setSelectedImage(selectedFile);
             } else {
               setCoverImageError(true);
             }
@@ -127,7 +127,7 @@ function UploadMedia() {
               selectedFile.size <= maxSize &&
               allowedVideoTypes.includes(selectedFile.type)
             ) {
-              uploadVideoTrailer("video", selectedFile);
+              setSelectedVideoTrailer(selectedFile);
             } else {
               setVideoTrailerError(true);
             }

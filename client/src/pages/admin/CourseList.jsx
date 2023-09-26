@@ -31,7 +31,6 @@ function CourseListPage() {
         `http://localhost:4001/admin?page=${page}&publicStatus=${publicStatus}&price=${price}&createdat=${createdat}&updatedat=${updatedat}`
       );
       setCourseList(response.data.data);
-      console.log(response.data.data);
     } catch (error) {
       console.log("request error");
     }
