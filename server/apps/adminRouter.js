@@ -402,6 +402,7 @@ adminRouter.put("/updated/:lessonId", async (req, res) => {
 });
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 // remove course
 
 // adminRouter.delete("/mydesirecourses/:userId/:courseId", async (req, res) => {
@@ -512,4 +513,6 @@ adminRouter.post("/upload", videosUpload, async (req, res) => {
 // });
 >>>>>>> 9233a2e (add create lesson API)
 
+=======
+>>>>>>> 5f10809 (revise API)
 export default adminRouter;
