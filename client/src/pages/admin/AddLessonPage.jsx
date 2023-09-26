@@ -29,7 +29,7 @@ function AddLessonPage() {
       <div className="flex">
         <Sidebar />
         <div className="flex flex-col w-screen bg-gray-100 items-center">
-          <div className="h-[92px] w-[100%] flex border-b justify-between bg-white">
+          {/* <div className="h-[92px] w-[100%] flex border-b justify-between bg-white">
             <div className="flex pl-14">
               <img
                 src={arrowBack}
@@ -52,7 +52,7 @@ function AddLessonPage() {
                 Create
               </button>
             </div>
-          </div>
+          </div> */}
           <LessonForm />
         </div>
       </div>

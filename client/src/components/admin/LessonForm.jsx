@@ -4,6 +4,7 @@ import errorIcon from "../../assets/registerPage/errorIcon.svg";
 import { useState } from "react";
 import dragIcon from "../../assets/registerPage/drag-addlesson.svg";
 import videoSubLesson from "../../assets/registerPage/videoSubLesson.svg";
+import arrowBack from "../../assets/registerPage/arrow-back.svg";
 
 function LessonForm() {
   // const [lessonName, setLessonName] = useState("");
@@ -56,6 +57,30 @@ function LessonForm() {
   };
   return (
     <>
+      <div className="h-[92px] w-[100%] flex border-b justify-between bg-white">
+        <div className="flex pl-14">
+          <img
+            src={arrowBack}
+            className="mr-5 cursor-pointer"
+            onClick={() => navigate(-1)}
+          />
+          <div className="flex flex-col justify-center text-2xl font-medium">
+            <div className="flex w-[400px] text-sm">
+              <span className="text-gray-600 mr-2">Course</span>‘Service Design
+              Essentials’ Introduction
+            </div>
+            Add Lesson
+          </div>
+        </div>
+        <div className="flex items-center pr-14">
+          <button className="w-[118px] h-[58px] border border-orange-500 rounded-xl font-bold text-orange-500 hover:text-white hover:bg-orange-500 mr-3">
+            Cancel
+          </button>
+          <button className="w-[118px] h-[58px] font-bold text-white bg-blue-500 hover:bg-blue-600 rounded-xl">
+            Create
+          </button>
+        </div>
+      </div>
       <div className="bg-white w-[90%] border border-gray-200 rounded-2xl px-[100px] pt-[40px] pb-[60px] mt-8 mb-8">
         <Formik
           initialValues={initialValues}
