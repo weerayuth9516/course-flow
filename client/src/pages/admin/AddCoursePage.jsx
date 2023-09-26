@@ -1,6 +1,6 @@
 import React from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import useDataCenter from "../../context/DataCenter";
 import Sidebar from "../../components/admin/Sidebar";
 import LessonAdmin from "../../components/admin/LessonAdmin";
@@ -17,7 +17,7 @@ function AddCoursePage() {
     subLessonVideo,
     handleCancelButton,
   } = useDataCenter();
-
+  const navigate = useNavigate();
   const filterSubmit = (values) => {
     selectedImage ? setCoverImageError(false) : setCoverImageError(true);
     selectedVideoTrailer
@@ -68,12 +68,15 @@ function AddCoursePage() {
     lessonsDetail.map((value, index) => {
       for (let key in value) {
         if (key === "sub_lesson") {
-          const newValue = value[key][0];
+          const newValue = value[key];
           for (let subKey in newValue) {
-            formData.append(
-              `lessonsDetail[${index}][${key}][${subKey}]`,
-              newValue[subKey]
-            );
+            for (let rdKey in newValue[subKey]) {
+              // console.log(newValue[subKey][rdKey]);
+              formData.append(
+                `lessonsDetail[${index}][${key}][${subKey}][${rdKey}]`,
+                newValue[subKey][rdKey]
+              );
+            }
           }
         } else {
           formData.append(`lessonsDetail[${index}][${key}]`, value[key]);
@@ -96,6 +99,10 @@ function AddCoursePage() {
         headers: { "Content-Type": "multipart/form-data" },
       }
     );
+    if (response.status === 200) {
+      navigate("admin/courselist");
+      window.location.reload(false);
+    }
     // console.log(response);
     // const lessons = [...lessons];
     // console.log(course_detail);
