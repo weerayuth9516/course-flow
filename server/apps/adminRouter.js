@@ -401,8 +401,6 @@ adminRouter.put("/updated/:lessonId", async (req, res) => {
   }
 });
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 // remove course
 
 // adminRouter.delete("/mydesirecourses/:userId/:courseId", async (req, res) => {
@@ -458,61 +456,6 @@ adminRouter.delete("/courses/:courseId", async (req, res) => {
       error: "An error occurred while processing the delete request.",
     });
   }
-=======
-//test upload vedio file
-// const storage = multer.memoryStorage();
-// const upload = multer({ storage: storage });
-<<<<<<< HEAD
-const multerUpload = multer({ storage: multer.memoryStorage() });
-const videosUpload = multerUpload.fields([{ name: "videos" }]);
-adminRouter.post("/upload", videosUpload, async (req, res) => {
-  const files = req.files["videos"];
-  console.log(files);
-  try {
-    for (const file of files) {
-      const { originalname, buffer } = file;
-      const { data, error } = await supabase.storage
-        .from("test_upload/video")
-        .upload(Date.now() + "_" + originalname, buffer);
-      console.log(data);
-      if (error) {
-        return res.status(500).json({ error: "Upload video error!" });
-      }
-    }
-    return res.status(200).json({ success: "Upload video successfully!" });
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({ error: "Internal server error" });
-  }
-  // console.log(req.files);
->>>>>>> fa0429d (revise API admin)
 });
-=======
-// const multerUpload = multer({ storage: multer.memoryStorage() });
-// const videosUpload = multerUpload.fields([{ name: "videos" }]);
-// adminRouter.post("/upload", videosUpload, async (req, res) => {
-//   const files = req.files["videos"];
-//   console.log(files);
-//   try {
-//     for (const file of files) {
-//       const { originalname, buffer } = file;
-//       const { data, error } = await supabase.storage
-//         .from("test_upload/video")
-//         .upload(Date.now() + "_" + originalname, buffer);
-//       console.log(data);
-//       if (error) {
-//         return res.status(500).json({ error: "Upload video error!" });
-//       }
-//     }
-//     return res.status(200).json({ success: "Upload video successfully!" });
-//   } catch (error) {
-//     console.error(error);
-//     return res.status(500).json({ error: "Internal server error" });
-//   }
-//   // console.log(req.files);
-// });
->>>>>>> 9233a2e (add create lesson API)
 
-=======
->>>>>>> 5f10809 (revise API)
 export default adminRouter;
