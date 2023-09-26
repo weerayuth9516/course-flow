@@ -179,8 +179,8 @@ function CourseListPage() {
 
                     <td className="p-5 font-semibold">{item.lesson_amount} lessons</td>
                     <td className="p-5 font-semibold">{item.course_price}.00</td>
-                    <td className="p-5 font-semibold">{item.course_created_at}</td>
-                    <td className="p-5 font-semibold">{item.course_updated_at}</td>
+                    <td className="p-5 font-semibold">{new Date(item.course_created_at).toLocaleString()}</td>
+                    <td className="p-5 font-semibold">{new Date(item.course_updated_at).toLocaleString()}</td>
                     <td className="pt-8 flex pl-4 gap-2">
                       <img src={deleteLogo} />
                       <Link
