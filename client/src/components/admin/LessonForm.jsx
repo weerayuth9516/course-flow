@@ -10,6 +10,12 @@ import { Link, useNavigate } from "react-router-dom";
 import arrowBack from "../../assets/registerPage/arrow-back.svg";
 
 function LessonForm() {
+  // const [lessonName, setLessonName] = useState("");
+  // const [subLessonName, setSubLessonName] = useState("");
+  const [video, setVideo] = useState(null);
+  const [videoType, setVideoType] = useState("video/mp4");
+  const { setAddLesson, lessons, subLessonVideo } = useDataCenter();
+  const [preArrayVideo, setPreArrayVideo] = useState([]);
   const [videoSizeError, setVideoSizeError] = useState("");
   const { setAddLesson, lessons, subLessonVideo } = useDataCenter();
   const [preArrayVideo, setPreArrayVideo] = useState([]);
@@ -17,6 +23,7 @@ function LessonForm() {
     lessonName: "",
     subLessons: [{ subLessonName: "", video: null }],
   };
+  const navigate = useNavigate();
   const navigate = useNavigate();
   const validationSchema = Yup.object().shape({
     lessonName: Yup.string()
@@ -40,10 +47,8 @@ function LessonForm() {
       .min(1, "At least one Sub-Lesson is required"),
   });
 
-  const handleSubmit = async (values) => {
-    lessons.push(values);
-    subLessonVideo.push(preArrayVideo);
-    navigate("/admin/addcourse");
+  const clearVideo = () => {
+    setVideo(null);
   };
 
   return (

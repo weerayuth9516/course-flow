@@ -21,15 +21,11 @@ import { DeleteCourse } from "../../components/admin/ConfirmDeleteModal";
 function CourseListPage() {
   const [inputText, setInputText] = useState("");
 
-
-
-
   //status logic//
-
 
   const auth = useAuth();
   const [courseList, setCourseList] = useState([]);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleted, setDeleted] = useState(false);
   const params = useParams();
@@ -55,10 +51,6 @@ function CourseListPage() {
         `http://localhost:4001/admin?page=${page}&publicStatus=${publicStatus}&price=${price}&createdat=${createdat}&updatedat=${updatedat}`
       );
       setCourseList(response.data.data);
-<<<<<<< HEAD
-=======
-      console.log(response.data.data);
->>>>>>> 402f038 (feat: prototype file upload system)
     } catch (error) {
       console.log("request error");
     }
@@ -75,10 +67,8 @@ function CourseListPage() {
     getCourseList(1);
   }, []);
 
-
-
   useEffect(() => {
-    getCourseList(1, inputText)
+    getCourseList(1, inputText);
   }, [inputText]);
 
   const handleDeleteCourse = async (courseId) => {
@@ -101,7 +91,6 @@ function CourseListPage() {
     }
   };
 
-
   return (
     <div className="flex flex-row">
       <Sidebar />
@@ -110,36 +99,26 @@ function CourseListPage() {
           <div className="pl-[5%] text-header3">Course</div>
           <div className="flex gap-3 items-center pr-[5%]">
             <label
-<<<<<<< HEAD
               htmlFor="default-search"
-=======
-              for="default-search"
->>>>>>> 402f038 (feat: prototype file upload system)
               className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
             ></label>
             <div className="relative">
               <div className="absolute inset-y-0 left-2 flex items-center pl-3 pointer-events-none">
-
                 <img
                   src={searchicon}
                   alt="Image icon"
                   className="absolute left-2 top-4.5"
                 />
-
               </div>
               <input
                 className="w-full p-3 pr-20 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg"
                 placeholder="Search..."
-
                 id="message-text"
                 name="message-text"
                 type="text"
                 value={inputText}
-
                 onChange={handleInputChange}
               />
-
-
             </div>
             <button
               onClick={() => {
@@ -156,13 +135,27 @@ function CourseListPage() {
             <thead className="bg-gray-300">
               <tr>
                 <th className="py-3 px-5 tracking-wide text-start text-gray-800 font-normal"></th>
-                <th className="py-3 px-5 tracking-wide text-start text-gray-800 font-normal">Image</th>
-                <th className="py-3 px-5 tracking-wide text-start text-gray-800 font-normal">Course name</th>
-                <th className="py-3 px-5 tracking-wide text-start text-gray-800 font-normal">Lesson</th>
-                <th className="py-3 px-5 tracking-wide text-start text-gray-800 font-normal">Price</th>
-                <th className="py-3 px-5 tracking-wide text-start text-gray-800 font-normal">Created date</th>
-                <th className="py-3 px-5 tracking-wide text-start text-gray-800 font-normal">Updated date</th>
-                <th className="py-3 px-5 tracking-wide text-start text-gray-800 font-normal">Action</th>
+                <th className="py-3 px-5 tracking-wide text-start text-gray-800 font-normal">
+                  Image
+                </th>
+                <th className="py-3 px-5 tracking-wide text-start text-gray-800 font-normal">
+                  Course name
+                </th>
+                <th className="py-3 px-5 tracking-wide text-start text-gray-800 font-normal">
+                  Lesson
+                </th>
+                <th className="py-3 px-5 tracking-wide text-start text-gray-800 font-normal">
+                  Price
+                </th>
+                <th className="py-3 px-5 tracking-wide text-start text-gray-800 font-normal">
+                  Created date
+                </th>
+                <th className="py-3 px-5 tracking-wide text-start text-gray-800 font-normal">
+                  Updated date
+                </th>
+                <th className="py-3 px-5 tracking-wide text-start text-gray-800 font-normal">
+                  Action
+                </th>
               </tr>
             </thead>
             <tbody className="bg-white">
@@ -170,34 +163,45 @@ function CourseListPage() {
                 return (
                   <tr key={index} className="border-b-2">
                     <td className="p-5">
-                      {item.public_status !== 0
-                        ? (
-                          <img className="w-3" src={greenstatus} alt="Green Status" />
-                        ) : (
-                          <img className="w-3" src={redstatus} alt="Red Status" />
-                        )}
+                      {item.public_status !== 0 ? (
+                        <img
+                          className="w-3"
+                          src={greenstatus}
+                          alt="Green Status"
+                        />
+                      ) : (
+                        <img className="w-3" src={redstatus} alt="Red Status" />
+                      )}
                     </td>
 
                     <td className="p-5">
-                      <img className="w-20 h-14 object-cover" src={item.course_cover_img} />
+                      <img
+                        className="w-20 h-14 object-cover"
+                        src={item.course_cover_img}
+                      />
                     </td>
-
 
                     <td className="p-5 font-semibold">
-                      <Link
-                        to={`/course/courseDetail/${item.course_id}`}
-                      >{item.course_name}</Link>
+                      <Link to={`/course/courseDetail/${item.course_id}`}>
+                        {item.course_name}
+                      </Link>
                     </td>
 
-                    <td className="p-5 font-semibold">{item.lesson_amount} lessons</td>
-                    <td className="p-5 font-semibold">{item.course_price}.00</td>
-                    <td className="p-5 font-semibold">{new Date(item.course_created_at).toLocaleString()}</td>
-                    <td className="p-5 font-semibold">{new Date(item.course_updated_at).toLocaleString()}</td>
+                    <td className="p-5 font-semibold">
+                      {item.lesson_amount} lessons
+                    </td>
+                    <td className="p-5 font-semibold">
+                      {item.course_price}.00
+                    </td>
+                    <td className="p-5 font-semibold">
+                      {new Date(item.course_created_at).toLocaleString()}
+                    </td>
+                    <td className="p-5 font-semibold">
+                      {new Date(item.course_updated_at).toLocaleString()}
+                    </td>
                     <td className="pt-8 flex pl-4 gap-2">
                       <img src={deleteLogo} />
-                      <Link
-                        to={`/admin/editlesson`}
-                      >
+                      <Link to={`/admin/editlesson`}>
                         <img src={edit} className="cursor-pointer" />
                       </Link>
                     </td>
