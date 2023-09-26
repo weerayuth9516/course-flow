@@ -4,9 +4,9 @@ import Sidebar from "../../components/admin/Sidebar";
 import LessonAdmin from "../../components/admin/LessonAdmin";
 import UploadMedia from "../../components/admin/UploadMedia";
 import CourseForm from "../../components/admin/CourseForm";
-import arrowBack from "../../assets/EditCourse/arrow_back.png"
+import arrowBack from "../../assets/EditCourse/arrow_back.png";
 import axios from "axios";
-import { Link , useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 function EditCoursePage() {
   const { formValues, setFormValues } = useFormData();
@@ -23,9 +23,16 @@ function EditCoursePage() {
   } = useFormData();
 
   const filterSubmit = (values) => {
-    imageUrl || imageServerUrl ? setCoverImageError(false) : setCoverImageError(true);
-    videoTrailerUrl || videoTrailerServerUrl ? setVideoTrailerError(false) : setVideoTrailerError(true);
-    if ((imageUrl || imageServerUrl) && (videoTrailerUrl || videoTrailerServerUrl)) {
+    imageUrl || imageServerUrl
+      ? setCoverImageError(false)
+      : setCoverImageError(true);
+    videoTrailerUrl || videoTrailerServerUrl
+      ? setVideoTrailerError(false)
+      : setVideoTrailerError(true);
+    if (
+      (imageUrl || imageServerUrl) &&
+      (videoTrailerUrl || videoTrailerServerUrl)
+    ) {
       handleSubmit(values);
     } else {
       console.log("Please fill in all require information");
@@ -62,8 +69,10 @@ function EditCoursePage() {
         courseDetail: response.data.data.course[0].course_detail,
       });
 
-      setImageServerUrl(response.data.data.course[0].course_cover_img)
-      setVideoTrailerServerUrl(response.data.data.course[0].course_video_trailer)
+      setImageServerUrl(response.data.data.course[0].course_cover_img);
+      setVideoTrailerServerUrl(
+        response.data.data.course[0].course_video_trailer
+      );
     } catch (error) {
       console.log("request error");
     }
@@ -71,7 +80,7 @@ function EditCoursePage() {
 
   useEffect(() => {
     getCourseData();
-  }, [])
+  }, []);
 
   return (
     <main className=" flex">
@@ -84,15 +93,19 @@ function EditCoursePage() {
               className="w-full h-[92px] flex justify-between items-center px-20 border-b border-gray-400"
             >
               <div className="flex items-center">
-              <Link to="/admin/courselist"><img src={arrowBack} className="inline mr-4"/></Link>
-              <div className="inline text-header3 text-[2A2E3F] overflow-hidden">
-                Course {formValues.courseName}
-              </div>
+                <Link to="/admin/courselist">
+                  <img src={arrowBack} className="inline mr-4" />
+                </Link>
+                <div className="inline text-header3 text-[2A2E3F] overflow-hidden">
+                  Course {formValues.courseName}
+                </div>
               </div>
               <div className="flex justify-center items-center font-bold">
-                <button className="text-orange-500 w-[117px] h-[60px] border border-orange-500 rounded-xl">
-                  Cancel
-                </button>
+                <Link to="/admin/courselist">
+                  <button className="text-orange-500 w-[117px] h-[60px] border border-orange-500 rounded-xl">
+                    Cancel
+                  </button>
+                </Link>
                 <button
                   type="submit"
                   form="add-course"
@@ -107,7 +120,7 @@ function EditCoursePage() {
           <section className="w-full bg-[#f6f7fc] flex justify-center flex-col items-center">
             <div className="w-[85%] bg-white mt-[80px] mx-auto border border-gray-400 rounded-2xl flex justify-center items-start">
               <div className="px-20 text-body1 text-black">
-                  <CourseForm filterSubmit={filterSubmit} />
+                <CourseForm filterSubmit={filterSubmit} />
                 <UploadMedia />
               </div>
             </div>

@@ -1,5 +1,6 @@
 import React from "react";
 import axios from "axios";
+import { Link } from "react-router-dom";
 import useFormData from "../../context/formDataContext";
 import Sidebar from "../../components/admin/Sidebar";
 import LessonAdmin from "../../components/admin/LessonAdmin";
@@ -33,8 +34,8 @@ function AddCoursePage() {
       values.hasOwnProperty("videoTrailer")
     ) {
       setTimeout(() => {
-        // window.location.reload();
-        // navigate("/admin/courselist");
+        window.location.reload();
+        navigate("/admin/courselist");
       }, 2000);
     }
   };
@@ -53,9 +54,11 @@ function AddCoursePage() {
                 Add Course
               </div>
               <div className="flex justify-center items-center font-bold">
-                <button className="text-orange-500 w-[117px] h-[60px] border border-orange-500 rounded-xl">
-                  Cancel
-                </button>
+                <Link to="/admin/courselist">
+                  <button className="text-orange-500 w-[117px] h-[60px] border border-orange-500 rounded-xl">
+                    Cancel
+                  </button>
+                </Link>
                 <button
                   type="submit"
                   form="add-course"
