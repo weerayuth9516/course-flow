@@ -4,25 +4,25 @@ import axios from "axios";
 import editIcon from "../../assets/registerPage/edit.svg";
 import deleteIcon from "../../assets/registerPage/delete.svg";
 import dragIcon from "../../assets/registerPage/drag.svg";
-
+import useDataCenter from "../../context/DataCenter";
 function LessonAdmin() {
   const params = useParams();
   const navigate = useNavigate();
-
-  const [lessons, setLessons] = useState([]);
-  const getLesson = async () => {
-    try {
-      const lessonsResult = await axios.get(
-        `http://localhost:4001/admin/courses/${params.courseId}`
-      );
-      setLessons(lessonsResult.data.data.lessons);
-    } catch (error) {
-      console.log("request lesson error", error);
-    }
-  };
+  const { lessons, setAddLesson } = useDataCenter();
+  // const getLesson = async () => {
+  //   try {
+  //     const lessonsResult = await axios.get(
+  //       `http://localhost:4001/admin/courses/${params.courseId}`
+  //     );
+  //     setLessons(lessonsResult.data.data.lessons);
+  //   } catch (error) {
+  //     console.log("request lesson error", error);
+  //   }
+  // };
 
   useEffect(() => {
-    getLesson();
+    // getLesson();
+    // console.log(lessons);
   }, []);
   return (
     <>
@@ -31,7 +31,7 @@ function LessonAdmin() {
           <div className="font-medium text-gray-900 text-2xl">Lesson</div>
           <button
             className="h-full bg-blue-500 px-[32px] py-[18px] rounded-xl font-bold text-white hover:bg-blue-600"
-            onClick={() => navigate("/admin/addlesson")}
+            onClick={() => setAddLesson(true)}
           >
             + Add Lesson
           </button>
@@ -60,8 +60,8 @@ function LessonAdmin() {
                     <img src={dragIcon} />
                   </td>
                   <td className="pl-5">{index + 1}</td>
-                  <td className="pl-5">{item.lesson_name}</td>
-                  <td className="pl-5">0</td>
+                  <td className="pl-5">{item.lessonName}</td>
+                  <td className="pl-5">{item.subLessons.length}</td>
                   <td>
                     <div className="flex justify-evenly">
                       <img src={deleteIcon} className="inline cursor-pointer" />

@@ -180,7 +180,7 @@ function CourseLearningPage() {
                 src={currentSubLesson.subLessonVideo}
                 className="w-[739px] h-[460px]"
               ></video>
-              
+
               {handleAssignment() ? (
                 <div className="w-[739px] h-[314px] bg-blue-100 flex flex-col items-center rounded-lg mt-[70px]">
                   <div className="w-[691px] h-[32px] flex justify-between items-center mt-4">

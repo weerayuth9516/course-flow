@@ -9,9 +9,11 @@ import { Link, useNavigate } from "react-router-dom";
 import arrowBack from "../../assets/registerPage/arrow-back.svg";
 
 function LessonForm() {
+  // const [lessonName, setLessonName] = useState("");
+  // const [subLessonName, setSubLessonName] = useState("");
+  const [preArrayVideo, setPreArrayVideo] = useState([]);
   const [videoSizeError, setVideoSizeError] = useState("");
   const { setAddLesson, lessons, subLessonVideo } = useDataCenter();
-  const [preArrayVideo, setPreArrayVideo] = useState([]);
   const initialValues = {
     lessonName: "",
     subLessons: [{ subLessonName: "", video: null }],
@@ -42,7 +44,7 @@ function LessonForm() {
   const handleSubmit = async (values) => {
     lessons.push(values);
     subLessonVideo.push(preArrayVideo);
-    navigate("/admin/addcourse");
+    setAddLesson(false);
   };
 
   return (
@@ -52,7 +54,7 @@ function LessonForm() {
           <img
             src={arrowBack}
             className="mr-5 cursor-pointer"
-            onClick={() => navigate(-1)}
+            onClick={() => setAddLesson(false)}
           />
           <div className="flex flex-col justify-center text-2xl font-medium">
             <div className="flex w-[400px] text-sm">

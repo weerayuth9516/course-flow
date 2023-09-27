@@ -19,6 +19,7 @@ function CourseForm({ filterSubmit }) {
           <Form id="add-course">
             <div className="mt-[40px] relative">
               <label htmlFor="courseName">Course name *</label>
+              <br />
               <Field
                 type="text"
                 id="courseName"
@@ -115,6 +116,7 @@ function CourseForm({ filterSubmit }) {
 
             <div className="mt-[40px] relative">
               <label htmlFor="courseSummary">Course summary *</label>
+              <br />
               <Field
                 as="textarea"
                 id="courseSummary"
@@ -148,6 +150,7 @@ function CourseForm({ filterSubmit }) {
               <label htmlFor="courseDetail" className="mt-[40px]">
                 Course detail *
               </label>
+              <br />
               <Field
                 as="textarea"
                 id="courseDetail"

@@ -90,7 +90,6 @@ courseRouter.get("/lessons/:id", async (req, res) => {
       .from("lessons")
       .select("lesson_name, sub_lessons(*)")
       .eq("course_id", courseId);
-
     if (error) {
       return res.status(500).json({ error: error.message });
     }
@@ -262,20 +261,16 @@ courseRouter.post("/mycourses/:courseId", protect, async (req, res) => {
 });
 
 //check subscriptions status
-courseRouter.get(
-  "/subscription/:userId/:courseId",
-
-  async (req, res) => {
-    const { userId, courseId } = req.params;
-    const isSubscribed = await supabase
-      .from("user_course_details")
-      .select("course_id,user_id,subscription_id")
-      .eq("course_id", courseId)
-      .eq("user_id", userId)
-      .eq("subscription_id", 1);
-    return res.json({ isSubscribed });
-  }
-);
+courseRouter.get("/subscription/:userId/:courseId", async (req, res) => {
+  const { userId, courseId } = req.params;
+  const isSubscribed = await supabase
+    .from("user_course_details")
+    .select("course_id,user_id,subscription_id")
+    .eq("course_id", courseId)
+    .eq("user_id", userId)
+    .eq("subscription_id", 1);
+  return res.json({ isSubscribed });
+});
 
 courseRouter.get("/coursedetail/learning", protect, async (req, res) => {
   if (!req.query.user_id || !req.query.course_id) {

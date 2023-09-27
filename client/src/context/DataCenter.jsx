@@ -9,6 +9,7 @@ export default function useDataCenter() {
 }
 
 export function DataCenterProvider({ children }) {
+  const formData = new FormData();
   const [imagePreview, setImagePreview] = useState(null);
   const [videoPreview, setVideoPreview] = useState(null);
   const [videoType, setVideoType] = useState("video/mp4");
@@ -18,17 +19,21 @@ export function DataCenterProvider({ children }) {
   const [videoTrailerError, setVideoTrailerError] = useState(false);
   const [imageServerUrl, setImageServerUrl] = useState(null);
   const [videoTrailerServerUrl, setVideoTrailerServerUrl] = useState(null);
-  const [firstTimeFetch,setFirstTimeFetch] = useState(true)
+  const [firstTimeFetch, setFirstTimeFetch] = useState(true);
   const [formValues, setFormValues] = useState({
     courseName: "",
     price: "",
     totalLearningTime: "",
     courseSummary: "",
     courseDetail: "",
+    coverImage: null,
+    videoTrailer: null,
   });
 
   const navigate = useNavigate();
-
+  const [addLesson, setAddLesson] = useState(false);
+  const [lessons, setLessons] = useState([]);
+  const [subLessonVideo, setSubLessonVideo] = useState([]);
   const validationSchema = Yup.object().shape({
     courseName: Yup.mixed()
       .required("Course name is required")
@@ -62,13 +67,12 @@ export function DataCenterProvider({ children }) {
         "Course summary must be at most 3000 characters",
         (value) => value && value.length <= 3000
       ),
-    courseDetail: Yup.string()
-      .required("Course detail is required"),
-      // .test(
-      //   "max-length",
-      //   "Course detail must be at most 10000 characters",
-      //   (value) => value && value.length <= 10000
-      // ),
+    courseDetail: Yup.string().required("Course detail is required"),
+    // .test(
+    //   "max-length",
+    //   "Course detail must be at most 10000 characters",
+    //   (value) => value && value.length <= 10000
+    // ),
   });
 
   const handleImagePreview = (e) => {
@@ -114,7 +118,7 @@ export function DataCenterProvider({ children }) {
     setCoverImageError(false);
     clearImagePreview();
     setSelectedImage(null);
-    setImageServerUrl(null)
+    setImageServerUrl(null);
   };
   const handleCancelButton = () => {
     setTimeout(() => {
@@ -153,8 +157,15 @@ export function DataCenterProvider({ children }) {
         setImageServerUrl,
         videoTrailerServerUrl,
         setVideoTrailerServerUrl,
-        firstTimeFetch,setFirstTimeFetch,
+        lessons,
+        setLessons,
+        subLessonVideo,
+        setSubLessonVideo,
+        firstTimeFetch,
+        setFirstTimeFetch,
         handleCancelButton,
+        addLesson,
+        setAddLesson,
       }}
     >
       {children}

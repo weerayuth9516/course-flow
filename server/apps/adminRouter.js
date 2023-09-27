@@ -108,131 +108,144 @@ adminRouter.get("/courses/:courseId", async (req, res) => {
 
 const storageControll = multer({ storage: multer.memoryStorage() });
 const multerUpload = storageControll.fields([
-  { name: "imgCover", maxCount: 1 },
-  { name: "videoCover", maxCount: 1 },
-  { name: "sublesson_videos" },
+  { name: "courseVideoTrailerFile", maxCount: 1 },
+  { name: "courseCoverImgFile", maxCount: 1 },
+  { name: "subLessonVideoFile", maxCount: 100 },
 ]);
 
 adminRouter.post("/course/created", multerUpload, async (req, res) => {
+  const courseDetail = req.body.courseDetail;
+  const lessonsDetail = req.body.lessonsDetail;
+  const course_cover_img = req.files.courseCoverImgFile[0];
+  const course_video_trailer = req.files.courseVideoTrailerFile[0];
+  const sub_lesson_video_array = req.files.subLessonVideoFile;
   try {
-    const video = req.files.videoCover[0];
-    const images = req.files.imgCover[0];
-
-    // console.log(video);
-    if (video === undefined || images === undefined) {
-      return res.status(401).send({
-        error: "files undefined",
-      });
-    }
-    await supabase.storage
-      .from("course_video_trailers")
-      .upload(video.originalname, video.buffer, {
-        cacheControl: 3600,
-        upsert: true,
-        contentType: video.mimetype,
-      });
-    const videoTrailerUrl = supabase.storage
-      .from("course_video_trailers")
-      .getPublicUrl(video.originalname);
-    await supabase.storage
-      .from("course_images")
-      .upload(images.originalname, images.buffer, {
-        cacheControl: 3600,
-        upsert: true,
-        contentType: images.mimetype,
-      });
-    const imagesUrl = supabase.storage
-      .from("course_images")
-      .getPublicUrl(`${req.files["imgCover"][0].originalname}`);
+    // Insert to courses table
     const timeStamp = new Date();
-    const createdCourse = await supabase
+    const resultInsertCoursesTable = await supabase
       .from("courses")
       .insert({
+        course_name: courseDetail.course_name,
+        course_price: Number(courseDetail.course_price),
+        course_summary: courseDetail.course_summary,
+        course_detail: courseDetail.course_detail,
+        course_duration: courseDetail.course_duration,
         course_created_at: timeStamp.toISOString(),
         course_updated_at: timeStamp.toISOString(),
-        course_detail: req.body.courseDetail,
-        course_summary: req.body.courseSummary,
-        course_cover_img: imagesUrl.data.publicUrl,
-        course_name: req.body.courseName,
-        course_video_trailer: videoTrailerUrl.data.publicUrl,
-        course_duration: req.body.courseTotalLearningTime,
-        course_price: req.body.coursePrice,
       })
       .select();
 
-    //lesson
-    const lessonsData = req.body.lessons;
-    const videoSublessons = req.files.sublesson_videos;
-    // console.log(req.files.sublesson_videos);
+    // Fetch course_id
+    const courseDetailFormSupabase = await supabase
+      .from("courses")
+      .select("course_id")
+      .eq("course_name", courseDetail.course_name)
+      .eq("course_price", courseDetail.course_price)
+      .eq("course_duration", courseDetail.course_duration);
 
-    //เพิ่มข้อมูล lesson
-    for (const lesson of lessonsData) {
-      const insertLesson = await supabase.from("lessons").upsert({
-        lesson_name: lesson.lesson_name,
-        course_id: createdCourse.data[0].course_id,
-        priority: lesson.priority,
+    const course_id = courseDetailFormSupabase.data[0].course_id;
+
+    //**Maping lessons */
+    const lessonForInsert = lessonsDetail.map((value) => {
+      return {
+        course_id: course_id,
+        priority: value.priority,
+        lesson_name: value.lesson_name,
+      };
+    });
+
+    const resultInsertLessonsTable = await supabase
+      .from("lessons")
+      .insert(lessonForInsert)
+      .select();
+
+    // * Fetch lesson id
+    const fetchLessonIdResult = await supabase
+      .from("lessons")
+      .select("lesson_id, lesson_name")
+      .eq("course_id", course_id);
+
+    //* Map sub lesson
+    const mapSubLesson = lessonsDetail.map((value) => {
+      return value.sub_lesson.map((subValue) => {
+        return {
+          ...subValue,
+          lesson_id: fetchLessonIdResult.data.filter((rdValue) => {
+            return value.lesson_name === rdValue.lesson_name;
+          })[0].lesson_id,
+        };
       });
-      if (insertLesson.error) {
-        return res.status(500).json({ error: "Failed to create lesson" });
-      }
-
-      const lessonData = await supabase
-        .from("lessons")
-        .select("lesson_id", "lesson_name")
-        .eq("course_id", createdCourse.data[0].course_id);
-      const lessonNames = lessonData.map((lesson) => lesson.lesson_name);
-      const matchSublessons = lesson.sub_lessons.filter((sublesson) =>
-        lessonNames.includes(sublesson.lesson_name)
-      );
-      console.log(matchSublessons);
-      //upload videos และ เพิ่มข้อมูล sublesson
-      for (const video of videoSublessons) {
-        const matchVideoSublesson = matchSublessons.find(
-          (sublesson) => video.originalname === sublesson.sub_lesson_video
-        );
-        if (matchVideoSublesson) {
-          const { data: uploadData, error: uploadError } = await supabase
-            .from("sublesson_video")
-            .upload(video.originalname, video.buffer, {
-              cacheControl: "3600",
-            });
-          if (uploadError) {
-            console.error(
-              "Error uploading sub-lesson video",
-              uploadError.message
-            );
-            return res
-              .status(500)
-              .json({ error: "Failed to upload sub-lesson video" });
-          }
-          const insertSubLesson = await supabase.from("sub-lessons").upsert({
-            sub_lesson_name: matchVideoSublesson.sub_lesson_name,
-            sub_lesson_video: video.originalname,
-            priority: matchVideoSublesson.priority,
-            lesson_id: matchVideoSublesson.data[0].lesson_id,
-          });
-          if (insertSubLesson.error) {
-            console.error(
-              "Error inserting sub-lesson",
-              insertSubLesson.error.message
-            );
-            return res
-              .status(500)
-              .json({ error: "Failed to insert sub-lesson" });
-          } else {
-            return res
-              .status(insertSubLesson.status)
-              .json({ message: insertSubLesson.statusText });
-          }
-        }
-      }
-    }
-    return res.status(createdCourse.status).json({
-      message: createdCourse.statusText,
+    });
+    const arrangeMapSubLesson = [];
+    mapSubLesson.map((value) => {
+      value.map((subValue) => arrangeMapSubLesson.push(subValue));
+    });
+    arrangeMapSubLesson.map(async (value) => {
+      const filePath = `${course_id}/${value.lesson_id}/${value.sub_lesson_video}`;
+      const fileBuffer = sub_lesson_video_array.filter((subValue) => {
+        return subValue.originalname === value.sub_lesson_video;
+      })[0].buffer;
+      const fileContentType = sub_lesson_video_array.filter((subValue) => {
+        return subValue.originalname === value.sub_lesson_video;
+      })[0].mimetype;
+      const resultUpload = await supabase.storage
+        .from("sublesson_video")
+        .upload(filePath, fileBuffer, {
+          cacheControl: 3600,
+          upsert: true,
+          contentType: fileContentType,
+        });
+      const subVideorUrl = supabase.storage
+        .from(filePath)
+        .getPublicUrl(value.sub_lesson_video);
+      const resultInsertSub = await supabase
+        .from("sub_lessons")
+        .insert({ ...value, sub_lesson_video: subVideorUrl.data.publicUrl })
+        .select();
+    });
+    await supabase.storage
+      .from("course_images")
+      .upload(course_cover_img.originalname, course_cover_img.buffer, {
+        cacheControl: 3600,
+        upsert: true,
+        contentType: course_cover_img.mimetype,
+      });
+    await supabase.storage
+      .from("course_video_trailers")
+      .upload(course_video_trailer.originalname, course_video_trailer.buffer, {
+        cacheControl: 3600,
+        upsert: true,
+        contentType: course_video_trailer.mimetype,
+      });
+    const videoTrailerUrl = supabase.storage
+      .from("course_cideo_trailers")
+      .getPublicUrl(course_video_trailer.orginalname);
+    const imgaesTrailerUrl = supabase.storage
+      .from("course_cideo_trailers")
+      .getPublicUrl(course_cover_img.orginalname);
+    const reAssignPath = await supabase
+      .from("courses")
+      .update({
+        course_cover_img: imgaesTrailerUrl.data.publicUrl,
+        course_video_trailer: videoTrailerUrl.data.publicUrl,
+      })
+      .eq("course_id", course_id);
+    return res.json({
+      message: "Created course",
     });
   } catch (error) {
-    return res.json({
-      error: "supabase not working",
+    const courseDetailFormSupabase = await supabase
+      .from("courses")
+      .select("course_id")
+      .eq("course_name", courseDetail.course_name)
+      .eq("course_price", courseDetail.course_price)
+      .eq("course_duration", courseDetail.course_duration);
+    const deletedSubjectError = await supabase
+      .from("couses")
+      .delete()
+      .eq("course_id", courseDetailFormSupabase.data[0].course_id);
+    return res.status(400).json({
+      message: error,
     });
   }
 });

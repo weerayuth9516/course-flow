@@ -56,7 +56,8 @@ const useGetuser = () => {
       // console.log(newData);
       const axiosResult = await axios.put(
         `http://localhost:4001/users/${id}`,
-        newData
+        newData,
+        { headers: { "Content-Type": "multipart/form-data" } }
       );
       if (axiosResult.data.message == "Update users successfully") {
         const fetching = await axios.get(`http://localhost:4001/users/${id}`);
