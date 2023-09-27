@@ -14,7 +14,7 @@ function Sidebar() {
   // }
   const location = useLocation();
   const isCourseActive = location.pathname === "/admin/courselist";
-  const { logout } = useAuth();
+  // const { logout } = useAuth();
   const navigate = useNavigate();
   const handleLogoutClick = () => {
     logout();
@@ -53,10 +53,7 @@ function Sidebar() {
         <Link to={"/admin/courselist"}>
           <div
             className={`py-4 px-6 h-12 w-full flex items-center duration-300 cursor-pointer hover:bg-gray-200
-            ${isCourseActive
-                ? "bg-gray-200"
-                : ""
-              }`}
+            ${isCourseActive ? "bg-gray-200" : ""}`}
           >
             <img src={book}></img>
             <span className="ml-4 font-semibold text-gray-800">Course</span>
