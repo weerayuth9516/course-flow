@@ -6,11 +6,9 @@ import dragIcon from "../../assets/registerPage/drag-addlesson.svg";
 import videoSubLesson from "../../assets/registerPage/videoSubLesson.svg";
 import useDataCenter from "../../context/DataCenter";
 import { Link, useNavigate } from "react-router-dom";
-// import arrowBack from "../../assets/registerPage/"
+import arrowBack from "../../assets/registerPage/arrow-back.svg";
+
 function LessonForm() {
-  // const [lessonName, setLessonName] = useState("");
-  // const [subLessonName, setSubLessonName] = useState("");
-  const [video, setVideo] = useState(null);
   const [videoSizeError, setVideoSizeError] = useState("");
   const { setAddLesson, lessons, subLessonVideo } = useDataCenter();
   const [preArrayVideo, setPreArrayVideo] = useState([]);
@@ -35,20 +33,7 @@ function LessonForm() {
               /^[a-zA-Z0-9\s]+$/,
               "Sub-Lesson name must contain only letters or digits"
             ),
-          video: Yup.mixed()
-            // .test(
-            //   "fileType",
-            //   "Only .mp4, .mov, and .avi formats are allowed",
-            //   (value) =>
-            //     value &&
-            //     ["video/mp4", "video/mov", "video/avi"].includes(value.type)
-            // )
-            // .test(
-            //   "fileSize",
-            //   "Video file is too large. Maximum size is 20MB",
-            //   (value) => value && value.size <= 20971520 // 20MB
-            // )
-            .required("Video is required"),
+          video: Yup.mixed().required("Video is required"),
         })
       )
       .min(1, "At least one Sub-Lesson is required"),
@@ -60,15 +45,12 @@ function LessonForm() {
     navigate("/admin/addcourse");
   };
 
-  const clearVideo = () => {
-    setVideo(null);
-  };
   return (
     <>
       <div className="h-[92px] w-[100%] flex border-b justify-between bg-white">
         <div className="flex pl-14">
           <img
-            // src={arrowBack}
+            src={arrowBack}
             className="mr-5 cursor-pointer"
             onClick={() => navigate(-1)}
           />
@@ -188,7 +170,6 @@ function LessonForm() {
                                   name={`subLessons[${index}].video`}
                                   accept=".mp4,.avi,.mov"
                                   style={{ display: "none" }}
-                                  ref={(input) => (this.videoInput = input)}
                                   onChange={(event) => {
                                     const selectedVideo = event.target.files[0];
                                     const maxSize = 20 * 1024 * 1024; // 20MB
