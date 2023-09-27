@@ -46,9 +46,9 @@ function AddCoursePage() {
       course_video_trailer: values.course_video_trailer,
       course_duration: values.totalLearningTime,
     };
-    const lessonsDetail = lessons.map((value) => {
+    const lessonsDetail = lessons.map((value, index) => {
       return {
-        priority: value.priority,
+        priority: index + 1,
         lesson_name: value.lessonName,
         sub_lesson: value.subLessons.map((subValue) => {
           return {
@@ -86,6 +86,7 @@ function AddCoursePage() {
     });
     formData.append("courseCoverImgFile", courseCoverImgFile);
     formData.append("courseVideoTrailerFile", courseVideoTrailerFile);
+    console.log(subLessonVideoFile);
     subLessonVideoFile.map((value) => {
       formData.append("subLessonVideoFile", value);
     });
@@ -93,29 +94,24 @@ function AddCoursePage() {
     // formData.append("courseDetail", JSON.stringify(courseDetail));
     // formData.append("lessonsDetail", JSON.stringify(lessonsDetail));
     ///** TOO EASY I DONT USE THAT. ***/
-    const response = await axios.post(
-      "http://localhost:4001/admin/course/created",
-      formData,
-      {
-        headers: { "Content-Type": "multipart/form-data" },
+    try {
+      const response = await axios.post(
+        "http://localhost:4001/admin/course/created",
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
+      console.log(response);
+      if (response.status === 200) {
+        navigate("admin/courselist");
+        window.location.reload(false);
+      } else {
+        response;
       }
-    );
-    if (response.status === 200) {
-      navigate("admin/courselist");
-      window.location.reload(false);
+    } catch (error) {
+      console.log(error);
     }
-    // console.log(response);
-    // const lessons = [...lessons];
-    // console.log(course_detail);
-    // if (
-    //   values.hasOwnProperty("coverImage") &&
-    //   values.hasOwnProperty("videoTrailer")
-    // ) {
-    //   setTimeout(() => {
-    //     window.location.reload();
-    //     navigate("/admin/courselist");
-    //   }, 2000);
-    // }
   };
 
   return (
@@ -123,7 +119,12 @@ function AddCoursePage() {
       <Sidebar />
       <section className="font-inter flex flex-col justify-center items-center w-full">
         {/* <section id="right-content"> */}
-        <div className="w-full h-[92px] flex justify-center items-center">
+        <div
+          className={
+            `w-full flex justify-center items-center` +
+            (!addLesson ? `h-[92px]` : ``)
+          }
+        >
           {addLesson ? (
             ""
           ) : (

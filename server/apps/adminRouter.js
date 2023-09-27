@@ -234,6 +234,7 @@ adminRouter.post("/course/created", multerUpload, async (req, res) => {
       message: "Created course",
     });
   } catch (error) {
+    console.log(error);
     const courseDetailFormSupabase = await supabase
       .from("courses")
       .select("course_id")

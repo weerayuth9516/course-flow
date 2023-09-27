@@ -1,7 +1,7 @@
 import { Formik, Form, Field, ErrorMessage, FieldArray } from "formik";
 import * as Yup from "yup";
 import errorIcon from "../../assets/registerPage/errorIcon.svg";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import dragIcon from "../../assets/registerPage/drag-addlesson.svg";
 import videoSubLesson from "../../assets/registerPage/videoSubLesson.svg";
 import useDataCenter from "../../context/DataCenter";
@@ -13,7 +13,7 @@ function LessonForm() {
   // const [subLessonName, setSubLessonName] = useState("");
   const [preArrayVideo, setPreArrayVideo] = useState([]);
   const [videoSizeError, setVideoSizeError] = useState("");
-  const { setAddLesson, lessons, subLessonVideo } = useDataCenter();
+  const { setAddLesson, lessons, subLessonVideo, formValues } = useDataCenter();
   const initialValues = {
     lessonName: "",
     subLessons: [{ subLessonName: "", video: null }],
@@ -43,7 +43,7 @@ function LessonForm() {
 
   const handleSubmit = async (values) => {
     lessons.push(values);
-    subLessonVideo.push(preArrayVideo);
+    subLessonVideo.push(...preArrayVideo);
     setAddLesson(false);
   };
 
@@ -58,8 +58,9 @@ function LessonForm() {
           />
           <div className="flex flex-col justify-center text-2xl font-medium">
             <div className="flex w-[400px] text-sm">
-              <span className="text-gray-600 mr-2">Course</span>‘Service Design
-              Essentials’ Introduction
+              <span className="text-gray-600 mr-2">Course</span>"
+              {formValues.courseName.length === 0 ? "-" : formValues.courseName}
+              "
             </div>
             Add Lesson
           </div>
