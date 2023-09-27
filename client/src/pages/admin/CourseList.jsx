@@ -13,10 +13,7 @@ import greenstatus from "../../assets/courselist/greenstatus.png";
 import { useState, useEffect } from "react";
 import { useAuth } from "../../context/authentication";
 import axios from "axios";
-<<<<<<< HEAD
 import { DeleteCourse } from "../../components/admin/ConfirmDeleteModal";
-=======
->>>>>>> 67823d095ba97522a93c3c226dd9b8b3cc2ff7f3
 
 function CourseListPage() {
   const auth = useAuth();
@@ -27,7 +24,6 @@ function CourseListPage() {
   const params = useParams();
   const [courseId, setCourseId] = useState(null);
 
-<<<<<<< HEAD
   const openDeleteModal = (courseId) => {
     setCourseId(courseId);
     setShowDeleteModal(true);
@@ -36,8 +32,6 @@ function CourseListPage() {
     setShowDeleteModal(false);
   };
 
-=======
->>>>>>> 67823d095ba97522a93c3c226dd9b8b3cc2ff7f3
   const getCourseList = async (
     page,
     publicStatus,
@@ -56,34 +50,8 @@ function CourseListPage() {
   };
   useEffect(() => {
     getCourseList(1);
-<<<<<<< HEAD
-    getCourseList(1);
   }, []);
 
-  const handleDeleteCourse = async (courseId) => {
-    console.log("courseId", courseId);
-    try {
-      const response = await axios.delete(
-        `http://localhost:4001/admin/courses/${courseId}`
-      );
-      console.log(response);
-
-      if (response && response.status === 200) {
-        setCourseList((prevCourseList) =>
-          prevCourseList.filter((course) => course.course_id !== courseId)
-        );
-        setDeleted(true);
-        closeDeleteModal();
-      }
-    } catch (error) {
-      console.error("Error deleting course:", error);
-    }
-  };
-
-=======
-  }, []);
-
->>>>>>> 67823d095ba97522a93c3c226dd9b8b3cc2ff7f3
   return (
     <div className="flex flex-row">
       <Sidebar />
