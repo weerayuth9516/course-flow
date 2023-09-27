@@ -196,33 +196,34 @@ adminRouter.post("/course/created", multerUpload, async (req, res) => {
           contentType: fileContentType,
         });
       const subVideorUrl = supabase.storage
-        .from(filePath)
+        .from(`sublesson_video/${course_id}/${value.lesson_id}`)
         .getPublicUrl(value.sub_lesson_video);
       const resultInsertSub = await supabase
         .from("sub_lessons")
         .insert({ ...value, sub_lesson_video: subVideorUrl.data.publicUrl })
         .select();
     });
-    await supabase.storage
+    const imgPath = await supabase.storage
       .from("course_images")
       .upload(course_cover_img.originalname, course_cover_img.buffer, {
         cacheControl: 3600,
         upsert: true,
         contentType: course_cover_img.mimetype,
       });
-    await supabase.storage
+    const videoPath = await supabase.storage
       .from("course_video_trailers")
       .upload(course_video_trailer.originalname, course_video_trailer.buffer, {
         cacheControl: 3600,
         upsert: true,
         contentType: course_video_trailer.mimetype,
       });
-    const videoTrailerUrl = supabase.storage
-      .from("course_cideo_trailers")
-      .getPublicUrl(course_video_trailer.orginalname);
-    const imgaesTrailerUrl = supabase.storage
-      .from("course_cideo_trailers")
-      .getPublicUrl(course_cover_img.orginalname);
+    const videoTrailerUrl = await supabase.storage
+      .from("course_video_trailers")
+      .getPublicUrl(videoPath.data.path);
+    const imgaesTrailerUrl = await supabase.storage
+      .from("course_images")
+      .getPublicUrl(imgPath.data.path);
+    console.log(videoTrailerUrl);
     const reAssignPath = await supabase
       .from("courses")
       .update({
@@ -318,7 +319,7 @@ adminRouter.get("/lessons/:lessonId", async (req, res) => {
 // add lesson ans sublesson * not finish*
 // adminRouter.post("/:courseId/lesson/created", async (req, res) => {});
 
-// adminRouter.post("/:courseId/lesson/created", async (req, res) => {
+// adminRouter.post("/lesson/created/:courseId", async (req, res) => {
 //   const courseId = req.params.courseId;
 //   const lessonName = {
 //     lesson_name: req.body.lesson_name,

@@ -182,9 +182,9 @@ function CourseListPage() {
                     </td>
 
                     <td className="p-5 font-semibold">
-                      <Link to={`/course/courseDetail/${item.course_id}`}>
+                      {/* <Link to={`/course/courseDetail/${item.course_id}`}>
                         {item.course_name}
-                      </Link>
+                      </Link> */}
                     </td>
 
                     <td className="p-5 font-semibold">
@@ -201,7 +201,7 @@ function CourseListPage() {
                     </td>
                     <td className="pt-8 flex pl-4 gap-2">
                       <img src={deleteLogo} />
-                      <Link to={`/admin/editlesson`}>
+                      <Link to={`/admin/editcourse/${item.course_id}`}>
                         <img src={edit} className="cursor-pointer" />
                       </Link>
                     </td>

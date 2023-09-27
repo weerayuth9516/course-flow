@@ -8,20 +8,22 @@ import useDataCenter from "../../context/DataCenter";
 function LessonAdmin() {
   const params = useParams();
   const navigate = useNavigate();
-  const { lessons, setAddLesson } = useDataCenter();
-  // const getLesson = async () => {
-  //   try {
-  //     const lessonsResult = await axios.get(
-  //       `http://localhost:4001/admin/courses/${params.courseId}`
-  //     );
-  //     setLessons(lessonsResult.data.data.lessons);
-  //   } catch (error) {
-  //     console.log("request lesson error", error);
-  //   }
-  // };
+  const { lessons, setAddLesson, setLessons } = useDataCenter();
+  const getLesson = async () => {
+    try {
+      const lessonsResult = await axios.get(
+        `http://localhost:4001/admin/courses/${params.courseId}`
+      );
+      // setLessons(lessonsResult.data.data.lessons);
+      lessons.push(...lessonsResult.data.data.lessons);
+      console.log(lessons);
+    } catch (error) {
+      console.log("request lesson error", error);
+    }
+  };
 
   useEffect(() => {
-    // getLesson();
+    getLesson();
     // console.log(lessons);
   }, []);
   return (
@@ -61,7 +63,7 @@ function LessonAdmin() {
                   </td>
                   <td className="pl-5">{index + 1}</td>
                   <td className="pl-5">{item.lessonName}</td>
-                  <td className="pl-5">{item.subLessons.length}</td>
+                  {/* <td className="pl-5">{item.subLessons.length}</td> */}
                   <td>
                     <div className="flex justify-evenly">
                       <img src={deleteIcon} className="inline cursor-pointer" />

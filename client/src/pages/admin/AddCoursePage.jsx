@@ -33,6 +33,9 @@ function AddCoursePage() {
 
   const handleSubmit = async (values) => {
     // Handle form submission
+    if (subLessonVideo.length === 0) {
+      return alert("enter your sub lesson video");
+    }
     values.course_cover_img = selectedImage.name;
     values.course_video_trailer = selectedVideoTrailer.name;
     values.course_img = selectedImage;
@@ -102,12 +105,9 @@ function AddCoursePage() {
           headers: { "Content-Type": "multipart/form-data" },
         }
       );
-      console.log(response);
       if (response.status === 200) {
-        navigate("admin/courselist");
+        navigate("/admin/courselist");
         window.location.reload(false);
-      } else {
-        response;
       }
     } catch (error) {
       console.log(error);

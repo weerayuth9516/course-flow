@@ -2,8 +2,9 @@ import LessonForm from "../../components/admin/LessonForm";
 import Sidebar from "../../components/admin/Sidebar";
 import arrowBack from "../../assets/registerPage/arrow-back.svg";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DeleteLesson } from "../../components/admin/ConfirmDeleteModal";
+import axios from "axios";
 
 function EditLessonPage() {
   const navigate = useNavigate();
@@ -15,6 +16,10 @@ function EditLessonPage() {
   const closeDeleteModal = () => {
     setShowDeleteModal(false);
   };
+  const clearInfomation = () => {
+    window.location.reload(false);
+    navigate(-1);
+  };
   return (
     <>
       <div className="flex">
@@ -25,7 +30,7 @@ function EditLessonPage() {
               <img
                 src={arrowBack}
                 className="mr-5 cursor-pointer"
-                onClick={() => navigate(-1)}
+                onClick={clearInfomation}
               />
               <div className="flex flex-col justify-center text-2xl font-medium">
                 <div className="flex w-[400px] text-sm">

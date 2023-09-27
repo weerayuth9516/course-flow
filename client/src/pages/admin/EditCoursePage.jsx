@@ -26,7 +26,6 @@ function EditCoursePage() {
   } = useDataCenter();
 
   const filterSubmit = (values) => {
-
     selectedImage || imageServerUrl
       ? setCoverImageError(false)
       : setCoverImageError(true);
@@ -47,7 +46,7 @@ function EditCoursePage() {
 
   const handleSubmit = (values) => {
     // Handle form submission
-    if(selectedImage){
+    if (selectedImage) {
       values.course_cover_img = selectedImage.name;
       values.course_video_trailer = selectedVideoTrailer.name;
       values.course_img = selectedImage;
@@ -78,7 +77,6 @@ function EditCoursePage() {
         courseSummary: response.data.data.course[0].course_summary,
         courseDetail: response.data.data.course[0].course_detail,
       });
-
       setImageServerUrl(response.data.data.course[0].course_cover_img);
       setVideoTrailerServerUrl(
         response.data.data.course[0].course_video_trailer
@@ -90,7 +88,7 @@ function EditCoursePage() {
 
   useEffect(() => {
     if (firstTimeFetch) {
-    getCourseData();
+      getCourseData();
       setFirstTimeFetch(false);
     }
   }, []);
@@ -106,19 +104,25 @@ function EditCoursePage() {
               className="w-full h-[92px] flex justify-between items-center px-20 border-b border-gray-400"
             >
               <div className="flex items-center">
-                  <img src={arrowBack} onClick={handleCancelButton} className="inline mr-4 cursor-pointer" />
+                <img
+                  src={arrowBack}
+                  onClick={handleCancelButton}
+                  className="inline mr-4 cursor-pointer"
+                />
                 <div className="inline text-header3 text-gray-600 mr-2">
-                  Course 
+                  Course
                 </div>
-                <div className="inline text-header3 text-[2A2E3F]">'{formValues.courseName}'</div>
+                <div className="inline text-header3 text-[2A2E3F]">
+                  '{formValues.courseName}'
+                </div>
               </div>
               <div className="flex justify-center items-center font-bold">
                 <button
                   onClick={handleCancelButton}
                   className="text-orange-500 w-[117px] h-[60px] border border-orange-500 rounded-xl"
                 >
-                    Cancel
-                  </button>
+                  Cancel
+                </button>
                 <button
                   type="submit"
                   form="add-course"
