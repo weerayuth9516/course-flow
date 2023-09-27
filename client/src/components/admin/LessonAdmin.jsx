@@ -10,13 +10,16 @@ function LessonAdmin() {
   const navigate = useNavigate();
   const { lessons, setAddLesson, setLessons } = useDataCenter();
   const getLesson = async () => {
+    lessons.length = 0;
     try {
       const lessonsResult = await axios.get(
         `http://localhost:4001/admin/courses/${params.courseId}`
       );
       // setLessons(lessonsResult.data.data.lessons);
-      lessons.push(...lessonsResult.data.data.lessons);
-      console.log(lessons);
+      console.log(lessonsResult);
+      if (lessons.length === 0) {
+        lessons.push(...lessonsResult.data.data.lessons);
+      }
     } catch (error) {
       console.log("request lesson error", error);
     }
@@ -62,8 +65,8 @@ function LessonAdmin() {
                     <img src={dragIcon} />
                   </td>
                   <td className="pl-5">{index + 1}</td>
-                  <td className="pl-5">{item.lessonName}</td>
-                  {/* <td className="pl-5">{item.subLessons.length}</td> */}
+                  <td className="pl-5">{item.lesson_name}</td>
+                  <td className="pl-5">{item.subLesson.length}</td>
                   <td>
                     <div className="flex justify-evenly">
                       <img src={deleteIcon} className="inline cursor-pointer" />

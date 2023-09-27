@@ -182,9 +182,9 @@ function CourseListPage() {
                     </td>
 
                     <td className="p-5 font-semibold">
-                      {/* <Link to={`/course/courseDetail/${item.course_id}`}>
+                      <Link to={`/course/courseDetail/${item.course_id}`}>
                         {item.course_name}
-                      </Link> */}
+                      </Link>
                     </td>
 
                     <td className="p-5 font-semibold">
