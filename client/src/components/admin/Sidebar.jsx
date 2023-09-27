@@ -21,7 +21,7 @@ function Sidebar() {
     navigate("/admin/login");
   };
   return (
-    <aside className="w-[16%] top-0 border-r border-gray-400">
+    <aside className="w-[16%] top-0 border-r border-gray-400 max-2xl:w-[18%]">
       <div className="sidebar overflow-y-auto">
         <div className=" w-full flex flex-col items-center mt-10 mb-24 px-5">
           <Link to={"/admin/courselist"}>

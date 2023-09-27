@@ -101,17 +101,17 @@ function CourseListPage() {
     <div className="flex flex-row">
       <Sidebar />
       <div className="w-[100%] flex flex-col">
-        <div className="flex items-center text-center w-[100%] justify-between pt-6 pb-4 border-b-2">
+        <div className="flex items-center text-center w-[100%] justify-between pt-6 pb-4 border-b-2 max-2xl:pr-0">
           <div className="pl-[5%] text-header3">Course</div>
           <div className="flex gap-3 items-center pr-[5%]">
             <label htmlFor="default-search" className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"></label>
             <div className="relative">
-              <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+              <div className="absolute inset-y-0 left-2 flex items-center pl-3 pointer-events-none">
 
                 <img
                   src={searchicon}
                   alt="Image icon"
-                  className="inline absolute left-2 top-3"
+                  className="absolute left-2 top-4.5"
                 />
 
               </div>
@@ -139,8 +139,8 @@ function CourseListPage() {
             </button>
           </div>
         </div>
-        <div className="bg-gray-100 h-screen relative">
-          <table className="table-auto absolute right-[5%] top-[5%] w-[90%]">
+        <div className="bg-gray-100 h-screen relative max-2xl:h-[1000px]">
+          <table className="table-auto absolute right-[5%] top-[5%] w-[90%] max-2xl:w-[98%] max-2xl:left-[1%] max-2xl:top-[2%] ">
             <thead className="bg-gray-300">
               <tr>
                 <th className="py-3 px-5 tracking-wide text-start text-gray-800 font-normal"></th>
