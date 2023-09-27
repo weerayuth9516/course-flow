@@ -28,7 +28,6 @@ function CourseListPage() {
 
 
   const auth = useAuth();
-  //
   const [courseList, setCourseList] = useState([]);
   const navigate = useNavigate()
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -56,7 +55,6 @@ function CourseListPage() {
         `http://localhost:4001/admin?page=${page}&publicStatus=${publicStatus}&price=${price}&createdat=${createdat}&updatedat=${updatedat}`
       );
       setCourseList(response.data.data);
-      console.log(response.data.data);
     } catch (error) {
       console.log("request error");
     }
@@ -72,6 +70,8 @@ function CourseListPage() {
   useEffect(() => {
     getCourseList(1);
   }, []);
+
+
 
   useEffect(() => {
     getCourseList(1, inputText)
@@ -96,6 +96,7 @@ function CourseListPage() {
       console.error("Error deleting course:", error);
     }
   };
+
 
   return (
     <div className="flex flex-row">
@@ -196,11 +197,6 @@ function CourseListPage() {
           </table>
         </div>
       </div>
-      <DeleteCourse
-        isOpen2={showDeleteModal}
-        onRequestClose2={closeDeleteModal}
-        onConfirm2={() => handleDeleteCourse(courseId)}
-      />
     </div>
   );
 }

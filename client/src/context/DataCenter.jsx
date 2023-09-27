@@ -1,22 +1,24 @@
 import { createContext, useContext, useState } from "react";
 import * as Yup from "yup";
+import { useNavigate } from "react-router-dom";
 
-const FormDataContext = createContext();
+const DataCenter = createContext();
 
-export default function useFormData() {
-  return useContext(FormDataContext);
+export default function useDataCenter() {
+  return useContext(DataCenter);
 }
 
-export function FormDataProvider({ children }) {
+export function DataCenterProvider({ children }) {
   const [imagePreview, setImagePreview] = useState(null);
   const [videoPreview, setVideoPreview] = useState(null);
   const [videoType, setVideoType] = useState("video/mp4");
-  const [imageUrl, setImageUrl] = useState("");
   const [selectedImage, setSelectedImage] = useState(null);
   const [selectedVideoTrailer, setSelectedVideoTrailer] = useState(null);
   const [coverImageError, setCoverImageError] = useState(false);
   const [videoTrailerError, setVideoTrailerError] = useState(false);
-  const [videoTrailerUrl, setVideoTrailerUrl] = useState("");
+  const [imageServerUrl, setImageServerUrl] = useState(null);
+  const [videoTrailerServerUrl, setVideoTrailerServerUrl] = useState(null);
+  const [firstTimeFetch,setFirstTimeFetch] = useState(true)
   const [formValues, setFormValues] = useState({
     courseName: "",
     price: "",
@@ -24,8 +26,8 @@ export function FormDataProvider({ children }) {
     courseSummary: "",
     courseDetail: "",
   });
-  const [lessons, setLessons] = useState([]);
-  const [addLesson, setAddlesson] = useState(false);
+
+  const navigate = useNavigate();
 
   const validationSchema = Yup.object().shape({
     courseName: Yup.mixed()
@@ -57,16 +59,16 @@ export function FormDataProvider({ children }) {
       .required("Course summary is required")
       .test(
         "max-length",
-        "Course name must be at most 3000 characters",
+        "Course summary must be at most 3000 characters",
         (value) => value && value.length <= 3000
       ),
     courseDetail: Yup.string()
-      .required("Course detail is required")
-      .test(
-        "max-length",
-        "Course name must be at most 5000 characters",
-        (value) => value && value.length <= 5000
-      ),
+      .required("Course detail is required"),
+      // .test(
+      //   "max-length",
+      //   "Course detail must be at most 10000 characters",
+      //   (value) => value && value.length <= 10000
+      // ),
   });
 
   const handleImagePreview = (e) => {
@@ -102,9 +104,27 @@ export function FormDataProvider({ children }) {
   const clearVideoPreview = () => {
     setVideoPreview(null);
   };
+  const handleClearVideoClick = () => {
+    setVideoTrailerError(false);
+    clearVideoPreview();
+    setSelectedVideoTrailer(null);
+    setVideoTrailerServerUrl(null);
+  };
+  const handleClearImageClick = () => {
+    setCoverImageError(false);
+    clearImagePreview();
+    setSelectedImage(null);
+    setImageServerUrl(null)
+  };
+  const handleCancelButton = () => {
+    setTimeout(() => {
+      window.location.reload();
+    }, 100);
+    navigate("/admin/courselist");
+  };
 
   return (
-    <FormDataContext.Provider
+    <DataCenter.Provider
       value={{
         formValues,
         setFormValues,
@@ -121,22 +141,23 @@ export function FormDataProvider({ children }) {
         clearVideoPreview,
         selectedImage,
         setSelectedImage,
-        imageUrl,
-        setImageUrl,
         coverImageError,
         setCoverImageError,
         videoTrailerError,
         setVideoTrailerError,
         selectedVideoTrailer,
         setSelectedVideoTrailer,
-        videoTrailerUrl,
-        setVideoTrailerUrl,
-        addLesson,
-        setAddlesson,
-        lessons,
+        handleClearVideoClick,
+        handleClearImageClick,
+        imageServerUrl,
+        setImageServerUrl,
+        videoTrailerServerUrl,
+        setVideoTrailerServerUrl,
+        firstTimeFetch,setFirstTimeFetch,
+        handleCancelButton,
       }}
     >
       {children}
-    </FormDataContext.Provider>
+    </DataCenter.Provider>
   );
 }
