@@ -31,7 +31,7 @@ export function DataCenterProvider({ children }) {
   });
 
   const navigate = useNavigate();
-
+  const [addLesson, setAddLesson] = useState(false);
   const [lessons, setLessons] = useState([]);
   const [subLessonVideo, setSubLessonVideo] = useState([]);
   const validationSchema = Yup.object().shape({
@@ -164,6 +164,8 @@ export function DataCenterProvider({ children }) {
         firstTimeFetch,
         setFirstTimeFetch,
         handleCancelButton,
+        addLesson,
+        setAddLesson,
       }}
     >
       {children}

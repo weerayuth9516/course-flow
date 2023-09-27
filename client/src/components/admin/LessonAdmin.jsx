@@ -8,7 +8,7 @@ import useDataCenter from "../../context/DataCenter";
 function LessonAdmin() {
   const params = useParams();
   const navigate = useNavigate();
-  const { lessons } = useDataCenter();
+  const { lessons, setAddLesson } = useDataCenter();
   // const getLesson = async () => {
   //   try {
   //     const lessonsResult = await axios.get(
@@ -31,7 +31,7 @@ function LessonAdmin() {
           <div className="font-medium text-gray-900 text-2xl">Lesson</div>
           <button
             className="h-full bg-blue-500 px-[32px] py-[18px] rounded-xl font-bold text-white hover:bg-blue-600"
-            onClick={() => navigate("/admin/addlesson")}
+            onClick={() => setAddLesson(true)}
           >
             + Add Lesson
           </button>

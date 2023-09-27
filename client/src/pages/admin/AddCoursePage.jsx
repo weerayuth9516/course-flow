@@ -16,6 +16,7 @@ function AddCoursePage() {
     lessons,
     subLessonVideo,
     handleCancelButton,
+    addLesson,
   } = useDataCenter();
   const navigate = useNavigate();
   const filterSubmit = (values) => {
@@ -118,11 +119,14 @@ function AddCoursePage() {
   };
 
   return (
-    <main className=" flex">
+    <main className=" flex w-screen">
       <Sidebar />
-      <section className="font-inter flex justify-center items-center">
-        <section id="right-content w-full">
-          <div className="w-full h-[92px] flex justify-center items-center">
+      <section className="font-inter flex flex-col justify-center items-center w-full">
+        {/* <section id="right-content"> */}
+        <div className="w-full h-[92px] flex justify-center items-center">
+          {addLesson ? (
+            ""
+          ) : (
             <section
               id="navbar"
               className="w-full h-[92px] flex justify-between items-center px-20 border-b border-gray-400"
@@ -140,14 +144,18 @@ function AddCoursePage() {
                 <button
                   type="submit"
                   form="add-course"
-                  className="text-white w-[117px] h-[60px] bg-[#2f5fac] rounded-xl ml-[20px] mr-[15px]"
+                  className="text-white w-[117px] h-[60px] bg-[#2f5fac] rounded-xl ml-[20px]"
                 >
                   Create
                 </button>
               </div>
             </section>
-          </div>
-          <section className="w-full bg-[#f6f7fc] flex justify-center flex-col items-center">
+          )}
+        </div>
+        <section className="w-full bg-[#f6f7fc] flex justify-center flex-col items-center">
+          {addLesson ? (
+            <LessonForm />
+          ) : (
             <section className="w-full bg-[#f6f7fc] flex justify-center flex-col items-center">
               <div className="w-[85%] bg-white mt-[80px] mx-auto border border-gray-400 rounded-2xl flex justify-center items-start">
                 <div className="px-20 text-body1 text-black">
@@ -157,8 +165,9 @@ function AddCoursePage() {
               </div>
               <LessonAdmin />
             </section>
-          </section>
+          )}
         </section>
+        {/* </section> */}
       </section>
     </main>
   );
