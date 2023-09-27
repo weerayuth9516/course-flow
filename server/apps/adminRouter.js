@@ -446,8 +446,9 @@ adminRouter.post(
     const { courseId, lessonId } = req.params;
     const sub_lesson_video = req.files.singleSubLessonVideo[0];
     const filePath = `${courseId}/${lessonId}/${sub_lesson_video.originalname}`;
-    console.log(sub_lesson_video);
-    console.log(filePath);
+    if (!sub_lesson_video) {
+      return res.status(404).json({ message: "Video not exist" });
+    }
     const uploadVideo = await supabase.storage
       .from("sublesson_video")
       .upload(filePath, sub_lesson_video.buffer, {
@@ -455,18 +456,34 @@ adminRouter.post(
         upsert: true,
         contentType: sub_lesson_video.minetype,
       });
-    console.log(uploadVideo.data);
+    if (!uploadVideo.error === null) {
+      return res.status(404).json({ error: uploadVideo.error });
+    }
+
     const videoUrl = await supabase.storage
       .from(
         `sublesson_video/${courseId}/${lessonId}/${sub_lesson_video.originalname}`
       )
       .getPublicUrl(sub_lesson_video);
-    console.log(videoUrl);
+    if (!videoUrl.error === null) {
+      return res.status(404).json({ error: videoUrl.error });
+    }
+    // console.log(videoUrl);
+    const findSubLesson = await supabase
+      .from("sub_lessons")
+      .select("*")
+      .eq("lesson_id", lessonId);
+    // console.log(findSubLesson.data.length);
     const sublessonInsert = await supabase.from("sub_lessons").insert({
       sub_lesson_name: req.body.sub_lesson_name,
       sub_lesson_video: videoUrl.data.publicUrl,
       lesson_id: lessonId,
+      priority: findSubLesson.data.length + 1,
     });
+    if (!sublessonInsert.error === null) {
+      return res.status(404).json({ error: sublessonInsert.error });
+    }
+    return res.status(200).json({ message: "Success to create sub-lesson" });
   }
 );
 
