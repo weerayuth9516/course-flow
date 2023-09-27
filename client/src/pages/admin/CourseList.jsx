@@ -13,7 +13,10 @@ import greenstatus from "../../assets/courselist/greenstatus.png";
 import { useState, useEffect } from "react";
 import { useAuth } from "../../context/authentication";
 import axios from "axios";
+<<<<<<< HEAD
 import { DeleteCourse } from "../../components/admin/ConfirmDeleteModal";
+=======
+>>>>>>> 67823d095ba97522a93c3c226dd9b8b3cc2ff7f3
 
 function CourseListPage() {
   const auth = useAuth();
@@ -24,6 +27,7 @@ function CourseListPage() {
   const params = useParams();
   const [courseId, setCourseId] = useState(null);
 
+<<<<<<< HEAD
   const openDeleteModal = (courseId) => {
     setCourseId(courseId);
     setShowDeleteModal(true);
@@ -32,6 +36,8 @@ function CourseListPage() {
     setShowDeleteModal(false);
   };
 
+=======
+>>>>>>> 67823d095ba97522a93c3c226dd9b8b3cc2ff7f3
   const getCourseList = async (
     page,
     publicStatus,
@@ -50,6 +56,7 @@ function CourseListPage() {
   };
   useEffect(() => {
     getCourseList(1);
+<<<<<<< HEAD
     getCourseList(1);
   }, []);
 
@@ -73,6 +80,10 @@ function CourseListPage() {
     }
   };
 
+=======
+  }, []);
+
+>>>>>>> 67823d095ba97522a93c3c226dd9b8b3cc2ff7f3
   return (
     <div className="flex flex-row">
       <Sidebar />
@@ -155,8 +166,10 @@ function CourseListPage() {
                       {item.course_updated_at}
                     </td>
                     <td className="pt-8 flex pl-4 gap-2 ">
-                      <img src={deleteLogo}></img>
-                      <img src={edit}></img>
+                      <img src={deleteLogo}/>
+                      <Link to={`/admin/editcourse/${item.course_id}`}>
+                        <img src={edit}/>
+                      </Link>
                     </td>
                   </tr>
                 );
@@ -165,7 +178,6 @@ function CourseListPage() {
           </table>
         </div>
       </div>
-
     </div>
   );
 }

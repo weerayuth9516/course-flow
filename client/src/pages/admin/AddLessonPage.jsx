@@ -57,7 +57,10 @@ function AddLessonPage() {
 =======
           <Link to="/admin/addcourse"><div className="h-[70px] w-full border-gray-500 border-b">navbar | back to addCourse</div></Link>
           <Link to="/admin/editcourse/c020134b-ea78-4af5-958b-3c20c0452f46"><div className="h-[70px] w-full border-gray-500 border-b">Back to Course</div></Link>
+<<<<<<< HEAD
 >>>>>>> a06df55 (feat: created editCourse)
+=======
+>>>>>>> 67823d095ba97522a93c3c226dd9b8b3cc2ff7f3
           <LessonForm />
         </div>
       </div>
