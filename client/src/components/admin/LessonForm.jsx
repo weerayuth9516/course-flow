@@ -13,12 +13,42 @@ function LessonForm() {
   // const [subLessonName, setSubLessonName] = useState("");
   const [preArrayVideo, setPreArrayVideo] = useState([]);
   const [videoSizeError, setVideoSizeError] = useState("");
-  const { setAddLesson, lessons, subLessonVideo, formValues } = useDataCenter();
-  const initialValues = {
-    lessonName: "",
-    subLessons: [{ subLessonName: "", video: null }],
-  };
   const navigate = useNavigate();
+  const {
+    setAddLesson,
+    addLesson,
+    lessons,
+    subLessonVideo,
+    formValues,
+    editState,
+    firstTimeFetch,
+    editIndex,
+  } = useDataCenter();
+  const initialValues = {};
+  if (!addLesson) {
+    try {
+      initialValues.lessonName = lessons[editIndex].lesson_name;
+      initialValues.subLessons = lessons[editIndex].subLesson.map((value) => {
+        return {
+          subLessonName: value.sub_lesson_name,
+          video: value.sub_lesson_video,
+        };
+      });
+    } catch (error) {
+      // console.log(error);
+    } finally {
+      initialValues.lessonName = lessons[editIndex].lessonName;
+      initialValues.subLessons = lessons[editIndex].subLessons.map((value) => {
+        return {
+          subLessonName: value.sub_lesson_name,
+          video: value.sub_lesson_video,
+        };
+      });
+    }
+  } else {
+    initialValues.lessonName = "";
+    initialValues.subLessons = [{ subLessonName: "", video: null }];
+  }
   const validationSchema = Yup.object().shape({
     lessonName: Yup.string()
       .required("Lesson name is required")
@@ -45,7 +75,13 @@ function LessonForm() {
     lessons.push(values);
     subLessonVideo.push(...preArrayVideo);
     setAddLesson(false);
+    console.log(values);
+    // setEditState(false);
+    // console.log(lessons);
   };
+  // useEffect(() => {
+  //   console.log(lessons);
+  // });
 
   return (
     <>

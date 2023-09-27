@@ -118,9 +118,23 @@ adminRouter.get("/courses/:courseId", async (req, res) => {
         .select("*")
         .eq("course_id", req.params.courseId)
         .order("priority", { ascending: true });
-      // const lessonIdAraray = lessonResult.data.map((value) => {
-      //   return { ...value };
-      // });
+      const lessonIdAraray = lessonResult.data.map((value) => {
+        return value.lesson_id;
+      });
+      const sublessonResult = await supabase
+        .from("sub_lessons")
+        .select("*")
+        .in("lesson_id", lessonIdAraray)
+        .order("priority", { ascending: true });
+      const newLessonMaping = lessonResult.data.map((value) => {
+        return {
+          ...value,
+          lessonName: value.lesson_name,
+          subLessons: sublessonResult.data.filter((subValue) => {
+            return subValue.lesson_id === value.lesson_id;
+          }),
+        };
+      });
       if (
         courseResults.statusText === "OK" &&
         lessonResult.statusText === "OK"
@@ -128,7 +142,7 @@ adminRouter.get("/courses/:courseId", async (req, res) => {
         return res.json({
           data: {
             course: courseResults.data,
-            lessons: lessonResult.data,
+            lessons: newLessonMaping,
           },
         });
       }
@@ -154,6 +168,7 @@ const multerUpload = storageControll.fields([
 adminRouter.post("/course/created", multerUpload, async (req, res) => {
   const courseDetail = req.body.courseDetail;
   const lessonsDetail = req.body.lessonsDetail;
+  // console.log(req.body);
   const course_cover_img = req.files.courseCoverImgFile[0];
   const course_video_trailer = req.files.courseVideoTrailerFile[0];
   const sub_lesson_video_array = req.files.subLessonVideoFile;
@@ -184,6 +199,7 @@ adminRouter.post("/course/created", multerUpload, async (req, res) => {
     const course_id = courseDetailFormSupabase.data[0].course_id;
 
     //**Maping lessons */
+    // console.log(lessonsDetail);
     const lessonForInsert = lessonsDetail.map((value) => {
       return {
         course_id: course_id,
@@ -261,7 +277,7 @@ adminRouter.post("/course/created", multerUpload, async (req, res) => {
     const imgaesTrailerUrl = await supabase.storage
       .from("course_images")
       .getPublicUrl(imgPath.data.path);
-    console.log(videoTrailerUrl);
+    // console.log(videoTrailerUrl);
     const reAssignPath = await supabase
       .from("courses")
       .update({

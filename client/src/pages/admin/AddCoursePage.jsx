@@ -89,7 +89,7 @@ function AddCoursePage() {
     });
     formData.append("courseCoverImgFile", courseCoverImgFile);
     formData.append("courseVideoTrailerFile", courseVideoTrailerFile);
-    console.log(subLessonVideoFile);
+    // console.log(subLessonVideoFile);
     subLessonVideoFile.map((value) => {
       formData.append("subLessonVideoFile", value);
     });
@@ -107,7 +107,7 @@ function AddCoursePage() {
       );
       if (response.status === 200) {
         navigate("/admin/courselist");
-        window.location.reload(false);
+        // window.location.reload(false);
       }
     } catch (error) {
       console.log(error);

@@ -17,7 +17,7 @@ import axios from "axios";
 import { DebounceInput } from "react-debounce-input";
 import useGetsearch from "../../hook/useGetsearch";
 import { DeleteCourse } from "../../components/admin/ConfirmDeleteModal";
-
+import useDataCenter from "../../context/DataCenter";
 function CourseListPage() {
   const [inputText, setInputText] = useState("");
 
@@ -30,7 +30,7 @@ function CourseListPage() {
   const [deleted, setDeleted] = useState(false);
   const params = useParams();
   const [courseId, setCourseId] = useState(null);
-
+  const { setFirstTimeFetch, firstTimeFetch, lessons } = useDataCenter();
   const openDeleteModal = (courseId) => {
     setCourseId(courseId);
     setShowDeleteModal(true);
@@ -64,7 +64,13 @@ function CourseListPage() {
   };
 
   useEffect(() => {
-    getCourseList(1);
+    if (!firstTimeFetch) {
+      window.location.reload();
+      lessons.length = 0;
+      getCourseList(1);
+      setFirstTimeFetch(true);
+    }
+    //
   }, []);
 
   useEffect(() => {
