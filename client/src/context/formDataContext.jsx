@@ -24,6 +24,8 @@ export function FormDataProvider({ children }) {
     courseSummary: "",
     courseDetail: "",
   });
+  const [lessons, setLessons] = useState([]);
+  const [addLesson, setAddlesson] = useState(false);
 
   const validationSchema = Yup.object().shape({
     courseName: Yup.mixed()
@@ -129,6 +131,9 @@ export function FormDataProvider({ children }) {
         setSelectedVideoTrailer,
         videoTrailerUrl,
         setVideoTrailerUrl,
+        addLesson,
+        setAddlesson,
+        lessons,
       }}
     >
       {children}

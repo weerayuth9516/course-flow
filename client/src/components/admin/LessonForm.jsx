@@ -4,18 +4,19 @@ import errorIcon from "../../assets/registerPage/errorIcon.svg";
 import { useState } from "react";
 import dragIcon from "../../assets/registerPage/drag-addlesson.svg";
 import videoSubLesson from "../../assets/registerPage/videoSubLesson.svg";
+import useDataCenter from "../../context/DataCenter";
+import { Link, useNavigate } from "react-router-dom";
+import arrowBack from "../../assets/registerPage/arrow-back.svg";
 
 function LessonForm() {
-  // const [lessonName, setLessonName] = useState("");
-  // const [subLessonName, setSubLessonName] = useState("");
-  const [video, setVideo] = useState(null);
-  const [videoType, setVideoType] = useState("video/mp4");
-
+  const [videoSizeError, setVideoSizeError] = useState("");
+  const { setAddLesson, lessons, subLessonVideo } = useDataCenter();
+  const [preArrayVideo, setPreArrayVideo] = useState([]);
   const initialValues = {
     lessonName: "",
     subLessons: [{ subLessonName: "", video: null }],
   };
-
+  const navigate = useNavigate();
   const validationSchema = Yup.object().shape({
     lessonName: Yup.string()
       .required("Lesson name is required")
@@ -32,39 +33,59 @@ function LessonForm() {
               /^[a-zA-Z0-9\s]+$/,
               "Sub-Lesson name must contain only letters or digits"
             ),
-          video: Yup.mixed()
-            .test(
-              "fileType",
-              "Only .mp4, .mov, and .avi formats are allowed",
-              (value) =>
-                value &&
-                ["video/mp4", "video/mov", "video/avi"].includes(value.type)
-            )
-            .test(
-              "fileSize",
-              "Video file is too large. Maximum size is 20MB",
-              (value) => value && value.size <= 20971520 // 20MB
-            )
-            .required("Video is required"),
+          video: Yup.mixed().required("Video is required"),
         })
       )
       .min(1, "At least one Sub-Lesson is required"),
   });
 
-  const clearVideo = () => {
-    setVideo(null);
+  const handleSubmit = async (values) => {
+    lessons.push(values);
+    subLessonVideo.push(preArrayVideo);
+    navigate("/admin/addcourse");
   };
+
   return (
     <>
+      <div className="h-[92px] w-[100%] flex border-b justify-between bg-white">
+        <div className="flex pl-14">
+          <img
+            src={arrowBack}
+            className="mr-5 cursor-pointer"
+            onClick={() => navigate(-1)}
+          />
+          <div className="flex flex-col justify-center text-2xl font-medium">
+            <div className="flex w-[400px] text-sm">
+              <span className="text-gray-600 mr-2">Course</span>‘Service Design
+              Essentials’ Introduction
+            </div>
+            Add Lesson
+          </div>
+        </div>
+        <div className="flex items-center pr-14">
+          <Link to="/admin/addcourse">
+            <button className="w-[118px] h-[58px] border border-orange-500 rounded-xl font-bold text-orange-500 hover:text-white hover:bg-orange-500 mr-3">
+              Cancel
+            </button>
+          </Link>
+          <button
+            type="submit"
+            form="lessons"
+            className="w-[118px] h-[58px] font-bold text-white bg-blue-500 hover:bg-blue-600 rounded-xl"
+          >
+            Create
+          </button>
+        </div>
+      </div>
       <div className="bg-white w-[90%] border border-gray-200 rounded-2xl px-[100px] pt-[40px] pb-[60px] mt-8">
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
-          // onSubmit={handleSubmit}
+          onSubmit={handleSubmit}
           enableReinitialize={true}
         >
           {({ errors, touched, values }) => (
-            <Form>
+            <Form id="lessons">
               <div className="flex flex-col relative">
                 <label htmlFor="lessonName">Lesson name *</label>
                 <Field
@@ -151,16 +172,33 @@ function LessonForm() {
                                   style={{ display: "none" }}
                                   onChange={(event) => {
                                     const selectedVideo = event.target.files[0];
-                                    if (selectedVideo.size <= 20971520) {
-                                      arrayHelpers.replace(index, {
+                                    const maxSize = 20 * 1024 * 1024; // 20MB
+                                    if (selectedVideo.size <= maxSize) {
+                                      const updatedSubLesson = {
                                         ...subLesson,
+                                        sub_lesson_video: selectedVideo.name,
+                                        priority: index + 1,
                                         video:
                                           URL.createObjectURL(selectedVideo),
-                                        videoType: selectedVideo.type,
-                                      });
+                                      };
+                                      arrayHelpers.replace(
+                                        index,
+                                        updatedSubLesson
+                                      );
+                                      preArrayVideo.push(selectedVideo);
+                                      setVideoSizeError("");
+                                    } else {
+                                      setVideoSizeError(
+                                        "Video file is too large. Maximum size is 20MB"
+                                      );
                                     }
                                   }}
                                 />
+                                {videoSizeError && (
+                                  <div className="text-purple-500 text-sm mt-1">
+                                    {videoSizeError}
+                                  </div>
+                                )}
                                 <button
                                   type="button"
                                   className="w-[160px] h-[160px]"
@@ -231,6 +269,14 @@ function LessonForm() {
                   </div>
                 )}
               />
+              {/* <button
+                type="submit"
+                form="add-course"
+                onClick={() => setAddLesson(false)}
+                className="text-white w-[117px] h-[60px] bg-[#2f5fac] rounded-xl ml-[20px] mr-[15px] mt-10"
+              >
+                Back
+              </button> */}
             </Form>
           )}
         </Formik>
