@@ -102,18 +102,22 @@ function LessonForm() {
           </div>
         </div>
         <div className="flex items-center pr-14">
-          <Link to="/admin/addcourse">
+          <Link to="">
             <button className="w-[118px] h-[58px] border border-orange-500 rounded-xl font-bold text-orange-500 hover:text-white hover:bg-orange-500 mr-3">
               Cancel
             </button>
           </Link>
-          <button
-            type="submit"
-            form="lessons"
-            className="w-[118px] h-[58px] font-bold text-white bg-blue-500 hover:bg-blue-600 rounded-xl"
-          >
-            Create
-          </button>
+          {editState ? (
+            ""
+          ) : (
+            <button
+              type="submit"
+              form="lessons"
+              className="w-[118px] h-[58px] font-bold text-white bg-blue-500 hover:bg-blue-600 rounded-xl"
+            >
+              Create
+            </button>
+          )}
         </div>
       </div>
       <div className="bg-white w-[90%] border border-gray-200 rounded-2xl px-[100px] pt-[40px] pb-[60px] mt-8 mb-11">
@@ -279,10 +283,12 @@ function LessonForm() {
 
                           {values.subLessons.length > 1 ? (
                             <button
-                              className="text-gray-500 font-semibold flex justify-start hover:text-black h-[24px]"
+                              className="text-gray-500 font-semibold flex justify-start hover:text-blue-500 h-[24px]"
                               onClick={() => arrayHelpers.remove(index)}
                             >
-                              Delete
+                              {subLesson.subLessonName.length > 0
+                                ? "Delete"
+                                : "Created"}
                             </button>
                           ) : (
                             <button className="text-gray-500 font-semibold flex justify-start h-[24px] cursor-not-allowed">

@@ -7,14 +7,7 @@ import dragIcon from "../../assets/registerPage/drag.svg";
 import useDataCenter from "../../context/DataCenter";
 function LessonAdmin() {
   const params = useParams();
-  const {
-    lessons,
-    setAddLesson,
-    addLesson,
-    setEditIndex,
-    setEditState,
-    editState,
-  } = useDataCenter();
+  const { lessons, setAddLesson, setEditIndex, setEditState } = useDataCenter();
   // const getLesson = async () => {
   //   let lessonsResult;
   //   if (!addLesson) {

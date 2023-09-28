@@ -18,9 +18,13 @@ import { DebounceInput } from "react-debounce-input";
 import useGetsearch from "../../hook/useGetsearch";
 import { DeleteCourse } from "../../components/admin/ConfirmDeleteModal";
 import useDataCenter from "../../context/DataCenter";
+import CircularProgress from "@mui/material/CircularProgress";
+import Box from "@mui/material/Box";
+import Pagination from "@mui/material/Pagination";
+import Stack from "@mui/material/Stack";
 function CourseListPage() {
   const [inputText, setInputText] = useState("");
-
+  const [loading, setLoading] = useState(false);
   //status logic//
 
   const auth = useAuth();
@@ -38,29 +42,41 @@ function CourseListPage() {
   const closeDeleteModal = () => {
     setShowDeleteModal(false);
   };
+  const [queryParam, setQueryParam] = useState({
+    page: 1,
+    publicStatus: false,
+    price: false,
+    createdat: false,
+    updatedat: false,
+    title: "",
+    courseCount: 1,
+  });
 
-  const getCourseList = async (
-    page,
-    publicStatus,
-    price,
-    createdat,
-    updatedat
-  ) => {
+  const getCourseList = async () => {
+    setLoading(true);
     try {
       const response = await axios.get(
-        `http://localhost:4001/admin?page=${page}&publicStatus=${publicStatus}&price=${price}&createdat=${createdat}&updatedat=${updatedat}`
+        `http://localhost:4001/admin?page=${queryParam.page}&publicStatus=${queryParam.publicStatus}&price=${queryParam.price}&createdat=${queryParam.createdat}&updatedat=${queryParam.updatedat}&title=${queryParam.title}`
       );
       setCourseList(response.data.data);
+      queryParam.courseCount = response.data.all_course;
     } catch (error) {
       console.log("request error");
     }
+    setLoading(false);
   };
 
   const handleInputChange = (e) => {
     const newInputText = e.target.value;
+    queryParam.title = newInputText;
+    getCourseList(queryParam.page);
     setInputText(newInputText);
     // getCourseList(1, newInputText, "", "", "", "", "");
     // console.log(courseList)
+  };
+  const handdlePageChange = (event, value) => {
+    queryParam.page = value;
+    getCourseList(value);
   };
 
   useEffect(() => {
@@ -83,8 +99,7 @@ function CourseListPage() {
       const response = await axios.delete(
         `http://localhost:4001/admin/courses/${courseId}`
       );
-      console.log(response);
-
+      // console.log(response);
       if (response && response.status === 200) {
         setCourseList((prevCourseList) =>
           prevCourseList.filter((course) => course.course_id !== courseId)
@@ -136,92 +151,149 @@ function CourseListPage() {
             </button>
           </div>
         </div>
-        <div className="bg-gray-100 h-screen relative max-2xl:h-[1000px]">
-          <table className="table-auto absolute right-[5%] top-[5%] w-[90%] max-2xl:w-[98%] max-2xl:left-[1%] max-2xl:top-[2%] ">
-            <thead className="bg-gray-300">
-              <tr>
-                <th className="py-3 px-5 tracking-wide text-start text-gray-800 font-normal"></th>
-                <th className="py-3 px-5 tracking-wide text-start text-gray-800 font-normal">
-                  Image
-                </th>
-                <th className="py-3 px-5 tracking-wide text-start text-gray-800 font-normal">
-                  Course name
-                </th>
-                <th className="py-3 px-5 tracking-wide text-start text-gray-800 font-normal">
-                  Lesson
-                </th>
-                <th className="py-3 px-5 tracking-wide text-start text-gray-800 font-normal">
-                  Price
-                </th>
-                <th className="py-3 px-5 tracking-wide text-start text-gray-800 font-normal">
-                  Created date
-                </th>
-                <th className="py-3 px-5 tracking-wide text-start text-gray-800 font-normal">
-                  Updated date
-                </th>
-                <th className="py-3 px-5 tracking-wide text-start text-gray-800 font-normal">
-                  Action
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white">
-              {courseList.map((item, index) => {
-                return (
-                  <tr key={index} className="border-b-2">
-                    <td className="p-5">
-                      {item.public_status !== 0 ? (
+
+        {loading ? (
+          <Box
+            sx={{
+              display: "flex",
+              justifyItems: "center",
+              justifyContent: "center",
+            }}
+            className="h-[90vh] bg-gray-100"
+          >
+            <CircularProgress size="20rem" className="mt-[20vh]" />
+          </Box>
+        ) : (
+          <div className="bg-gray-100 h-screen relative max-2xl:h-[1000px]">
+            <Stack
+              spacing={2}
+              className="flex justifly-center items-center mt-2"
+            >
+              <Pagination
+                count={queryParam.courseCount}
+                variant="outlined"
+                shape="rounded"
+                page={queryParam.page}
+                onChange={handdlePageChange}
+              />
+            </Stack>
+            <table className="table-auto absolute right-[5%] top-[5%] w-[90%] max-2xl:w-[98%] max-2xl:left-[1%] max-2xl:top-[2%] ">
+              <thead className="bg-gray-300">
+                <tr>
+                  <th
+                    className="py-3 px-5 tracking-wide text-start text-gray-800 font-normal cursor-pointer hover:bg-gray-50"
+                    onClick={() => {
+                      queryParam.publicStatus = !queryParam.publicStatus;
+                      getCourseList(queryParam.page);
+                    }}
+                  >
+                    PS
+                  </th>
+                  <th className="py-3 px-5 tracking-wide text-start text-gray-800 font-normal">
+                    Image
+                  </th>
+                  <th className="py-3 px-5 tracking-wide text-start text-gray-800 font-normal">
+                    Course name
+                  </th>
+                  <th className="py-3 px-5 tracking-wide text-start text-gray-800 font-normal">
+                    Lesson
+                  </th>
+                  <th
+                    className="py-3 px-5 tracking-wide text-start text-gray-800 font-normal cursor-pointer hover:bg-gray-50"
+                    onClick={() => {
+                      queryParam.price = !queryParam.price;
+                      getCourseList(queryParam.page);
+                    }}
+                  >
+                    Price
+                  </th>
+                  <th
+                    className="py-3 px-5 tracking-wide text-start text-gray-800 font-normal cursor-pointer hover:bg-gray-50"
+                    onClick={() => {
+                      queryParam.createdat = !queryParam.createdat;
+                      getCourseList(queryParam.page);
+                    }}
+                  >
+                    Created date
+                  </th>
+                  <th
+                    className="py-3 px-5 tracking-wide text-start text-gray-800 font-normal cursor-pointer hover:bg-gray-50"
+                    onClick={() => {
+                      queryParam.updatedat = !queryParam.updatedat;
+                      getCourseList(queryParam.page);
+                    }}
+                  >
+                    Updated date
+                  </th>
+                  <th className="py-3 px-5 tracking-wide text-start text-gray-800 font-normal">
+                    Action
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white">
+                {courseList.map((item, index) => {
+                  return (
+                    <tr key={index} className="border-b-2">
+                      <td className="p-5">
+                        {item.public_status !== 0 ? (
+                          <img
+                            className="w-3"
+                            src={greenstatus}
+                            alt="Green Status"
+                          />
+                        ) : (
+                          <img
+                            className="w-3"
+                            src={redstatus}
+                            alt="Red Status"
+                          />
+                        )}
+                      </td>
+
+                      <td className="p-5">
                         <img
-                          className="w-3"
-                          src={greenstatus}
-                          alt="Green Status"
+                          className="w-20 h-14 object-cover"
+                          src={item.course_cover_img}
                         />
-                      ) : (
-                        <img className="w-3" src={redstatus} alt="Red Status" />
-                      )}
-                    </td>
+                      </td>
 
-                    <td className="p-5">
-                      <img
-                        className="w-20 h-14 object-cover"
-                        src={item.course_cover_img}
-                      />
-                    </td>
+                      <td className="p-5 font-semibold">
+                        <Link to={`/course/courseDetail/${item.course_id}`}>
+                          {item.course_name}
+                        </Link>
+                      </td>
 
-                    <td className="p-5 font-semibold">
-                      <Link to={`/course/courseDetail/${item.course_id}`}>
-                        {item.course_name}
-                      </Link>
-                    </td>
-
-                    <td className="p-5 font-semibold">
-                      {item.lesson_amount} lessons
-                    </td>
-                    <td className="p-5 font-semibold">
-                      {item.course_price}.00
-                    </td>
-                    <td className="p-5 font-semibold">
-                      {new Date(item.course_created_at).toLocaleString()}
-                    </td>
-                    <td className="p-5 font-semibold">
-                      {new Date(item.course_updated_at).toLocaleString()}
-                    </td>
-                    <td className="pt-8 flex pl-4 gap-2">
-                      <img
-                        src={deleteLogo}
-                        onClick={() => openDeleteModal(item.course_id)}
-                        style={{ cursor: "pointer" }}
-                      />
-                      <Link to={`/admin/editcourse/${item.course_id}`}>
-                        <img src={edit} className="cursor-pointer" />
-                      </Link>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
+                      <td className="p-5 font-semibold">
+                        {item.lesson_amount} lessons
+                      </td>
+                      <td className="p-5 font-semibold">
+                        {item.course_price}.00
+                      </td>
+                      <td className="p-5 font-semibold">
+                        {new Date(item.course_created_at).toLocaleString()}
+                      </td>
+                      <td className="p-5 font-semibold">
+                        {new Date(item.course_updated_at).toLocaleString()}
+                      </td>
+                      <td className="pt-8 flex pl-4 gap-2">
+                        <img
+                          src={deleteLogo}
+                          onClick={() => openDeleteModal(item.course_id)}
+                          style={{ cursor: "pointer" }}
+                        />
+                        <Link to={`/admin/editcourse/${item.course_id}`}>
+                          <img src={edit} className="cursor-pointer" />
+                        </Link>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
+
       <DeleteCourse
         isOpen2={showDeleteModal}
         onRequestClose2={closeDeleteModal}

@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import CircularProgress from "@mui/material/CircularProgress";
+import Box from "@mui/material/Box";
 import useDataCenter from "../../context/DataCenter";
 import Sidebar from "../../components/admin/Sidebar";
 import LessonAdmin from "../../components/admin/LessonAdmin";
@@ -8,6 +10,7 @@ import arrowBack from "../../assets/EditCourse/arrow_back.png";
 import axios from "axios";
 import { Link, useParams } from "react-router-dom";
 import LessonForm from "../../components/admin/LessonForm";
+
 function EditCoursePage() {
   const { formValues, setFormValues } = useDataCenter();
   const [loading, setLoading] = useState(false);
@@ -159,9 +162,12 @@ function EditCoursePage() {
             //   color="gray"
             //   secondaryColor="white"
             // />
-            <h1 className="h-screen text-center text-justify">
-              Uploading Data...
-            </h1>
+            // <h1 className="h-screen text-center text-justify">
+            //   Uploading Data...
+            // </h1>
+            <Box sx={{ display: "flex" }} className="h-[90vh] bg-gray-100">
+              <CircularProgress size="20rem" className="mt-[20vh]" />
+            </Box>
           ) : (
             <>
               {addLesson || editState ? (

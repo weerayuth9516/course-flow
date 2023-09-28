@@ -13,13 +13,25 @@ adminRouter.get("/", async (req, res) => {
   try {
     let startAt = 0;
     let endAt = 7;
+    const { data, error, count } = await supabase
+      .from("courses")
+      .select("public_status", { count: "exact" });
+    let contReturn = 0;
+    if (count % 8 !== 0) {
+      contReturn = count - (count % 8);
+      contReturn = contReturn / 8;
+      contReturn += 1;
+    } else {
+      contReturn = count / 8;
+    }
+    // console.log(contReturn);
     // console.log(req.query);
     if (Number(req.query.page) && Number(req.query.page) !== 1) {
       endAt = req.query.page * 8;
       endAt += Number(req.query.page - 1);
       startAt = endAt - 8;
     }
-    if (req.query.title) {
+    if (req.query.title.length !== 0) {
       // console.log("condition runing");
       const coursesWithTitle = await supabase
         .from("courses")
@@ -29,7 +41,8 @@ adminRouter.get("/", async (req, res) => {
         .order("public_status", {
           ascending: true,
         })
-        .ilike("course_name", req.query.title ? "" : req.query.title);
+        .ilike("course_name", `%${req.query.title}%`)
+        .limit(8);
       if (
         coursesWithTitle.data.length !== 0 ||
         coursesWithTitle.statusText === "OK"
@@ -50,7 +63,7 @@ adminRouter.get("/", async (req, res) => {
             }).length,
           };
         });
-        return res.json({ data: newMap });
+        return res.json({ data: newMap, all_course: contReturn });
       }
     }
     const courses = await supabase
@@ -88,7 +101,7 @@ adminRouter.get("/", async (req, res) => {
           }).length,
         };
       });
-      return res.json({ data: newMap });
+      return res.json({ data: newMap, all_course: contReturn });
     } else {
       return res.status(400).json({
         message:
