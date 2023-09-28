@@ -2,16 +2,24 @@ import React from "react";
 import errorIcon from "../../assets/loginPage/exclamation.png";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import useDataCenter from "../../context/DataCenter";
-
+import { useParams } from "react-router-dom";
+import axios from "axios";
 function CourseForm({ filterSubmit }) {
   const { formValues, setFormValues, validationSchema, firstTimeFetch } =
     useDataCenter();
-  const handlePublic = () => {
+  const params = useParams();
+  const handlePublic = async () => {
+    console.log(formValues);
     if (formValues.public_status === 1) {
       formValues.public_status = 0;
     } else {
       formValues.public_status = 1;
     }
+    const result = await axios.put(
+      `http://localhost:4001/admin/public/${params.courseId}`,
+      { publicStatus: formValues.public_status }
+    );
+    console.log(result);
   };
   return (
     <>

@@ -319,6 +319,18 @@ adminRouter.post("/course/created", multerUpload, async (req, res) => {
   }
 });
 
+adminRouter.put("/public/:courseId", async (req, res) => {
+  await supabase
+    .from("courses")
+    .update({
+      public_status: req.body.publicStatus,
+    })
+    .eq("course_id", req.params.courseId);
+  return res.json({
+    message: "Public Status updated successfully",
+  });
+});
+
 adminRouter.put("/updated/:courseId", multerUpload, async (req, res) => {
   const timeStamp = new Date();
   const courseDetails = {
