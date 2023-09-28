@@ -319,29 +319,76 @@ adminRouter.post("/course/created", multerUpload, async (req, res) => {
   }
 });
 
-adminRouter.put("/updated/:courseId", async (req, res) => {
+adminRouter.put("/updated/:courseId", multerUpload, async (req, res) => {
+  const timeStamp = new Date();
   const courseDetails = {
-    course_name: req.body.course_name,
-    course_price: req.body.course_price,
-    course_summary: req.body.course_summary,
-    course_detail: req.body.course_detail,
-    course_duration: req.body.course_duration,
-    course_video_trailer: req.body.course_video_trailer,
-    course_updated_at: new Date.now(),
+    course_name: req.body.courseDetail.course_name,
+    course_price: req.body.courseDetail.course_price,
+    course_summary: req.body.courseDetail.course_summary,
+    course_detail: req.body.courseDetail.course_detail,
+    course_duration: req.body.courseDetail.course_duration,
+    course_updated_at: timeStamp.toISOString(),
   };
   try {
-    const supabaseUpdatedResult = await supabase
-      .from("courses")
-      .update(courseDetails)
-      .eq("course_id", req.body.course_id);
-    if (supabaseUpdatedResult.status === 200) {
+    if (
+      req.files.courseVideoTrailerFile === undefined &&
+      req.files.courseCoverImgFile === undefined
+    ) {
+      const result = await supabase
+        .from("courses")
+        .update(courseDetails)
+        .eq("course_id", req.params.courseId);
       return res.json({
-        message: `${req.body.course_id} has been updated at ${courseDetails.course_updated_at}`,
+        message: "Coures updeated successfully",
+      });
+    } else {
+      console.log(req.files);
+      if (req.files.courseCoverImgFile !== undefined) {
+        const imgPath = await supabase.storage
+          .from("course_images")
+          .upload(
+            req.files.courseCoverImgFile[0].originalname,
+            req.files.courseCoverImgFile[0].buffer,
+            {
+              cacheControl: 3600,
+              upsert: true,
+              contentType: req.files.courseCoverImgFile[0].mimetype,
+            }
+          );
+        const imgaesTrailerUrl = await supabase.storage
+          .from("course_images")
+          .getPublicUrl(imgPath.data.path);
+        courseDetails.course_cover_img = imgaesTrailerUrl.data.publicUrl;
+      }
+      if (req.files.courseVideoTrailerFile !== undefined) {
+        const videoPath = await supabase.storage
+          .from("course_video_trailers")
+          .upload(
+            req.files.courseVideoTrailerFile[0].originalname,
+            req.files.courseVideoTrailerFile[0].buffer,
+            {
+              cacheControl: 3600,
+              upsert: true,
+              contentType: req.files.courseVideoTrailerFile[0].mimetype,
+            }
+          );
+        const videoTrailerUrl = await supabase.storage
+          .from("course_video_trailers")
+          .getPublicUrl(videoPath.data.path);
+        courseDetails.course_video_trailer = videoTrailerUrl.data.publicUrl;
+      }
+      const result = await supabase
+        .from("courses")
+        .update(courseDetails)
+        .eq("course_id", req.params.courseId);
+      return res.json({
+        message: "Coures updeated successfully",
       });
     }
   } catch (error) {
-    return res.status(500).json({
-      message: error,
+    console.log(error);
+    return res.status(400).json({
+      error,
     });
   }
 });

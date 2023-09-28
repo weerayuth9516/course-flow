@@ -8,7 +8,7 @@ import UploadMedia from "../../components/admin/UploadMedia";
 import CourseForm from "../../components/admin/CourseForm";
 import arrowBack from "../../assets/EditCourse/arrow_back.png";
 import axios from "axios";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import LessonForm from "../../components/admin/LessonForm";
 
 function EditCoursePage() {
@@ -32,7 +32,7 @@ function EditCoursePage() {
     setEditState,
     lessons,
   } = useDataCenter();
-
+  const navigate = useNavigate();
   const filterSubmit = (values) => {
     selectedImage || imageServerUrl
       ? setCoverImageError(false)
@@ -52,15 +52,41 @@ function EditCoursePage() {
     }
   };
 
-  const handleSubmit = (values) => {
+  const handleSubmit = async (values) => {
     // Handle form submission
-    if (selectedImage) {
-      values.course_cover_img = selectedImage.name;
-      values.course_video_trailer = selectedVideoTrailer.name;
-      values.course_img = selectedImage;
-      values.videoTrailer = selectedVideoTrailer;
+    setLoading(true);
+    const formData = new FormData();
+    const courseDetail = {
+      course_name: values.courseName,
+      course_price: values.price,
+      course_summary: values.courseSummary,
+      course_detail: values.courseDetail,
+      course_cover_image: values.course_cover_img,
+      course_video_trailer: values.course_video_trailer,
+      course_duration: values.totalLearningTime,
+    };
+    const courseCoverImgFile = selectedImage;
+    const courseVideoTrailerFile = selectedVideoTrailer;
+    console.log(courseDetail);
+    for (let key in courseDetail) {
+      formData.append(`courseDetail[${key}]`, courseDetail[key]);
     }
-    console.log(values);
+    formData.append("courseCoverImgFile", courseCoverImgFile);
+    formData.append("courseVideoTrailerFile", courseVideoTrailerFile);
+    console.log(courseCoverImgFile);
+    try {
+      const response = await axios.put(
+        `http://localhost:4001/admin/updated/${params.courseId}`,
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
+      setLoading(false);
+    } catch (err) {
+      console.log(err);
+      setLoading(false);
+    }
     // if (
     //   values.hasOwnProperty("coverImage") &&
     //   values.hasOwnProperty("videoTrailer")
