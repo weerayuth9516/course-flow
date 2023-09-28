@@ -13,6 +13,7 @@ function LessonForm() {
   // const [subLessonName, setSubLessonName] = useState("");
   const [preArrayVideo, setPreArrayVideo] = useState([]);
   const [videoSizeError, setVideoSizeError] = useState("");
+  const [clickSublesson, setClickSubLesson] = useState(false);
   const navigate = useNavigate();
   const {
     setAddLesson,
@@ -294,15 +295,27 @@ function LessonForm() {
 
                           {values.subLessons.length > 1 ? (
                             <button
-                              className="text-gray-500 font-semibold flex justify-start hover:text-blue-500 h-[24px]"
-                              onClick={() => arrayHelpers.remove(index)}
+                              className="text-gray-500 font-bold flex justify-start hover:text-blue-500 h-[24px]"
+                              // onClick={() => arrayHelpers.remove(index)}
+                              onClick={() => {
+                                if (
+                                  touched.subLessons &&
+                                  touched.subLessons[index]
+                                ) {
+                                } else {
+                                  arrayHelpers.remove(index);
+                                }
+                              }}
                             >
-                              {subLesson.subLessonName.length > 0
-                                ? "Delete"
-                                : "Created"}
+                              {clickSublesson
+                                ? "Create"
+                                : touched.subLessons &&
+                                  touched.subLessons[index]
+                                ? "Update"
+                                : "Delete"}
                             </button>
                           ) : (
-                            <button className="text-gray-500 font-semibold flex justify-start h-[24px] cursor-not-allowed">
+                            <button className="text-gray-500 font-bold flex justify-start h-[24px] cursor-not-allowed">
                               Delete
                             </button>
                           )}
