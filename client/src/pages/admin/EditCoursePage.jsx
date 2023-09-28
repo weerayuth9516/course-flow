@@ -163,7 +163,7 @@ function EditCoursePage() {
               Uploading Data...
             </h1>
           ) : (
-            <div>
+            <>
               {addLesson || editState ? (
                 <LessonForm />
               ) : (
@@ -177,7 +177,7 @@ function EditCoursePage() {
                   <LessonAdmin />
                 </section>
               )}
-            </div>
+            </>
           )}
         </section>
         {/* </section> */}

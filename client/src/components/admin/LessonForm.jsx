@@ -116,7 +116,7 @@ function LessonForm() {
           </button>
         </div>
       </div>
-      <div className="bg-white w-[90%] border border-gray-200 rounded-2xl px-[100px] pt-[40px] pb-[60px] mt-8">
+      <div className="bg-white w-[90%] border border-gray-200 rounded-2xl px-[100px] pt-[40px] pb-[60px] mt-8 mb-11">
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}

@@ -175,7 +175,7 @@ function AddCoursePage() {
               Uploading Data...
             </h1>
           ) : (
-            <div>
+            <>
               {addLesson ? (
                 <LessonForm />
               ) : (
@@ -189,7 +189,7 @@ function AddCoursePage() {
                   <LessonAdmin />
                 </section>
               )}
-            </div>
+            </>
           )}
         </section>
         {/* </section> */}
