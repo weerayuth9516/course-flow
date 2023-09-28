@@ -66,7 +66,7 @@ function LessonAdmin() {
           <tbody>
             {lessons.length > 0 ? (
               lessons.map((item, index) => (
-                <tr key={index} className="border-b border-gray-200">
+                <tr key={index} className="border-b border-gray-200 bg-white">
                   <td>
                     <img src={dragIcon} />
                   </td>
