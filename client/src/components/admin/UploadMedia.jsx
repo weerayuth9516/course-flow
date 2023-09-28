@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import deleteIcon from "../../assets/addCourse/delete.png";
+import deleteIcon from "../../assets/addCourse/deleteIcon.png";
 import useDataCenter from "../../context/DataCenter";
 import plusIcon from "../../assets/addCourse/plus.png";
 
