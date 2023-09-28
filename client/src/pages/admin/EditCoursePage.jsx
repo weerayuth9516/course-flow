@@ -6,7 +6,7 @@ import Sidebar from "../../components/admin/Sidebar";
 import LessonAdmin from "../../components/admin/LessonAdmin";
 import UploadMedia from "../../components/admin/UploadMedia";
 import CourseForm from "../../components/admin/CourseForm";
-import arrowBack from "../../assets/EditCourse/arrow_back.png";
+import arrowBack from "../../assets/registerPage/arrow-back.svg";
 import axios from "axios";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import LessonForm from "../../components/admin/LessonForm";
@@ -154,10 +154,16 @@ function EditCoursePage() {
               id="navbar"
               className="w-full h-[92px] flex justify-between items-center px-20 border-b border-gray-400"
             >
-              <div className="text-header3 text-[2A2E3F] overflow-hidden">
-                Edit Course
-                <br />
-                <p>"{formValues.courseName}"</p>
+              <div className="text-header3 text-[2A2E3F] overflow-hidden flex">
+                <img
+                  src={arrowBack}
+                  className="mr-5 cursor-pointer"
+                  onClick={() => navigate("/admin/courselist")}
+                />
+                <h6>
+                  <span className="text-gray-600">Course</span> '
+                  {formValues.courseName}'
+                </h6>
               </div>
               <div className="flex justify-center items-center font-bold">
                 <button

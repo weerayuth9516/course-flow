@@ -21,7 +21,7 @@ function LessonForm() {
     subLessonVideo,
     formValues,
     editState,
-    firstTimeFetch,
+    setEditState,
     editIndex,
   } = useDataCenter();
   const initialValues = {};
@@ -79,6 +79,10 @@ function LessonForm() {
     // setEditState(false);
     // console.log(lessons);
   };
+  const handleBack = () => {
+    setAddLesson(false);
+    setEditState(false);
+  };
   // useEffect(() => {
   //   console.log(lessons);
   // });
@@ -90,7 +94,7 @@ function LessonForm() {
           <img
             src={arrowBack}
             className="mr-5 cursor-pointer"
-            onClick={() => setAddLesson(false)}
+            onClick={handleBack}
           />
           <div className="flex flex-col justify-center text-2xl font-medium">
             <div className="flex w-[400px] text-sm">
@@ -98,7 +102,14 @@ function LessonForm() {
               {formValues.courseName.length === 0 ? "-" : formValues.courseName}
               "
             </div>
-            Add Lesson
+            {!editState ? (
+              "Add Lesson"
+            ) : (
+              <div>
+                <span className="text-xl text-gray-600">Lesson</span> '
+                {lessons[editIndex].lessonName}'
+              </div>
+            )}
           </div>
         </div>
         <div className="flex items-center pr-14">

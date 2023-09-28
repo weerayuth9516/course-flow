@@ -36,11 +36,13 @@ function CourseForm({ filterSubmit }) {
               {!firstTimeFetch ? (
                 <button
                   onClick={handlePublic}
-                  className={`text-white w-[117px] h-[60px] rounded-xl ml-[20px] ${
-                    formValues.public_status === 0 ? `bg-[red]` : `bg-[green]`
+                  className={`text-white w-[117px] h-[40px] rounded-xl ml-[20px] ${
+                    formValues.public_status === 0
+                      ? `bg-[red] border border-[red] border-[3px] hover:bg-red-500`
+                      : `bg-[green] border border-[green] border-[3px] hover:bg-green-500`
                   }`}
                 >
-                  {formValues.public_status === 0 ? `Public` : `Unpublic`}
+                  {formValues.public_status === 0 ? `Publish` : `Unpublish`}
                 </button>
               ) : (
                 ""
