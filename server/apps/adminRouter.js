@@ -2,7 +2,7 @@ import { Router, query } from "express";
 import { supabase } from "../utils/db.js";
 import "dotenv/config";
 import jwt from "jsonwebtoken";
-import { protect } from "../middlewares/protect.js";
+// import { protect } from "../middlewares/protect.js";
 // import { upload } from "../middlewares/multerConfig.js";
 import multer from "multer";
 

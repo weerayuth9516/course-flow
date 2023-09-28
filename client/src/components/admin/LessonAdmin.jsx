@@ -5,36 +5,61 @@ import editIcon from "../../assets/registerPage/edit.svg";
 import deleteIcon from "../../assets/registerPage/delete.svg";
 import dragIcon from "../../assets/registerPage/drag.svg";
 import useDataCenter from "../../context/DataCenter";
+import { DeleteLesson } from "../../components/admin/ConfirmDeleteModal";
 function LessonAdmin() {
   const params = useParams();
-  const { lessons, setAddLesson, setEditIndex, setEditState } = useDataCenter();
-  // const getLesson = async () => {
-  //   let lessonsResult;
-  //   if (!addLesson) {
-  //     // console.log(addLesson);
-  //   } else {
-  //     lessons.length = 0;
-  //     try {
-  //       lessonsResult = await axios.get(
-  //         `http://localhost:4001/admin/courses/${params.courseId}`
-  //       );
-  //       // setLessons(lessonsResult.data.data.lessons);
-  //       // console.log(lessonsResult);
-  //       if (lessons.length === 0) {
-  //         lessons.push(...lessonsResult.data.data.lessons);
-  //       }
-  //       console.log(lessons);
-  //     } catch (error) {
-  //       console.log("request lesson error", error);
-  //     }
-  //   }
-  // };
-  // useEffect(() => {
-  //   getLesson();
-  //   // setEditState(false);
-  //   // setAddLesson(false);
-  //   // console.log(lessons);
-  // }, []);
+  const {
+    lessons,
+    setLessons,
+    setAddLesson,
+    setEditIndex,
+    setEditState,
+    lessonId,
+    setLessonId,
+    lessonLength,
+    setLessonLength,
+  } = useDataCenter();
+  const navigate = useNavigate();
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  const deleteLessonList = async () => {
+    try {
+      const response = await axios.delete(
+        `http://localhost:4001/admin/lessons/${lessonId}/${params.courseId}`
+      );
+      console.log(response.data.message);
+    } catch (error) {
+      console.log("request error");
+    }
+  };
+
+  const getLessonList = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:4001/admin/courses/${params.courseId}`
+      );
+      setLessons(response.data.data.lessons);
+    } catch (error) {
+      console.log("request error");
+    }
+  };
+
+  const openDeleteModal = () => {
+    setShowDeleteModal(true);
+  };
+  const closeDeleteModal = () => {
+    setShowDeleteModal(false);
+  };
+
+  const handleDeleteLesson = () => {
+    deleteLessonList();
+    closeDeleteModal();
+  };
+
+  useEffect(() => {
+    setLessonLength(lessons.length);
+    getLessonList();
+  }, [lessonLength, lessons]);
   return (
     <>
       <div className="w-[85%] mx-auto">
@@ -75,13 +100,23 @@ function LessonAdmin() {
                   <td className="pl-5">{item.subLessons.length}</td>
                   <td>
                     <div className="flex justify-evenly">
-                      <img src={deleteIcon} className="inline cursor-pointer" />
+                      <img
+                        src={deleteIcon}
+                        className="inline cursor-pointer"
+                        onClick={() => {
+                          if (lessonLength > 1) {
+                            setLessonId(item.lesson_id);
+                            openDeleteModal();
+                          }
+                        }}
+                      />
                       <img
                         src={editIcon}
                         className="inline cursor-pointer"
                         onClick={() => {
                           setEditState(true);
                           setEditIndex(index);
+                          setLessonId(item.lesson_id);
                         }}
                         // onClick={navigate("/admin/editlesson")}
                       />
@@ -102,6 +137,11 @@ function LessonAdmin() {
           </tbody>
         </table>
       </div>
+      <DeleteLesson
+        isOpen={showDeleteModal}
+        onRequestClose={closeDeleteModal}
+        handleConfirm={handleDeleteLesson}
+      />
     </>
   );
 }
