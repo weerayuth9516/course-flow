@@ -163,6 +163,7 @@ const multerUpload = storageControll.fields([
   { name: "courseVideoTrailerFile", maxCount: 1 },
   { name: "courseCoverImgFile", maxCount: 1 },
   { name: "subLessonVideoFile", maxCount: 100 },
+  { name: "singleSubLessonVideo", maxCount: 1 },
 ]);
 
 adminRouter.post("/course/created", multerUpload, async (req, res) => {
@@ -370,105 +371,168 @@ adminRouter.get("/lessons/:lessonId", async (req, res) => {
   }
 });
 
-// add lesson ans sublesson * not finish*
-// adminRouter.post("/:courseId/lesson/created", async (req, res) => {});
-
-// adminRouter.post("/lesson/created/:courseId", async (req, res) => {
-//   const courseId = req.params.courseId;
-//   const lessonName = {
-//     lesson_name: req.body.lesson_name,
-//   };
-//   const allSublessons = req.body.sub_lessons;
-
-//   try {
-//     const courseIdUpdatedAt = await supabase
-//       .from("courses")
-//       .update({ course_created_at: new Date() })
-//       .eq("course_id", courseId)
-//       .select("course_created_at");
-
-//     // console.log(courseIdUpdatedAt);
-
-//     const findAllLesson = await supabase
-//       .from("lessons")
-//       .select("*")
-//       .eq("course_id", courseId);
-//     console.log(findAllLesson.data.length);
-//     const lessonCreated = await supabase.from("lessons").upsert([
-//       {
-//         ...lessonName,
-//         course_id: courseId,
-//         priority: findAllLesson.data.length + 1,
-//       },
-//     ]);
-
-//     // console.log(lessonCreated);
-
-//     const findLessonId = await supabase
-//       .from("lessons")
-//       .select("lesson_id")
-//       .eq("lesson_name", req.body.lesson_name)
-//       .eq("course_id", courseId);
-
-//     // console.log(findLessonId.data[0].lesson_id);
-
-//     const findAllSublesson = await supabase
-//       .from("sub_lessons")
-//       .select("*")
-//       .eq("lesson_id", findLessonId.data[0].lesson_id);
-
-//     // console.log(findAllSublesson);
-
-//     const lessonMap = allSublessons.map((value, findAllSublesson) => {
-//       return {
-//         sub_lesson_name: value.sub_lesson_name,
-//         sub_lesson_video: value.sub_lesson_video,
-//         lesson_id: findLessonId.data[0].lesson_id,
-//         priority: findAllSublesson.data.length + 1,
-//       };
-//     });
-//     const sublessonsCreatedAt = await supabase
-//       .from("sub_lessons")
-//       .upsert(lessonMap);
-//     console.log(sublessonsCreatedAt);
-
-//     console.error("Error in courseIdUpdatedAt: ", courseIdUpdatedAt);
-//     console.error("Error in lessonCreated: ", lessonCreated);
-//     console.error("Error in findLessonId: ", findLessonId);
-
-//     if (
-//       courseIdUpdatedAt.status === 200 &&
-//       lessonCreated.status === 201 &&
-//       sublessonsCreatedAt.status === 201
-//     ) {
-//       return res.json({ message: "Lesson created successfully" });
-//     } else {
-//       return res.status(400).send("API error");
-//     }
-//   } catch (error) {
-//     return res.status(500).json({ error: error.message });
-//   }
-// });
-
-// update lesson and sublesson *not finush*
-adminRouter.put("/updated/:lessonId", async (req, res) => {
-  const lessonName = {
-    lesson_name: req.body.lesson_name,
-    lesson_created_at: new Date(),
-  };
-  const allSublessons = req.body.sub_lessons.map((sub_lesson) => {
-    return {
-      lesson_id: req.body.lesson_id,
-      sub_lesson_name: req.body.sub_lesson_name,
-      sub_lesson_video: req.body.sub_lesson_video,
-      priority: req.body.priority,
-    };
-  });
+// edit lesson name (button update lesson name)
+adminRouter.put("/updated/:courseId/:lessonId", async (req, res) => {
   try {
+    const { courseId, lessonId } = req.params;
+    const updateAtCourse = await supabase
+      .from("courses")
+      .update({ course_updated_at: new Date() })
+      .eq("course_id", courseId)
+      .select();
+
+    const updateLessonName = await supabase
+      .from("lessons")
+      .update({ lesson_name: req.body.lesson_name })
+      .eq("course_id", courseId)
+      .eq("lesson_id", lessonId)
+      .select();
+
+    if (!updateAtCourse.data && !updateLessonName.data) {
+      return res.status(404).json({
+        error: updateAtCourse.error.message,
+        error: updateLessonName.error.message,
+      });
+    } else {
+      return res.status(200).json({ message: "Lesson updated successfully" });
+    }
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
 });
+
+// create sub-lesson (button create)
+adminRouter.post(
+  "/created/:courseId/:lessonId",
+  multerUpload,
+  async (req, res) => {
+    try {
+      const { courseId, lessonId } = req.params;
+      const sub_lesson_video = req.files.singleSubLessonVideo[0];
+      const filePath = `${courseId}/${lessonId}/${sub_lesson_video.originalname}`;
+      if (!sub_lesson_video) {
+        return res.status(400).json({ message: "Video not exist" });
+      }
+      const uploadVideo = await supabase.storage
+        .from("sublesson_video")
+        .upload(filePath, sub_lesson_video.buffer, {
+          cacheControl: 3600,
+          upsert: true,
+          contentType: sub_lesson_video.minetype,
+        });
+      if (uploadVideo.error) {
+        return res.status(400).json({ error: uploadVideo.error });
+      }
+
+      const videoUrl = await supabase.storage
+        .from(
+          `sublesson_video/${courseId}/${lessonId}/${sub_lesson_video.original}`
+        )
+        .getPublicUrl(sub_lesson_video);
+      if (videoUrl.error) {
+        return res.status(400).json({ error: videoUrl.error });
+      }
+
+      const findSubLesson = await supabase
+        .from("sub_lessons")
+        .select("*")
+        .eq("lesson_id", lessonId);
+
+      const sublessonInsert = await supabase.from("sub_lessons").insert({
+        sub_lesson_name: req.body.sub_lesson_name,
+        sub_lesson_video: videoUrl.data.publicUrl,
+        lesson_id: lessonId,
+        priority: findSubLesson.data.length + 1,
+      });
+      const createdAtCourse = await supabase
+        .from("courses")
+        .update({
+          course_created_at: new Date(),
+        })
+        .eq("course_id", courseId)
+        .select();
+      if (sublessonInsert.error) {
+        return res.status(400).json({ error: sublessonInsert.error });
+      }
+      return res.status(200).json({ message: "Success to create sub-lesson" });
+    } catch (error) {
+      return res.status(500).json({ error: error.message });
+    }
+  }
+);
+
+// update sub-lesson (button update)
+adminRouter.put(
+  "/updated/:courseId/lesson/:lessonId/:subLessonId",
+  multerUpload,
+  async (req, res) => {
+    try {
+      const { courseId, lessonId, subLessonId } = req.params;
+
+      const sub_lesson_video = req.files.singleSubLessonVideo[0];
+
+      const subLessonName = req.sub_lesson_name;
+      const filePath = `${courseId}/${lessonId}/${sub_lesson_video.originalname}`;
+
+      if (!subLessonName && !sub_lesson_video) {
+        return res
+          .status(400)
+          .json({ error: "Do not exist sub-lesson updated" });
+      }
+      const { data: uploadVideo, error: ErrorUploadVideo } =
+        await supabase.storage
+          .from("sublesson_video")
+          .upload(filePath, sub_lesson_video.buffer, {
+            cacheControl: "3600",
+            upsert: true,
+            contentType: sub_lesson_video.minetype,
+          });
+
+      if (ErrorUploadVideo) {
+        return res.status(400).json({ error: ErrorUploadVideo });
+      }
+      const { data: videoUrl, error: ErrorvideoUrl } = await supabase.storage
+        .from(
+          `sublesson_video/${courseId}/${lessonId}/${sub_lesson_video.originalname}`
+        )
+        .getPublicUrl(sub_lesson_video);
+
+      if (ErrorvideoUrl) {
+        return res.status(400).json({ error: ErrorvideoUrl });
+      }
+      const { data: subLessonUpdate, error: ErrorSubLessonUpdate } =
+        await supabase
+          .from("sub_lessons")
+          .update({
+            sub_lesson_video: videoUrl.publicUrl,
+            sub_lesson_name: req.body.sub_lesson_name,
+          })
+          .eq("lesson_id", lessonId)
+          .eq("sub_lesson_id", subLessonId)
+          .select();
+      const { data: updatedAtCourse, error: ErrorUpdateAtCourse } =
+        await supabase
+          .from("courses")
+          .update({ course_updated_at: new Date() })
+          .eq("course_id", courseId)
+          .select();
+      if (ErrorSubLessonUpdate && ErrorUpdateAtCourse) {
+        return res.status(400).json({
+          error: ErrorSubLessonUpdate,
+          error: ErrorUpdateAtCourse,
+        });
+      }
+      return res
+        .status(200)
+        .json({ message: "Updated sub-lessons successfully" });
+    } catch (error) {
+      return res.status(500).json({ error: error.message });
+    }
+  }
+);
+
+// button public course
+// adminRouter.put;
 
 // remove course
 
