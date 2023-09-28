@@ -187,6 +187,7 @@ function AddCoursePage() {
                     </div>
                   </div>
                   <LessonAdmin />
+                  <div className="w-[85%] text-blue-500 font-bold text-right mt-[72px] mb-[93px]">Delete Course</div>
                 </section>
               )}
             </>
