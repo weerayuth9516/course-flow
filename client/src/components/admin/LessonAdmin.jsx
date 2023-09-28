@@ -74,13 +74,13 @@ function LessonAdmin() {
             {lessons.length > 0 ? (
               lessons.map((item, index) => (
                 <tr key={index} className="border-b border-gray-200">
-                  <td>
+                  <td className="bg-white">
                     <img src={dragIcon} />
                   </td>
-                  <td className="pl-5">{index + 1}</td>
-                  <td className="pl-5">{item.lessonName}</td>
-                  <td className="pl-5">{item.subLessons.length}</td>
-                  <td>
+                  <td className="pl-5 bg-white">{index + 1}</td>
+                  <td className="pl-5 bg-white">{item.lessonName}</td>
+                  {/* <td className="pl-5 bg-white">{item.subLessons.length}</td> */}
+                  <td className="bg-white">
                     <div className="flex justify-evenly">
                       <img src={deleteIcon} className="inline cursor-pointer" />
                       <img

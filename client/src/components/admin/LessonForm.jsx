@@ -5,10 +5,11 @@ import { useEffect, useState } from "react";
 import dragIcon from "../../assets/registerPage/drag-addlesson.svg";
 import videoSubLesson from "../../assets/registerPage/videoSubLesson.svg";
 import useDataCenter from "../../context/DataCenter";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import arrowBack from "../../assets/registerPage/arrow-back.svg";
-
+import axios from "axios";
 function LessonForm() {
+  const params = useParams();
   // const [lessonName, setLessonName] = useState("");
   // const [subLessonName, setSubLessonName] = useState("");
   const [preArrayVideo, setPreArrayVideo] = useState([]);
@@ -85,7 +86,11 @@ function LessonForm() {
 
   return (
     <>
-      <div className="h-[92px] w-[100%] flex border-b justify-between bg-white">
+      <div
+        className={`h-[92px] w-[100%] flex border-b justify-between bg-white ${
+          addLesson ? "" : "hidden"
+        }`}
+      >
         <div className="flex pl-14">
           <img
             src={arrowBack}
@@ -131,6 +136,13 @@ function LessonForm() {
                   type="text"
                   id="lessonName"
                   name="lessonName"
+                  // value={values.lessonName}
+                  onBlur={(e) => {
+                    setLessonFormValues({
+                      ...lessonFormValues,
+                      lessonName: e.target.value,
+                    });
+                  }}
                   className={`w-[100%] h-[48px] border border-gray-400 rounded-xl pl-4 focus:border-orange-500 focus:outline-none mt-1 ${
                     errors.lessonName && touched.lessonName
                       ? "border-purple-500 border-2"
@@ -279,13 +291,13 @@ function LessonForm() {
 
                           {values.subLessons.length > 1 ? (
                             <button
-                              className="text-gray-500 font-semibold flex justify-start hover:text-black h-[24px]"
+                              className="text-gray-500 font-bold flex justify-start hover:text-blue-500 h-[24px]"
                               onClick={() => arrayHelpers.remove(index)}
                             >
                               Delete
                             </button>
                           ) : (
-                            <button className="text-gray-500 font-semibold flex justify-start h-[24px] cursor-not-allowed">
+                            <button className="text-gray-500 font-bold flex justify-start h-[24px] cursor-not-allowed">
                               Delete
                             </button>
                           )}

@@ -137,7 +137,8 @@ adminRouter.get("/courses/:courseId", async (req, res) => {
       });
       if (
         courseResults.statusText === "OK" &&
-        lessonResult.statusText === "OK"
+        lessonResult.statusText === "OK" &&
+        lessonAndSubResult.statusText === "OK"
       ) {
         return res.json({
           data: {
@@ -163,6 +164,7 @@ const multerUpload = storageControll.fields([
   { name: "courseVideoTrailerFile", maxCount: 1 },
   { name: "courseCoverImgFile", maxCount: 1 },
   { name: "subLessonVideoFile", maxCount: 100 },
+  { name: "singleSubLessonVideo", maxCount: 1 },
 ]);
 
 adminRouter.post("/course/created", multerUpload, async (req, res) => {
@@ -449,6 +451,69 @@ adminRouter.get("/lessons/:lessonId", async (req, res) => {
 //     return res.status(500).json({ error: error.message });
 //   }
 // });
+
+// edit lesson name
+adminRouter.put("/updated/:courseId/:lessonId", async (req, res) => {
+  try {
+    const { courseId, lessonId } = req.params;
+    const updateAtCourse = await supabase
+      .from("courses")
+      .update({ course_updated_at: new Date() })
+      .eq("course_id", courseId)
+      .select();
+
+    const updateLessonName = await supabase
+      .from("lessons")
+      .update({ lesson_name: req.body.lesson_name })
+      .eq("course_id", courseId)
+      .eq("lesson_id", lessonId)
+      .select();
+
+    if (!updateAtCourse.data && !updateLessonName.data) {
+      return res.status(404).json({
+        error: updateAtCourse.error.message,
+        error: updateLessonName.error.message,
+      });
+    } else {
+      return res.status(200).json({ message: "Lesson updated successfully" });
+    }
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+});
+
+// create sub-lesson
+
+adminRouter.post(
+  "/created/:courseId/:lessonId",
+  multerUpload,
+  async (req, res) => {
+    const { courseId, lessonId } = req.params;
+    const sub_lesson_video = req.files.singleSubLessonVideo[0];
+    const filePath = `${courseId}/${lessonId}/${sub_lesson_video.originalname}`;
+    console.log(sub_lesson_video);
+    console.log(filePath);
+    const uploadVideo = await supabase.storage
+      .from("sublesson_video")
+      .upload(filePath, sub_lesson_video.buffer, {
+        cacheControl: 3600,
+        upsert: true,
+        contentType: sub_lesson_video.minetype,
+      });
+    console.log(uploadVideo.data);
+    const videoUrl = await supabase.storage
+      .from(
+        `sublesson_video/${courseId}/${lessonId}/${sub_lesson_video.originalname}`
+      )
+      .getPublicUrl(sub_lesson_video);
+    console.log(videoUrl);
+    const sublessonInsert = await supabase.from("sub_lessons").insert({
+      sub_lesson_name: req.body.sub_lesson_name,
+      sub_lesson_video: videoUrl.data.publicUrl,
+      lesson_id: lessonId,
+    });
+  }
+);
 
 // update lesson and sublesson *not finush*
 adminRouter.put("/updated/:lessonId", async (req, res) => {

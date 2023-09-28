@@ -1,15 +1,17 @@
 import LessonForm from "../../components/admin/LessonForm";
 import Sidebar from "../../components/admin/Sidebar";
 import arrowBack from "../../assets/registerPage/arrow-back.svg";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { DeleteLesson } from "../../components/admin/ConfirmDeleteModal";
+import useDataCenter from "../../context/DataCenter";
 import axios from "axios";
 
 function EditLessonPage() {
+  const params = useParams();
   const navigate = useNavigate();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-
+  const { formValues } = useDataCenter();
   const openDeleteModal = () => {
     setShowDeleteModal(true);
   };
@@ -20,6 +22,33 @@ function EditLessonPage() {
     window.location.reload(false);
     navigate(-1);
   };
+
+  // const [lessonFormValues, setLessonFormValues] = useState({
+  //   lessonName: "",
+  //   subLessons: [{ subLessonName: "", video: null }],
+  // });
+
+  // const getLessonData = async () => {
+  //   try {
+  //     const result = await axios.get(
+  //       `http://localhost:4001/admin/courses/${params.courseId}`
+  //     );
+
+  //     const lessonResult = result.data.data;
+  //     // console.log(lessonResult);
+  //     setLessonFormValues({
+  //       ...lessonFormValues,
+  //       lessonName: lessonResult.lessons[0].lesson_name,
+  //     });
+  //   } catch (error) {
+  //     console.log("Error fetching lesson data:", error);
+  //   }
+  // };
+  // // console.log(lessonFormValues.lessonName);
+  // // console.log(lessonFormValues);
+  // useEffect(() => {
+  //   getLessonData();
+  // }, []);
   return (
     <>
       <div className="flex">
@@ -34,8 +63,11 @@ function EditLessonPage() {
               />
               <div className="flex flex-col justify-center text-2xl font-medium">
                 <div className="flex w-[400px] text-sm">
-                  <span className="text-gray-600 mr-2">Course</span>'Service
-                  Design Essentials'
+                  <span className="text-gray-600 mr-2">Course</span>"
+                  {formValues.courseName.length === 0
+                    ? "-"
+                    : formValues.courseName}
+                  "
                 </div>
                 <div className="flex">
                   <span className="text-gray-600 mr-2">Lesson</span>
