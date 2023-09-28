@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import useDataCenter from "../../context/DataCenter";
@@ -7,6 +7,7 @@ import LessonAdmin from "../../components/admin/LessonAdmin";
 import LessonForm from "../../components/admin/LessonForm";
 import UploadMedia from "../../components/admin/UploadMedia";
 import CourseForm from "../../components/admin/CourseForm";
+import { Oval } from "react-loader-spinner";
 function AddCoursePage() {
   const {
     setCoverImageError,
@@ -17,7 +18,9 @@ function AddCoursePage() {
     subLessonVideo,
     handleCancelButton,
     addLesson,
+    setFirstTimeFetch,
   } = useDataCenter();
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const filterSubmit = (values) => {
     selectedImage ? setCoverImageError(false) : setCoverImageError(true);
@@ -33,6 +36,7 @@ function AddCoursePage() {
 
   const handleSubmit = async (values) => {
     // Handle form submission
+    setLoading(true);
     if (subLessonVideo.length === 0) {
       return alert("enter your sub lesson video");
     }
@@ -106,6 +110,8 @@ function AddCoursePage() {
         }
       );
       if (response.status === 200) {
+        setLoading(false);
+        setFirstTimeFetch(false);
         navigate("/admin/courselist");
         // window.location.reload(false);
       }
@@ -119,6 +125,7 @@ function AddCoursePage() {
       <Sidebar />
       <section className="font-inter flex flex-col justify-center items-center w-full">
         {/* <section id="right-content"> */}
+
         <div
           className={
             `w-full flex justify-center items-center` +
@@ -154,18 +161,35 @@ function AddCoursePage() {
           )}
         </div>
         <section className="w-full bg-[#f6f7fc] flex justify-center flex-col items-center">
-          {addLesson ? (
-            <LessonForm />
+          {loading ? (
+            // <Oval
+            //   ariaLabel="loading-indicator"
+            //   height={500}
+            //   width={500}
+            //   strokeWidth={1}
+            //   strokeWidthSecondary={1}
+            //   color="gray"
+            //   secondaryColor="white"
+            // />
+            <h1 className="h-screen text-center text-justify">
+              Uploading Data...
+            </h1>
           ) : (
-            <section className="w-full bg-[#f6f7fc] flex justify-center flex-col items-center">
-              <div className="w-[85%] bg-white mt-[80px] mx-auto border border-gray-400 rounded-2xl flex justify-center items-start">
-                <div className="px-20 text-body1 text-black">
-                  <CourseForm filterSubmit={filterSubmit} />
-                  <UploadMedia />
-                </div>
-              </div>
-              <LessonAdmin />
-            </section>
+            <div>
+              {addLesson ? (
+                <LessonForm />
+              ) : (
+                <section className="w-full bg-[#f6f7fc] flex justify-center flex-col items-center">
+                  <div className="w-[85%] bg-white mt-[80px] mx-auto border border-gray-400 rounded-2xl flex justify-center items-start">
+                    <div className="px-20 text-body1 text-black">
+                      <CourseForm filterSubmit={filterSubmit} />
+                      <UploadMedia />
+                    </div>
+                  </div>
+                  <LessonAdmin />
+                </section>
+              )}
+            </div>
           )}
         </section>
         {/* </section> */}

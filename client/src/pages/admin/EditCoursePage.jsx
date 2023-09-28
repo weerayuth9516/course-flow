@@ -10,6 +10,7 @@ import { Link, useParams } from "react-router-dom";
 import LessonForm from "../../components/admin/LessonForm";
 function EditCoursePage() {
   const { formValues, setFormValues } = useDataCenter();
+  const [loading, setLoading] = useState(false);
   const params = useParams();
   const {
     imageServerUrl,
@@ -69,6 +70,7 @@ function EditCoursePage() {
   };
 
   const getCourseData = async () => {
+    setLoading(true);
     lessons.length = 0;
     try {
       const response = await axios.get(
@@ -84,6 +86,7 @@ function EditCoursePage() {
         totalLearningTime: response.data.data.course[0].course_duration,
         courseSummary: response.data.data.course[0].course_summary,
         courseDetail: response.data.data.course[0].course_detail,
+        public_status: response.data.data.course[0].public_status,
       });
       setImageServerUrl(response.data.data.course[0].course_cover_img);
       setVideoTrailerServerUrl(
@@ -92,6 +95,7 @@ function EditCoursePage() {
     } catch (error) {
       console.log("request error");
     }
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -145,18 +149,35 @@ function EditCoursePage() {
           )}
         </div>
         <section className="w-full bg-[#f6f7fc] flex justify-center flex-col items-center">
-          {addLesson || editState ? (
-            <LessonForm />
+          {loading ? (
+            // <Oval
+            //   ariaLabel="loading-indicator"
+            //   height={500}
+            //   width={500}
+            //   strokeWidth={1}
+            //   strokeWidthSecondary={1}
+            //   color="gray"
+            //   secondaryColor="white"
+            // />
+            <h1 className="h-screen text-center text-justify">
+              Uploading Data...
+            </h1>
           ) : (
-            <section className="w-full bg-[#f6f7fc] flex justify-center flex-col items-center">
-              <div className="w-[85%] bg-white mt-[80px] mx-auto border border-gray-400 rounded-2xl flex justify-center items-start">
-                <div className="px-20 text-body1 text-black">
-                  <CourseForm filterSubmit={filterSubmit} />
-                  <UploadMedia />
-                </div>
-              </div>
-              <LessonAdmin />
-            </section>
+            <div>
+              {addLesson || editState ? (
+                <LessonForm />
+              ) : (
+                <section className="w-full bg-[#f6f7fc] flex justify-center flex-col items-center">
+                  <div className="w-[85%] bg-white mt-[80px] mx-auto border border-gray-400 rounded-2xl flex justify-center items-start">
+                    <div className="px-20 text-body1 text-black">
+                      <CourseForm filterSubmit={filterSubmit} />
+                      <UploadMedia />
+                    </div>
+                  </div>
+                  <LessonAdmin />
+                </section>
+              )}
+            </div>
           )}
         </section>
         {/* </section> */}

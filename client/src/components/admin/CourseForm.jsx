@@ -6,7 +6,13 @@ import useDataCenter from "../../context/DataCenter";
 function CourseForm({ filterSubmit }) {
   const { formValues, setFormValues, validationSchema, firstTimeFetch } =
     useDataCenter();
-
+  const handlePublic = () => {
+    if (formValues.public_status === 1) {
+      formValues.public_status = 0;
+    } else {
+      formValues.public_status = 1;
+    }
+  };
   return (
     <>
       <Formik
@@ -19,6 +25,18 @@ function CourseForm({ filterSubmit }) {
           <Form id="add-course">
             <div className="mt-[40px] relative">
               <label htmlFor="courseName">Course name *</label>
+              {!firstTimeFetch ? (
+                <button
+                  onClick={handlePublic}
+                  className={`text-white w-[117px] h-[60px] rounded-xl ml-[20px] ${
+                    formValues.public_status === 0 ? `bg-[red]` : `bg-[green]`
+                  }`}
+                >
+                  {formValues.public_status === 0 ? `Public` : `Unpublic`}
+                </button>
+              ) : (
+                ""
+              )}
               <br />
               <Field
                 type="text"
