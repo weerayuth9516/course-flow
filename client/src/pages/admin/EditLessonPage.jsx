@@ -28,27 +28,27 @@ function EditLessonPage() {
   //   subLessons: [{ subLessonName: "", video: null }],
   // });
 
-  // const getLessonData = async () => {
-  //   try {
-  //     const result = await axios.get(
-  //       `http://localhost:4001/admin/courses/${params.courseId}`
-  //     );
+  const getLessonData = async () => {
+    try {
+      const result = await axios.get(
+        `http://localhost:4001/admin/courses/${params.courseId}`
+      );
 
-  //     const lessonResult = result.data.data;
-  //     // console.log(lessonResult);
-  //     setLessonFormValues({
-  //       ...lessonFormValues,
-  //       lessonName: lessonResult.lessons[0].lesson_name,
-  //     });
-  //   } catch (error) {
-  //     console.log("Error fetching lesson data:", error);
-  //   }
-  // };
-  // // console.log(lessonFormValues.lessonName);
-  // // console.log(lessonFormValues);
-  // useEffect(() => {
-  //   getLessonData();
-  // }, []);
+      const lessonResult = result.data.data;
+      // console.log(lessonResult);
+      setLessonFormValues({
+        ...lessonFormValues,
+        lessonName: lessonResult.lessons[0].lesson_name,
+      });
+    } catch (error) {
+      console.log("Error fetching lesson data:", error);
+    }
+  };
+  // console.log(lessonFormValues.lessonName);
+  // console.log(lessonFormValues);
+  useEffect(() => {
+    getLessonData();
+  }, []);
   return (
     <>
       <div className="flex">
