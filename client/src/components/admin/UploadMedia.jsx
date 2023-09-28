@@ -81,11 +81,11 @@ function UploadMedia() {
               <img
                 src={imagePreview}
                 alt="Preview"
-                className="object-cover w-[240px] h-[240px]"
+                className="object-cover w-[240px] h-[240px] rounded-xl"
               />
               <div
                 type="button"
-                className="mt-2 text-red-500 hover:text-red-700 absolute top-0 right-0"
+                className="absolute top-0 right-0"
               >
                 <img src={deleteIcon} alt="Remove Icon" />
               </div>
@@ -142,12 +142,12 @@ function UploadMedia() {
               onClick={handleClearVideoClick}
               className="w-[240px] h-[240px] bg-gray-100 flex justify-center items-center rounded-xl mt-2 relative"
             >
-              <video controls className="w-full h-full object-cover">
+              <video controls className="w-full h-full object-cover rounded-xl">
                 <source src={videoPreview} type={videoType} />
               </video>
               <div
                 type="button"
-                className="mt-2 text-red-500 hover:text-red-700 absolute top-0 right-0"
+                className="absolute top-0 right-0"
               >
                 <img src={deleteIcon} alt="Remove Icon" />
               </div>
