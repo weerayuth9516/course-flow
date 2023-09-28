@@ -418,7 +418,7 @@ adminRouter.post(
         .upload(filePath, sub_lesson_video.buffer, {
           cacheControl: 3600,
           upsert: true,
-          contentType: sub_lesson_video.minetype,
+          contentType: sub_lesson_video.mimetype,
         });
       if (uploadVideo.error) {
         return res.status(400).json({ error: uploadVideo.error });
@@ -485,7 +485,7 @@ adminRouter.put(
           .upload(filePath, sub_lesson_video.buffer, {
             cacheControl: "3600",
             upsert: true,
-            contentType: sub_lesson_video.minetype,
+            contentType: sub_lesson_video.mimetype,
           });
 
       if (ErrorUploadVideo) {
