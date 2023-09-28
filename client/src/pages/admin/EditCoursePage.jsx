@@ -9,6 +9,7 @@ import CourseForm from "../../components/admin/CourseForm";
 import arrowBack from "../../assets/registerPage/arrow-back.svg";
 import axios from "axios";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import { DeleteCourseEdit } from "../../components/admin/ConfirmDeleteModal";
 import LessonForm from "../../components/admin/LessonForm";
 
 function EditCoursePage() {
@@ -33,6 +34,7 @@ function EditCoursePage() {
     lessons,
   } = useDataCenter();
   const navigate = useNavigate();
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const filterSubmit = (values) => {
     selectedImage || imageServerUrl
       ? setCoverImageError(false)
@@ -127,6 +129,32 @@ function EditCoursePage() {
     setLoading(false);
   };
 
+  const deleteCourse = async () => {
+    try {
+      const response = await axios.delete(
+        `http://localhost:4001/admin/courses/${params.courseId}`
+      );
+      setCompleteDeleted(response.data.message);
+    } catch (error) {
+      console.log("request error");
+    }
+  };
+
+  const openDeleteModal = () => {
+    setShowDeleteModal(true);
+  };
+  const closeDeleteModal = () => {
+    setShowDeleteModal(false);
+  };
+
+  const handleDeleteCourse = () =>{
+    deleteCourse();
+    closeDeleteModal();
+    setTimeout(() => {
+          navigate("/admin/courselist")
+        }, 2000);
+  }
+
   useEffect(() => {
     if (firstTimeFetch) {
       getCourseData();
@@ -137,6 +165,7 @@ function EditCoursePage() {
   }, []);
 
   return (
+    <>
     <main className=" flex w-screen">
       <Sidebar />
       <section className="font-inter flex flex-col justify-center items-center w-full">
@@ -213,6 +242,7 @@ function EditCoursePage() {
                     </div>
                   </div>
                   <LessonAdmin />
+                  <div onClick={()=>{openDeleteModal()}} className="w-[85%] text-blue-500 font-bold text-right mt-[72px] mb-[93px] inline cursor-pointer">Delete Course</div>
                 </section>
               )}
             </>
@@ -221,6 +251,12 @@ function EditCoursePage() {
         {/* </section> */}
       </section>
     </main>
+          <DeleteCourseEdit
+          isOpen={showDeleteModal}
+          onRequestClose={closeDeleteModal}
+          handleConfirm={handleDeleteCourse}
+        />
+        </>
   );
 }
 

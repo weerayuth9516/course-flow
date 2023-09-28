@@ -10,6 +10,8 @@ export default function useDataCenter() {
 
 export function DataCenterProvider({ children }) {
   const navigate = useNavigate();
+  const [lessonId, setLessonId] = useState(null);
+  const [lessonLength, setLessonLength] = useState(null);
   const [addLesson, setAddLesson] = useState(false);
   const [lessons, setLessons] = useState([]);
   const [subLessonVideo, setSubLessonVideo] = useState([]);
@@ -171,6 +173,10 @@ export function DataCenterProvider({ children }) {
         setEditState,
         editIndex,
         setEditIndex,
+        lessonId,
+        setLessonId,
+        lessonLength,
+        setLessonLength,
       }}
     >
       {children}
