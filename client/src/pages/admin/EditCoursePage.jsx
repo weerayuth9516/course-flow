@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from "react";
+import CircularProgress from "@mui/material/CircularProgress";
+import Box from "@mui/material/Box";
 import useDataCenter from "../../context/DataCenter";
 import Sidebar from "../../components/admin/Sidebar";
 import LessonAdmin from "../../components/admin/LessonAdmin";
 import UploadMedia from "../../components/admin/UploadMedia";
 import CourseForm from "../../components/admin/CourseForm";
-import arrowBack from "../../assets/EditCourse/arrow_back.png";
+import arrowBack from "../../assets/registerPage/arrow-back.svg";
 import axios from "axios";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import LessonForm from "../../components/admin/LessonForm";
+
 function EditCoursePage() {
   const { formValues, setFormValues } = useDataCenter();
   const [loading, setLoading] = useState(false);
@@ -29,7 +32,7 @@ function EditCoursePage() {
     setEditState,
     lessons,
   } = useDataCenter();
-
+  const navigate = useNavigate();
   const filterSubmit = (values) => {
     selectedImage || imageServerUrl
       ? setCoverImageError(false)
@@ -49,15 +52,41 @@ function EditCoursePage() {
     }
   };
 
-  const handleSubmit = (values) => {
+  const handleSubmit = async (values) => {
     // Handle form submission
-    if (selectedImage) {
-      values.course_cover_img = selectedImage.name;
-      values.course_video_trailer = selectedVideoTrailer.name;
-      values.course_img = selectedImage;
-      values.videoTrailer = selectedVideoTrailer;
+    setLoading(true);
+    const formData = new FormData();
+    const courseDetail = {
+      course_name: values.courseName,
+      course_price: values.price,
+      course_summary: values.courseSummary,
+      course_detail: values.courseDetail,
+      course_cover_image: values.course_cover_img,
+      course_video_trailer: values.course_video_trailer,
+      course_duration: values.totalLearningTime,
+    };
+    const courseCoverImgFile = selectedImage;
+    const courseVideoTrailerFile = selectedVideoTrailer;
+    console.log(courseDetail);
+    for (let key in courseDetail) {
+      formData.append(`courseDetail[${key}]`, courseDetail[key]);
     }
-    console.log(values);
+    formData.append("courseCoverImgFile", courseCoverImgFile);
+    formData.append("courseVideoTrailerFile", courseVideoTrailerFile);
+    console.log(courseCoverImgFile);
+    try {
+      const response = await axios.put(
+        `http://localhost:4001/admin/updated/${params.courseId}`,
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
+      setLoading(false);
+    } catch (err) {
+      console.log(err);
+      setLoading(false);
+    }
     // if (
     //   values.hasOwnProperty("coverImage") &&
     //   values.hasOwnProperty("videoTrailer")
@@ -125,10 +154,16 @@ function EditCoursePage() {
               id="navbar"
               className="w-full h-[92px] flex justify-between items-center px-20 border-b border-gray-400"
             >
-              <div className="text-header3 text-[2A2E3F] overflow-hidden">
-                Edit Course
-                <br />
-                <p>"{formValues.courseName}"</p>
+              <div className="text-header3 text-[2A2E3F] overflow-hidden flex">
+                <img
+                  src={arrowBack}
+                  className="mr-5 cursor-pointer"
+                  onClick={() => navigate("/admin/courselist")}
+                />
+                <h6>
+                  <span className="text-gray-600">Course</span> '
+                  {formValues.courseName}'
+                </h6>
               </div>
               <div className="flex justify-center items-center font-bold">
                 <button
@@ -159,9 +194,12 @@ function EditCoursePage() {
             //   color="gray"
             //   secondaryColor="white"
             // />
-            <h1 className="h-screen text-center text-justify">
-              Uploading Data...
-            </h1>
+            // <h1 className="h-screen text-center text-justify">
+            //   Uploading Data...
+            // </h1>
+            <Box sx={{ display: "flex" }} className="h-[90vh] bg-gray-100">
+              <CircularProgress size="20rem" className="mt-[20vh]" />
+            </Box>
           ) : (
             <>
               {addLesson || editState ? (

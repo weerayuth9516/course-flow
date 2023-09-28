@@ -7,14 +7,7 @@ import dragIcon from "../../assets/registerPage/drag.svg";
 import useDataCenter from "../../context/DataCenter";
 function LessonAdmin() {
   const params = useParams();
-  const {
-    lessons,
-    setAddLesson,
-    addLesson,
-    setEditIndex,
-    setEditState,
-    editState,
-  } = useDataCenter();
+  const { lessons, setAddLesson, setEditIndex, setEditState } = useDataCenter();
   // const getLesson = async () => {
   //   let lessonsResult;
   //   if (!addLesson) {
@@ -73,7 +66,7 @@ function LessonAdmin() {
           <tbody>
             {lessons.length > 0 ? (
               lessons.map((item, index) => (
-                <tr key={index} className="border-b border-gray-200">
+                <tr key={index} className="border-b border-gray-200 bg-white">
                   <td>
                     <img src={dragIcon} />
                   </td>

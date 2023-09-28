@@ -13,13 +13,25 @@ adminRouter.get("/", async (req, res) => {
   try {
     let startAt = 0;
     let endAt = 7;
+    const { data, error, count } = await supabase
+      .from("courses")
+      .select("public_status", { count: "exact" });
+    let contReturn = 0;
+    if (count % 8 !== 0) {
+      contReturn = count - (count % 8);
+      contReturn = contReturn / 8;
+      contReturn += 1;
+    } else {
+      contReturn = count / 8;
+    }
+    // console.log(contReturn);
     // console.log(req.query);
     if (Number(req.query.page) && Number(req.query.page) !== 1) {
       endAt = req.query.page * 8;
       endAt += Number(req.query.page - 1);
       startAt = endAt - 8;
     }
-    if (req.query.title) {
+    if (req.query.title.length !== 0) {
       // console.log("condition runing");
       const coursesWithTitle = await supabase
         .from("courses")
@@ -29,7 +41,8 @@ adminRouter.get("/", async (req, res) => {
         .order("public_status", {
           ascending: true,
         })
-        .ilike("course_name", req.query.title ? "" : req.query.title);
+        .ilike("course_name", `%${req.query.title}%`)
+        .limit(8);
       if (
         coursesWithTitle.data.length !== 0 ||
         coursesWithTitle.statusText === "OK"
@@ -50,7 +63,7 @@ adminRouter.get("/", async (req, res) => {
             }).length,
           };
         });
-        return res.json({ data: newMap });
+        return res.json({ data: newMap, all_course: contReturn });
       }
     }
     const courses = await supabase
@@ -88,7 +101,7 @@ adminRouter.get("/", async (req, res) => {
           }).length,
         };
       });
-      return res.json({ data: newMap });
+      return res.json({ data: newMap, all_course: contReturn });
     } else {
       return res.status(400).json({
         message:
@@ -307,29 +320,88 @@ adminRouter.post("/course/created", multerUpload, async (req, res) => {
   }
 });
 
-adminRouter.put("/updated/:courseId", async (req, res) => {
+adminRouter.put("/public/:courseId", async (req, res) => {
+  await supabase
+    .from("courses")
+    .update({
+      public_status: req.body.publicStatus,
+    })
+    .eq("course_id", req.params.courseId);
+  return res.json({
+    message: "Public Status updated successfully",
+  });
+});
+
+adminRouter.put("/updated/:courseId", multerUpload, async (req, res) => {
+  const timeStamp = new Date();
   const courseDetails = {
-    course_name: req.body.course_name,
-    course_price: req.body.course_price,
-    course_summary: req.body.course_summary,
-    course_detail: req.body.course_detail,
-    course_duration: req.body.course_duration,
-    course_video_trailer: req.body.course_video_trailer,
-    course_updated_at: new Date.now(),
+    course_name: req.body.courseDetail.course_name,
+    course_price: req.body.courseDetail.course_price,
+    course_summary: req.body.courseDetail.course_summary,
+    course_detail: req.body.courseDetail.course_detail,
+    course_duration: req.body.courseDetail.course_duration,
+    course_updated_at: timeStamp.toISOString(),
   };
   try {
-    const supabaseUpdatedResult = await supabase
-      .from("courses")
-      .update(courseDetails)
-      .eq("course_id", req.body.course_id);
-    if (supabaseUpdatedResult.status === 200) {
+    if (
+      req.files.courseVideoTrailerFile === undefined &&
+      req.files.courseCoverImgFile === undefined
+    ) {
+      const result = await supabase
+        .from("courses")
+        .update(courseDetails)
+        .eq("course_id", req.params.courseId);
       return res.json({
-        message: `${req.body.course_id} has been updated at ${courseDetails.course_updated_at}`,
+        message: "Coures updeated successfully",
+      });
+    } else {
+      console.log(req.files);
+      if (req.files.courseCoverImgFile !== undefined) {
+        const imgPath = await supabase.storage
+          .from("course_images")
+          .upload(
+            req.files.courseCoverImgFile[0].originalname,
+            req.files.courseCoverImgFile[0].buffer,
+            {
+              cacheControl: 3600,
+              upsert: true,
+              contentType: req.files.courseCoverImgFile[0].mimetype,
+            }
+          );
+        const imgaesTrailerUrl = await supabase.storage
+          .from("course_images")
+          .getPublicUrl(imgPath.data.path);
+        courseDetails.course_cover_img = imgaesTrailerUrl.data.publicUrl;
+      }
+      if (req.files.courseVideoTrailerFile !== undefined) {
+        const videoPath = await supabase.storage
+          .from("course_video_trailers")
+          .upload(
+            req.files.courseVideoTrailerFile[0].originalname,
+            req.files.courseVideoTrailerFile[0].buffer,
+            {
+              cacheControl: 3600,
+              upsert: true,
+              contentType: req.files.courseVideoTrailerFile[0].mimetype,
+            }
+          );
+        const videoTrailerUrl = await supabase.storage
+          .from("course_video_trailers")
+          .getPublicUrl(videoPath.data.path);
+        courseDetails.course_video_trailer = videoTrailerUrl.data.publicUrl;
+      }
+      const result = await supabase
+        .from("courses")
+        .update(courseDetails)
+        .eq("course_id", req.params.courseId);
+      return res.json({
+        message: "Coures updeated successfully",
       });
     }
   } catch (error) {
-    return res.status(500).json({
-      message: error,
+    console.log(error);
+    return res.status(400).json({
+      error,
     });
   }
 });

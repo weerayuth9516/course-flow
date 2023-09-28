@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
+import CircularProgress from "@mui/material/CircularProgress";
+import Box from "@mui/material/Box";
 import { Link, useNavigate } from "react-router-dom";
 import useDataCenter from "../../context/DataCenter";
 import Sidebar from "../../components/admin/Sidebar";
@@ -171,9 +173,16 @@ function AddCoursePage() {
             //   color="gray"
             //   secondaryColor="white"
             // />
-            <h1 className="h-screen text-center text-justify">
-              Uploading Data...
-            </h1>
+            <Box
+              sx={{
+                display: "flex",
+                justifyItems: "center",
+                justifyContent: "center",
+              }}
+              className="h-[90vh] bg-gray-100"
+            >
+              <CircularProgress size="20rem" className="mt-[20vh]" />
+            </Box>
           ) : (
             <>
               {addLesson ? (
