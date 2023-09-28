@@ -206,7 +206,11 @@ function CourseListPage() {
                       {new Date(item.course_updated_at).toLocaleString()}
                     </td>
                     <td className="pt-8 flex pl-4 gap-2">
-                      <img src={deleteLogo} />
+                      <img
+                        src={deleteLogo}
+                        onClick={() => openDeleteModal(item.course_id)}
+                        style={{ cursor: "pointer" }}
+                      />
                       <Link to={`/admin/editcourse/${item.course_id}`}>
                         <img src={edit} className="cursor-pointer" />
                       </Link>
@@ -218,6 +222,11 @@ function CourseListPage() {
           </table>
         </div>
       </div>
+      <DeleteCourse
+        isOpen2={showDeleteModal}
+        onRequestClose2={closeDeleteModal}
+        onConfirm2={() => handleDeleteCourse(courseId)}
+      />
     </div>
   );
 }
