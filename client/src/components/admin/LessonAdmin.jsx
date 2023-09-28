@@ -7,25 +7,41 @@ import dragIcon from "../../assets/registerPage/drag.svg";
 import useDataCenter from "../../context/DataCenter";
 function LessonAdmin() {
   const params = useParams();
-  const navigate = useNavigate();
-  const { lessons, setAddLesson, setLessons } = useDataCenter();
-  const getLesson = async () => {
-    try {
-      const lessonsResult = await axios.get(
-        `http://localhost:4001/admin/courses/${params.courseId}`
-      );
-      // setLessons(lessonsResult.data.data.lessons);
-      lessons.push(...lessonsResult.data.data.lessons);
-      console.log(lessons);
-    } catch (error) {
-      console.log("request lesson error", error);
-    }
-  };
-
-  useEffect(() => {
-    getLesson();
-    // console.log(lessons);
-  }, []);
+  const {
+    lessons,
+    setAddLesson,
+    addLesson,
+    setEditIndex,
+    setEditState,
+    editState,
+  } = useDataCenter();
+  // const getLesson = async () => {
+  //   let lessonsResult;
+  //   if (!addLesson) {
+  //     // console.log(addLesson);
+  //   } else {
+  //     lessons.length = 0;
+  //     try {
+  //       lessonsResult = await axios.get(
+  //         `http://localhost:4001/admin/courses/${params.courseId}`
+  //       );
+  //       // setLessons(lessonsResult.data.data.lessons);
+  //       // console.log(lessonsResult);
+  //       if (lessons.length === 0) {
+  //         lessons.push(...lessonsResult.data.data.lessons);
+  //       }
+  //       console.log(lessons);
+  //     } catch (error) {
+  //       console.log("request lesson error", error);
+  //     }
+  //   }
+  // };
+  // useEffect(() => {
+  //   getLesson();
+  //   // setEditState(false);
+  //   // setAddLesson(false);
+  //   // console.log(lessons);
+  // }, []);
   return (
     <>
       <div className="w-[85%] mx-auto">
@@ -63,14 +79,18 @@ function LessonAdmin() {
                   </td>
                   <td className="pl-5">{index + 1}</td>
                   <td className="pl-5">{item.lessonName}</td>
-                  {/* <td className="pl-5">{item.subLessons.length}</td> */}
+                  <td className="pl-5">{item.subLessons.length}</td>
                   <td>
                     <div className="flex justify-evenly">
                       <img src={deleteIcon} className="inline cursor-pointer" />
                       <img
                         src={editIcon}
                         className="inline cursor-pointer"
-                        onClick={navigate("/admin/editlesson")}
+                        onClick={() => {
+                          setEditState(true);
+                          setEditIndex(index);
+                        }}
+                        // onClick={navigate("/admin/editlesson")}
                       />
                     </div>
                   </td>

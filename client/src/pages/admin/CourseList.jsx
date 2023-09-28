@@ -17,7 +17,7 @@ import axios from "axios";
 import { DebounceInput } from "react-debounce-input";
 import useGetsearch from "../../hook/useGetsearch";
 import { DeleteCourse } from "../../components/admin/ConfirmDeleteModal";
-
+import useDataCenter from "../../context/DataCenter";
 function CourseListPage() {
   const [inputText, setInputText] = useState("");
 
@@ -30,7 +30,7 @@ function CourseListPage() {
   const [deleted, setDeleted] = useState(false);
   const params = useParams();
   const [courseId, setCourseId] = useState(null);
-
+  const { setFirstTimeFetch, firstTimeFetch, lessons } = useDataCenter();
   const openDeleteModal = (courseId) => {
     setCourseId(courseId);
     setShowDeleteModal(true);
@@ -64,7 +64,13 @@ function CourseListPage() {
   };
 
   useEffect(() => {
-    getCourseList(1);
+    if (!firstTimeFetch) {
+      window.location.reload();
+      lessons.length = 0;
+      getCourseList(1);
+      setFirstTimeFetch(true);
+    }
+    //
   }, []);
 
   useEffect(() => {
@@ -182,9 +188,9 @@ function CourseListPage() {
                     </td>
 
                     <td className="p-5 font-semibold">
-                      {/* <Link to={`/course/courseDetail/${item.course_id}`}>
+                      <Link to={`/course/courseDetail/${item.course_id}`}>
                         {item.course_name}
-                      </Link> */}
+                      </Link>
                     </td>
 
                     <td className="p-5 font-semibold">
@@ -200,7 +206,11 @@ function CourseListPage() {
                       {new Date(item.course_updated_at).toLocaleString()}
                     </td>
                     <td className="pt-8 flex pl-4 gap-2">
-                      <img src={deleteLogo} />
+                      <img
+                        src={deleteLogo}
+                        onClick={() => openDeleteModal(item.course_id)}
+                        style={{ cursor: "pointer" }}
+                      />
                       <Link to={`/admin/editcourse/${item.course_id}`}>
                         <img src={edit} className="cursor-pointer" />
                       </Link>
@@ -212,6 +222,11 @@ function CourseListPage() {
           </table>
         </div>
       </div>
+      <DeleteCourse
+        isOpen2={showDeleteModal}
+        onRequestClose2={closeDeleteModal}
+        onConfirm2={() => handleDeleteCourse(courseId)}
+      />
     </div>
   );
 }

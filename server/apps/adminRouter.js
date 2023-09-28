@@ -13,10 +13,45 @@ adminRouter.get("/", async (req, res) => {
   try {
     let startAt = 0;
     let endAt = 7;
-    if (req.query.page && req.query.page !== 0) {
+    // console.log(req.query);
+    if (Number(req.query.page) && Number(req.query.page) !== 1) {
       endAt = req.query.page * 8;
       endAt += Number(req.query.page - 1);
       startAt = endAt - 8;
+    }
+    if (req.query.title) {
+      // console.log("condition runing");
+      const coursesWithTitle = await supabase
+        .from("courses")
+        .select(
+          "course_id, course_name, course_price, course_created_at, course_updated_at, course_duration, course_cover_img, public_status"
+        )
+        .order("public_status", {
+          ascending: true,
+        })
+        .ilike("course_name", req.query.title ? "" : req.query.title);
+      if (
+        coursesWithTitle.data.length !== 0 ||
+        coursesWithTitle.statusText === "OK"
+      ) {
+        const courseIdMaping = coursesWithTitle.data.map((vale) => {
+          return vale.course_id;
+        });
+        const lessonWithTitle = await supabase
+          .from("lessons")
+          .select("course_id, lesson_name")
+          .in("course_id", courseIdMaping);
+        // console.log(lesson);
+        const newMap = coursesWithTitle.data.map((value) => {
+          return {
+            ...value,
+            lesson_amount: lessonWithTitle.data.filter((subValue) => {
+              return subValue.course_id === value.course_id;
+            }).length,
+          };
+        });
+        return res.json({ data: newMap });
+      }
     }
     const courses = await supabase
       .from("courses")
@@ -83,6 +118,23 @@ adminRouter.get("/courses/:courseId", async (req, res) => {
         .select("*")
         .eq("course_id", req.params.courseId)
         .order("priority", { ascending: true });
+      const lessonIdAraray = lessonResult.data.map((value) => {
+        return value.lesson_id;
+      });
+      const sublessonResult = await supabase
+        .from("sub_lessons")
+        .select("*")
+        .in("lesson_id", lessonIdAraray)
+        .order("priority", { ascending: true });
+      const newLessonMaping = lessonResult.data.map((value) => {
+        return {
+          ...value,
+          lessonName: value.lesson_name,
+          subLessons: sublessonResult.data.filter((subValue) => {
+            return subValue.lesson_id === value.lesson_id;
+          }),
+        };
+      });
       if (
         courseResults.statusText === "OK" &&
         lessonResult.statusText === "OK"
@@ -90,7 +142,7 @@ adminRouter.get("/courses/:courseId", async (req, res) => {
         return res.json({
           data: {
             course: courseResults.data,
-            lessons: lessonResult.data,
+            lessons: newLessonMaping,
           },
         });
       }
@@ -116,6 +168,7 @@ const multerUpload = storageControll.fields([
 adminRouter.post("/course/created", multerUpload, async (req, res) => {
   const courseDetail = req.body.courseDetail;
   const lessonsDetail = req.body.lessonsDetail;
+  // console.log(req.body);
   const course_cover_img = req.files.courseCoverImgFile[0];
   const course_video_trailer = req.files.courseVideoTrailerFile[0];
   const sub_lesson_video_array = req.files.subLessonVideoFile;
@@ -146,6 +199,7 @@ adminRouter.post("/course/created", multerUpload, async (req, res) => {
     const course_id = courseDetailFormSupabase.data[0].course_id;
 
     //**Maping lessons */
+    // console.log(lessonsDetail);
     const lessonForInsert = lessonsDetail.map((value) => {
       return {
         course_id: course_id,
@@ -223,7 +277,7 @@ adminRouter.post("/course/created", multerUpload, async (req, res) => {
     const imgaesTrailerUrl = await supabase.storage
       .from("course_images")
       .getPublicUrl(imgPath.data.path);
-    console.log(videoTrailerUrl);
+    // console.log(videoTrailerUrl);
     const reAssignPath = await supabase
       .from("courses")
       .update({

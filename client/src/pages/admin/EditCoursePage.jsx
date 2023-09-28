@@ -7,9 +7,10 @@ import CourseForm from "../../components/admin/CourseForm";
 import arrowBack from "../../assets/EditCourse/arrow_back.png";
 import axios from "axios";
 import { Link, useParams } from "react-router-dom";
-
+import LessonForm from "../../components/admin/LessonForm";
 function EditCoursePage() {
   const { formValues, setFormValues } = useDataCenter();
+  const [loading, setLoading] = useState(false);
   const params = useParams();
   const {
     imageServerUrl,
@@ -23,6 +24,10 @@ function EditCoursePage() {
     firstTimeFetch,
     setFirstTimeFetch,
     handleCancelButton,
+    addLesson,
+    editState,
+    setEditState,
+    lessons,
   } = useDataCenter();
 
   const filterSubmit = (values) => {
@@ -65,10 +70,15 @@ function EditCoursePage() {
   };
 
   const getCourseData = async () => {
+    setLoading(true);
+    lessons.length = 0;
     try {
       const response = await axios.get(
         `http://localhost:4001/admin/courses/${params.courseId}`
       );
+      if (lessons.length === 0) {
+        lessons.push(...response.data.data.lessons);
+      }
       setFormValues({
         ...formValues,
         courseName: response.data.data.course[0].course_name,
@@ -76,6 +86,7 @@ function EditCoursePage() {
         totalLearningTime: response.data.data.course[0].course_duration,
         courseSummary: response.data.data.course[0].course_summary,
         courseDetail: response.data.data.course[0].course_detail,
+        public_status: response.data.data.course[0].public_status,
       });
       setImageServerUrl(response.data.data.course[0].course_cover_img);
       setVideoTrailerServerUrl(
@@ -84,37 +95,40 @@ function EditCoursePage() {
     } catch (error) {
       console.log("request error");
     }
+    setLoading(false);
   };
 
   useEffect(() => {
     if (firstTimeFetch) {
       getCourseData();
       setFirstTimeFetch(false);
+      setEditState(false);
+      // console.log(editState);
     }
   }, []);
 
   return (
-    <main className=" flex">
+    <main className=" flex w-screen">
       <Sidebar />
-      <section className="font-inter flex justify-center items-center">
-        <section id="right-content w-full">
-          <div className="w-full h-[92px] flex justify-center items-center">
+      <section className="font-inter flex flex-col justify-center items-center w-full">
+        {/* <section id="right-content"> */}
+        <div
+          className={
+            `w-full flex justify-center items-center` +
+            (!addLesson ? `h-[92px]` : ``)
+          }
+        >
+          {addLesson || editState ? (
+            ""
+          ) : (
             <section
               id="navbar"
               className="w-full h-[92px] flex justify-between items-center px-20 border-b border-gray-400"
             >
-              <div className="flex items-center">
-                <img
-                  src={arrowBack}
-                  onClick={handleCancelButton}
-                  className="inline mr-4 cursor-pointer"
-                />
-                <div className="inline text-header3 text-gray-600 mr-2">
-                  Course
-                </div>
-                <div className="inline text-header3 text-[2A2E3F]">
-                  '{formValues.courseName}'
-                </div>
+              <div className="text-header3 text-[2A2E3F] overflow-hidden">
+                Edit Course
+                <br />
+                <p>"{formValues.courseName}"</p>
               </div>
               <div className="flex justify-center items-center font-bold">
                 <button
@@ -126,23 +140,47 @@ function EditCoursePage() {
                 <button
                   type="submit"
                   form="add-course"
-                  className="text-white w-[117px] h-[60px] bg-[#2f5fac] rounded-xl ml-[20px] mr-[15px]"
+                  className="text-white w-[117px] h-[60px] bg-[#2f5fac] rounded-xl ml-[20px]"
                 >
                   Edit
                 </button>
               </div>
             </section>
-          </div>
-          <section className="w-full bg-[#f6f7fc] flex justify-center flex-col items-center">
-            <div className="w-[85%] bg-white mt-[80px] mx-auto border border-gray-400 rounded-2xl flex justify-center items-start">
-              <div className="px-20 text-body1 text-black">
-                <CourseForm filterSubmit={filterSubmit} />
-                <UploadMedia />
-              </div>
-            </div>
-            <LessonAdmin />
-          </section>
+          )}
+        </div>
+        <section className="w-full bg-[#f6f7fc] flex justify-center flex-col items-center">
+          {loading ? (
+            // <Oval
+            //   ariaLabel="loading-indicator"
+            //   height={500}
+            //   width={500}
+            //   strokeWidth={1}
+            //   strokeWidthSecondary={1}
+            //   color="gray"
+            //   secondaryColor="white"
+            // />
+            <h1 className="h-screen text-center text-justify">
+              Uploading Data...
+            </h1>
+          ) : (
+            <>
+              {addLesson || editState ? (
+                <LessonForm />
+              ) : (
+                <section className="w-full bg-[#f6f7fc] flex justify-center flex-col items-center">
+                  <div className="w-[85%] bg-white mt-[80px] mx-auto border border-gray-400 rounded-2xl flex justify-center items-start">
+                    <div className="px-20 text-body1 text-black">
+                      <CourseForm filterSubmit={filterSubmit} />
+                      <UploadMedia />
+                    </div>
+                  </div>
+                  <LessonAdmin />
+                </section>
+              )}
+            </>
+          )}
         </section>
+        {/* </section> */}
       </section>
     </main>
   );
