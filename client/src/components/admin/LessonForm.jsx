@@ -325,14 +325,6 @@ function LessonForm() {
                   </div>
                 )}
               />
-              {/* <button
-                type="submit"
-                form="add-course"
-                onClick={() => setAddLesson(false)}
-                className="text-white w-[117px] h-[60px] bg-[#2f5fac] rounded-xl ml-[20px] mr-[15px] mt-10"
-              >
-                Back
-              </button> */}
             </Form>
           )}
         </Formik>
