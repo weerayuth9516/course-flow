@@ -66,9 +66,9 @@ function AuthProvider(props) {
       }
       return results;
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       session.error;
-      console.log(session.error);
+      // console.log(session.error);
       return error;
     }
   };
