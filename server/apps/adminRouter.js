@@ -7,7 +7,7 @@ import { protect } from "../middlewares/protect.js";
 import multer from "multer";
 
 const adminRouter = Router();
-adminRouter.use(protect);
+// adminRouter.use(protect);
 
 adminRouter.get("/", async (req, res) => {
   try {
@@ -184,7 +184,6 @@ adminRouter.post("/add/lesson/:courseId", multerUpload, async (req, res) => {
     const lessonName = req.body.lesson_name;
     const lessonPriority = req.body.lesson_priority;
     const subLessonArray = req.body[`sub_lesson.sub_lesson_name`];
-    console.log(subLessonArray);
     const sub_lesson_video_array = req.files.subLessonVideoFile;
     const inSertLesson = await supabase
       .from("lessons")
@@ -200,13 +199,23 @@ adminRouter.post("/add/lesson/:courseId", multerUpload, async (req, res) => {
       .eq("course_id", req.params.courseId)
       .eq("priority", lessonPriority);
     const currentLessonId = fetchLessonId.data[0].lesson_id;
-    const subLessonForInsert = subLessonArray.map((value, index) => {
-      return {
+    let subLessonForInsert;
+    if (typeof subLessonArray !== "string") {
+      subLessonForInsert = subLessonArray.map((value, index) => {
+        return {
+          lesson_id: currentLessonId,
+          sub_lesson_name: value,
+          priority: req.body[`sub_lesson.priority`][index],
+        };
+      });
+    } else {
+      subLessonForInsert = {
         lesson_id: currentLessonId,
-        sub_lesson_name: value,
-        priority: req.body[`sub_lesson.priority`][index],
+        sub_lesson_name: subLessonArray,
+        priority: 1,
       };
-    });
+    }
+
     // console.log(subLessonForInsert);
     const insertSubLesson = await supabase
       .from("sub_lessons")
@@ -795,7 +804,7 @@ adminRouter.delete("/lessons/:lessonId/:courseId", async (req, res) => {
   try {
     const lessonId = req.params.lessonId;
     const courseId = req.params.courseId;
-
+    console.log(lessonId);
     const isValidLessonUUID = /^\w{8}-\w{4}-\w{4}-\w{4}-\w{12}$/.test(lessonId);
     const isValidCourseUUID = /^\w{8}-\w{4}-\w{4}-\w{4}-\w{12}$/.test(courseId);
 

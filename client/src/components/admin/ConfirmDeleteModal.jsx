@@ -1,4 +1,6 @@
+import useDataCenter from "../../context/DataCenter";
 export function DeleteLesson({ isOpen, onRequestClose, handleConfirm }) {
+  const { setLoading } = useDataCenter();
   return (
     <>
       {isOpen && (
@@ -21,7 +23,11 @@ export function DeleteLesson({ isOpen, onRequestClose, handleConfirm }) {
             <div className="mt-5">
               <button
                 className="border-[1px] border-orange-500 text-orange-500 font-bold w-[310px] h-[60px] rounded-xl mr-5 hover:bg-orange-500 hover:text-white"
-                onClick={handleConfirm}
+                onClick={() => {
+                  setLoading(true);
+                  handleConfirm();
+                  setLoading(false);
+                }}
               >
                 Yes, I want to delete this lesson
               </button>
@@ -43,6 +49,7 @@ export function DeleteCourse({ isOpen2, onRequestClose2, onConfirm2 }) {
   const handleOnConfirm2 = () => {
     onConfirm2();
     onRequestClose2();
+    window.location.reload();
   };
   return (
     <>

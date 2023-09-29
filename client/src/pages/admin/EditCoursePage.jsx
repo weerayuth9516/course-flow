@@ -15,7 +15,6 @@ import { DeleteCourseEdit } from "../../components/admin/ConfirmDeleteModal";
 import { DeleteLesson } from "../../components/admin/ConfirmDeleteModal";
 function EditCoursePage() {
   const { formValues, setFormValues } = useDataCenter();
-  const [loading, setLoading] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const params = useParams();
   const {
@@ -37,6 +36,8 @@ function EditCoursePage() {
     lessonLength,
     setLessons,
     setLessonLength,
+    loading,
+    setLoading,
   } = useDataCenter();
   const navigate = useNavigate();
   const filterSubmit = (values) => {
@@ -93,15 +94,6 @@ function EditCoursePage() {
       console.log(err);
       setLoading(false);
     }
-    // if (
-    //   values.hasOwnProperty("coverImage") &&
-    //   values.hasOwnProperty("videoTrailer")
-    // ) {
-    //   setTimeout(() => {
-    //     // window.location.reload();
-    //     // navigate("/admin/courselist");
-    //   }, 2000);
-    // }
   };
 
   const getCourseData = async () => {
@@ -132,17 +124,8 @@ function EditCoursePage() {
     }
     setLoading(false);
   };
-  const deleteLessonList = async () => {
-    try {
-      const response = await axios.delete(
-        `http://localhost:4001/admin/lessons/${lessonId}/${params.courseId}`
-      );
-      console.log(response.data.message);
-    } catch (error) {
-      console.log("request error");
-    }
-  };
   const getLessonList = async () => {
+    setLoading(true);
     try {
       const response = await axios.get(
         `http://localhost:4001/admin/courses/${params.courseId}`
@@ -151,8 +134,23 @@ function EditCoursePage() {
     } catch (error) {
       console.log("request error");
     }
+    setLoading(false);
   };
+  const deleteLessonList = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.delete(
+        `http://localhost:4001/admin/lessons/${lessonId}/${params.courseId}`
+      );
+      console.log(response.data.message);
+    } catch (error) {
+      console.log("request error");
+    }
+    setLoading(false);
+  };
+
   const deleteCourse = async () => {
+    setLoading(true);
     try {
       const response = await axios.delete(
         `http://localhost:4001/admin/courses/${params.courseId}`
@@ -161,6 +159,7 @@ function EditCoursePage() {
     } catch (error) {
       console.log("request error");
     }
+    setLoading(false);
   };
   const openDeleteModalLesson = () => {
     setShowDeleteModal(true);
@@ -169,6 +168,9 @@ function EditCoursePage() {
   const openDeleteModalCourse = () => {
     setShowDeleteModal(true);
   };
+  const closeDeleteModal = () => {
+    setShowDeleteModal(false);
+  };
   const handleDeleteCourse = () => {
     deleteCourse();
     closeDeleteModal();
@@ -176,18 +178,14 @@ function EditCoursePage() {
       navigate("/admin/courselist");
     }, 2000);
   };
-  const handleDeleteLesson = () => {
+  const handleDeleteLesson = async () => {
     deleteLessonList();
-    setLessonLength(lessons.length);
     getLessonList();
+    setLessonLength(lessons.length);
     closeDeleteModal();
     setTimeout(() => {
       window.location.reload();
     }, 1000);
-  };
-
-  const closeDeleteModal = () => {
-    setShowDeleteModal(false);
   };
 
   useEffect(() => {
@@ -256,7 +254,7 @@ function EditCoursePage() {
               <>
                 {addLesson && !editState ? (
                   <>
-                    <LessonForm />
+                    <LessonForm setLoing={setLoading} />
                     <div
                       onClick={() => {
                         if (lessonLength > 1) {
