@@ -316,11 +316,11 @@ function EditCoursePage() {
         onRequestClose={closeDeleteModal}
         handleConfirm={handleDeleteCourse}
       />
-      <DeleteLesson
+      {addLesson || editState ? <DeleteLesson
         isOpen={showDeleteModal}
         onRequestClose={closeDeleteModal}
         handleConfirm={handleDeleteLesson}
-      />
+      />:""}
     </>
   );
 }
