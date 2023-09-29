@@ -29,7 +29,7 @@ function CourseLearningPage() {
     handleTitleClick,
     handleVideoEnd,
     handleVideoStart,
-    handleAssignment,
+    // handleAssignment,
   } = useCourselearning();
 
   useEffect(() => {
@@ -181,7 +181,7 @@ function CourseLearningPage() {
                 className="w-[739px] h-[460px]"
               ></video>
 
-              {handleAssignment() ? (
+              {/* {handleAssignment() ? (
                 <div className="w-[739px] h-[314px] bg-blue-100 flex flex-col items-center rounded-lg mt-[70px]">
                   <div className="w-[691px] h-[32px] flex justify-between items-center mt-4">
                     <div className="text-body1 text-black">Assignment</div>
@@ -205,7 +205,7 @@ function CourseLearningPage() {
                 </div>
               ) : (
                 ""
-              )}
+              )} */}
             </div>
           </div>
         </div>
