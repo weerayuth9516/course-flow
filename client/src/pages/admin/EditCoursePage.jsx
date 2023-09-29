@@ -37,6 +37,7 @@ function EditCoursePage() {
     lessonId,
     lessonLength,
     setLessonLength,
+    setAddLesson,
   } = useDataCenter();
   const navigate = useNavigate();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -139,7 +140,7 @@ function EditCoursePage() {
       const response = await axios.delete(
         `http://localhost:4001/admin/courses/${params.courseId}`
       );
-      setCompleteDeleted(response.data.message);
+      console.log(response.data.message);
     } catch (error) {
       console.log("request error");
     }
@@ -170,6 +171,9 @@ function EditCoursePage() {
   const handleDeleteLesson = () => {
     deleteLessonList();
     closeDeleteModal();
+    setTimeout(() => {
+      window.location.reload();
+    }, 1000);
   };
 
   useEffect(() => {
@@ -177,18 +181,17 @@ function EditCoursePage() {
     getLessonList();
   }, [lessonLength, lessons]);
 
-  const openDeleteModal = () => {
+  const openDeleteModalLesson = () => {
+    setShowDeleteModal(true);
+  };
+
+  const openDeleteModalCourse = () => {
     setShowDeleteModal(true);
   };
 
   const closeDeleteModal = () => {
     setShowDeleteModal(false);
   };
-
-  useEffect(() => {
-    setLessonLength(lessons.length);
-    getLessonList();
-  }, [lessonLength, lessons]);
 
   const handleDeleteCourse = () => {
     deleteCourse();
@@ -203,6 +206,8 @@ function EditCoursePage() {
       getCourseData();
       setFirstTimeFetch(false);
       setEditState(false);
+      setLessonLength(lessons.length);
+      getLessonList();
       // console.log(editState);
     }
   }, []);
@@ -279,7 +284,9 @@ function EditCoursePage() {
                     <LessonForm />
                     <div
                       onClick={() => {
-                        openDeleteModal();
+                        if (lessonLength > 1) {
+                          openDeleteModalLesson();
+                        }
                       }}
                       className="w-[85%] text-blue-500 font-bold text-right mt-[72px] mb-[93px] inline cursor-pointer"
                     >
@@ -297,7 +304,7 @@ function EditCoursePage() {
                     <LessonAdmin />
                     <div
                       onClick={() => {
-                        openDeleteModal();
+                        openDeleteModalCourse();
                       }}
                       className="w-[85%] text-blue-500 font-bold text-right mt-[72px] mb-[93px] inline cursor-pointer"
                     >
