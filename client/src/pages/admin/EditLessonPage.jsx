@@ -8,6 +8,14 @@ import axios from "axios";
 
 function EditLessonPage() {
   const navigate = useNavigate();
+  const {
+    lessons,
+    setLessons,
+    lessonId,
+    setLessonId,
+    lessonLength,
+    setLessonLength,
+  } = useDataCenter();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const openDeleteModal = () => {
@@ -20,6 +28,38 @@ function EditLessonPage() {
     window.location.reload(false);
     navigate(-1);
   };
+
+  const deleteLessonList = async () => {
+    try {
+      const response = await axios.delete(
+        `http://localhost:4001/admin/lessons/${lessonId}/${params.courseId}`
+      );
+      console.log(response.data.message);
+    } catch (error) {
+      console.log("request error");
+    }
+  };
+
+  const getLessonList = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:4001/admin/courses/${params.courseId}`
+      );
+      setLessons(response.data.data.lessons);
+    } catch (error) {
+      console.log("request error");
+    }
+  };
+
+  const handleDeleteLesson = () => {
+    deleteLessonList();
+    closeDeleteModal();
+  };
+
+  useEffect(() => {
+    setLessonLength(lessons.length);
+    getLessonList();
+  }, [lessonLength, lessons]);
   return (
     <>
       <div className="flex">
@@ -56,7 +96,12 @@ function EditLessonPage() {
           <div className="w-[100%] flex justify-end mr-32 mb-16">
             <button
               className="font-bold text-blue-500 hover:underline"
-              onClick={() => openDeleteModal()}
+              onClick={() => {
+                if (lessonLength > 1) {
+                  setLessonId(item.lesson_id);
+                  openDeleteModal();
+                }
+              }}
             >
               Delete Lesson
             </button>
@@ -66,6 +111,7 @@ function EditLessonPage() {
       <DeleteLesson
         isOpen={showDeleteModal}
         onRequestClose={closeDeleteModal}
+        handleConfirm={handleDeleteLesson}
       />
     </>
   );

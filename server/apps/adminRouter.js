@@ -1,7 +1,7 @@
 import { Router, query } from "express";
 import { supabase } from "../utils/db.js";
 import "dotenv/config";
-import jwt from "jsonwebtoken";
+// import jwt from "jsonwebtoken";
 // import { protect } from "../middlewares/protect.js";
 // import { upload } from "../middlewares/multerConfig.js";
 import multer from "multer";
@@ -724,6 +724,115 @@ adminRouter.delete("/courses/:courseId", async (req, res) => {
     console.error("error", error);
     return res.status(500).json({
       error: "An error occurred while processing the delete request.",
+    });
+  }
+});
+
+//deleting a single lesson
+adminRouter.delete("/lessons/:lessonId/:courseId", async (req, res) => {
+  try {
+    const lessonId = req.params.lessonId;
+    const courseId = req.params.courseId;
+
+    const isValidLessonUUID = /^\w{8}-\w{4}-\w{4}-\w{4}-\w{12}$/.test(lessonId);
+    const isValidCourseUUID = /^\w{8}-\w{4}-\w{4}-\w{4}-\w{12}$/.test(courseId);
+
+    if (!isValidCourseUUID || !isValidLessonUUID) {
+      return res
+        .status(400)
+        .json({ error: "Invalid courseId or lessonId format" });
+    }
+
+    if (!courseId || !lessonId) {
+      return res.status(400).json({
+        error: "courseId and lessonId are required",
+      });
+    }
+
+    // Check if the course exists
+    const courseExists = await supabase
+      .from("courses")
+      .select("course_id")
+      .eq("course_id", courseId)
+      .single();
+
+    if (!courseExists) {
+      return res.status(404).json({
+        error: `Course with ID ${courseId} does not exist.`,
+      });
+    }
+
+    // Check if the lesson exists for the specific course
+    const lessonExists = await supabase
+      .from("lessons")
+      .select("lesson_id")
+      .eq("lesson_id", lessonId)
+      .eq("course_id", courseId)
+      .single();
+
+    if (!lessonExists) {
+      return res.status(404).json({
+        error: `Lesson with ID ${lessonId} does not exist for the course.`,
+      });
+    }
+
+    // Delete the lesson
+    const lessonDeleteResult = await supabase
+      .from("lessons")
+      .delete()
+      .eq("course_id", courseId)
+      .eq("lesson_id", lessonId);
+
+    return res.json({
+      message: `Lesson with ID ${lessonId} has been deleted from the course.`,
+    });
+  } catch (error) {
+    console.error("error", error);
+    return res.status(500).json({
+      error:
+        "An error occurred while processing the delete request for the lesson.",
+    });
+  }
+});
+
+// deleting a single sublesson
+adminRouter.delete("/sublessons/:sublessonId", async (req, res) => {
+  try {
+    const sublessonId = req.params.sublessonId;
+
+    const isValidSublessonUUID = /^\w{8}-\w{4}-\w{4}-\w{4}-\w{12}$/.test(
+      sublessonId
+    );
+
+    if (!isValidSublessonUUID) {
+      return res.status(400).json({ error: "Invalid sublessonId format" });
+    }
+
+    const sublessonExists = await supabase
+      .from("sub_lessons")
+      .select("*")
+      .eq("sub_lesson_id", sublessonId)
+      .single();
+
+    if (!sublessonExists) {
+      return res
+        .status(404)
+        .json({ error: `Sublesson with ID ${sublessonId} does not exist.` });
+    }
+
+    const sublessonDeleteResult = await supabase
+      .from("sub_lessons")
+      .delete()
+      .eq("sub_lesson_id", sublessonId);
+
+    return res.json({
+      message: `Sublesson with ID ${sublessonId} has been deleted.`,
+    });
+  } catch (error) {
+    console.error("error", error);
+    return res.status(500).json({
+      error:
+        "An error occurred while processing the delete request for the sublesson.",
     });
   }
 });

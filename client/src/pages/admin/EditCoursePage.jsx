@@ -10,6 +10,7 @@ import arrowBack from "../../assets/registerPage/arrow-back.svg";
 import axios from "axios";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { DeleteCourseEdit } from "../../components/admin/ConfirmDeleteModal";
+import { DeleteLesson } from "../../components/admin/ConfirmDeleteModal";
 import LessonForm from "../../components/admin/LessonForm";
 import EditLessonForm from "../../components/admin/EditLessonForm";
 function EditCoursePage() {
@@ -32,6 +33,11 @@ function EditCoursePage() {
     editState,
     setEditState,
     lessons,
+    setLessons,
+    lessonId,
+    lessonLength,
+    setLessonLength,
+    setAddLesson,
   } = useDataCenter();
   const navigate = useNavigate();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -134,15 +140,52 @@ function EditCoursePage() {
       const response = await axios.delete(
         `http://localhost:4001/admin/courses/${params.courseId}`
       );
-      setCompleteDeleted(response.data.message);
+      console.log(response.data.message);
     } catch (error) {
       console.log("request error");
     }
   };
 
-  const openDeleteModal = () => {
+  const deleteLessonList = async () => {
+    try {
+      const response = await axios.delete(
+        `http://localhost:4001/admin/lessons/${lessonId}/${params.courseId}`
+      );
+      console.log(response.data.message);
+    } catch (error) {
+      console.log("request error");
+    }
+  };
+
+  const getLessonList = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:4001/admin/courses/${params.courseId}`
+      );
+      setLessons(response.data.data.lessons);
+    } catch (error) {
+      console.log("request error");
+    }
+  };
+
+  const handleDeleteLesson = () => {
+    deleteLessonList();
+    setLessonLength(lessons.length);
+    getLessonList();
+    closeDeleteModal();
+    setTimeout(() => {
+      window.location.reload();
+    }, 1000);
+  };
+
+  const openDeleteModalLesson = () => {
     setShowDeleteModal(true);
   };
+
+  const openDeleteModalCourse = () => {
+    setShowDeleteModal(true);
+  };
+
   const closeDeleteModal = () => {
     setShowDeleteModal(false);
   };
@@ -232,7 +275,19 @@ function EditCoursePage() {
             ) : (
               <>
                 {addLesson || editState ? (
-                  <LessonForm />
+                  <>
+                    <LessonForm />
+                    <div
+                      onClick={() => {
+                        if (lessonLength > 1) {
+                          openDeleteModalLesson();
+                        }
+                      }}
+                      className="w-[85%] text-blue-500 font-bold text-right mt-[72px] mb-[93px] inline cursor-pointer"
+                    >
+                      Delete Lesson
+                    </div>
+                  </>
                 ) : (
                   <section className="w-full bg-[#f6f7fc] flex justify-center flex-col items-center">
                     <div className="w-[85%] bg-white mt-[80px] mx-auto border border-gray-400 rounded-2xl flex justify-center items-start">
@@ -244,7 +299,7 @@ function EditCoursePage() {
                     <LessonAdmin />
                     <div
                       onClick={() => {
-                        openDeleteModal();
+                        openDeleteModalCourse();
                       }}
                       className="w-[85%] text-blue-500 font-bold text-right mt-[72px] mb-[93px] inline cursor-pointer"
                     >
@@ -263,6 +318,15 @@ function EditCoursePage() {
         onRequestClose={closeDeleteModal}
         handleConfirm={handleDeleteCourse}
       />
+      {addLesson || editState ? (
+        <DeleteLesson
+          isOpen={showDeleteModal}
+          onRequestClose={closeDeleteModal}
+          handleConfirm={handleDeleteLesson}
+        />
+      ) : (
+        ""
+      )}
     </>
   );
 }

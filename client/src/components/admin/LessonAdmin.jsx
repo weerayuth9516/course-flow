@@ -60,6 +60,33 @@ function LessonAdmin() {
     setLessonLength(lessons.length);
     getLessonList();
   }, [lessonLength, lessons]);
+  // const getLesson = async () => {
+  //   let lessonsResult;
+  //   if (!addLesson) {
+  //     // console.log(addLesson);
+  //   } else {
+  //     lessons.length = 0;
+  //     try {
+  //       lessonsResult = await axios.get(
+  //         `http://localhost:4001/admin/courses/${params.courseId}`
+  //       );
+  //       // setLessons(lessonsResult.data.data.lessons);
+  //       // console.log(lessonsResult);
+  //       if (lessons.length === 0) {
+  //         lessons.push(...lessonsResult.data.data.lessons);
+  //       }
+  //       console.log(lessons);
+  //     } catch (error) {
+  //       console.log("request lesson error", error);
+  //     }
+  //   }
+  // };
+  // useEffect(() => {
+  //   getLesson();
+  //   // setEditState(false);
+  //   // setAddLesson(false);
+  //   // console.log(lessons);
+  // }, []);
   return (
     <>
       <div className="w-[85%] mx-auto">
@@ -101,14 +128,14 @@ function LessonAdmin() {
                   <td>
                     <div className="flex justify-evenly">
                       <img
-                        src={deleteIcon}
-                        className="inline cursor-pointer"
                         onClick={() => {
                           if (lessonLength > 1) {
                             setLessonId(item.lesson_id);
                             openDeleteModal();
                           }
                         }}
+                        src={deleteIcon}
+                        className="inline cursor-pointer"
                       />
                       <img
                         src={editIcon}
