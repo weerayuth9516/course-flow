@@ -9,12 +9,18 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
 import { Stack } from "@mui/material";
 import { useAuth } from "../../context/authentication";
 import { useNavigate } from "react-router-dom";
 import imagebg from "../../assets/ourCourses/image_background.png";
 
 function EditProfileForm() {
+  dayjs.extend(utc);
+  dayjs.extend(timezone);
+  dayjs.tz.setDefault("Asia/Bangkok");
+
   const navigate = useNavigate();
   const auth = useAuth();
   const { updateUserProfileById } = useGetuser();
@@ -38,9 +44,9 @@ function EditProfileForm() {
     name: Yup.string()
       .matches(/^[a-zA-Z\s]+$/, "Name must contain only letters")
       .required("Name is required"),
-    birthDate: Yup.date()
-      .max(new Date(), "Date of Birth cannot be in the future")
-      .required("Date of Birth is required"),
+    // birthDate: Yup.date()
+    //   .max(new Date(), "Date of Birth cannot be in the future")
+    //   .required("Date of Birth is required"),
     education: Yup.string()
       .matches(/^[a-zA-Z\s]+$/, "Education must only contain letters")
       .required("Educational Background is required"),
@@ -88,7 +94,8 @@ function EditProfileForm() {
   const handleSubmit = (event) => {
     const data = {
       user_name: name,
-      user_dob: birthDate,
+      user_dob:
+        birthDate instanceof dayjs ? birthDate.format("YYYY-MM-DD") : birthDate,
       user_education: education,
       user_email: email,
       avatarObj: fileBody,

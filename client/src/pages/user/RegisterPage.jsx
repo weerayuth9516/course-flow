@@ -45,7 +45,7 @@ function RegisterPage() {
     }
   };
   const handleSubmit = async (values) => {
-    values = { ...values, user_dob: birthDate };
+    values = { ...values, user_dob: birthDate.format("YYYY-MM-DD") };
     try {
       auth.register(values);
       setEmailValidation(auth.session.error);
