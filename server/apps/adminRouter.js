@@ -444,7 +444,7 @@ adminRouter.get("/lessons/:lessonId", async (req, res) => {
 });
 
 // edit lesson name (button update lesson name)
-adminRouter.put("/updated/:courseId/:lessonId", async (req, res) => {
+adminRouter.put("/updated/lesson/:courseId/:lessonId", async (req, res) => {
   try {
     const { courseId, lessonId } = req.params;
     const updateAtCourse = await supabase
@@ -475,7 +475,7 @@ adminRouter.put("/updated/:courseId/:lessonId", async (req, res) => {
 
 // create sub-lesson (button create)
 adminRouter.post(
-  "/created/:courseId/:lessonId",
+  "/created/sublesson/:courseId/:lessonId",
   multerUpload,
   async (req, res) => {
     try {
@@ -490,17 +490,15 @@ adminRouter.post(
         .upload(filePath, sub_lesson_video.buffer, {
           cacheControl: 3600,
           upsert: true,
-          contentType: sub_lesson_video.minetype,
+          contentType: sub_lesson_video.mimetype,
         });
       if (uploadVideo.error) {
         return res.status(400).json({ error: uploadVideo.error });
       }
 
       const videoUrl = await supabase.storage
-        .from(
-          `sublesson_video/${courseId}/${lessonId}/${sub_lesson_video.original}`
-        )
-        .getPublicUrl(sub_lesson_video);
+        .from(`sublesson_video/${courseId}/${lessonId}`)
+        .getPublicUrl(sub_lesson_video.originalname);
       if (videoUrl.error) {
         return res.status(400).json({ error: videoUrl.error });
       }
@@ -535,69 +533,97 @@ adminRouter.post(
 
 // update sub-lesson (button update)
 adminRouter.put(
-  "/updated/:courseId/lesson/:lessonId/:subLessonId",
+  "/updated/sublesson/:courseId/:lessonId/:subLessonId",
   multerUpload,
   async (req, res) => {
     try {
       const { courseId, lessonId, subLessonId } = req.params;
 
-      const sub_lesson_video = req.files.singleSubLessonVideo[0];
+      // const sub_lesson_video = req.files.singleSubLessonVideo[0];
 
-      const subLessonName = req.sub_lesson_name;
-      const filePath = `${courseId}/${lessonId}/${sub_lesson_video.originalname}`;
+      const subLessonName = req.body.sub_lesson_name;
 
-      if (!subLessonName && !sub_lesson_video) {
-        return res
-          .status(400)
-          .json({ error: "Do not exist sub-lesson updated" });
-      }
-      const { data: uploadVideo, error: ErrorUploadVideo } =
-        await supabase.storage
-          .from("sublesson_video")
-          .upload(filePath, sub_lesson_video.buffer, {
-            cacheControl: "3600",
-            upsert: true,
-            contentType: sub_lesson_video.minetype,
+      // if (!subLessonName && !sub_lesson_video) {
+      //   return res
+      //     .status(400)
+      //     .json({ error: "Do not exist sub-lesson updated" });
+      // }
+      if (req.files.singleSubLessonVideo) {
+        const sub_lesson_video = req.files.singleSubLessonVideo[0];
+        const filePath = `${courseId}/${lessonId}/${sub_lesson_video.originalname}`;
+        const { data: uploadVideo, error: ErrorUploadVideo } =
+          await supabase.storage
+            .from("sublesson_video")
+            .upload(filePath, sub_lesson_video.buffer, {
+              cacheControl: "3600",
+              upsert: true,
+              contentType: sub_lesson_video.mimetype,
+            });
+        const { data: videoUrl, error: ErrorvideoUrl } = await supabase.storage
+          .from(`sublesson_video/${courseId}/${lessonId}`)
+          .getPublicUrl(sub_lesson_video.originalname);
+        // console.log(videoUrl);
+        const { data: subLessonUpdate, error: ErrorSubLessonUpdate } =
+          await supabase
+            .from("sub_lessons")
+            .update({
+              sub_lesson_video: videoUrl.publicUrl,
+              sub_lesson_name: req.body.sub_lesson_name,
+            })
+            .eq("lesson_id", lessonId)
+            .eq("sub_lesson_id", subLessonId)
+            .select();
+        const { data: updatedAtCourse, error: ErrorUpdateAtCourse } =
+          await supabase
+            .from("courses")
+            .update({ course_updated_at: new Date() })
+            .eq("course_id", courseId)
+            .select();
+        if (ErrorUploadVideo) {
+          return res.status(400).json({ error: ErrorUploadVideo });
+        }
+
+        if (ErrorvideoUrl) {
+          return res.status(400).json({ error: ErrorvideoUrl });
+        }
+
+        if (ErrorSubLessonUpdate && ErrorUpdateAtCourse) {
+          return res.status(400).json({
+            error: ErrorSubLessonUpdate,
+            error: ErrorUpdateAtCourse,
           });
-
-      if (ErrorUploadVideo) {
-        return res.status(400).json({ error: ErrorUploadVideo });
+        }
+        return res
+          .status(200)
+          .json({ message: "Updated sub-lessons successfully" });
+      } else {
+        const { data: subLessonUpdate, error: ErrorSubLessonUpdate } =
+          await supabase
+            .from("sub_lessons")
+            .update({
+              sub_lesson_name: req.body.sub_lesson_name,
+            })
+            .eq("lesson_id", lessonId)
+            .eq("sub_lesson_id", subLessonId)
+            .select();
+        const { data: updatedAtCourse, error: ErrorUpdateAtCourse } =
+          await supabase
+            .from("courses")
+            .update({ course_updated_at: new Date() })
+            .eq("course_id", courseId)
+            .select();
+        if (ErrorSubLessonUpdate && ErrorUpdateAtCourse) {
+          return res.status(400).json({
+            error: ErrorSubLessonUpdate,
+            error: ErrorUpdateAtCourse,
+          });
+        }
+        return res
+          .status(200)
+          .json({ message: "Updated sub-lessons successfully" });
       }
-      const { data: videoUrl, error: ErrorvideoUrl } = await supabase.storage
-        .from(
-          `sublesson_video/${courseId}/${lessonId}/${sub_lesson_video.originalname}`
-        )
-        .getPublicUrl(sub_lesson_video);
-
-      if (ErrorvideoUrl) {
-        return res.status(400).json({ error: ErrorvideoUrl });
-      }
-      const { data: subLessonUpdate, error: ErrorSubLessonUpdate } =
-        await supabase
-          .from("sub_lessons")
-          .update({
-            sub_lesson_video: videoUrl.publicUrl,
-            sub_lesson_name: req.body.sub_lesson_name,
-          })
-          .eq("lesson_id", lessonId)
-          .eq("sub_lesson_id", subLessonId)
-          .select();
-      const { data: updatedAtCourse, error: ErrorUpdateAtCourse } =
-        await supabase
-          .from("courses")
-          .update({ course_updated_at: new Date() })
-          .eq("course_id", courseId)
-          .select();
-      if (ErrorSubLessonUpdate && ErrorUpdateAtCourse) {
-        return res.status(400).json({
-          error: ErrorSubLessonUpdate,
-          error: ErrorUpdateAtCourse,
-        });
-      }
-      return res
-        .status(200)
-        .json({ message: "Updated sub-lessons successfully" });
     } catch (error) {
+      console.log(error);
       return res.status(500).json({ error: error.message });
     }
   }

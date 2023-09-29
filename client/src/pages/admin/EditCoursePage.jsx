@@ -10,7 +10,7 @@ import arrowBack from "../../assets/registerPage/arrow-back.svg";
 import axios from "axios";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import LessonForm from "../../components/admin/LessonForm";
-
+import EditLessonForm from "../../components/admin/EditLessonForm";
 function EditCoursePage() {
   const { formValues, setFormValues } = useDataCenter();
   const [loading, setLoading] = useState(false);
@@ -185,25 +185,16 @@ function EditCoursePage() {
         </div>
         <section className="w-full bg-[#f6f7fc] flex justify-center flex-col items-center">
           {loading ? (
-            // <Oval
-            //   ariaLabel="loading-indicator"
-            //   height={500}
-            //   width={500}
-            //   strokeWidth={1}
-            //   strokeWidthSecondary={1}
-            //   color="gray"
-            //   secondaryColor="white"
-            // />
-            // <h1 className="h-screen text-center text-justify">
-            //   Uploading Data...
-            // </h1>
             <Box sx={{ display: "flex" }} className="h-[90vh] bg-gray-100">
               <CircularProgress size="20rem" className="mt-[20vh]" />
             </Box>
           ) : (
             <>
-              {addLesson || editState ? (
-                <LessonForm />
+              {addLesson && !editState ? (
+                // <LessonForm />
+                ""
+              ) : !addLesson && editState ? (
+                <EditLessonForm />
               ) : (
                 <section className="w-full bg-[#f6f7fc] flex justify-center flex-col items-center">
                   <div className="w-[85%] bg-white mt-[80px] mx-auto border border-gray-400 rounded-2xl flex justify-center items-start">

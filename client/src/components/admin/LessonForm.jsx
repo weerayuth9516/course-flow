@@ -1,4 +1,4 @@
-import { Formik, Form, Field, ErrorMessage } from "formik";
+import { Formik, Form, Field, ErrorMessage, FieldArray } from "formik";
 import * as Yup from "yup";
 import errorIcon from "../../assets/registerPage/errorIcon.svg";
 import { useEffect, useState } from "react";
@@ -13,12 +13,6 @@ function LessonForm() {
   // const [subLessonName, setSubLessonName] = useState("");
   const [preArrayVideo, setPreArrayVideo] = useState([]);
   const [videoSizeError, setVideoSizeError] = useState("");
-  const [clickSublesson, setClickSubLesson] = useState(false);
-  const [stateSubLesson, setStateSubLesson] = useState("Update");
-  const [newIndex, setNewIndex] = useState([]);
-  const [indexStatus, setIndexStatus] = useState([]);
-  const [subLessonNameError, setSubLessonNameError] = useState(null);
-  const [signError, setSignError] = useState("");
   const navigate = useNavigate();
   const {
     setAddLesson,
@@ -62,7 +56,19 @@ function LessonForm() {
         /^[a-zA-Z0-9]+$/,
         "Lesson name must contain only letters or digits"
       ),
-    subLessons: Yup.array().min(1, "At least one Sub-Lesson is required"),
+    subLessons: Yup.array()
+      .of(
+        Yup.object().shape({
+          subLessonName: Yup.string()
+            .required("Sub-Lesson name is required")
+            .matches(
+              /^[a-zA-Z0-9\s]+$/,
+              "Sub-Lesson name must contain only letters or digits"
+            ),
+          video: Yup.mixed().required("Video is required"),
+        })
+      )
+      .min(1, "At least one Sub-Lesson is required"),
   });
 
   const handleSubmit = async (values) => {
@@ -73,12 +79,6 @@ function LessonForm() {
     // setEditState(false);
     // console.log(lessons);
   };
-  // const handleUpdateInfomation = async () => {
-  //   console.log(indexStatus);
-  // };
-  // const handleDeleteInfomation = async () => {
-  //   console.log(indexStatus);
-  // };
   const handleBack = () => {
     setAddLesson(false);
     setEditState(false);
@@ -86,57 +86,6 @@ function LessonForm() {
   // useEffect(() => {
   //   console.log(lessons);
   // });
-
-  const [subLessons, setSubLessons] = useState([
-    { subLessonName: "", video: null },
-  ]);
-
-  // const validateSubLessons = (subLessons) => {
-  //   const errors = [];
-
-  //   subLessons.forEach((subLesson, index) => {
-  //     const subLessonErrors = {};
-
-  //     if (!subLesson.subLessonName || !subLesson.subLessonName.trim()) {
-  //       subLessonErrors.subLessonName = "Sub-Lesson name is required";
-  //     } else if (!/^[a-zA-Z0-9\s]+$/.test(subLesson.subLessonName)) {
-  //       subLessonErrors.subLessonName =
-  //         "Sub-Lesson name must contain only letters or digits";
-  //     }
-
-  //     errors[index] = subLessonErrors;
-  //   });
-
-  //   return errors;
-  // };
-
-  // const validateForm = (values) => {
-  //   const errors = {};
-
-  //   const subLessonErrors = validateSubLessons(values.subLessons);
-  //   if (subLessonErrors.length === 0) {
-  //     errors.subLessons = "At least one Sub-Lesson is required";
-  //   } else {
-  //     errors.subLessons = subLessonErrors;
-  //   }
-
-  //   return errors;
-  // };
-
-  const validateSubLessonName = (subLessonName) => {
-    if (!subLessonName) {
-      setSubLessonNameError("Required!!!");
-      setSignError(<img src={errorIcon} />);
-    } else if (!/^[a-zA-Z0-9\s]+$/.test(subLessonName)) {
-      setSubLessonNameError(
-        "Sub-Lesson name must contain only letters or digits"
-      );
-      setSignError(<img src={errorIcon} />);
-    } else {
-      setSubLessonNameError(null);
-      setSignError("");
-    }
-  };
 
   return (
     <>
@@ -220,158 +169,162 @@ function LessonForm() {
                   Sub-Lesson
                 </label>
               </div>
-              {values.subLessons.map((subLesson, index) => (
-                <div
-                  key={index}
-                  className="bg-gray-100 border border-gray-300 rounded-xl relative py-6 px-4 mb-3"
-                >
-                  <div className="flex justify-between">
-                    <div className="flex">
-                      <img src={dragIcon} className="mr-3 h-[76px]" />
-                      <div className="flex flex-col">
-                        <div className="flex flex-col">
-                          <label
-                            htmlFor={`subLessonName_${index}`}
-                            className="pl-1"
-                          >
-                            Sub-lesson name *
-                          </label>
-                          <input
-                            type="text"
-                            id={`subLessonName_${index}`}
-                            className="relative w-[500px] h-[48px] border border-gray-400 rounded-xl pl-4 focus:border-orange-500 focus:outline-none mt-1"
-                            value={subLesson.subLessonName}
-                            onChange={(e) => {
-                              const newSubLessons = [...subLessons];
-                              newSubLessons[index].subLessonName =
-                                e.target.value;
-                              setSubLessons(newSubLessons);
-                              validateSubLessonName(newSubLessons);
-                            }}
-                          />
-                          {subLessonNameError && (
-                            <>
-                              <div className="text-purple-500 text-sm mt-1">
-                                {subLessonNameError}
-                              </div>
-                              <img
-                                src={errorIcon}
-                                alt="Error Icon"
-                                className=" absolute right-[36%] top-[21%] transform -translate-y-1/2"
-                              />
-                            </>
-                          )}
-                          {/* {errors.subLessons?.[index]?.subLessonName &&
-                            touched.subLessons?.[index]?.subLessonName && (
-                              <div className="error-icon absolute right-[35%] top-[19%] transform -translate-y-1/2">
-                                <img src={errorIcon} alt="Error Icon" />
-                              </div>
-                            )}
-                          <ErrorMessage
-                            name={`subLessons[${index}].subLessonName`}
-                            component="div"
-                            className="text-purple-500 text-sm mt-1"
-                          /> */}
-                        </div>
-                        <div className="flex flex-col mt-5 mb-3">
-                          <label htmlFor={`video_${index}`}>Video *</label>
-                          <input
-                            type="file"
-                            id={`video_${index}`}
-                            accept=".mp4,.avi,.mov"
-                            style={{ display: "none" }}
-                            onChange={(event) => {
-                              const selectedVideo = event.target.files[0];
-                              const maxSize = 20 * 1024 * 1024; // 20MB
-                              if (selectedVideo.size <= maxSize) {
-                                const updatedSubLesson = {
-                                  ...subLesson,
-                                  sub_lesson_video: selectedVideo.name,
-                                  priority: index + 1,
-                                  video: URL.createObjectURL(selectedVideo),
-                                };
-                                const newSubLessons = [...subLessons];
-                                newSubLessons[index] = updatedSubLesson;
-                                setSubLessons(newSubLessons);
-                                preArrayVideo.push(selectedVideo);
-                                setVideoSizeError("");
-                              } else {
-                                setVideoSizeError(
-                                  "Video file is too large. Maximum size is 20MB"
-                                );
-                              }
-                            }}
-                          />
+              <FieldArray
+                name="subLessons"
+                render={(arrayHelpers) => (
+                  <div>
+                    {values.subLessons.map((subLesson, index) => (
+                      <div
+                        key={index}
+                        className="bg-gray-100 border border-gray-300 rounded-xl relative py-6 px-4 mb-3"
+                      >
+                        <div className="flex justify-between">
+                          <div className="flex">
+                            <img src={dragIcon} className="mr-3 h-[76px]" />
 
-                          <button
-                            type="button"
-                            className="w-[160px] h-[160px]"
-                            onClick={() => {
-                              document.getElementById(`video_${index}`).click();
-                            }}
-                          >
-                            {!subLesson.video && (
-                              <div className="w-[160px] h-[160px]">
-                                <img src={videoSubLesson} />
-                              </div>
-                            )}
-                            {subLesson.video && (
-                              <div>
-                                <video
-                                  controls
-                                  className="w-[160px] h-[160px] rounded-lg object-cover"
+                            <div className="flex flex-col">
+                              <div className="flex flex-col">
+                                <label
+                                  htmlFor={`subLessons[${index}].subLessonName`}
+                                  className="pl-1"
                                 >
-                                  <source
-                                    src={subLesson.video}
-                                    type={subLesson.videoType}
-                                  />
-                                </video>
+                                  Sub-lesson name *
+                                </label>
+                                <Field
+                                  type="text"
+                                  id={`subLessons[${index}].subLessonName`}
+                                  name={`subLessons[${index}].subLessonName`}
+                                  className={`w-[500px] h-[48px] border border-gray-400 rounded-xl pl-4 focus:border-orange-500 focus:outline-none mt-1 ${
+                                    errors.subLessons?.[index]?.subLessonName &&
+                                    touched.subLessons?.[index]?.subLessonName
+                                      ? "border-purple-500 border-2"
+                                      : ""
+                                  }`}
+                                />
+                                {errors.subLessons?.[index]?.subLessonName &&
+                                  touched.subLessons?.[index]
+                                    ?.subLessonName && (
+                                    <div className="error-icon absolute right-[35%] top-[19%] transform -translate-y-1/2">
+                                      <img src={errorIcon} alt="Error Icon" />
+                                    </div>
+                                  )}
+                                <ErrorMessage
+                                  name={`subLessons[${index}].subLessonName`}
+                                  component="div"
+                                  className="text-purple-500 text-sm mt-1"
+                                />
                               </div>
-                            )}
-                          </button>
-                          {videoSizeError && (
-                            <div className="text-purple-500 text-sm mt-1">
-                              {videoSizeError}
+                              <div className="flex flex-col mt-5 mb-3">
+                                <label htmlFor={`subLessons[${index}].video`}>
+                                  Video *
+                                </label>
+                                <input
+                                  type="file"
+                                  id={`subLessons[${index}].video`}
+                                  name={`subLessons[${index}].video`}
+                                  accept=".mp4,.avi,.mov"
+                                  style={{ display: "none" }}
+                                  onChange={(event) => {
+                                    const selectedVideo = event.target.files[0];
+                                    const maxSize = 20 * 1024 * 1024; // 20MB
+                                    if (selectedVideo.size <= maxSize) {
+                                      const updatedSubLesson = {
+                                        ...subLesson,
+                                        sub_lesson_video: selectedVideo.name,
+                                        priority: index + 1,
+                                        video:
+                                          URL.createObjectURL(selectedVideo),
+                                      };
+                                      arrayHelpers.replace(
+                                        index,
+                                        updatedSubLesson
+                                      );
+                                      preArrayVideo.push(selectedVideo);
+                                      setVideoSizeError("");
+                                    } else {
+                                      setVideoSizeError(
+                                        "Video file is too large. Maximum size is 20MB"
+                                      );
+                                    }
+                                  }}
+                                />
+                                {videoSizeError && (
+                                  <div className="text-purple-500 text-sm mt-1">
+                                    {videoSizeError}
+                                  </div>
+                                )}
+                                <button
+                                  type="button"
+                                  className="w-[160px] h-[160px]"
+                                  onClick={() =>
+                                    document
+                                      .getElementById(
+                                        `subLessons[${index}].video`
+                                      )
+                                      .click()
+                                  }
+                                >
+                                  {!subLesson.video && (
+                                    <div className="w-[160px] h-[160px]">
+                                      <img src={videoSubLesson} />
+                                    </div>
+                                  )}
+                                  {subLesson.video && (
+                                    <div>
+                                      <video
+                                        controls
+                                        className="w-[160px] h-[160px] rounded-lg object-cover"
+                                      >
+                                        <source
+                                          src={subLesson.video}
+                                          type={subLesson.videoType}
+                                        />
+                                      </video>
+                                    </div>
+                                  )}
+                                </button>
+                                <ErrorMessage
+                                  name={`subLessons[${index}].video`}
+                                  component="div"
+                                  className="text-purple-500 mt-1 text-sm"
+                                />
+                              </div>
                             </div>
+                          </div>
+
+                          {values.subLessons.length > 1 ? (
+                            <button
+                              className="text-gray-500 font-semibold flex justify-start hover:text-blue-500 h-[24px]"
+                              onClick={() => arrayHelpers.remove(index)}
+                            >
+                              {subLesson.subLessonName.length > 0
+                                ? "Delete"
+                                : "Created"}
+                            </button>
+                          ) : (
+                            <button className="text-gray-500 font-semibold flex justify-start h-[24px] cursor-not-allowed">
+                              Delete
+                            </button>
                           )}
-                          {/* <ErrorMessage
-                            name={`subLessons[${index}].video`}
-                            component="div"
-                            className="text-purple-500 mt-1 text-sm"
-                          /> */}
                         </div>
                       </div>
-                    </div>
-                    {subLessons.length > 1 ? (
-                      <button
-                        className="text-gray-500 font-bold flex justify-start hover:text-blue-500 h-[24px]"
-                        onClick={() => {
-                          const newSubLessons = [...subLessons];
-                          newSubLessons.splice(index, 1);
-                          setSubLessons(newSubLessons);
-                        }}
-                      >
-                        Delete
-                      </button>
-                    ) : (
-                      <button className="text-gray-500 font-bold flex justify-start h-[24px] cursor-not-allowed">
-                        Delete
-                      </button>
-                    )}
-                  </div>
-                </div>
-              ))}
+                    ))}
 
-              <button
-                type="button"
-                className="px-7 py-[15px] border border-orange-500 rounded-xl text-orange-500 font-bold mt-5 hover:bg-orange-500 hover:text-white"
-                onClick={() => {
-                  const newSubLesson = { subLessonName: "", video: null };
-                  setSubLessons([...subLessons, newSubLesson]);
-                }}
-              >
-                + Add Sub-Lesson
-              </button>
+                    <button
+                      type="button"
+                      className="px-7 py-[15px] border border-orange-500 rounded-xl text-orange-500 font-bold mt-5 hover:bg-orange-500 hover:text-white"
+                      onClick={() =>
+                        arrayHelpers.insert(values.subLessons.length, {
+                          subLessonName: "",
+                          video: null,
+                        })
+                      }
+                    >
+                      + Add Sub-Lesson
+                    </button>
+                  </div>
+                )}
+              />
             </Form>
           )}
         </Formik>
