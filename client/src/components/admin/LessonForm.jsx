@@ -5,9 +5,9 @@ import { useEffect, useState } from "react";
 import dragIcon from "../../assets/registerPage/drag-addlesson.svg";
 import videoSubLesson from "../../assets/registerPage/videoSubLesson.svg";
 import useDataCenter from "../../context/DataCenter";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import arrowBack from "../../assets/registerPage/arrow-back.svg";
-
+import axios from "axios";
 function LessonForm() {
   // const [lessonName, setLessonName] = useState("");
   // const [subLessonName, setSubLessonName] = useState("");
@@ -70,22 +70,44 @@ function LessonForm() {
       )
       .min(1, "At least one Sub-Lesson is required"),
   });
+  const params = useParams();
 
   const handleSubmit = async (values) => {
-    lessons.push(values);
-    subLessonVideo.push(...preArrayVideo);
-    setAddLesson(false);
-    console.log(values);
-    // setEditState(false);
-    // console.log(lessons);
+    if (!params.courseId) {
+      lessons.push(values);
+      subLessonVideo.push(...preArrayVideo);
+      // console.log("Condition1");
+      setAddLesson(false);
+    } else {
+      console.log(preArrayVideo);
+      const formData = new FormData();
+      formData.append("lesson_name", values.lessonName);
+      formData.append("lesson_priority", lessons.length + 1);
+      values.subLessons.map((subValue, index) => {
+        formData.append(`sub_lesson.priority`, index + 1);
+        formData.append("sub_lesson.sub_lesson_name", subValue.subLessonName);
+        formData.append(
+          `sub_lesson.sub_lesson_video`,
+          subValue.sub_lesson_video
+        );
+      });
+      preArrayVideo.map((video, index) => {
+        formData.append(`subLessonVideoFile`, video);
+      });
+      const posting = await axios.post(
+        `http://localhost:4001/admin/add/lesson/${params.courseId}`,
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
+      window.location.reload();
+    }
   };
   const handleBack = () => {
     setAddLesson(false);
     setEditState(false);
   };
-  // useEffect(() => {
-  //   console.log(lessons);
-  // });
 
   return (
     <>

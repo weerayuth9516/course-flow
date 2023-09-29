@@ -179,10 +179,72 @@ const multerUpload = storageControll.fields([
   { name: "singleSubLessonVideo", maxCount: 1 },
 ]);
 
+adminRouter.post("/add/lesson/:courseId", multerUpload, async (req, res) => {
+  try {
+    const lessonName = req.body.lesson_name;
+    const lessonPriority = req.body.lesson_priority;
+    const subLessonArray = req.body[`sub_lesson.sub_lesson_name`];
+    console.log(subLessonArray);
+    const sub_lesson_video_array = req.files.subLessonVideoFile;
+    const inSertLesson = await supabase
+      .from("lessons")
+      .insert({
+        course_id: req.params.courseId,
+        lesson_name: lessonName,
+        priority: lessonPriority,
+      })
+      .select();
+    const fetchLessonId = await supabase
+      .from("lessons")
+      .select("lesson_id")
+      .eq("course_id", req.params.courseId)
+      .eq("priority", lessonPriority);
+    const currentLessonId = fetchLessonId.data[0].lesson_id;
+    const subLessonForInsert = subLessonArray.map((value, index) => {
+      return {
+        lesson_id: currentLessonId,
+        sub_lesson_name: value,
+        priority: req.body[`sub_lesson.priority`][index],
+      };
+    });
+    // console.log(subLessonForInsert);
+    const insertSubLesson = await supabase
+      .from("sub_lessons")
+      .insert(subLessonForInsert)
+      .select();
+    // console.log(insertSubLesson);
+    sub_lesson_video_array.map(async (value, index) => {
+      const uploadVideo = await supabase.storage
+        .from("sublesson_video")
+        .upload(
+          `${req.params.courseId}/${currentLessonId}/${value.originalname}`,
+          value.buffer,
+          {
+            cacheControl: 3600,
+            upsert: true,
+            contentType: value.mimetype,
+          }
+        );
+      const filePath = await supabase.storage
+        .from("sublesson_video")
+        .getPublicUrl(
+          `${req.params.courseId}/${currentLessonId}/${value.originalname}`
+        );
+      await supabase
+        .from("sub_lessons")
+        .update({ sub_lesson_video: filePath.data.publicUrl })
+        .eq("lesson_id", currentLessonId)
+        .eq("sub_lesson_name", req.body[`sub_lesson.sub_lesson_name`][index]);
+    });
+    return res.json({ message: "Insert sub lesson successfully" });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
 adminRouter.post("/course/created", multerUpload, async (req, res) => {
   const courseDetail = req.body.courseDetail;
   const lessonsDetail = req.body.lessonsDetail;
-  // console.log(req.body);
   const course_cover_img = req.files.courseCoverImgFile[0];
   const course_video_trailer = req.files.courseVideoTrailerFile[0];
   const sub_lesson_video_array = req.files.subLessonVideoFile;

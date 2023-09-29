@@ -9,13 +9,14 @@ import CourseForm from "../../components/admin/CourseForm";
 import arrowBack from "../../assets/registerPage/arrow-back.svg";
 import axios from "axios";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { DeleteCourseEdit } from "../../components/admin/ConfirmDeleteModal";
-import { DeleteLesson } from "../../components/admin/ConfirmDeleteModal";
 import LessonForm from "../../components/admin/LessonForm";
 import EditLessonForm from "../../components/admin/EditLessonForm";
+import { DeleteCourseEdit } from "../../components/admin/ConfirmDeleteModal";
+import { DeleteLesson } from "../../components/admin/ConfirmDeleteModal";
 function EditCoursePage() {
   const { formValues, setFormValues } = useDataCenter();
   const [loading, setLoading] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const params = useParams();
   const {
     imageServerUrl,
@@ -33,14 +34,11 @@ function EditCoursePage() {
     editState,
     setEditState,
     lessons,
-    setLessons,
-    lessonId,
     lessonLength,
+    setLessons,
     setLessonLength,
-    setAddLesson,
   } = useDataCenter();
   const navigate = useNavigate();
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const filterSubmit = (values) => {
     selectedImage || imageServerUrl
       ? setCoverImageError(false)
@@ -134,18 +132,6 @@ function EditCoursePage() {
     }
     setLoading(false);
   };
-
-  const deleteCourse = async () => {
-    try {
-      const response = await axios.delete(
-        `http://localhost:4001/admin/courses/${params.courseId}`
-      );
-      console.log(response.data.message);
-    } catch (error) {
-      console.log("request error");
-    }
-  };
-
   const deleteLessonList = async () => {
     try {
       const response = await axios.delete(
@@ -156,7 +142,6 @@ function EditCoursePage() {
       console.log("request error");
     }
   };
-
   const getLessonList = async () => {
     try {
       const response = await axios.get(
@@ -167,7 +152,30 @@ function EditCoursePage() {
       console.log("request error");
     }
   };
+  const deleteCourse = async () => {
+    try {
+      const response = await axios.delete(
+        `http://localhost:4001/admin/courses/${params.courseId}`
+      );
+      console.log(response.data.message);
+    } catch (error) {
+      console.log("request error");
+    }
+  };
+  const openDeleteModalLesson = () => {
+    setShowDeleteModal(true);
+  };
 
+  const openDeleteModalCourse = () => {
+    setShowDeleteModal(true);
+  };
+  const handleDeleteCourse = () => {
+    deleteCourse();
+    closeDeleteModal();
+    setTimeout(() => {
+      navigate("/admin/courselist");
+    }, 2000);
+  };
   const handleDeleteLesson = () => {
     deleteLessonList();
     setLessonLength(lessons.length);
@@ -178,24 +186,8 @@ function EditCoursePage() {
     }, 1000);
   };
 
-  const openDeleteModalLesson = () => {
-    setShowDeleteModal(true);
-  };
-
-  const openDeleteModalCourse = () => {
-    setShowDeleteModal(true);
-  };
-
   const closeDeleteModal = () => {
     setShowDeleteModal(false);
-  };
-
-  const handleDeleteCourse = () => {
-    deleteCourse();
-    closeDeleteModal();
-    setTimeout(() => {
-      navigate("/admin/courselist");
-    }, 2000);
   };
 
   useEffect(() => {
@@ -257,24 +249,12 @@ function EditCoursePage() {
           </div>
           <section className="w-full bg-[#f6f7fc] flex justify-center flex-col items-center">
             {loading ? (
-              // <Oval
-              //   ariaLabel="loading-indicator"
-              //   height={500}
-              //   width={500}
-              //   strokeWidth={1}
-              //   strokeWidthSecondary={1}
-              //   color="gray"
-              //   secondaryColor="white"
-              // />
-              // <h1 className="h-screen text-center text-justify">
-              //   Uploading Data...
-              // </h1>
               <Box sx={{ display: "flex" }} className="h-[90vh] bg-gray-100">
                 <CircularProgress size="20rem" className="mt-[20vh]" />
               </Box>
             ) : (
               <>
-                {addLesson || editState ? (
+                {addLesson && !editState ? (
                   <>
                     <LessonForm />
                     <div
@@ -288,6 +268,8 @@ function EditCoursePage() {
                       Delete Lesson
                     </div>
                   </>
+                ) : !addLesson && editState ? (
+                  <EditLessonForm />
                 ) : (
                   <section className="w-full bg-[#f6f7fc] flex justify-center flex-col items-center">
                     <div className="w-[85%] bg-white mt-[80px] mx-auto border border-gray-400 rounded-2xl flex justify-center items-start">
