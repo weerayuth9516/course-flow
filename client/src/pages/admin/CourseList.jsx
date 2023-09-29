@@ -107,6 +107,7 @@ function CourseListPage() {
         setDeleted(true);
         closeDeleteModal();
       }
+      window.location.reload();
     } catch (error) {
       console.error("Error deleting course:", error);
     }

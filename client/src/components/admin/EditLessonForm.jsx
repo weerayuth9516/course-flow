@@ -217,11 +217,17 @@ function EditLessonForm() {
           </div>
         </div>
         <div className="flex items-center pr-14">
-          <Link to="">
-            <button className="w-[118px] h-[58px] border border-orange-500 rounded-xl font-bold text-orange-500 hover:text-white hover:bg-orange-500 mr-3">
-              Cancel
-            </button>
-          </Link>
+          <button
+            onClick={() => {
+              const newState = editIndexStatus.filter((value, indexState) => {
+                return value.status !== "Create";
+              });
+              setEditIndexStatus(newState);
+            }}
+            className="w-[118px] h-[58px] border border-orange-500 rounded-xl font-bold text-orange-500 hover:text-white hover:bg-orange-500 mr-3"
+          >
+            Cancel
+          </button>
         </div>
       </div>
       <div className="bg-white w-[90%] border border-gray-200 rounded-2xl px-[100px] pt-[40px] pb-[60px] mt-8 mb-11">
@@ -289,8 +295,8 @@ function EditLessonForm() {
                     >
                       {loading && lodingIndex === index ? (
                         <Box
-                          sx={{ display: "flex" }}
-                          className="h-[250px] w-[100%] ml-10 bg-gray-100"
+                          // sx={{ display: "absolute" }}
+                          className="h-[300px] w-[95%] ml-10 bg-gray-100 flex justify-center items-center"
                         >
                           <CircularProgress
                             size="5rem"
