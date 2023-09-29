@@ -170,16 +170,13 @@ function EditCoursePage() {
 
   const handleDeleteLesson = () => {
     deleteLessonList();
+    setLessonLength(lessons.length);
+    getLessonList();
     closeDeleteModal();
     setTimeout(() => {
       window.location.reload();
     }, 1000);
   };
-
-  useEffect(() => {
-    setLessonLength(lessons.length);
-    getLessonList();
-  }, [lessonLength, lessons]);
 
   const openDeleteModalLesson = () => {
     setShowDeleteModal(true);
@@ -206,8 +203,6 @@ function EditCoursePage() {
       getCourseData();
       setFirstTimeFetch(false);
       setEditState(false);
-      setLessonLength(lessons.length);
-      getLessonList();
       // console.log(editState);
     }
   }, []);
@@ -323,11 +318,15 @@ function EditCoursePage() {
         onRequestClose={closeDeleteModal}
         handleConfirm={handleDeleteCourse}
       />
-      {addLesson || editState ? <DeleteLesson
-        isOpen={showDeleteModal}
-        onRequestClose={closeDeleteModal}
-        handleConfirm={handleDeleteLesson}
-      />:""}
+      {addLesson || editState ? (
+        <DeleteLesson
+          isOpen={showDeleteModal}
+          onRequestClose={closeDeleteModal}
+          handleConfirm={handleDeleteLesson}
+        />
+      ) : (
+        ""
+      )}
     </>
   );
 }
