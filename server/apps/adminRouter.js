@@ -628,7 +628,46 @@ adminRouter.put(
     }
   }
 );
+adminRouter.delete("/sublessons/:sublessonId", async (req, res) => {
+  try {
+    const sublessonId = req.params.sublessonId;
 
+    const isValidSublessonUUID = /^\w{8}-\w{4}-\w{4}-\w{4}-\w{12}$/.test(
+      sublessonId
+    );
+
+    if (!isValidSublessonUUID) {
+      return res.status(400).json({ error: "Invalid sublessonId format" });
+    }
+
+    const sublessonExists = await supabase
+      .from("sub_lessons")
+      .select("*")
+      .eq("sub_lesson_id", sublessonId)
+      .single();
+
+    if (!sublessonExists) {
+      return res
+        .status(404)
+        .json({ error: `Sublesson with ID ${sublessonId} does not exist.` });
+    }
+
+    const sublessonDeleteResult = await supabase
+      .from("sub_lessons")
+      .delete()
+      .eq("sub_lesson_id", sublessonId);
+
+    return res.json({
+      message: `Sublesson with ID ${sublessonId} has been deleted.`,
+    });
+  } catch (error) {
+    console.error("error", error);
+    return res.status(500).json({
+      error:
+        "An error occurred while processing the delete request for the sublesson.",
+    });
+  }
+});
 // button public course
 // adminRouter.put;
 

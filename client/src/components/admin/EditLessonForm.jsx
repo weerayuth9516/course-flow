@@ -2,6 +2,8 @@ import { Formik, Form, Field, ErrorMessage, FieldArray } from "formik";
 import * as Yup from "yup";
 import errorIcon from "../../assets/registerPage/errorIcon.svg";
 import { useEffect, useState } from "react";
+import CircularProgress from "@mui/material/CircularProgress";
+import Box from "@mui/material/Box";
 import dragIcon from "../../assets/registerPage/drag-addlesson.svg";
 import videoSubLesson from "../../assets/registerPage/videoSubLesson.svg";
 import useDataCenter from "../../context/DataCenter";
@@ -13,6 +15,13 @@ function EditLessonForm() {
   const [preArrayVideo, setPreArrayVideo] = useState([]);
   const [editIndexStatus, setEditIndexStatus] = useState([]);
   const [videoSizeError, setVideoSizeError] = useState("");
+  const [subLessonNameError, setSubLessonNameError] = useState({
+    text: "",
+    index: null,
+  });
+  const [signError, setSignError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [lodingIndex, setLoadingIndex] = useState(null);
   const navigate = useNavigate();
   const {
     setAddLesson,
@@ -51,24 +60,43 @@ function EditLessonForm() {
   }
   const validationSchema = Yup.object().shape({
     lessonName: Yup.string().required("Lesson name is required"),
-    subLessons: Yup.array()
-      .of(
-        Yup.object().shape({
-          subLessonName: Yup.string().required("Sub-Lesson name is required"),
-          video: Yup.mixed().required("Video is required"),
-        })
-      )
-      .min(1, "At least one Sub-Lesson is required"),
   });
 
-  // const handleSubmit = async (values) => {
-  //   lessons.push(values);
-  //   subLessonVideo.push(...preArrayVideo);
-  //   setAddLesson(false);
-  //   console.log(values);
-  // };
+  const handleSubmit = async (values) => {
+    setLoading(true);
+    const fetching = await axios.put(
+      `http://localhost:4001/admin/updated/lesson/${params.courseId}/${lessons[editIndex].lesson_id}`,
+      {
+        lesson_name: values.lessonName,
+      }
+    );
+    setLoading(false);
+  };
   const params = useParams();
+  const validateSubLessonName = (subLessonName, index) => {
+    if (!subLessonName) {
+      setSubLessonNameError("Required!!!");
+      setSignError(<img src={errorIcon} />);
+    } else if (!/^[a-zA-Z0-9\s]+$/.test(subLessonName)) {
+      setSubLessonNameError({
+        text: "Sub-Lesson name must contain only letters or digits",
+        index: index,
+      });
+      setSignError(<img src={errorIcon} />);
+    } else {
+      setSubLessonNameError({
+        text: "",
+        index: null,
+      });
+      setSignError("");
+    }
+  };
   const handleSubLesson = async (index) => {
+    if (subLessonNameError.text.length !== 0) {
+      return;
+    }
+    setLoadingIndex(index);
+    setLoading(true);
     const formData = new FormData();
     formData.append("sub_lesson_name", editIndexStatus[index].sub_lesson_name);
     if (editIndexStatus[index].status === "Create") {
@@ -121,7 +149,16 @@ function EditLessonForm() {
         console.log(fetching);
       }
     } else {
-      console.log("arai kub");
+      const newState = editIndexStatus.filter((value, indexState) => {
+        return indexState !== index;
+      });
+      setLoading(false);
+      setLoadingIndex(null);
+      setEditIndexStatus(newState);
+      const fetching = await axios.delete(
+        `http://localhost:4001/admin/sublessons/${editIndexStatus[index].sub_lesson_id}`
+      );
+      return;
     }
     const newState = editIndexStatus.map((value, indexState) => {
       if (indexState === index) {
@@ -134,6 +171,8 @@ function EditLessonForm() {
       }
     });
     setEditIndexStatus(newState);
+    setLoading(false);
+    setLoadingIndex(null);
     // console.log(editIndex[index]);
   };
   const handleBack = () => {
@@ -154,11 +193,13 @@ function EditLessonForm() {
     <>
       <div className="h-[92px] w-[100%] flex border-b justify-between bg-white">
         <div className="flex pl-14">
-          <img
-            src={arrowBack}
-            className="mr-5 cursor-pointer"
-            onClick={handleBack}
-          />
+          <div className="flex justify-center">
+            <img
+              src={arrowBack}
+              className="mr-5 cursor-pointer"
+              onClick={handleBack}
+            />
+          </div>
           <div className="flex flex-col justify-center text-2xl font-medium">
             <div className="flex w-[400px] text-sm">
               <span className="text-gray-600 mr-2">Course</span>"
@@ -187,25 +228,43 @@ function EditLessonForm() {
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
-          // onSubmit={handleSubmit}
+          onSubmit={handleSubmit}
           enableReinitialize={true}
         >
           {({ errors, touched, values }) => (
             <Form id="lessons">
               <div className="flex flex-col relative">
                 <label htmlFor="lessonName">Lesson name *</label>
-                <Field
-                  type="text"
-                  id="lessonName"
-                  name="lessonName"
-                  className={`w-[100%] h-[48px] border border-gray-400 rounded-xl pl-4 focus:border-orange-500 focus:outline-none mt-1 ${
-                    errors.lessonName && touched.lessonName
-                      ? "border-purple-500 border-2"
-                      : ""
-                  }`}
-                />
+                <div className="flex justify-center items-center">
+                  <Field
+                    type="text"
+                    id="lessonName"
+                    name="lessonName"
+                    className={`w-[100%] h-[48px] border border-gray-400 rounded-xl pl-4 focus:border-orange-500 focus:outline-none mt-1 ${
+                      errors.lessonName && touched.lessonName
+                        ? "border-purple-500 border-2"
+                        : ""
+                    }`}
+                  />
+                  {loading ? (
+                    <Box sx={{ display: "flex" }} className="">
+                      <CircularProgress
+                        size="3.2rem"
+                        className="align-middle"
+                      />
+                    </Box>
+                  ) : (
+                    <button
+                      className="text-blue-500 font-semibold flex justify-start h-[24px] hover:text-gray-500 ml-1"
+                      form="lessons"
+                      type="submit"
+                    >
+                      Update
+                    </button>
+                  )}
+                </div>
                 {errors.lessonName && touched.lessonName && (
-                  <div className="error-icon absolute right-4 top-1/2 transform -translate-y-1/2">
+                  <div className="error-icon absolute right-[9%] top-1/2 transform -translate-y-1/2">
                     <img src={errorIcon} alt="Error Icon" />
                   </div>
                 )}
@@ -228,73 +287,40 @@ function EditLessonForm() {
                       key={index}
                       className="bg-gray-100 border border-gray-300 rounded-xl relative py-6 px-4 mb-3"
                     >
-                      <div className="flex justify-between">
-                        <div className="flex">
-                          <img src={dragIcon} className="mr-3 h-[76px]" />
-                          <div className="flex flex-col">
+                      {loading && lodingIndex === index ? (
+                        <Box
+                          sx={{ display: "flex" }}
+                          className="h-[250px] w-[100%] ml-10 bg-gray-100"
+                        >
+                          <CircularProgress
+                            size="5rem"
+                            className="align-middle"
+                          />
+                        </Box>
+                      ) : (
+                        <div className="flex justify-between">
+                          <div className="flex">
+                            <img src={dragIcon} className="mr-3 h-[76px]" />
                             <div className="flex flex-col">
-                              <label
-                                htmlFor={`subLessons[${index}].subLessonName`}
-                                className="pl-1"
-                              >
-                                Sub-lesson name *
-                              </label>
-                              <input
-                                type="text"
-                                id={`subLessons[${index}].subLessonName`}
-                                name={`subLessons[${index}].subLessonName`}
-                                value={editIndexStatus[index].sub_lesson_name}
-                                onChange={(e) => {
-                                  const newState = editIndexStatus.map(
-                                    (value, indexState) => {
-                                      if (indexState === index) {
-                                        return {
-                                          ...value,
-                                          sub_lesson_name: e.target.value,
-                                          status:
-                                            editIndexStatus[index].status ===
-                                            "Delete"
-                                              ? "Update"
-                                              : editIndexStatus[index]
-                                                  .status === "Create"
-                                              ? "Create"
-                                              : "Update",
-                                        };
-                                      } else {
-                                        return value;
-                                      }
-                                    }
-                                  );
-                                  setEditIndexStatus(newState);
-                                }}
-                                className={`w-[500px] h-[48px] border border-gray-400 rounded-xl pl-4 focus:border-orange-500 focus:outline-none mt-1`}
-                              />
-                            </div>
-                            <div className="flex flex-col mt-5 mb-3">
-                              <label htmlFor={`subLessons[${index}].video`}>
-                                Video *
-                              </label>
-                              <input
-                                type="file"
-                                id={`subLessons[${index}].video`}
-                                name={`subLessons[${index}].video`}
-                                accept=".mp4,.avi,.mov"
-                                style={{ display: "none" }}
-                                onChange={(event) => {
-                                  const selectedVideo = event.target.files[0];
-                                  // console.log(editIndexStatus[index]);
-                                  const maxSize = 20 * 1024 * 1024; // 20MB
-                                  if (selectedVideo.size <= maxSize) {
+                              <div className="flex flex-col">
+                                <label
+                                  htmlFor={`subLessons[${index}].subLessonName`}
+                                  className="pl-1"
+                                >
+                                  Sub-lesson name *
+                                </label>
+                                <input
+                                  type="text"
+                                  id={`subLessons[${index}].subLessonName`}
+                                  name={`subLessons[${index}].subLessonName`}
+                                  value={editIndexStatus[index].sub_lesson_name}
+                                  onChange={(e) => {
                                     const newState = editIndexStatus.map(
                                       (value, indexState) => {
                                         if (indexState === index) {
                                           return {
                                             ...value,
-                                            sub_lesson_video:
-                                              URL.createObjectURL(
-                                                selectedVideo
-                                              ),
-                                            file: selectedVideo,
+                                            sub_lesson_name: e.target.value,
                                             status:
                                               editIndexStatus[index].status ===
                                               "Delete"
@@ -310,81 +336,149 @@ function EditLessonForm() {
                                       }
                                     );
                                     setEditIndexStatus(newState);
-                                    // console.log(newState[index]);
-                                    setVideoSizeError("");
-                                  } else {
-                                    setVideoSizeError(
-                                      "Video file is too large. Maximum size is 20MB"
+                                    validateSubLessonName(
+                                      e.target.value,
+                                      index
                                     );
-                                  }
-                                }}
-                              />
-                              {videoSizeError && (
-                                <div className="text-purple-500 text-sm mt-1">
-                                  {videoSizeError}
-                                </div>
-                              )}
-                              <button
-                                type="button"
-                                className="w-[160px] h-[160px]"
-                                onClick={() =>
-                                  document
-                                    .getElementById(
-                                      `subLessons[${index}].video`
-                                    )
-                                    .click()
-                                }
-                              >
-                                {!values.sub_lesson_video && (
-                                  <div className="w-[160px] h-[160px]">
-                                    <img src={videoSubLesson} />
-                                  </div>
+                                  }}
+                                  className={`w-[500px] h-[48px] border border-gray-400 rounded-xl pl-4 focus:border-orange-500 focus:outline-none mt-1`}
+                                />
+                                {subLessonNameError.text &&
+                                subLessonNameError.index === index ? (
+                                  <>
+                                    <div className="text-purple-500 text-sm mt-1">
+                                      {subLessonNameError.text}
+                                    </div>
+                                    <img
+                                      src={errorIcon}
+                                      alt="Error Icon"
+                                      className=" absolute right-[59%] top-[21%] transform -translate-y-1/2"
+                                    />
+                                  </>
+                                ) : (
+                                  <></>
                                 )}
-                                {values.sub_lesson_video && (
-                                  <div>
-                                    <video
-                                      controls
-                                      className="w-[160px] h-[160px] rounded-lg object-cover"
-                                    >
-                                      <source
-                                        src={
-                                          editIndexStatus[index]
-                                            .sub_lesson_video
+                              </div>
+                              <div className="flex flex-col mt-5 mb-3">
+                                <label htmlFor={`subLessons[${index}].video`}>
+                                  Video *
+                                </label>
+                                <input
+                                  type="file"
+                                  id={`subLessons[${index}].video`}
+                                  name={`subLessons[${index}].video`}
+                                  accept=".mp4,.avi,.mov"
+                                  style={{ display: "none" }}
+                                  onChange={(event) => {
+                                    const selectedVideo = event.target.files[0];
+                                    // console.log(editIndexStatus[index]);
+                                    const maxSize = 20 * 1024 * 1024; // 20MB
+                                    if (selectedVideo.size <= maxSize) {
+                                      const newState = editIndexStatus.map(
+                                        (value, indexState) => {
+                                          if (indexState === index) {
+                                            return {
+                                              ...value,
+                                              sub_lesson_video:
+                                                URL.createObjectURL(
+                                                  selectedVideo
+                                                ),
+                                              file: selectedVideo,
+                                              status:
+                                                editIndexStatus[index]
+                                                  .status === "Delete"
+                                                  ? "Update"
+                                                  : editIndexStatus[index]
+                                                      .status === "Create"
+                                                  ? "Create"
+                                                  : "Update",
+                                            };
+                                          } else {
+                                            return value;
+                                          }
                                         }
-                                        type="video/mp4"
-                                      />
-                                    </video>
+                                      );
+                                      setEditIndexStatus(newState);
+                                      setVideoSizeError("");
+                                    } else {
+                                      setVideoSizeError(
+                                        "Video file is too large. Maximum size is 20MB"
+                                      );
+                                    }
+                                  }}
+                                />
+                                {videoSizeError && (
+                                  <div className="text-purple-500 text-sm mt-1">
+                                    {videoSizeError}
                                   </div>
                                 )}
-                              </button>
+                                <button
+                                  type="button"
+                                  className="w-[160px] h-[160px]"
+                                  onClick={() =>
+                                    document
+                                      .getElementById(
+                                        `subLessons[${index}].video`
+                                      )
+                                      .click()
+                                  }
+                                >
+                                  {videoSizeError && (
+                                    <div className="text-purple-500 text-sm mt-1">
+                                      {videoSizeError}
+                                    </div>
+                                  )}
+                                  {!values.sub_lesson_video && (
+                                    <div className="w-[160px] h-[160px]">
+                                      <img src={videoSubLesson} />
+                                    </div>
+                                  )}
+                                  {values.sub_lesson_video && (
+                                    <div>
+                                      <video
+                                        controls
+                                        className="w-[160px] h-[160px] rounded-lg object-cover"
+                                      >
+                                        <source
+                                          src={
+                                            editIndexStatus[index]
+                                              .sub_lesson_video
+                                          }
+                                          type="video/mp4"
+                                        />
+                                      </video>
+                                    </div>
+                                  )}
+                                </button>
+                              </div>
                             </div>
                           </div>
+                          {editIndexStatus.length > 1 ? (
+                            <button
+                              className="text-blue-500 font-semibold flex justify-start hover:text-gray-500 h-[24px]"
+                              onClick={() => {
+                                handleSubLesson(index);
+                              }}
+                            >
+                              {editIndexStatus[index].status}
+                            </button>
+                          ) : (
+                            <button
+                              className="text-blue-500 font-semibold flex justify-start h-[24px] hover:text-gray-500"
+                              onClick={() => {
+                                setEditIndexStatus([
+                                  {
+                                    sub_lesson_name: "",
+                                    status: "Create",
+                                  },
+                                ]);
+                              }}
+                            >
+                              Delete
+                            </button>
+                          )}
                         </div>
-                        {editIndexStatus.length > 1 ? (
-                          <button
-                            className="text-gray-500 font-semibold flex justify-start hover:text-blue-500 h-[24px]"
-                            onClick={() => {
-                              handleSubLesson(index);
-                            }}
-                          >
-                            {editIndexStatus[index].status}
-                          </button>
-                        ) : (
-                          <button
-                            className="text-gray-500 font-semibold flex justify-start h-[24px] cursor-not-allowed"
-                            onClick={() => {
-                              setEditIndexStatus([
-                                {
-                                  sub_lesson_name: "",
-                                  status: "Create",
-                                },
-                              ]);
-                            }}
-                          >
-                            Delete
-                          </button>
-                        )}
-                      </div>
+                      )}
                     </div>
                   );
                 })}
