@@ -57,7 +57,7 @@ function LessonForm() {
           subLessonName: Yup.string()
             .required("Sub-Lesson name is required")
             .matches(
-              /^[a-zA-Z0-9\s]+$/,
+              /^[a-zA-Z0-9\sก-๙]+$/,
               "Sub-Lesson name must contain only letters or digits"
             ),
           video: Yup.mixed().required("Video is required"),

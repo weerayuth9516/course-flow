@@ -55,7 +55,7 @@ function DisplayCardsDesireCourse({ allDesireCourse, hasDesireCourse }) {
                           alt="Image icon"
                           className="inline mr-2 ml-4"
                         />
-                        6 Lessons
+                        {item.course_id.lesson_count} Lessons
                       </span>
                       <span className="ml-5">
                         <img

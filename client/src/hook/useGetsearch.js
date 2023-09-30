@@ -56,6 +56,7 @@ function useGetsearch() {
           `http://localhost:4001/courses/mydesirecourses/${userId}`
         );
         setAllDesireCourse(desireCourseResult.data.data);
+        console.log(allDesireCourse);
         if (desireCourseResult.status === 404) {
           setHasDesireCourse(false);
         } else {
