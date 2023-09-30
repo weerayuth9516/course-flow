@@ -59,9 +59,13 @@ function AuthProvider(props) {
         const token = results.data.token;
         const userDataFromToken = jwtDecode(token);
         session.admin = userDataFromToken;
+        if (session.admin.role !== "admin") {
+          navigate("/");
+        }
         if (results) {
           navigate("/admin/courselist");
         }
+        localStorage.setItem("role", "admin");
         localStorage.setItem("token", token);
       }
       return results;
@@ -95,8 +99,9 @@ function AuthProvider(props) {
   };
 
   const isAuthenicated = Boolean(localStorage.getItem("token"));
+  const isAdmin = Boolean(localStorage.getItem("admin"));
   const isAdminAuthenticated =
-    Boolean(localStorage.getItem("token")) && session.admin !== null;
+    Boolean(localStorage.getItem("token")) && isAdmin !== null;
   if (isAuthenicated) {
     const token = localStorage.getItem("token");
     session.user = jwtDecode(token);
@@ -116,6 +121,7 @@ function AuthProvider(props) {
         isAuthenicated,
         isAdminAuthenticated,
         adminLogin,
+        isAdmin,
       }}
     >
       {props.children}

@@ -59,10 +59,12 @@ function Sidebar() {
             <span className="ml-4 font-semibold text-gray-800">Course</span>
           </div>
         </Link>
-        <div className="py-4 px-6 h-12 flex items-center duration-300 cursor-pointer hover:bg-gray-200 mb-96">
-          <img src={assignment}></img>
-          <span className="ml-4 font-semibold text-gray-800">Assignment</span>
-        </div>
+        <Link to={"/admin/assignment"}>
+          <div className="py-4 px-6 h-12 flex items-center duration-300 cursor-pointer hover:bg-gray-200 mb-96">
+            <img src={assignment}></img>
+            <span className="ml-4 font-semibold text-gray-800">Assignment</span>
+          </div>
+        </Link>
         <div
           className="py-4 px-6 h-12 flex items-center duration-300 cursor-pointer hover:bg-gray-200 "
           onClick={handleLogoutClick}

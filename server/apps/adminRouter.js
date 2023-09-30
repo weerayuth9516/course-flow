@@ -7,7 +7,7 @@ import { protect } from "../middlewares/protect.js";
 import multer from "multer";
 
 const adminRouter = Router();
-// adminRouter.use(protect);
+adminRouter.use(protect);
 
 adminRouter.get("/", async (req, res) => {
   try {
@@ -169,6 +169,35 @@ adminRouter.get("/courses/:courseId", async (req, res) => {
       error: "supabase invalid",
     });
   }
+});
+
+adminRouter.get("/assignment/getcourse", async (req, res) => {
+  const courseForReturn = await supabase
+    .from("courses")
+    .select("course_id, course_name");
+  return res.json({
+    data: courseForReturn.data,
+  });
+});
+
+adminRouter.get("/assignment/getlesson/:courseId", async (req, res) => {
+  const lessonForReturn = await supabase
+    .from("lessons")
+    .select("lesson_name, lesson_id")
+    .eq("course_id", req.params.courseId);
+  return res.json({
+    data: lessonForReturn.data,
+  });
+});
+
+adminRouter.get("/assignment/getsublesson/:lessonId", async (req, res) => {
+  const subLessonForReturn = await supabase
+    .from("sub_lessons")
+    .select("sub_lesson_name, sub_lesson_id")
+    .eq("lesson_id", req.params.lessonId);
+  return res.json({
+    data: subLessonForReturn.data,
+  });
 });
 
 const storageControll = multer({ storage: multer.memoryStorage() });
