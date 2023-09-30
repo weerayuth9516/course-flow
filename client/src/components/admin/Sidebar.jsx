@@ -14,7 +14,7 @@ function Sidebar() {
   // }
   const location = useLocation();
   const isCourseActive = location.pathname === "/admin/courselist";
-  // const { logout } = useAuth();
+  const { logout } = useAuth();
   const navigate = useNavigate();
   const handleLogoutClick = () => {
     logout();
@@ -26,7 +26,7 @@ function Sidebar() {
         <div className=" w-full flex flex-col items-center mt-10 mb-24 px-5">
           <Link to={"/admin/courselist"}>
             <img
-              className="mb-6 cursor-pointer w-[182px] h-[19px]"
+              className="mb-6 cursor-pointer w-[182px] h-[19px] scale-100 hover:scale-110 transform  transition-transform duration-300 ease-in-out "
               src={logo}
             ></img>
           </Link>
@@ -59,7 +59,7 @@ function Sidebar() {
             <span className="ml-4 font-semibold text-gray-800">Course</span>
           </div>
         </Link>
-        <div className="py-4 px-6 h-12 flex items-center duration-300 cursor-pointer hover:bg-gray-200 mb-96">
+        <div className="py-4 px-6 h-12 flex items-center duration-300 cursor-not-allowed mb-96">
           <img src={assignment}></img>
           <span className="ml-4 font-semibold text-gray-800">Assignment</span>
         </div>

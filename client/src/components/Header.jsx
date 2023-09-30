@@ -135,17 +135,17 @@ function Header() {
                       <span id="myCourses">My Courses</span>
                     </div>
                   </Link>
-                  <Link to="/myhomeworks">
-                    <div className="flex items-center rounded-md hover:bg-gray-200">
-                      <img
-                        id="myHomework"
-                        className="p-4"
-                        src={homework}
-                        alt="My homework"
-                      />
-                      <span id="myHomework">My Homework</span>
-                    </div>
-                  </Link>
+                  {/* <Link to="/myhomeworks"> */}
+                  <div className="flex items-center rounded-md cursor-not-allowed">
+                    <img
+                      id="myHomework"
+                      className="p-4"
+                      src={homework}
+                      alt="My homework"
+                    />
+                    <span id="myHomework">My Homework</span>
+                  </div>
+                  {/* </Link> */}
                   <Link to="/mydesirecourses">
                     <div className="flex items-center rounded-md hover:bg-gray-200">
                       <img
