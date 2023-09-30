@@ -12,7 +12,12 @@ import useAssignmentHook from "../../hook/useAssignmentHook";
 function AssignmentPage() {
   const [editState, setEditState] = useState(false);
   const [addState, setAddState] = useState(false);
-  const { createButtom } = useAssignmentHook();
+  const {
+    setSubLessonShow,
+    createButtom,
+    assignmentDetail,
+    setAssignmentDetail,
+  } = useAssignmentHook();
   return (
     <div className="flex flex-row">
       <Sidebar />
@@ -43,10 +48,9 @@ function AssignmentPage() {
                   />
                 </div>
                 <button
+                  form="create-assignment"
                   className="bg-blue-500 h-[60px] hover:bg-blue-400 active:bg-blue-300 py-3.5 px-8 rounded-md text-white"
-                  onClick={() => {
-                    setAddState(true);
-                  }}
+                  onClick={() => setAddState(true)}
                 >
                   + Add Assignment
                 </button>
@@ -100,8 +104,9 @@ function AssignmentPage() {
                   Cancel
                 </button>
                 <button
+                  form="create-assignment"
                   className="text-white w-[117px] h-[60px] bg-[#2f5fac] rounded-xl ml-[20px]"
-                  onClick={createButtom}
+                  // type="submit"
                 >
                   Create
                 </button>

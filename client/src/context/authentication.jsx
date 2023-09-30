@@ -63,7 +63,7 @@ function AuthProvider(props) {
           navigate("/");
         }
         if (results) {
-          navigate("/admin/courselist");
+          navigate("/admin");
         }
         localStorage.setItem("role", "admin");
         localStorage.setItem("token", token);

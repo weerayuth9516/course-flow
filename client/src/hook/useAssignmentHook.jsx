@@ -58,6 +58,7 @@ const useAssignmentHook = () => {
   };
   const createButtom = () => {
     console.log(subLessonShow);
+    console.log(assignmentDetail);
   };
 
   return {

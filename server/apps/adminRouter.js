@@ -200,6 +200,25 @@ adminRouter.get("/assignment/getsublesson/:lessonId", async (req, res) => {
   });
 });
 
+adminRouter.post("/create/assignment/:subLessonId", async (req, res) => {
+  try {
+    const timeStamp = new Date();
+    const response = await supabase.from("assignments").insert({
+      sub_lesson_id: req.params.subLessonId,
+      assignment_detail: req.body.assignment_detail,
+      assignment_duration: Number(req.body.duration),
+      created_at: timeStamp.toISOString(),
+    });
+    return res.json({
+      message: "Assignment created successfully",
+    });
+  } catch {
+    return res.status(500).json({
+      message: "Supabase Server Error",
+    });
+  }
+});
+
 const storageControll = multer({ storage: multer.memoryStorage() });
 const multerUpload = storageControll.fields([
   { name: "courseVideoTrailerFile", maxCount: 1 },
