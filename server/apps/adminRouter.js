@@ -41,6 +41,7 @@ adminRouter.get("/", async (req, res) => {
         .order("public_status", {
           ascending: true,
         })
+        .order("created_at", { ascending: false })
         .ilike("course_name", `%${req.query.title}%`)
         .limit(8);
       if (
@@ -74,12 +75,13 @@ adminRouter.get("/", async (req, res) => {
       .order("public_status", {
         ascending: req.query.publicStatus === "true" ? false : true,
       })
+      .order("course_created_at", {
+        ascending: req.query.createdat === "false" ? false : true,
+      })
       .order("course_price", {
         ascending: req.query.price === "true" ? false : true,
       })
-      .order("course_created_at", {
-        ascending: req.query.createdat === "true" ? false : true,
-      })
+
       .order("course_updated_at", {
         ascending: req.query.updatedat === "true" ? false : true,
       })

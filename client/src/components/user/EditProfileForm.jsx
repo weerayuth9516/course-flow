@@ -67,6 +67,7 @@ function EditProfileForm() {
       setBirthDate(auth.session.user.user_dob);
       setEducation(auth.session.user.user_education);
       setEmail(auth.session.user.user_email);
+      console.log(auth.session.user.user_avatar);
       if (auth.session.user.user_avatar === null) {
         setHasImage(false);
       } else {
@@ -91,6 +92,7 @@ function EditProfileForm() {
       user_email: email,
       avatarObj: fileBody,
     };
+
     if (dateErrorMessage === null && fileErrorMessage === null) {
       updateUserProfileById(auth.session.user.user_id, data);
     }
