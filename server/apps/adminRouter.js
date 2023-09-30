@@ -72,14 +72,14 @@ adminRouter.get("/", async (req, res) => {
       .order("public_status", {
         ascending: req.query.publicStatus === "true" ? false : true,
       })
-      .order("course_price", {
-        ascending: req.query.price === "true" ? false : true,
-      })
       .order("course_created_at", {
-        ascending: req.query.createdat === "true" ? false : true,
+        ascending: req.query.createdat === "false" ? false : true,
+      })
+      .order("course_price", {
+        ascending: req.query.price === "true" ? "" : true,
       })
       .order("course_updated_at", {
-        ascending: req.query.updatedat === "true" ? false : true,
+        ascending: req.query.updatedat === "true" ? "" : true,
       })
       .range(startAt, endAt);
     if (courses.data.length !== 0 || courses.statusText === "OK") {

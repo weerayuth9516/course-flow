@@ -59,11 +59,12 @@ authRouter.post("/login", async (req, res) => {
           message: { password: "Password Invalid" },
         });
       } else {
-        const avatarPath = supabaseResult.data[0].user_avatar
-          ? await supabase.storage
-              .from("user_avatars")
-              .getPublicUrl(supabaseResult.data[0].user_avatar)
-          : null;
+        const avatarPath =
+          supabaseResult.data[0].user_avatar !== null
+            ? await supabase.storage
+                .from("user_avatars")
+                .getPublicUrl(supabaseResult.data[0].user_avatar)
+            : null;
         const token = jwt.sign(
           {
             user_id: supabaseResult.data[0].user_id,
