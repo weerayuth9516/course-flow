@@ -1,4 +1,4 @@
-import { Router, query } from "express";
+import { Router, query, response } from "express";
 import { supabase } from "../utils/db.js";
 import "dotenv/config";
 // import jwt from "jsonwebtoken";
@@ -24,8 +24,6 @@ adminRouter.get("/", async (req, res) => {
     } else {
       contReturn = count / 8;
     }
-    // console.log(contReturn);
-    // console.log(req.query);
     if (Number(req.query.page) && Number(req.query.page) !== 1) {
       endAt = req.query.page * 8;
       endAt += Number(req.query.page - 1);
@@ -188,6 +186,57 @@ adminRouter.get("/assignment/getlesson/:courseId", async (req, res) => {
   return res.json({
     data: lessonForReturn.data,
   });
+});
+
+adminRouter.get("/getassignment", async (req, res) => {
+  try {
+    const { data, error, count } = await supabase
+      .from("assignments")
+      .select("duration", { count: "exact" });
+    let contReturn = 0;
+    if (count % 8 !== 0) {
+      contReturn = count - (count % 8);
+      contReturn = contReturn / 8;
+      contReturn += 1;
+    } else {
+      contReturn = count / 8;
+    }
+    if (req.body.page) {
+      let startAt = 0;
+      let endAt = 7;
+      if (Number(req.query.page) && Number(req.query.page) !== 1) {
+        endAt = req.query.page * 8;
+        endAt += Number(req.query.page - 1);
+        startAt = endAt - 8;
+      }
+      const fetchAssignment = await supabase
+        .rpc("get_assignments")
+        .range(startAt, endAt);
+      return res.json({
+        data: fetchAssignment.data,
+      });
+    } else {
+      const response = await supabase.rpc("get_assignments").limit(8);
+      return res.json({
+        data: response.data,
+      });
+    }
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({
+      message: "Supabase Error",
+    });
+  }
+});
+
+adminRouter.put("/updateassignment/:assignmentId", async (req, res) => {
+  const response = await supabase
+    .from("assignments")
+    .update({ ...req.body })
+    .eq("assignment_id", req.params.assignmentId);
+  // console.log(req.body);
+  // console.log(response);
+  return res.json({ message: "Update assignment successfully" });
 });
 
 adminRouter.get("/assignment/getsublesson/:lessonId", async (req, res) => {
@@ -474,7 +523,7 @@ adminRouter.put("/updated/:courseId", multerUpload, async (req, res) => {
         message: "Coures updeated successfully",
       });
     } else {
-      console.log(req.files);
+      // console.log(req.files);
       if (req.files.courseCoverImgFile !== undefined) {
         const imgPath = await supabase.storage
           .from("course_images")
@@ -852,7 +901,7 @@ adminRouter.delete("/lessons/:lessonId/:courseId", async (req, res) => {
   try {
     const lessonId = req.params.lessonId;
     const courseId = req.params.courseId;
-    console.log(lessonId);
+    // console.log(lessonId);
     const isValidLessonUUID = /^\w{8}-\w{4}-\w{4}-\w{4}-\w{12}$/.test(lessonId);
     const isValidCourseUUID = /^\w{8}-\w{4}-\w{4}-\w{4}-\w{12}$/.test(courseId);
 

@@ -12,12 +12,27 @@ import useAssignmentHook from "../../hook/useAssignmentHook";
 function AssignmentPage() {
   const [editState, setEditState] = useState(false);
   const [addState, setAddState] = useState(false);
+  const [fetched, setFetched] = useState(0);
+  const [assignmentDetailEdit, setAssignmentDetailEdit] = useState({});
+  const [assignmentList, setAssignmentList] = useState([]);
   const {
     setSubLessonShow,
     createButtom,
     assignmentDetail,
     setAssignmentDetail,
   } = useAssignmentHook();
+  const getAssignmet = async () => {
+    try {
+      return await axios.get("http://localhost:4001/admin/getassignment");
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  useEffect(() => {
+    if (fetched === 0) {
+      getAssignmet().then((value) => setAssignmentList([...value.data.data]));
+    }
+  }, [fetched]);
   return (
     <div className="flex flex-row">
       <Sidebar />
@@ -63,20 +78,22 @@ function AssignmentPage() {
                   src={arrowBack}
                   className="mr-4 cursor-pointer inline-block"
                   onClick={() => {
-                    setAddState(false);
+                    setEditState(false);
                   }}
                 />
-                <span className="text-gray-600">Assignment</span>"Assignment
-                Name"
+                <span className="text-gray-600">Assignment </span>"
+                {assignmentDetailEdit.sub_lesson_name}"
               </div>
               <div className="flex justify-center items-center font-bold mr-10">
-                <button className="text-orange-500 w-[117px] h-[60px] border border-orange-500 rounded-xl">
+                <button
+                  className="text-orange-500 w-[117px] h-[60px] border border-orange-500 rounded-xl"
+                  onClick={() => setEditState(false)}
+                >
                   Cancel
                 </button>
                 <button
-                  type="submit"
-                  form="add-course"
                   className="text-white w-[117px] h-[60px] bg-[#2f5fac] rounded-xl ml-[20px]"
+                  form="edit-assignment"
                 >
                   Save
                 </button>
@@ -106,7 +123,7 @@ function AssignmentPage() {
                 <button
                   form="create-assignment"
                   className="text-white w-[117px] h-[60px] bg-[#2f5fac] rounded-xl ml-[20px]"
-                  // type="submit"
+                  type="submit"
                 >
                   Create
                 </button>
@@ -140,21 +157,31 @@ function AssignmentPage() {
                 </tr>
               </thead>
               <tbody className="bg-white">
-                {Array.from(Array(10).keys()).map((item, index) => {
+                {assignmentList.map((item, index) => {
                   return (
-                    <tr key={index} className="border-b-2">
-                      <td className="p-5 font-semibold">What is love?</td>
-                      <td className="p-5 font-semibold">Drink 101</td>
-                      <td className="p-5 font-semibold">introduction</td>
-                      <td className="p-5 font-semibold">Drink with music</td>
+                    <tr key={index} className="border-b-2 h-[100px]">
                       <td className="p-5 font-semibold">
-                        {new Date(Date.now()).toLocaleString()}
+                        {item.assignment_detail}
+                      </td>
+                      <td className="p-5 font-semibold">{item.course_name}</td>
+                      <td className="p-5 font-semibold">{item.lesson_name}</td>
+                      <td className="p-5 font-semibold">
+                        {item.sub_lesson_name}
+                      </td>
+                      <td className="p-5 font-semibold">
+                        {new Date(item.created_at).toLocaleString()}
                       </td>
                       <td className="pt-5 flex pl-4 gap-2">
                         <img src={deleteLogo} style={{ cursor: "pointer" }} />
-                        <Link>
+                        <div
+                          className="curser-pointer"
+                          onClick={() => {
+                            setEditState(true);
+                            setAssignmentDetailEdit(item);
+                          }}
+                        >
                           <img src={edit} className="cursor-pointer" />
-                        </Link>
+                        </div>
                       </td>
                     </tr>
                   );
@@ -162,7 +189,7 @@ function AssignmentPage() {
               </tbody>
             </table>
           ) : editState && !addState ? (
-            <EditAssignmentForm />
+            <EditAssignmentForm assignmentDetail={assignmentDetailEdit} />
           ) : (
             <div className="flex justify-center items-center mt-16">
               <AssignmentForm />
