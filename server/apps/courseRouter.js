@@ -527,6 +527,13 @@ courseRouter.get("/mydesirecourses/:userId", async (req, res) => {
       .eq("user_id", userId)
       .eq("subscription_id", 2);
 
+    const courseId = userDesireCourses.map((id) => id.course_id.course_id);
+
+    const disireCourseDetails = await supabase
+      .from("courses")
+      .select("*,lessons(*)")
+      .in("course_id", courseId);
+
     if (userDesireError) {
       return res.status(500).json({ error: userDesireError });
     }
@@ -535,7 +542,7 @@ courseRouter.get("/mydesirecourses/:userId", async (req, res) => {
         .status(404)
         .json({ error: "No desired courses found for this user" });
     }
-    return res.json({ data: userDesireCourses });
+    return res.json({ data: disireCourseDetails });
   } catch (error) {
     console.error("An error occurred: " + error);
     return res.status(500).json({ error: "Internal Server Error" });

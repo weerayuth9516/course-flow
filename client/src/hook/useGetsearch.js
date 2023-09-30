@@ -55,8 +55,7 @@ function useGetsearch() {
         const desireCourseResult = await axios.get(
           `http://localhost:4001/courses/mydesirecourses/${userId}`
         );
-        setAllDesireCourse(desireCourseResult.data.data);
-        console.log(allDesireCourse);
+        setAllDesireCourse(desireCourseResult.data.data.data);
         if (desireCourseResult.status === 404) {
           setHasDesireCourse(false);
         } else {
