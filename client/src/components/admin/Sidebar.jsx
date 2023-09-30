@@ -13,12 +13,12 @@ function Sidebar() {
   //   setIsCourseActive(true);
   // }
   const location = useLocation();
-  const isCourseActive = location.pathname === "/admin/courselist";
-  // const { logout } = useAuth();
+  const isCourseActive = location.pathname === "/admin";
+  const { logout } = useAuth();
   const navigate = useNavigate();
   const handleLogoutClick = () => {
     logout();
-    navigate("/admin/login");
+    navigate("/admin");
   };
   return (
     <aside className="w-[16%] top-0 border-r border-gray-400 max-2xl:w-[18%]">
@@ -50,7 +50,7 @@ function Sidebar() {
 
           </div>
         </Link> */}
-        <Link to={"/admin/courselist"}>
+        <Link to={"/admin"}>
           <div
             className={`py-4 px-6 h-12 w-full flex items-center duration-300 cursor-pointer hover:bg-gray-200
             ${isCourseActive ? "bg-gray-200" : ""}`}

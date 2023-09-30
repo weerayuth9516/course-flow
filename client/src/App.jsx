@@ -52,10 +52,9 @@ function App() {
       {/* <Route path="/tester" element={<TesterComponent />} /> */}
       AddLessonPage
       <Route path="/admin">
-        <Route index element={<AdminLoginPage />} />
         {auth.isAdminAuthenticated ? (
           <>
-            <Route path="courselist" element={<CourseListPage />} />
+            <Route index element={<CourseListPage />} />
             <Route path="addcourse" element={<AddCoursePage />} />
             <Route path="addlesson" element={<AddLessonPage />} />
             <Route path="editcourse/:courseId" element={<EditCoursePage />} />
@@ -63,7 +62,7 @@ function App() {
             <Route path="assignment" element={<AssignmentPage />} />
           </>
         ) : (
-          ""
+          <Route index element={<AdminLoginPage />} />
         )}
       </Route>
       <Route path="*" element={<NotFoundPage />} />

@@ -114,7 +114,7 @@ function AddCoursePage() {
       if (response.status === 200) {
         setLoading(false);
         setFirstTimeFetch(false);
-        navigate("/admin/courselist");
+        navigate("/admin");
         // window.location.reload(false);
       }
     } catch (error) {
@@ -196,7 +196,9 @@ function AddCoursePage() {
                     </div>
                   </div>
                   <LessonAdmin />
-                  <div className="w-[85%] text-blue-500 font-bold text-right mt-[72px] mb-[93px]">Delete Course</div>
+                  <div className="w-[85%] text-blue-500 font-bold text-right mt-[72px] mb-[93px]">
+                    Delete Course
+                  </div>
                 </section>
               )}
             </>

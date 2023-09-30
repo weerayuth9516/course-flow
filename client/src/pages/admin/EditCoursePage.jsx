@@ -220,7 +220,7 @@ function EditCoursePage() {
                   <img
                     src={arrowBack}
                     className="mr-5 cursor-pointer"
-                    onClick={() => navigate("/admin/courselist")}
+                    onClick={() => navigate("/admin")}
                   />
                   <h6>
                     <span className="text-gray-600">Course</span> '

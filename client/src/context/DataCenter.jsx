@@ -128,7 +128,7 @@ export function DataCenterProvider({ children }) {
     setTimeout(() => {
       window.location.reload();
     }, 100);
-    navigate("/admin/courselist");
+    navigate("/admin");
   };
 
   return (
