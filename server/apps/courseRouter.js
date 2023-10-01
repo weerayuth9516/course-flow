@@ -321,15 +321,48 @@ courseRouter.get("/coursedetail/learning", protect, async (req, res) => {
         .select("*")
         .in("lesson_id", mapForFetchLessonName)
         .order("priority", { ascending: true });
+      const fetchUerSubLesson = await supabase
+        .from("user_sub_lesson_details")
+        .select("*")
+        .eq(
+          "user_course_detail_id",
+          userCourseDetails.data[0].user_course_detail_id
+        );
+      const subLessonIdArary = fetchUerSubLesson.data.map((value) => {
+        return value.sub_lesson_id;
+      });
+      const assignmentDetailOnThisCourse = await supabase
+        .from("assignments")
+        .select("*")
+        .in("sub_lesson_id", subLessonIdArary);
       const subLessonMap = subLessonDetailOnThisCourse.data.map((mainValue) => {
         const status = userSubLessonDetail.data.filter(
           (subValue) => mainValue.sub_lesson_id === subValue.sub_lesson_id
         )[0].status_id;
+        const assignment_status = userSubLessonDetail.data.filter((ass) => {
+          return ass.sub_lesson_id === mainValue.sub_lesson_id;
+        })[0].assignment_status;
+        const assignment_started_at = userSubLessonDetail.data.filter((ass) => {
+          return ass.sub_lesson_id === mainValue.sub_lesson_id;
+        })[0].assignment_start_at;
+        const assignment_duration = assignmentDetailOnThisCourse.data.filter(
+          (ass) => {
+            return ass.sub_lesson_id === mainValue.sub_lesson_id;
+          }
+        )[0].assignment_duration;
         return {
           sub_lesson_id: mainValue.sub_lesson_id,
           sub_lesson_name: mainValue.sub_lesson_name,
           sub_lesson_video: mainValue.sub_lesson_video,
           lesson_id: mainValue.lesson_id,
+          assignment_status: assignment_status,
+          assignment_started_at: assignment_started_at,
+          assignment_duration: assignment_duration,
+          assignment_detail: assignmentDetailOnThisCourse.data.filter(
+            (assignment) => {
+              return assignment.sub_lesson_id === mainValue.sub_lesson_id;
+            }
+          )[0].assignment_detail,
           status_value:
             status === 1
               ? "not_started"
@@ -355,6 +388,7 @@ courseRouter.get("/coursedetail/learning", protect, async (req, res) => {
           ),
         };
       });
+      console.log(courseDetailOnThisCourse.data);
       return res.json({
         data: [
           {
@@ -377,6 +411,7 @@ courseRouter.get("/coursedetail/learning", protect, async (req, res) => {
       });
     }
   } catch (error) {
+    console.log(error);
     return res.status(400).json({
       message: "Invalid API",
     });
