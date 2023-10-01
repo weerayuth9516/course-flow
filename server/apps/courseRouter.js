@@ -381,7 +381,9 @@ courseRouter.get("/coursedetail/learning", protect, async (req, res) => {
                 return assignment.sub_lesson_id === mainValue.sub_lesson_id;
               }
             );
-            console.log(mainValue.assignment_detail);
+            const assignmentAnswer = fetchUerSubLesson.data.filter((ass) => {
+              return ass.sub_lesson_id === mainValue.sub_lesson_id;
+            });
             return {
               sub_lesson_id: mainValue.sub_lesson_id,
               sub_lesson_name: mainValue.sub_lesson_name,
@@ -393,10 +395,7 @@ courseRouter.get("/coursedetail/learning", protect, async (req, res) => {
                 assignmentDuration[0] === undefined
                   ? null
                   : assignmentDuration[0].assignment_duration,
-              assignment_answer:
-                mainValue.assignment_detail === undefined
-                  ? null
-                  : mainValue.assignment_detail,
+              assignment_answer: assignmentAnswer[0].assignment_detail,
               assignment_detail:
                 assginmetDetail[0] === undefined
                   ? null

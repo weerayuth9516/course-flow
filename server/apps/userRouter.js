@@ -21,7 +21,7 @@ userRouter.get("/:id", async (req, res) => {
   //   .from("users")
   //   .select("user_avatar")
   //   .eq("user_id", id);
-  console.log(results.data);
+  // console.log(results.data);
   if (results.statusText === "OK" && results.data[0].user_avatar !== null) {
     const avatarPath = await supabase.storage
       .from("user_avatars")
@@ -37,7 +37,7 @@ userRouter.get("/:id", async (req, res) => {
       },
       process.env.SECRET_KEY,
       {
-        expiresIn: "90000",
+        expiresIn: "1d",
       }
     );
 
@@ -49,7 +49,7 @@ userRouter.get("/:id", async (req, res) => {
     results.statusText === "OK" &&
     results.data[0].user_avatar === null
   ) {
-    console.log("Yes!");
+    // console.log("Yes!");
     const token = jwt.sign(
       {
         user_id: results.data[0].user_id,
