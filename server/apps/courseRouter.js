@@ -518,6 +518,27 @@ courseRouter.get("/coursedetail/learning", protect, async (req, res) => {
   }
 });
 
+courseRouter.put("/assignment/submit", async (req, res) => {
+  console.log(req.body);
+  try {
+    await supabase
+      .from("user_sub_lesson_details")
+      .update({
+        assignment_status: req.body.assignment_status,
+        assignment_detail: req.body.assignment_answer,
+      })
+      .match({
+        user_course_detail_id: req.body.user_course_detail_id,
+        sub_lesson_id: req.body.sub_lesson_id,
+      });
+    return res.json({
+      message: "Assignment send successfully",
+    });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
 courseRouter.put("/update/sub_lesson", protect, async (req, res) => {
   try {
     const user_course_detail_id = req.body.user_course_detail_id;

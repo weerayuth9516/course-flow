@@ -7,6 +7,7 @@ import notStart from "../../assets/courseLearning/notStart.png";
 import ToggleList from "../../components/user/ToggleList";
 import { useAuth } from "../../context/authentication";
 import useCourselearning from "../../hook/useCourselearning";
+import AssignmentBox from "../../components/user/AssignmentBox";
 
 function CourseLearningPage() {
   const videoRef = useRef(null);
@@ -30,10 +31,15 @@ function CourseLearningPage() {
     handleVideoEnd,
     handleVideoStart,
     handleAssignment,
+    userCourseDetailId,
+    currentAssignment,
+    setCurrentAssignment,
+    getUserId,setGetUserId,
   } = useCourselearning();
 
   useEffect(() => {
     if (auth.isAuthenicated) {
+      setGetUserId(auth.session.user.user_id);
       const userId = auth.session.user.user_id;
       getUserCoursesLearning(userId);
     }
@@ -146,7 +152,7 @@ function CourseLearningPage() {
                                   handleTitleClick(
                                     item.sub_lesson_name,
                                     item.sub_lesson_video,
-                                    item.sub_lesson_id
+                                    item.sub_lesson_id,
                                   )
                                 }
                                 className="w-[257px] h-[48px] text-left ml-3 whitespace-normal"
@@ -180,29 +186,17 @@ function CourseLearningPage() {
                 src={currentSubLesson.subLessonVideo}
                 className="w-[739px] h-[460px]"
               ></video>
-
-              {handleAssignment() ? (
-                <div className="w-[739px] h-[314px] bg-blue-100 flex flex-col items-center rounded-lg mt-[70px]">
-                  <div className="w-[691px] h-[32px] flex justify-between items-center mt-4">
-                    <div className="text-body1 text-black">Assignment</div>
-                    <div className="text-[#996500] text-[16px] w-[79px] bg-[#FFFBDB] border flex justify-center p-1">
-                      Pending
-                    </div>
-                  </div>
-                  <div className="w-[691px] h-[124px] flex flex-col mt-5">
-                    <div className="text-[16px] mb-2">
-                      What are the 4 elements of this lesson?
-                    </div>
-                    <div className="w-[691px] h-[96px] text-[16px] text-gray-600 border-1 rounded-lg bg-white pl-5 pt-3">
-                      Answer...
-                    </div>
-                  </div>
-                  <div className="w-[691px] flex justify-start mt-8">
-                    <button className="w-[203px] h-[60px] text-[16px] text-white font-bold rounded-xl bg-blue-500">
-                      Send Assignment
-                    </button>
-                  </div>
-                </div>
+              {handleAssignment() &&
+              currentAssignment.assignmentStatus !== null ? (
+                <AssignmentBox
+                  assignmentDetail={currentAssignment.assignmentDetail}
+                  assignmentStatus={currentAssignment.assignmentStatus}
+                  assignmentAnswer={currentAssignment.assignmentAnswer}
+                  assignmentDuration={currentAssignment.assignmentDuration}
+                  assignmentStartedAt={currentAssignment.assignmentStartedAt}
+                  userCourseDetailId={userCourseDetailId}
+                  subLessonId={currentSubLesson.subLessonId}
+                />
               ) : (
                 ""
               )}
