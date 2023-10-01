@@ -67,7 +67,7 @@ function EditProfileForm() {
       setBirthDate(auth.session.user.user_dob);
       setEducation(auth.session.user.user_education);
       setEmail(auth.session.user.user_email);
-      console.log(auth.session.user.user_avatar);
+
       if (auth.session.user.user_avatar === null) {
         setHasImage(false);
       } else {
