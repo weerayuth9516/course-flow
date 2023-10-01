@@ -272,6 +272,126 @@ courseRouter.get("/subscription/:userId/:courseId", async (req, res) => {
   return res.json({ isSubscribed });
 });
 
+courseRouter.post("/mycourses/:courseId", protect, async (req, res) => {
+  try {
+    const { user_id, course_id } = req.body;
+    const findUserDesireCourse = await supabase
+      .from("user_course_details")
+      .select("*")
+      .eq("user_id", user_id)
+      .eq("course_id", course_id);
+
+    if (findUserDesireCourse.data.length > 0) {
+      const userCourseDetailsId =
+        findUserDesireCourse.data[0].user_course_detail_id;
+      const updateSubscriptionStatus = await supabase
+        .from("user_course_details")
+        .upsert([
+          {
+            user_course_detail_id: userCourseDetailsId,
+            subscription_id: 1,
+          },
+        ]);
+
+      if (updateSubscriptionStatus.status === 201) {
+        return res.json({ message: "Subscription updated successfully" });
+      } else {
+        return res.status(400).send("Failed to update subscription status");
+      }
+    } else {
+      const subscribeCourse = await supabase
+        .from("user_course_details")
+        .insert([
+          {
+            course_id: req.body.course_id,
+            user_id: req.body.user_id,
+            status_id: 1,
+            subscription_id: 1,
+          },
+        ]);
+
+      const userCourseDetailId = await supabase
+        .from("user_course_details")
+        .select("user_course_detail_id")
+        .eq("course_id", req.body.course_id)
+        .eq("user_id", req.body.user_id);
+
+      // // All lessons
+      const lesson = await supabase
+        .from("lessons")
+        .select("lesson_id")
+        .eq("course_id", req.body.course_id);
+      const lessonArray = lesson.data.map((value) => {
+        return value.lesson_id;
+      });
+      const subLessonArray = await supabase
+        .from("sub_lessons")
+        .select("*")
+        .in("lesson_id", lessonArray);
+
+      const insertSubUserDeatil = subLessonArray.data.map((value) => ({
+        user_course_detail_id: userCourseDetailId.data[0].user_course_detail_id,
+        sub_lesson_id: value.sub_lesson_id,
+        status_id: 1,
+      }));
+      const lessonsData = lesson.data.map((lesson) => ({
+        user_course_detail_id: userCourseDetailId.data[0].user_course_detail_id,
+        lesson_id: lesson.lesson_id,
+        status_id: 1,
+      }));
+      const subscribeLessons = await supabase
+        .from("user_lesson_details")
+        .insert(lessonsData);
+      const subscribeSubLessons = await supabase
+        .from("user_sub_lesson_details")
+        .insert(insertSubUserDeatil);
+      if (
+        subscribeCourse.statusText &&
+        subscribeLessons.statusText &&
+        subscribeSubLessons.statusText === "Created"
+      ) {
+        return res.json({ message: "Subscription course successfully" });
+      } else {
+        return res.status(400).send("API ERROR");
+      }
+    }
+  } catch (error) {
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+//check subscriptions status
+courseRouter.get("/subscription/:userId/:courseId", async (req, res) => {
+  const { userId, courseId } = req.params;
+  const isSubscribed = await supabase
+    .from("user_course_details")
+    .select("course_id,user_id,subscription_id")
+    .eq("course_id", courseId)
+    .eq("user_id", userId)
+    .eq("subscription_id", 1);
+  return res.json({ isSubscribed });
+});
+
+courseRouter.post("/assignment/submit", async (req, res) => {
+  try {
+    await supabase
+      .from("user_sub_lesson_details")
+      .update({
+        assignment_status: req.body.assignment_status,
+        assignment_detail: req.body.assignment_detail,
+      })
+      .match({
+        user_course_detail_id: req.body.user_course_detail_id,
+        sub_lesson_id: req.body.sub_lesson_id,
+      });
+    return res.json({
+      message: "Assignment send successfully",
+    });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
 courseRouter.get("/coursedetail/learning", protect, async (req, res) => {
   if (!req.query.user_id || !req.query.course_id) {
     return res.status(400).json({
@@ -349,10 +469,21 @@ courseRouter.get("/coursedetail/learning", protect, async (req, res) => {
                 return ass.sub_lesson_id === mainValue.sub_lesson_id;
               }
             )[0].assignment_start_at;
-            const assignment_duration =
-              assignmentDetailOnThisCourse.data.filter((ass) => {
+
+            const assignmentDuration = assignmentDetailOnThisCourse.data.filter(
+              (ass) => {
                 return ass.sub_lesson_id === mainValue.sub_lesson_id;
-              })[0].assignment_duration;
+              }
+            );
+
+            const assginmetDetail = assignmentDetailOnThisCourse.data.filter(
+              (assignment) => {
+                return assignment.sub_lesson_id === mainValue.sub_lesson_id;
+              }
+            );
+            const assignmentAnswer = fetchUerSubLesson.data.filter((ass) => {
+              return ass.sub_lesson_id === mainValue.sub_lesson_id;
+            });
             return {
               sub_lesson_id: mainValue.sub_lesson_id,
               sub_lesson_name: mainValue.sub_lesson_name,
@@ -360,12 +491,15 @@ courseRouter.get("/coursedetail/learning", protect, async (req, res) => {
               lesson_id: mainValue.lesson_id,
               assignment_status: assignment_status,
               assignment_started_at: assignment_started_at,
-              assignment_duration: assignment_duration,
-              assignment_detail: assignmentDetailOnThisCourse.data.filter(
-                (assignment) => {
-                  return assignment.sub_lesson_id === mainValue.sub_lesson_id;
-                }
-              )[0].assignment_detail,
+              assignment_duration:
+                assignmentDuration[0] === undefined
+                  ? null
+                  : assignmentDuration[0].assignment_duration,
+              assignment_answer: assignmentAnswer[0].assignment_detail,
+              assignment_detail:
+                assginmetDetail[0] === undefined
+                  ? null
+                  : assginmetDetail[0].assignment_detail,
               status_value:
                 status === 1
                   ? "not_started"
@@ -427,6 +561,7 @@ courseRouter.get("/coursedetail/learning", protect, async (req, res) => {
               assignment_started_at: null,
               assignment_duration: null,
               assignment_detail: null,
+              assignment_answer: null,
               status_value:
                 status === 1
                   ? "not_started"
@@ -480,6 +615,27 @@ courseRouter.get("/coursedetail/learning", protect, async (req, res) => {
     return res.status(400).json({
       message: "Invalid API",
     });
+  }
+});
+
+courseRouter.put("/assignment/submit", async (req, res) => {
+  console.log(req.body);
+  try {
+    await supabase
+      .from("user_sub_lesson_details")
+      .update({
+        assignment_status: req.body.assignment_status,
+        assignment_detail: req.body.assignment_answer,
+      })
+      .match({
+        user_course_detail_id: req.body.user_course_detail_id,
+        sub_lesson_id: req.body.sub_lesson_id,
+      });
+    return res.json({
+      message: "Assignment send successfully",
+    });
+  } catch (err) {
+    console.log(err);
   }
 });
 

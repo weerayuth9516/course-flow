@@ -15,6 +15,11 @@ function useCourselearning() {
     subLessonName: "",
     subLessonVideo: "",
     subLessonId: "",
+    assignmentStatus: null,
+    assignmentDetail: null,
+    assignmentDuration: null,
+    assignmentStartedAt: null,
+    assignmentAnswer: null,
   });
   const params = useParams();
 
@@ -34,7 +39,6 @@ function useCourselearning() {
         `http://localhost:4001/courses/coursedetail/learning?user_id=${userId}&course_id=${params.courseId}`,
         { headers }
       );
-      console.log(courseResult.data.data[0]);
       SetUserCourseDetailId(courseResult.data.data[0].user_course_detail_id);
       setCourse(courseResult.data.data[0].course_detail);
       setLesson(courseResult.data.data[0].lesson_detail);
@@ -87,11 +91,25 @@ function useCourselearning() {
     }
   };
 
-  const handleTitleClick = (subLesson, subVideo, subLessonId) => {
+  const handleTitleClick = (
+    subLesson,
+    subVideo,
+    subLessonId,
+    assignmentStatus,
+    assignmentDetail,
+    assignmentDuration,
+    assignmentStartedAt,
+    assignmentAnswer
+  ) => {
     setCurrentSubLesson({
       subLessonName: subLesson,
       subLessonVideo: subVideo,
       subLessonId: subLessonId,
+      assignmentStatus: assignmentStatus,
+      assignmentDetail: assignmentDetail,
+      assignmentDuration: assignmentDuration,
+      assignmentStartedAt: assignmentStartedAt,
+      assignmentAnswer: assignmentAnswer,
     });
 
     const currentIndex = subLessonArray.indexOf(
