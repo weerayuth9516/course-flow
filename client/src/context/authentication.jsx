@@ -92,16 +92,11 @@ function AuthProvider(props) {
       alert("API INVALID");
     }
   };
-  const logout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("previousPage");
-    setSession({ ...session, user: null, admin: null, error: null });
-  };
-
-  const isAuthenicated = Boolean(localStorage.getItem("token"));
-  const isAdmin = Boolean(localStorage.getItem("admin"));
+  const isAdmin = Boolean(localStorage.getItem("role"));
+  const isAuthenicated = Boolean(localStorage.getItem("token") && !isAdmin);
   const isAdminAuthenticated =
-    Boolean(localStorage.getItem("token")) && isAdmin !== null;
+    Boolean(localStorage.getItem("token")) && isAdmin;
+  console.log(isAdminAuthenticated);
   if (isAuthenicated) {
     const token = localStorage.getItem("token");
     session.user = jwtDecode(token);
@@ -110,6 +105,14 @@ function AuthProvider(props) {
     const token = localStorage.getItem("token");
     session.admin = jwtDecode(token);
   }
+  const logout = () => {
+    if (isAdmin) {
+      localStorage.removeItem("role");
+    }
+    localStorage.removeItem("token");
+    localStorage.removeItem("previousPage");
+    setSession({ ...session, user: null, admin: null, error: null });
+  };
 
   return (
     <AuthContext.Provider

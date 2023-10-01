@@ -42,7 +42,23 @@ function App() {
             />
           </>
         ) : (
-          ""
+          <Route path="/admin">
+            {auth.isAdminAuthenticated ? (
+              <>
+                <Route index element={<CourseListPage />} />
+                <Route path="addcourse" element={<AddCoursePage />} />
+                <Route path="addlesson" element={<AddLessonPage />} />
+                <Route
+                  path="editcourse/:courseId"
+                  element={<EditCoursePage />}
+                />
+                <Route path="editlesson" element={<EditLessonPage />} />
+                <Route path="assignment" element={<AssignmentPage />} />
+              </>
+            ) : (
+              <Route index element={<AdminLoginPage />} />
+            )}
+          </Route>
         )}
         <Route
           path="/course/courseDetail/:courseId"
@@ -51,20 +67,6 @@ function App() {
       </Route>
       {/* <Route path="/tester" element={<TesterComponent />} /> */}
       AddLessonPage
-      <Route path="/admin">
-        {auth.isAdminAuthenticated ? (
-          <>
-            <Route index element={<CourseListPage />} />
-            <Route path="addcourse" element={<AddCoursePage />} />
-            <Route path="addlesson" element={<AddLessonPage />} />
-            <Route path="editcourse/:courseId" element={<EditCoursePage />} />
-            <Route path="editlesson" element={<EditLessonPage />} />
-            <Route path="assignment" element={<AssignmentPage />} />
-          </>
-        ) : (
-          <Route index element={<AdminLoginPage />} />
-        )}
-      </Route>
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
