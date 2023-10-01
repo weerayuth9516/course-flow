@@ -13,20 +13,20 @@ function Sidebar() {
   //   setIsCourseActive(true);
   // }
   const location = useLocation();
-  const isCourseActive = location.pathname === "/admin/courselist";
-  // const { logout } = useAuth();
+  const isCourseActive = location.pathname === "/admin";
+  const { logout } = useAuth();
   const navigate = useNavigate();
   const handleLogoutClick = () => {
     logout();
-    navigate("/admin/login");
+    navigate("/admin");
   };
   return (
     <aside className="w-[16%] top-0 border-r border-gray-400 max-2xl:w-[18%]">
       <div className="sidebar overflow-y-auto">
         <div className=" w-full flex flex-col items-center mt-10 mb-24 px-5">
-          <Link to={"/admin/courselist"}>
+          <Link to={"/admin"}>
             <img
-              className="mb-6 cursor-pointer w-[182px] h-[19px]"
+              className="mb-6 cursor-pointer w-[182px] h-[19px] scale-100 hover:scale-110 transform  transition-transform duration-300 ease-in-out "
               src={logo}
             ></img>
           </Link>
@@ -50,7 +50,7 @@ function Sidebar() {
 
           </div>
         </Link> */}
-        <Link to={"/admin/courselist"}>
+        <Link to={"/admin"}>
           <div
             className={`py-4 px-6 h-12 w-full flex items-center duration-300 cursor-pointer hover:bg-gray-200
             ${isCourseActive ? "bg-gray-200" : ""}`}
@@ -59,7 +59,7 @@ function Sidebar() {
             <span className="ml-4 font-semibold text-gray-800">Course</span>
           </div>
         </Link>
-        <div className="py-4 px-6 h-12 flex items-center duration-300 cursor-pointer hover:bg-gray-200 mb-96">
+        <div className="py-4 px-6 h-12 flex items-center duration-300 cursor-not-allowed mb-96">
           <img src={assignment}></img>
           <span className="ml-4 font-semibold text-gray-800">Assignment</span>
         </div>

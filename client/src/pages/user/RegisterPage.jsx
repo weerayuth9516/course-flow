@@ -22,9 +22,14 @@ function RegisterPage() {
   };
   const validationSchema = Yup.object({
     name: Yup.string()
-      .matches(/^[a-zA-Z'-]+$/, "Name must contain only letters, -, or  ' ")
+      .matches(
+        /^[a-zA-Z0-9\sก-๙]+$/,
+        "Name must contain only letters, -, or  ' "
+      )
       .required("Name is required"),
-    education: Yup.string().required("Educational Background is required"),
+    education: Yup.string()
+      .matches(/^[a-zA-Z0-9\sก-๙]+$/, "Education must contain only letters")
+      .required("Educational Background is required"),
     email: Yup.string()
       .email("Invalid email address")
       .required("Email is required"),
@@ -45,7 +50,7 @@ function RegisterPage() {
     }
   };
   const handleSubmit = async (values) => {
-    values = { ...values, user_dob: birthDate };
+    values = { ...values, user_dob: birthDate.format("YYYY-MM-DD") };
     try {
       auth.register(values);
       setEmailValidation(auth.session.error);

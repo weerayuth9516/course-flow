@@ -36,13 +36,10 @@ function EditProfileForm() {
   };
   const validationSchema = Yup.object().shape({
     name: Yup.string()
-      .matches(/^[a-zA-Z\s]+$/, "Name must contain only letters")
+      .matches(/^[a-zA-Z0-9\sก-๙]+$/, "Name must contain only letters")
       .required("Name is required"),
-    birthDate: Yup.date()
-      .max(new Date(), "Date of Birth cannot be in the future")
-      .required("Date of Birth is required"),
     education: Yup.string()
-      .matches(/^[a-zA-Z\s]+$/, "Education must only contain letters")
+      .matches(/^[a-zA-Z0-9\sก-๙]+$/, "Education must contain only letters")
       .required("Educational Background is required"),
     email: Yup.string()
       .email("Invalid email address")
@@ -70,6 +67,7 @@ function EditProfileForm() {
       setBirthDate(auth.session.user.user_dob);
       setEducation(auth.session.user.user_education);
       setEmail(auth.session.user.user_email);
+
       if (auth.session.user.user_avatar === null) {
         setHasImage(false);
       } else {
@@ -88,11 +86,13 @@ function EditProfileForm() {
   const handleSubmit = (event) => {
     const data = {
       user_name: name,
-      user_dob: birthDate,
+      user_dob:
+        birthDate instanceof dayjs ? birthDate.format("YYYY-MM-DD") : birthDate,
       user_education: education,
       user_email: email,
       avatarObj: fileBody,
     };
+
     if (dateErrorMessage === null && fileErrorMessage === null) {
       updateUserProfileById(auth.session.user.user_id, data);
     }

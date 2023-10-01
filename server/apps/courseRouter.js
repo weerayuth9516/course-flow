@@ -272,107 +272,7 @@ courseRouter.get("/subscription/:userId/:courseId", async (req, res) => {
   return res.json({ isSubscribed });
 });
 
-courseRouter.post("/mycourses/:courseId", protect, async (req, res) => {
-  try {
-    const { user_id, course_id } = req.body;
-    const findUserDesireCourse = await supabase
-      .from("user_course_details")
-      .select("*")
-      .eq("user_id", user_id)
-      .eq("course_id", course_id);
-
-    if (findUserDesireCourse.data.length > 0) {
-      const userCourseDetailsId =
-        findUserDesireCourse.data[0].user_course_detail_id;
-      const updateSubscriptionStatus = await supabase
-        .from("user_course_details")
-        .upsert([
-          {
-            user_course_detail_id: userCourseDetailsId,
-            subscription_id: 1,
-          },
-        ]);
-
-      if (updateSubscriptionStatus.status === 201) {
-        return res.json({ message: "Subscription updated successfully" });
-      } else {
-        return res.status(400).send("Failed to update subscription status");
-      }
-    } else {
-      const subscribeCourse = await supabase
-        .from("user_course_details")
-        .insert([
-          {
-            course_id: req.body.course_id,
-            user_id: req.body.user_id,
-            status_id: 1,
-            subscription_id: 1,
-          },
-        ]);
-
-      const userCourseDetailId = await supabase
-        .from("user_course_details")
-        .select("user_course_detail_id")
-        .eq("course_id", req.body.course_id)
-        .eq("user_id", req.body.user_id);
-
-      // // All lessons
-      const lesson = await supabase
-        .from("lessons")
-        .select("lesson_id")
-        .eq("course_id", req.body.course_id);
-      const lessonArray = lesson.data.map((value) => {
-        return value.lesson_id;
-      });
-      const subLessonArray = await supabase
-        .from("sub_lessons")
-        .select("*")
-        .in("lesson_id", lessonArray);
-
-      const insertSubUserDeatil = subLessonArray.data.map((value) => ({
-        user_course_detail_id: userCourseDetailId.data[0].user_course_detail_id,
-        sub_lesson_id: value.sub_lesson_id,
-        status_id: 1,
-      }));
-      const lessonsData = lesson.data.map((lesson) => ({
-        user_course_detail_id: userCourseDetailId.data[0].user_course_detail_id,
-        lesson_id: lesson.lesson_id,
-        status_id: 1,
-      }));
-      const subscribeLessons = await supabase
-        .from("user_lesson_details")
-        .insert(lessonsData);
-      const subscribeSubLessons = await supabase
-        .from("user_sub_lesson_details")
-        .insert(insertSubUserDeatil);
-      if (
-        subscribeCourse.statusText &&
-        subscribeLessons.statusText &&
-        subscribeSubLessons.statusText === "Created"
-      ) {
-        return res.json({ message: "Subscription course successfully" });
-      } else {
-        return res.status(400).send("API ERROR");
-      }
-    }
-  } catch (error) {
-    return res.status(500).json({ error: "Internal Server Error" });
-  }
-});
-
-//check subscriptions status
-courseRouter.get("/subscription/:userId/:courseId", async (req, res) => {
-  const { userId, courseId } = req.params;
-  const isSubscribed = await supabase
-    .from("user_course_details")
-    .select("course_id,user_id,subscription_id")
-    .eq("course_id", courseId)
-    .eq("user_id", userId)
-    .eq("subscription_id", 1);
-  return res.json({ isSubscribed });
-});
-
-courseRouter.post("/assignment/submit", async (req, res) => {
+courseRouter.put("/assignment/submit", async (req, res) => {
   try {
     await supabase
       .from("user_sub_lesson_details")
@@ -657,14 +557,37 @@ courseRouter.put("/update/sub_lesson", protect, async (req, res) => {
         sub_lesson_id: sub_lesson_id,
       });
     if (checkCompleted.data[0].status_id === 1 || status_value === 3) {
+      const timeStamp = new Date();
       const { data, error } = await supabase
         .from("user_sub_lesson_details")
-        .update({ status_id: status_value })
+        .update({
+          status_id: status_value,
+        })
         .match({
           sub_lesson_id: sub_lesson_id,
           user_course_detail_id: user_course_detail_id,
         })
         .select();
+      if (status_value === 3) {
+        const assignmentStatus = await supabase
+          .from("user_sub_lesson_details")
+          .select("assignment_status, assignment_start_at")
+          .eq("sub_lesson_id", sub_lesson_id)
+          .eq("user_course_detail_id", user_course_detail_id);
+        if (assignmentStatus.data[0].assignment_status === "not_started") {
+          await supabase
+            .from("user_sub_lesson_details")
+            .update({
+              assignment_status: "pending",
+              assignment_start_at: timeStamp.toISOString(),
+            })
+            .match({
+              sub_lesson_id: sub_lesson_id,
+              user_course_detail_id: user_course_detail_id,
+            })
+            .select();
+        }
+      }
       const lessonID = await supabase
         .from("sub_lessons")
         .select("lesson_id")
@@ -783,6 +706,13 @@ courseRouter.get("/mydesirecourses/:userId", async (req, res) => {
       .eq("user_id", userId)
       .eq("subscription_id", 2);
 
+    const courseId = userDesireCourses.map((id) => id.course_id.course_id);
+
+    const disireCourseDetails = await supabase
+      .from("courses")
+      .select("*,lessons(*)")
+      .in("course_id", courseId);
+
     if (userDesireError) {
       return res.status(500).json({ error: userDesireError });
     }
@@ -791,7 +721,7 @@ courseRouter.get("/mydesirecourses/:userId", async (req, res) => {
         .status(404)
         .json({ error: "No desired courses found for this user" });
     }
-    return res.json({ data: userDesireCourses });
+    return res.json({ data: disireCourseDetails });
   } catch (error) {
     console.error("An error occurred: " + error);
     return res.status(500).json({ error: "Internal Server Error" });

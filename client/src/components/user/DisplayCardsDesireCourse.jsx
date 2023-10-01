@@ -3,12 +3,6 @@ import { Link } from "react-router-dom";
 import Vector from "../../assets/ourCourses/Vectors.png";
 import Frame from "../../assets/ourCourses/Frame.png";
 
-// const [hasDesireCourse, setHasDesireCourse] = useState(false);
-// const handleDelete = (deletingItem) => {
-//     const newItems = items.filter((item) => item !== deletingItem);
-//     setItems(newItems)
-// }
-
 function DisplayCardsDesireCourse({ allDesireCourse, hasDesireCourse }) {
   return (
     <div className="course-cards-container flex justify-center mb-20">
@@ -17,19 +11,16 @@ function DisplayCardsDesireCourse({ allDesireCourse, hasDesireCourse }) {
           {/* Display course cards */}
           {allDesireCourse.map((item, index) => {
             const limitLetter =
-              item.course_id.course_summary.length > 60
-                ? item.course_id.course_summary.substring(0, 60) + "..."
-                : item.course_id.course_summary;
+              item.course_summary.length > 60
+                ? item.course_summary.substring(0, 60) + "..."
+                : item.course_summary;
             return (
-              <Link
-                key={index}
-                to={`/course/courseDetail/${item.course_id.course_id}`}
-              >
+              <Link key={index} to={`/course/courseDetail/${item.course_id}`}>
                 <div className="course-cards-box w-[357px] h-[475px] rounded-lg shadow-lg border border-gray-100 hover:scale-105 hover:shadow-lg transform  transition-transform duration-300 ease-in-out">
                   <div className="course-card   mb-8 relative">
                     <div className="course-card-thumbnail">
                       <img
-                        src={item.course_id.course_cover_img}
+                        src={item.course_cover_img}
                         alt="course-image"
                         className="w-[357px] h-[240px] object-fit rounded-t-lg shadow-lg"
                       />
@@ -39,7 +30,7 @@ function DisplayCardsDesireCourse({ allDesireCourse, hasDesireCourse }) {
                         Course
                       </h3>
                       <h2 className="font-bold mb-2 text-header3">
-                        {item.course_id.course_name}
+                        {item.course_name}
                       </h2>
                       <div className="course-detail">
                         <p>{limitLetter}</p>
@@ -55,7 +46,7 @@ function DisplayCardsDesireCourse({ allDesireCourse, hasDesireCourse }) {
                           alt="Image icon"
                           className="inline mr-2 ml-4"
                         />
-                        6 Lessons
+                        {item.lessons.length} Lessons
                       </span>
                       <span className="ml-5">
                         <img
@@ -63,7 +54,7 @@ function DisplayCardsDesireCourse({ allDesireCourse, hasDesireCourse }) {
                           alt="Image icon"
                           className="inline mr-2 ml-4"
                         />
-                        {item.course_id.course_duration} Hours
+                        {item.course_duration} Hours
                       </span>
                     </div>
                   </div>

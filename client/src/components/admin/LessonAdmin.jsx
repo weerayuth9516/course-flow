@@ -18,6 +18,7 @@ function LessonAdmin() {
     setLessonId,
     lessonLength,
     setLessonLength,
+    setLoading,
   } = useDataCenter();
   const navigate = useNavigate();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -27,7 +28,8 @@ function LessonAdmin() {
       const response = await axios.delete(
         `http://localhost:4001/admin/lessons/${lessonId}/${params.courseId}`
       );
-      console.log(response.data.message);
+      // console.log(response.data.message);
+      getLessonList();
     } catch (error) {
       console.log("request error");
     }
@@ -38,7 +40,8 @@ function LessonAdmin() {
       const response = await axios.get(
         `http://localhost:4001/admin/courses/${params.courseId}`
       );
-      setLessons(response.data.data.lessons);
+      // console.log(response.data.data.lessons);
+      setLessons([...response.data.data.lessons]);
     } catch (error) {
       console.log("request error");
     }
@@ -53,13 +56,18 @@ function LessonAdmin() {
 
   const handleDeleteLesson = () => {
     deleteLessonList();
+    // getLessonList();
     closeDeleteModal();
   };
-
+  let fetching = 0;
   useEffect(() => {
-    setLessonLength(lessons.length);
-    getLessonList();
-  }, [lessonLength, lessons]);
+    if (fetching === 0) {
+      setLessonLength(lessons.length);
+      // console.log(lessons);
+      getLessonList();
+      fetching = 1;
+    }
+  }, []);
   // const getLesson = async () => {
   //   let lessonsResult;
   //   if (!addLesson) {
