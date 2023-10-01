@@ -805,6 +805,21 @@ adminRouter.put(
     }
   }
 );
+
+adminRouter.delete("/assignment/:assignmentId", async (req, res) => {
+  try {
+    await supabase
+      .from("assignments")
+      .delete()
+      .eq("assignment_id", req.params.assignmentId);
+    return res.json({
+      message: "Delete assignment successfully",
+    });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
 adminRouter.delete("/sublessons/:sublessonId", async (req, res) => {
   try {
     const sublessonId = req.params.sublessonId;

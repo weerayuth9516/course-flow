@@ -44,13 +44,20 @@ function AssignmentPage() {
       console.log(err);
     }
   };
+  const haddleDelteAssginment = async (v) => {
+    try {
+      await axios.delete(`http://localhost:4001/admin/assignment/${v}`);
+      window.location.reload();
+    } catch (err) {
+      console.log(err);
+    }
+  };
   useEffect(() => {
     if (fetched === 0) {
       setLoading(true);
       getAssignmet().then((value) => {
         setAssignmentList([...value.data.data]);
         setPageCount(value.data.pageCount);
-        console.log(value);
       });
       setLoading(false);
     }
@@ -231,6 +238,9 @@ function AssignmentPage() {
                             <img
                               src={deleteLogo}
                               style={{ cursor: "pointer" }}
+                              onClick={() => {
+                                haddleDelteAssginment(item.assignment_id);
+                              }}
                             />
                             <div
                               className="curser-pointer"
