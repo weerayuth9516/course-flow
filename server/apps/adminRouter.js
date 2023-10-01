@@ -200,7 +200,6 @@ adminRouter.get("/getassignment", async (req, res) => {
     } else {
       contReturn = count / 8;
     }
-    console.log(req.query.page);
     if (req.query.page) {
       let startAt = 0;
       let endAt = 7;

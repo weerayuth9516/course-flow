@@ -6,6 +6,8 @@ import deleteLogo from "../../assets/courselist/delete.png";
 import arrowBack from "../../assets/registerPage/arrow-back.svg";
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import CircularProgress from "@mui/material/CircularProgress";
+import Box from "@mui/material/Box";
 import EditAssignmentForm from "../../components/admin/EditAssignmentForm";
 import axios from "axios";
 import useAssignmentHook from "../../hook/useAssignmentHook";
@@ -16,6 +18,7 @@ function AssignmentPage() {
   const [addState, setAddState] = useState(false);
   const [fetched, setFetched] = useState(0);
   const [assignmentDetailEdit, setAssignmentDetailEdit] = useState({});
+  const [isLoading, setLoading] = useState(true);
   const [assignmentList, setAssignmentList] = useState([]);
   const [pageQuery, setPageQuery] = useState(1);
   const [pageCount, setPageCount] = useState(1);
@@ -43,11 +46,13 @@ function AssignmentPage() {
   };
   useEffect(() => {
     if (fetched === 0) {
+      setLoading(true);
       getAssignmet().then((value) => {
         setAssignmentList([...value.data.data]);
         setPageCount(value.data.pageCount);
         console.log(value);
       });
+      setLoading(false);
     }
   }, [fetched]);
   return (
@@ -150,84 +155,100 @@ function AssignmentPage() {
         </div>
         <div className="bg-gray-100 h-screen relative max-2xl:h-[1000px]">
           {!editState && !addState ? (
-            <>
-              <Stack
-                spacing={2}
-                className="flex justifly-center items-center mt-2"
+            isLoading ? (
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyItems: "center",
+                  justifyContent: "center",
+                }}
+                className="h-[90vh] bg-gray-100"
               >
-                <Pagination
-                  count={pageCount}
-                  variant="outlined"
-                  shape="rounded"
-                  page={pageQuery}
-                  onChange={(e, v) => {
-                    handdleFetchNewPage(v).then((value) => {
-                      setAssignmentList([...value.data.data]);
-                      setPageQuery(v);
-                    });
-                  }}
-                />
-              </Stack>
-              <table className="table-auto absolute right-[5%] top-[5%] w-[90%] max-2xl:w-[98%] max-2xl:left-[1%] max-2xl:top-[2%] rounded-lg overflow-hidden">
-                <thead className="bg-gray-300">
-                  <tr>
-                    <th className="py-3 px-5 tracking-wide text-start text-gray-800 font-normal">
-                      Assignment detail
-                    </th>
-                    <th className="py-3 px-5 tracking-wide text-start text-gray-800 font-normal">
-                      Course
-                    </th>
-                    <th className="py-3 px-5 tracking-wide text-start text-gray-800 font-normal">
-                      Lesson
-                    </th>
-                    <th className="py-3 px-5 tracking-wide text-start text-gray-800 font-normal">
-                      Sub-lesson
-                    </th>
-                    <th className="py-3 px-5 tracking-wide text-start text-gray-800 font-normal cursor-pointer hover:bg-gray-50">
-                      Created date
-                    </th>
-                    <th className="py-3 px-5 tracking-wide text-start text-gray-800 font-normal">
-                      Action
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white">
-                  {assignmentList.map((item, index) => {
-                    return (
-                      <tr key={index} className="border-b-2 h-[100px]">
-                        <td className="p-5 font-semibold">
-                          {item.assignment_detail}
-                        </td>
-                        <td className="p-5 font-semibold">
-                          {item.course_name}
-                        </td>
-                        <td className="p-5 font-semibold">
-                          {item.lesson_name}
-                        </td>
-                        <td className="p-5 font-semibold">
-                          {item.sub_lesson_name}
-                        </td>
-                        <td className="p-5 font-semibold">
-                          {new Date(item.created_at).toLocaleString()}
-                        </td>
-                        <td className="pt-5 flex pl-4 gap-2">
-                          <img src={deleteLogo} style={{ cursor: "pointer" }} />
-                          <div
-                            className="curser-pointer"
-                            onClick={() => {
-                              setEditState(true);
-                              setAssignmentDetailEdit(item);
-                            }}
-                          >
-                            <img src={edit} className="cursor-pointer" />
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </>
+                <CircularProgress size="20rem" className="mt-[20vh]" />
+              </Box>
+            ) : (
+              <>
+                <Stack
+                  spacing={2}
+                  className="flex justifly-center items-center mt-2"
+                >
+                  <Pagination
+                    count={pageCount}
+                    variant="outlined"
+                    shape="rounded"
+                    page={pageQuery}
+                    onChange={(e, v) => {
+                      handdleFetchNewPage(v).then((value) => {
+                        setAssignmentList([...value.data.data]);
+                        setPageQuery(v);
+                      });
+                    }}
+                  />
+                </Stack>
+                <table className="table-auto absolute right-[5%] top-[5%] w-[90%] max-2xl:w-[98%] max-2xl:left-[1%] max-2xl:top-[2%] rounded-lg overflow-hidden">
+                  <thead className="bg-gray-300">
+                    <tr>
+                      <th className="py-3 px-5 tracking-wide text-start text-gray-800 font-normal">
+                        Assignment detail
+                      </th>
+                      <th className="py-3 px-5 tracking-wide text-start text-gray-800 font-normal">
+                        Course
+                      </th>
+                      <th className="py-3 px-5 tracking-wide text-start text-gray-800 font-normal">
+                        Lesson
+                      </th>
+                      <th className="py-3 px-5 tracking-wide text-start text-gray-800 font-normal">
+                        Sub-lesson
+                      </th>
+                      <th className="py-3 px-5 tracking-wide text-start text-gray-800 font-normal cursor-pointer hover:bg-gray-50">
+                        Created date
+                      </th>
+                      <th className="py-3 px-5 tracking-wide text-start text-gray-800 font-normal">
+                        Action
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white">
+                    {assignmentList.map((item, index) => {
+                      return (
+                        <tr key={index} className="border-b-2 h-[100px]">
+                          <td className="p-5 font-semibold">
+                            {item.assignment_detail}
+                          </td>
+                          <td className="p-5 font-semibold">
+                            {item.course_name}
+                          </td>
+                          <td className="p-5 font-semibold">
+                            {item.lesson_name}
+                          </td>
+                          <td className="p-5 font-semibold">
+                            {item.sub_lesson_name}
+                          </td>
+                          <td className="p-5 font-semibold">
+                            {new Date(item.created_at).toLocaleString()}
+                          </td>
+                          <td className="pt-5 flex pl-4 gap-2">
+                            <img
+                              src={deleteLogo}
+                              style={{ cursor: "pointer" }}
+                            />
+                            <div
+                              className="curser-pointer"
+                              onClick={() => {
+                                setEditState(true);
+                                setAssignmentDetailEdit(item);
+                              }}
+                            >
+                              <img src={edit} className="cursor-pointer" />
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </>
+            )
           ) : editState && !addState ? (
             <EditAssignmentForm assignmentDetail={assignmentDetailEdit} />
           ) : (

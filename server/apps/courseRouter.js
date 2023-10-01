@@ -381,6 +381,7 @@ courseRouter.get("/coursedetail/learning", protect, async (req, res) => {
               assignment_status: assignment_status,
               assignment_started_at: assignment_started_at,
               assignment_duration: assignment_duration,
+              assignment_answer: mainValue.assignment_detail,
               assignment_detail: assignmentDetailOnThisCourse.data.filter(
                 (assignment) => {
                   return assignment.sub_lesson_id === mainValue.sub_lesson_id;
@@ -447,6 +448,7 @@ courseRouter.get("/coursedetail/learning", protect, async (req, res) => {
               assignment_started_at: null,
               assignment_duration: null,
               assignment_detail: null,
+              assignment_answer: null,
               status_value:
                 status === 1
                   ? "not_started"
