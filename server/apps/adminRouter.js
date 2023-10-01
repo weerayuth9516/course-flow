@@ -52,7 +52,6 @@ adminRouter.get("/", async (req, res) => {
           .from("lessons")
           .select("course_id, lesson_name")
           .in("course_id", courseIdMaping);
-        // console.log(lesson);
         const newMap = coursesWithTitle.data.map((value) => {
           return {
             ...value,
@@ -192,7 +191,7 @@ adminRouter.get("/getassignment", async (req, res) => {
   try {
     const { data, error, count } = await supabase
       .from("assignments")
-      .select("duration", { count: "exact" });
+      .select("assignment_id", { count: "exact" });
     let contReturn = 0;
     if (count % 8 !== 0) {
       contReturn = count - (count % 8);
@@ -201,7 +200,8 @@ adminRouter.get("/getassignment", async (req, res) => {
     } else {
       contReturn = count / 8;
     }
-    if (req.body.page) {
+    console.log(req.query.page);
+    if (req.query.page) {
       let startAt = 0;
       let endAt = 7;
       if (Number(req.query.page) && Number(req.query.page) !== 1) {
@@ -214,11 +214,13 @@ adminRouter.get("/getassignment", async (req, res) => {
         .range(startAt, endAt);
       return res.json({
         data: fetchAssignment.data,
+        pageCount: contReturn,
       });
     } else {
       const response = await supabase.rpc("get_assignments").limit(8);
       return res.json({
         data: response.data,
+        pageCount: contReturn,
       });
     }
   } catch (err) {
@@ -722,16 +724,7 @@ adminRouter.put(
   async (req, res) => {
     try {
       const { courseId, lessonId, subLessonId } = req.params;
-
-      // const sub_lesson_video = req.files.singleSubLessonVideo[0];
-
       const subLessonName = req.body.sub_lesson_name;
-
-      // if (!subLessonName && !sub_lesson_video) {
-      //   return res
-      //     .status(400)
-      //     .json({ error: "Do not exist sub-lesson updated" });
-      // }
       if (req.files.singleSubLessonVideo) {
         const sub_lesson_video = req.files.singleSubLessonVideo[0];
         const filePath = `${courseId}/${lessonId}/${sub_lesson_video.originalname}`;

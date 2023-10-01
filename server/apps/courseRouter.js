@@ -355,80 +355,145 @@ courseRouter.get("/coursedetail/learning", protect, async (req, res) => {
         .from("assignments")
         .select("*")
         .in("sub_lesson_id", subLessonIdArary);
-      const subLessonMap = subLessonDetailOnThisCourse.data.map((mainValue) => {
-        const status = userSubLessonDetail.data.filter(
-          (subValue) => mainValue.sub_lesson_id === subValue.sub_lesson_id
-        )[0].status_id;
-        const assignment_status = userSubLessonDetail.data.filter((ass) => {
-          return ass.sub_lesson_id === mainValue.sub_lesson_id;
-        })[0].assignment_status;
-        const assignment_started_at = userSubLessonDetail.data.filter((ass) => {
-          return ass.sub_lesson_id === mainValue.sub_lesson_id;
-        })[0].assignment_start_at;
-        const assignment_duration = assignmentDetailOnThisCourse.data.filter(
-          (ass) => {
-            return ass.sub_lesson_id === mainValue.sub_lesson_id;
-          }
-        )[0].assignment_duration;
-        return {
-          sub_lesson_id: mainValue.sub_lesson_id,
-          sub_lesson_name: mainValue.sub_lesson_name,
-          sub_lesson_video: mainValue.sub_lesson_video,
-          lesson_id: mainValue.lesson_id,
-          assignment_status: assignment_status,
-          assignment_started_at: assignment_started_at,
-          assignment_duration: assignment_duration,
-          assignment_detail: assignmentDetailOnThisCourse.data.filter(
-            (assignment) => {
-              return assignment.sub_lesson_id === mainValue.sub_lesson_id;
-            }
-          )[0].assignment_detail,
-          status_value:
-            status === 1
-              ? "not_started"
-              : status === 2
-              ? "in_progress"
-              : "completed",
-        };
-      });
-      const lessonMap = lessonDetailOnThisCourse.data.map((value) => {
-        const status = userLessonDetail.data.filter(
-          (subValue) => subValue.lesson_id === value.lesson_id
-        )[0].status_id;
-        return {
-          lesson_name: `${value.lesson_name}`,
-          status_value:
-            status === 1
-              ? "not_started"
-              : status === 2
-              ? "in_progress"
-              : "completed",
-          sub_lesson: subLessonMap.filter(
-            (subValue) => subValue.lesson_id === value.lesson_id
-          ),
-        };
-      });
-      console.log(courseDetailOnThisCourse.data);
-      return res.json({
-        data: [
-          {
-            user_course_detail_id:
-              userCourseDetails.data[0].user_course_detail_id,
-            course_detail: {
-              course_id: courseDetailOnThisCourse.data[0].course_id,
-              course_name: courseDetailOnThisCourse.data[0].course_name,
-              course_summary: courseDetailOnThisCourse.data[0].course_summary,
+      if (assignmentDetailOnThisCourse.data.length !== 0) {
+        const subLessonMap = subLessonDetailOnThisCourse.data.map(
+          (mainValue) => {
+            const status = userSubLessonDetail.data.filter(
+              (subValue) => mainValue.sub_lesson_id === subValue.sub_lesson_id
+            )[0].status_id;
+            const assignment_status = userSubLessonDetail.data.filter((ass) => {
+              return ass.sub_lesson_id === mainValue.sub_lesson_id;
+            })[0].assignment_status;
+            const assignment_started_at = userSubLessonDetail.data.filter(
+              (ass) => {
+                return ass.sub_lesson_id === mainValue.sub_lesson_id;
+              }
+            )[0].assignment_start_at;
+            const assignment_duration =
+              assignmentDetailOnThisCourse.data.filter((ass) => {
+                return ass.sub_lesson_id === mainValue.sub_lesson_id;
+              })[0].assignment_duration;
+            return {
+              sub_lesson_id: mainValue.sub_lesson_id,
+              sub_lesson_name: mainValue.sub_lesson_name,
+              sub_lesson_video: mainValue.sub_lesson_video,
+              lesson_id: mainValue.lesson_id,
+              assignment_status: assignment_status,
+              assignment_started_at: assignment_started_at,
+              assignment_duration: assignment_duration,
+              assignment_detail: assignmentDetailOnThisCourse.data.filter(
+                (assignment) => {
+                  return assignment.sub_lesson_id === mainValue.sub_lesson_id;
+                }
+              )[0].assignment_detail,
               status_value:
-                userCourseDetails.data[0].status_id === 1
+                status === 1
                   ? "not_started"
-                  : userCourseDetails.data[0].status_id === 2
+                  : status === 2
                   ? "in_progress"
                   : "completed",
+            };
+          }
+        );
+        const lessonMap = lessonDetailOnThisCourse.data.map((value) => {
+          const status = userLessonDetail.data.filter(
+            (subValue) => subValue.lesson_id === value.lesson_id
+          )[0].status_id;
+          return {
+            lesson_name: `${value.lesson_name}`,
+            status_value:
+              status === 1
+                ? "not_started"
+                : status === 2
+                ? "in_progress"
+                : "completed",
+            sub_lesson: subLessonMap.filter(
+              (subValue) => subValue.lesson_id === value.lesson_id
+            ),
+          };
+        });
+        return res.json({
+          data: [
+            {
+              user_course_detail_id:
+                userCourseDetails.data[0].user_course_detail_id,
+              course_detail: {
+                course_id: courseDetailOnThisCourse.data[0].course_id,
+                course_name: courseDetailOnThisCourse.data[0].course_name,
+                course_summary: courseDetailOnThisCourse.data[0].course_summary,
+                status_value:
+                  userCourseDetails.data[0].status_id === 1
+                    ? "not_started"
+                    : userCourseDetails.data[0].status_id === 2
+                    ? "in_progress"
+                    : "completed",
+              },
+              lesson_detail: lessonMap,
             },
-            lesson_detail: lessonMap,
-          },
-        ],
-      });
+          ],
+        });
+      } else {
+        const subLessonMap = subLessonDetailOnThisCourse.data.map(
+          (mainValue) => {
+            const status = userSubLessonDetail.data.filter(
+              (subValue) => mainValue.sub_lesson_id === subValue.sub_lesson_id
+            )[0].status_id;
+            return {
+              sub_lesson_id: mainValue.sub_lesson_id,
+              sub_lesson_name: mainValue.sub_lesson_name,
+              sub_lesson_video: mainValue.sub_lesson_video,
+              lesson_id: mainValue.lesson_id,
+              assignment_status: null,
+              assignment_started_at: null,
+              assignment_duration: null,
+              assignment_detail: null,
+              status_value:
+                status === 1
+                  ? "not_started"
+                  : status === 2
+                  ? "in_progress"
+                  : "completed",
+            };
+          }
+        );
+        const lessonMap = lessonDetailOnThisCourse.data.map((value) => {
+          const status = userLessonDetail.data.filter(
+            (subValue) => subValue.lesson_id === value.lesson_id
+          )[0].status_id;
+          return {
+            lesson_name: `${value.lesson_name}`,
+            status_value:
+              status === 1
+                ? "not_started"
+                : status === 2
+                ? "in_progress"
+                : "completed",
+            sub_lesson: subLessonMap.filter(
+              (subValue) => subValue.lesson_id === value.lesson_id
+            ),
+          };
+        });
+        return res.json({
+          data: [
+            {
+              user_course_detail_id:
+                userCourseDetails.data[0].user_course_detail_id,
+              course_detail: {
+                course_id: courseDetailOnThisCourse.data[0].course_id,
+                course_name: courseDetailOnThisCourse.data[0].course_name,
+                course_summary: courseDetailOnThisCourse.data[0].course_summary,
+                status_value:
+                  userCourseDetails.data[0].status_id === 1
+                    ? "not_started"
+                    : userCourseDetails.data[0].status_id === 2
+                    ? "in_progress"
+                    : "completed",
+              },
+              lesson_detail: lessonMap,
+            },
+          ],
+        });
+      }
     }
   } catch (error) {
     console.log(error);
