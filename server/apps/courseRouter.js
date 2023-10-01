@@ -378,11 +378,6 @@ courseRouter.get("/coursedetail/learning", protect, async (req, res) => {
           ),
         };
       });
-      console.log(
-        lessonMap.map((lesson) => {
-          console.log(lesson.sub_lesson);
-        })
-      );
       return res.json({
         data: [
           {
