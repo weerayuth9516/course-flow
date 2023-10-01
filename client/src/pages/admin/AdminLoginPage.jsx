@@ -21,7 +21,7 @@ function AdminLoginPage() {
       setErrors(auth.session.error);
     } catch (error) {
       console.log(error);
-      navigate("/admin/login");
+      navigate("/admin");
     }
   };
 

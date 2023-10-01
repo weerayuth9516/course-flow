@@ -272,6 +272,26 @@ courseRouter.get("/subscription/:userId/:courseId", async (req, res) => {
   return res.json({ isSubscribed });
 });
 
+courseRouter.post("/assignment/submit", async (req, res) => {
+  try {
+    await supabase
+      .from("user_sub_lesson_details")
+      .update({
+        assignment_status: req.body.assignment_status,
+        assignment_detail: req.body.assignment_detail,
+      })
+      .match({
+        user_course_detail_id: req.body.user_course_detail_id,
+        sub_lesson_id: req.body.sub_lesson_id,
+      });
+    return res.json({
+      message: "Assignment send successfully",
+    });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
 courseRouter.get("/coursedetail/learning", protect, async (req, res) => {
   if (!req.query.user_id || !req.query.course_id) {
     return res.status(400).json({
@@ -321,62 +341,164 @@ courseRouter.get("/coursedetail/learning", protect, async (req, res) => {
         .select("*")
         .in("lesson_id", mapForFetchLessonName)
         .order("priority", { ascending: true });
-      const subLessonMap = subLessonDetailOnThisCourse.data.map((mainValue) => {
-        const status = userSubLessonDetail.data.filter(
-          (subValue) => mainValue.sub_lesson_id === subValue.sub_lesson_id
-        )[0].status_id;
-        return {
-          sub_lesson_id: mainValue.sub_lesson_id,
-          sub_lesson_name: mainValue.sub_lesson_name,
-          sub_lesson_video: mainValue.sub_lesson_video,
-          lesson_id: mainValue.lesson_id,
-          status_value:
-            status === 1
-              ? "not_started"
-              : status === 2
-              ? "in_progress"
-              : "completed",
-        };
+      const fetchUerSubLesson = await supabase
+        .from("user_sub_lesson_details")
+        .select("*")
+        .eq(
+          "user_course_detail_id",
+          userCourseDetails.data[0].user_course_detail_id
+        );
+      const subLessonIdArary = fetchUerSubLesson.data.map((value) => {
+        return value.sub_lesson_id;
       });
-      const lessonMap = lessonDetailOnThisCourse.data.map((value) => {
-        const status = userLessonDetail.data.filter(
-          (subValue) => subValue.lesson_id === value.lesson_id
-        )[0].status_id;
-        return {
-          lesson_name: `${value.lesson_name}`,
-          status_value:
-            status === 1
-              ? "not_started"
-              : status === 2
-              ? "in_progress"
-              : "completed",
-          sub_lesson: subLessonMap.filter(
-            (subValue) => subValue.lesson_id === value.lesson_id
-          ),
-        };
-      });
-      return res.json({
-        data: [
-          {
-            user_course_detail_id:
-              userCourseDetails.data[0].user_course_detail_id,
-            course_detail: {
-              course_id: courseDetailOnThisCourse.data[0].course_id,
-              course_name: courseDetailOnThisCourse.data[0].course_name,
-              course_summary: courseDetailOnThisCourse.data[0].course_summary,
+      const assignmentDetailOnThisCourse = await supabase
+        .from("assignments")
+        .select("*")
+        .in("sub_lesson_id", subLessonIdArary);
+      if (assignmentDetailOnThisCourse.data.length !== 0) {
+        const subLessonMap = subLessonDetailOnThisCourse.data.map(
+          (mainValue) => {
+            const status = userSubLessonDetail.data.filter(
+              (subValue) => mainValue.sub_lesson_id === subValue.sub_lesson_id
+            )[0].status_id;
+            const assignment_status = userSubLessonDetail.data.filter((ass) => {
+              return ass.sub_lesson_id === mainValue.sub_lesson_id;
+            })[0].assignment_status;
+            const assignment_started_at = userSubLessonDetail.data.filter(
+              (ass) => {
+                return ass.sub_lesson_id === mainValue.sub_lesson_id;
+              }
+            )[0].assignment_start_at;
+            const assignment_duration =
+              assignmentDetailOnThisCourse.data.filter((ass) => {
+                return ass.sub_lesson_id === mainValue.sub_lesson_id;
+              })[0].assignment_duration;
+            return {
+              sub_lesson_id: mainValue.sub_lesson_id,
+              sub_lesson_name: mainValue.sub_lesson_name,
+              sub_lesson_video: mainValue.sub_lesson_video,
+              lesson_id: mainValue.lesson_id,
+              assignment_status: assignment_status,
+              assignment_started_at: assignment_started_at,
+              assignment_duration: assignment_duration,
+              assignment_answer: mainValue.assignment_detail,
+              assignment_detail: assignmentDetailOnThisCourse.data.filter(
+                (assignment) => {
+                  return assignment.sub_lesson_id === mainValue.sub_lesson_id;
+                }
+              )[0].assignment_detail,
               status_value:
-                userCourseDetails.data[0].status_id === 1
+                status === 1
                   ? "not_started"
-                  : userCourseDetails.data[0].status_id === 2
+                  : status === 2
                   ? "in_progress"
                   : "completed",
+            };
+          }
+        );
+        const lessonMap = lessonDetailOnThisCourse.data.map((value) => {
+          const status = userLessonDetail.data.filter(
+            (subValue) => subValue.lesson_id === value.lesson_id
+          )[0].status_id;
+          return {
+            lesson_name: `${value.lesson_name}`,
+            status_value:
+              status === 1
+                ? "not_started"
+                : status === 2
+                ? "in_progress"
+                : "completed",
+            sub_lesson: subLessonMap.filter(
+              (subValue) => subValue.lesson_id === value.lesson_id
+            ),
+          };
+        });
+        return res.json({
+          data: [
+            {
+              user_course_detail_id:
+                userCourseDetails.data[0].user_course_detail_id,
+              course_detail: {
+                course_id: courseDetailOnThisCourse.data[0].course_id,
+                course_name: courseDetailOnThisCourse.data[0].course_name,
+                course_summary: courseDetailOnThisCourse.data[0].course_summary,
+                status_value:
+                  userCourseDetails.data[0].status_id === 1
+                    ? "not_started"
+                    : userCourseDetails.data[0].status_id === 2
+                    ? "in_progress"
+                    : "completed",
+              },
+              lesson_detail: lessonMap,
             },
-            lesson_detail: lessonMap,
-          },
-        ],
-      });
+          ],
+        });
+      } else {
+        const subLessonMap = subLessonDetailOnThisCourse.data.map(
+          (mainValue) => {
+            const status = userSubLessonDetail.data.filter(
+              (subValue) => mainValue.sub_lesson_id === subValue.sub_lesson_id
+            )[0].status_id;
+            return {
+              sub_lesson_id: mainValue.sub_lesson_id,
+              sub_lesson_name: mainValue.sub_lesson_name,
+              sub_lesson_video: mainValue.sub_lesson_video,
+              lesson_id: mainValue.lesson_id,
+              assignment_status: null,
+              assignment_started_at: null,
+              assignment_duration: null,
+              assignment_detail: null,
+              assignment_answer: null,
+              status_value:
+                status === 1
+                  ? "not_started"
+                  : status === 2
+                  ? "in_progress"
+                  : "completed",
+            };
+          }
+        );
+        const lessonMap = lessonDetailOnThisCourse.data.map((value) => {
+          const status = userLessonDetail.data.filter(
+            (subValue) => subValue.lesson_id === value.lesson_id
+          )[0].status_id;
+          return {
+            lesson_name: `${value.lesson_name}`,
+            status_value:
+              status === 1
+                ? "not_started"
+                : status === 2
+                ? "in_progress"
+                : "completed",
+            sub_lesson: subLessonMap.filter(
+              (subValue) => subValue.lesson_id === value.lesson_id
+            ),
+          };
+        });
+        return res.json({
+          data: [
+            {
+              user_course_detail_id:
+                userCourseDetails.data[0].user_course_detail_id,
+              course_detail: {
+                course_id: courseDetailOnThisCourse.data[0].course_id,
+                course_name: courseDetailOnThisCourse.data[0].course_name,
+                course_summary: courseDetailOnThisCourse.data[0].course_summary,
+                status_value:
+                  userCourseDetails.data[0].status_id === 1
+                    ? "not_started"
+                    : userCourseDetails.data[0].status_id === 2
+                    ? "in_progress"
+                    : "completed",
+              },
+              lesson_detail: lessonMap,
+            },
+          ],
+        });
+      }
     }
   } catch (error) {
+    console.log(error);
     return res.status(400).json({
       message: "Invalid API",
     });
@@ -401,14 +523,37 @@ courseRouter.put("/update/sub_lesson", protect, async (req, res) => {
         sub_lesson_id: sub_lesson_id,
       });
     if (checkCompleted.data[0].status_id === 1 || status_value === 3) {
+      const timeStamp = new Date();
       const { data, error } = await supabase
         .from("user_sub_lesson_details")
-        .update({ status_id: status_value })
+        .update({
+          status_id: status_value,
+        })
         .match({
           sub_lesson_id: sub_lesson_id,
           user_course_detail_id: user_course_detail_id,
         })
         .select();
+      if (status_value === 3) {
+        const assignmentStatus = await supabase
+          .from("user_sub_lesson_details")
+          .select("assignment_status, assignment_start_at")
+          .eq("sub_lesson_id", sub_lesson_id)
+          .eq("user_course_detail_id", user_course_detail_id);
+        if (assignmentStatus.data[0].assignment_status === "not_started") {
+          await supabase
+            .from("user_sub_lesson_details")
+            .update({
+              assignment_status: "pending",
+              assignment_start_at: timeStamp.toISOString(),
+            })
+            .match({
+              sub_lesson_id: sub_lesson_id,
+              user_course_detail_id: user_course_detail_id,
+            })
+            .select();
+        }
+      }
       const lessonID = await supabase
         .from("sub_lessons")
         .select("lesson_id")

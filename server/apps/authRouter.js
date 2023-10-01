@@ -155,6 +155,7 @@ authRouter.post("/admin/login", async (req, res) => {
             admin_username: supabaseResult.data[0].admin_username,
             admin_email: supabaseResult.data[0].admin_email,
             admin_name: supabaseResult.data[0].admin_name,
+            role: "admin",
           },
           process.env.SECRET_KEY,
           {

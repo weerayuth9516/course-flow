@@ -11,6 +11,7 @@ export default function useDataCenter() {
 export function DataCenterProvider({ children }) {
   const navigate = useNavigate();
   const [lessonId, setLessonId] = useState(null);
+  const [loading, setLoading] = useState(false);
   const [lessonLength, setLessonLength] = useState(null);
   const [addLesson, setAddLesson] = useState(false);
   const [lessons, setLessons] = useState([]);
@@ -127,7 +128,7 @@ export function DataCenterProvider({ children }) {
     setTimeout(() => {
       window.location.reload();
     }, 100);
-    navigate("/admin/courselist");
+    navigate("/admin");
   };
 
   return (
@@ -176,6 +177,8 @@ export function DataCenterProvider({ children }) {
         lessonId,
         setLessonId,
         lessonLength,
+        loading,
+        setLoading,
         setLessonLength,
       }}
     >

@@ -1,4 +1,4 @@
-import { Router, query } from "express";
+import { Router, query, response } from "express";
 import { supabase } from "../utils/db.js";
 import "dotenv/config";
 // import jwt from "jsonwebtoken";
@@ -24,8 +24,6 @@ adminRouter.get("/", async (req, res) => {
     } else {
       contReturn = count / 8;
     }
-    // console.log(contReturn);
-    // console.log(req.query);
     if (Number(req.query.page) && Number(req.query.page) !== 1) {
       endAt = req.query.page * 8;
       endAt += Number(req.query.page - 1);
@@ -55,7 +53,6 @@ adminRouter.get("/", async (req, res) => {
           .from("lessons")
           .select("course_id, lesson_name")
           .in("course_id", courseIdMaping);
-        // console.log(lesson);
         const newMap = coursesWithTitle.data.map((value) => {
           return {
             ...value,
@@ -81,9 +78,8 @@ adminRouter.get("/", async (req, res) => {
       .order("course_price", {
         ascending: req.query.price === "true" ? false : true,
       })
-
       .order("course_updated_at", {
-        ascending: req.query.updatedat === "true" ? false : true,
+        ascending: req.query.updatedat === "true" ? "" : true,
       })
       .range(startAt, endAt);
     if (courses.data.length !== 0 || courses.statusText === "OK") {
@@ -173,6 +169,123 @@ adminRouter.get("/courses/:courseId", async (req, res) => {
   }
 });
 
+adminRouter.get("/assignment/getcourse", async (req, res) => {
+  const courseForReturn = await supabase
+    .from("courses")
+    .select("course_id, course_name");
+  return res.json({
+    data: courseForReturn.data,
+  });
+});
+
+adminRouter.get("/assignment/getlesson/:courseId", async (req, res) => {
+  const lessonForReturn = await supabase
+    .from("lessons")
+    .select("lesson_name, lesson_id")
+    .eq("course_id", req.params.courseId);
+  return res.json({
+    data: lessonForReturn.data,
+  });
+});
+
+adminRouter.get("/getassignment", async (req, res) => {
+  try {
+    const { data, error, count } = await supabase
+      .from("assignments")
+      .select("assignment_id", { count: "exact" });
+    let contReturn = 0;
+    if (count % 8 !== 0) {
+      contReturn = count - (count % 8);
+      contReturn = contReturn / 8;
+      contReturn += 1;
+    } else {
+      contReturn = count / 8;
+    }
+    if (req.query.page) {
+      let startAt = 0;
+      let endAt = 7;
+      if (Number(req.query.page) && Number(req.query.page) !== 1) {
+        endAt = req.query.page * 8;
+        endAt += Number(req.query.page - 1);
+        startAt = endAt - 8;
+      }
+      const fetchAssignment = await supabase
+        .rpc("get_assignments")
+        .range(startAt, endAt);
+      return res.json({
+        data: fetchAssignment.data,
+        pageCount: contReturn,
+      });
+    } else {
+      const response = await supabase.rpc("get_assignments").limit(8);
+      return res.json({
+        data: response.data,
+        pageCount: contReturn,
+      });
+    }
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({
+      message: "Supabase Error",
+    });
+  }
+});
+
+adminRouter.put("/updateassignment/:assignmentId", async (req, res) => {
+  const response = await supabase
+    .from("assignments")
+    .update({ ...req.body })
+    .eq("assignment_id", req.params.assignmentId);
+  // console.log(req.body);
+  // console.log(response);
+  return res.json({ message: "Update assignment successfully" });
+});
+
+adminRouter.get("/assignment/getsublesson/:lessonId", async (req, res) => {
+  const subLessonForReturn = await supabase
+    .from("sub_lessons")
+    .select("sub_lesson_name, sub_lesson_id")
+    .eq("lesson_id", req.params.lessonId);
+  const assignmentForMap = await supabase
+    .from("assignments")
+    .select("sub_lesson_id")
+    .in(
+      "sub_lesson_id",
+      subLessonForReturn.data.map((sublesson) => {
+        return sublesson.sub_lesson_id;
+      })
+    );
+  const subLessonMapForReturn = subLessonForReturn.data.filter((sublesson) => {
+    return !assignmentForMap.data
+      .map((assignments) => {
+        return assignments.sub_lesson_id;
+      })
+      .includes(sublesson.sub_lesson_id);
+  });
+  return res.json({
+    data: subLessonMapForReturn,
+  });
+});
+
+adminRouter.post("/create/assignment/:subLessonId", async (req, res) => {
+  try {
+    const timeStamp = new Date();
+    const response = await supabase.from("assignments").insert({
+      sub_lesson_id: req.params.subLessonId,
+      assignment_detail: req.body.assignment_detail,
+      assignment_duration: Number(req.body.duration),
+      created_at: timeStamp.toISOString(),
+    });
+    return res.json({
+      message: "Assignment created successfully",
+    });
+  } catch {
+    return res.status(500).json({
+      message: "Supabase Server Error",
+    });
+  }
+});
+
 const storageControll = multer({ storage: multer.memoryStorage() });
 const multerUpload = storageControll.fields([
   { name: "courseVideoTrailerFile", maxCount: 1 },
@@ -186,7 +299,6 @@ adminRouter.post("/add/lesson/:courseId", multerUpload, async (req, res) => {
     const lessonName = req.body.lesson_name;
     const lessonPriority = req.body.lesson_priority;
     const subLessonArray = req.body[`sub_lesson.sub_lesson_name`];
-    console.log(subLessonArray);
     const sub_lesson_video_array = req.files.subLessonVideoFile;
     const inSertLesson = await supabase
       .from("lessons")
@@ -202,13 +314,23 @@ adminRouter.post("/add/lesson/:courseId", multerUpload, async (req, res) => {
       .eq("course_id", req.params.courseId)
       .eq("priority", lessonPriority);
     const currentLessonId = fetchLessonId.data[0].lesson_id;
-    const subLessonForInsert = subLessonArray.map((value, index) => {
-      return {
+    let subLessonForInsert;
+    if (typeof subLessonArray !== "string") {
+      subLessonForInsert = subLessonArray.map((value, index) => {
+        return {
+          lesson_id: currentLessonId,
+          sub_lesson_name: value,
+          priority: req.body[`sub_lesson.priority`][index],
+        };
+      });
+    } else {
+      subLessonForInsert = {
         lesson_id: currentLessonId,
-        sub_lesson_name: value,
-        priority: req.body[`sub_lesson.priority`][index],
+        sub_lesson_name: subLessonArray,
+        priority: 1,
       };
-    });
+    }
+
     // console.log(subLessonForInsert);
     const insertSubLesson = await supabase
       .from("sub_lessons")
@@ -419,7 +541,7 @@ adminRouter.put("/updated/:courseId", multerUpload, async (req, res) => {
         message: "Coures updeated successfully",
       });
     } else {
-      console.log(req.files);
+      // console.log(req.files);
       if (req.files.courseCoverImgFile !== undefined) {
         const imgPath = await supabase.storage
           .from("course_images")
@@ -602,16 +724,7 @@ adminRouter.put(
   async (req, res) => {
     try {
       const { courseId, lessonId, subLessonId } = req.params;
-
-      // const sub_lesson_video = req.files.singleSubLessonVideo[0];
-
       const subLessonName = req.body.sub_lesson_name;
-
-      // if (!subLessonName && !sub_lesson_video) {
-      //   return res
-      //     .status(400)
-      //     .json({ error: "Do not exist sub-lesson updated" });
-      // }
       if (req.files.singleSubLessonVideo) {
         const sub_lesson_video = req.files.singleSubLessonVideo[0];
         const filePath = `${courseId}/${lessonId}/${sub_lesson_video.originalname}`;
@@ -797,7 +910,7 @@ adminRouter.delete("/lessons/:lessonId/:courseId", async (req, res) => {
   try {
     const lessonId = req.params.lessonId;
     const courseId = req.params.courseId;
-
+    // console.log(lessonId);
     const isValidLessonUUID = /^\w{8}-\w{4}-\w{4}-\w{4}-\w{12}$/.test(lessonId);
     const isValidCourseUUID = /^\w{8}-\w{4}-\w{4}-\w{4}-\w{12}$/.test(courseId);
 
