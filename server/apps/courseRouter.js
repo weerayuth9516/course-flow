@@ -272,7 +272,7 @@ courseRouter.get("/subscription/:userId/:courseId", async (req, res) => {
   return res.json({ isSubscribed });
 });
 
-courseRouter.post("/assignment/submit", async (req, res) => {
+courseRouter.put("/assignment/submit", async (req, res) => {
   try {
     await supabase
       .from("user_sub_lesson_details")
