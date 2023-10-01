@@ -26,14 +26,15 @@ function useCourselearning() {
 
   const getUserCoursesLearning = async (userId) => {
     try {
-      // const token = localStorage.getItem("token");
-      // const headers = {
-      //   Authorization: `Bearer ${token}`,
-      // };
+      const token = localStorage.getItem("token");
+      const headers = {
+        Authorization: `Bearer ${token}`,
+      };
       const courseResult = await axios.get(
-        `http://localhost:4001/courses/coursedetail/learning?user_id=${userId}&course_id=${params.courseId}`
-        // { headers }
+        `http://localhost:4001/courses/coursedetail/learning?user_id=${userId}&course_id=${params.courseId}`,
+        { headers }
       );
+      console.log(courseResult.data.data[0]);
       SetUserCourseDetailId(courseResult.data.data[0].user_course_detail_id);
       setCourse(courseResult.data.data[0].course_detail);
       setLesson(courseResult.data.data[0].lesson_detail);
@@ -52,10 +53,10 @@ function useCourselearning() {
     statusValue
   ) => {
     try {
-      // const token = localStorage.getItem("token");
-      // const headers = {
-      //   Authorization: `Bearer ${token}`,
-      // };
+      const token = localStorage.getItem("token");
+      const headers = {
+        Authorization: `Bearer ${token}`,
+      };
       const body = {
         user_course_detail_id: userCourseDetailId,
         sub_lesson_id: sublessonId,
@@ -63,8 +64,8 @@ function useCourselearning() {
       };
       const courseResult = await axios.put(
         "http://localhost:4001/courses/update/sub_lesson",
-        body
-        // { headers }
+        body,
+        { headers }
       );
     } catch (error) {
       console.error(error);
