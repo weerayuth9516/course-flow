@@ -244,8 +244,24 @@ adminRouter.get("/assignment/getsublesson/:lessonId", async (req, res) => {
     .from("sub_lessons")
     .select("sub_lesson_name, sub_lesson_id")
     .eq("lesson_id", req.params.lessonId);
+  const assignmentForMap = await supabase
+    .from("assignments")
+    .select("sub_lesson_id")
+    .in(
+      "sub_lesson_id",
+      subLessonForReturn.data.map((sublesson) => {
+        return sublesson.sub_lesson_id;
+      })
+    );
+  const subLessonMapForReturn = subLessonForReturn.data.filter((sublesson) => {
+    return !assignmentForMap.data
+      .map((assignments) => {
+        return assignments.sub_lesson_id;
+      })
+      .includes(sublesson.sub_lesson_id);
+  });
   return res.json({
-    data: subLessonForReturn.data,
+    data: subLessonMapForReturn,
   });
 });
 

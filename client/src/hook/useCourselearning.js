@@ -37,6 +37,7 @@ function useCourselearning() {
       SetUserCourseDetailId(courseResult.data.data[0].user_course_detail_id);
       setCourse(courseResult.data.data[0].course_detail);
       setLesson(courseResult.data.data[0].lesson_detail);
+      console.log(courseResult.data.data[0].lesson_detail);
       const subLessons = courseResult.data.data[0].lesson_detail.flatMap(
         (lesson) => lesson.sub_lesson
       );

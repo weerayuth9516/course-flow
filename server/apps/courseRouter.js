@@ -321,15 +321,38 @@ courseRouter.get("/coursedetail/learning", protect, async (req, res) => {
         .select("*")
         .in("lesson_id", mapForFetchLessonName)
         .order("priority", { ascending: true });
+      const fetchUerSubLesson = await supabase
+        .from("user_sub_lesson_details")
+        .select("*")
+        .eq(
+          "user_course_detail_id",
+          userCourseDetails.data[0].user_course_detail_id
+        );
+      const subLessonIdArary = fetchUerSubLesson.data.map((value) => {
+        return value.sub_lesson_id;
+      });
+      const assignmentDetailOnThisCourse = await supabase
+        .from("assignments")
+        .select("*")
+        .in("sub_lesson_id", subLessonIdArary);
       const subLessonMap = subLessonDetailOnThisCourse.data.map((mainValue) => {
         const status = userSubLessonDetail.data.filter(
           (subValue) => mainValue.sub_lesson_id === subValue.sub_lesson_id
         )[0].status_id;
+        const assignment_status = userSubLessonDetail.data.filter((ass) => {
+          return ass.sub_lesson_id === mainValue.sub_lesson_id;
+        })[0].assignment_status;
         return {
           sub_lesson_id: mainValue.sub_lesson_id,
           sub_lesson_name: mainValue.sub_lesson_name,
           sub_lesson_video: mainValue.sub_lesson_video,
           lesson_id: mainValue.lesson_id,
+          assignment_status: assignment_status,
+          assignment_detail: assignmentDetailOnThisCourse.data.filter(
+            (assignment) => {
+              return assignment.sub_lesson_id === mainValue.sub_lesson_id;
+            }
+          )[0].assignment_detail,
           status_value:
             status === 1
               ? "not_started"
@@ -355,6 +378,11 @@ courseRouter.get("/coursedetail/learning", protect, async (req, res) => {
           ),
         };
       });
+      console.log(
+        lessonMap.map((lesson) => {
+          console.log(lesson.sub_lesson);
+        })
+      );
       return res.json({
         data: [
           {
@@ -377,6 +405,7 @@ courseRouter.get("/coursedetail/learning", protect, async (req, res) => {
       });
     }
   } catch (error) {
+    console.log(error);
     return res.status(400).json({
       message: "Invalid API",
     });
@@ -401,14 +430,37 @@ courseRouter.put("/update/sub_lesson", protect, async (req, res) => {
         sub_lesson_id: sub_lesson_id,
       });
     if (checkCompleted.data[0].status_id === 1 || status_value === 3) {
+      const timeStamp = new Date();
       const { data, error } = await supabase
         .from("user_sub_lesson_details")
-        .update({ status_id: status_value })
+        .update({
+          status_id: status_value,
+        })
         .match({
           sub_lesson_id: sub_lesson_id,
           user_course_detail_id: user_course_detail_id,
         })
         .select();
+      if (status_value === 3) {
+        const assignmentStatus = await supabase
+          .from("user_sub_lesson_details")
+          .select("assignment_status, assignment_start_at")
+          .eq("sub_lesson_id", sub_lesson_id)
+          .eq("user_course_detail_id", user_course_detail_id);
+        if (assignmentStatus.data[0].assignment_status === "not_started") {
+          await supabase
+            .from("user_sub_lesson_details")
+            .update({
+              assignment_status: "pending",
+              assignment_start_at: timeStamp.toISOString(),
+            })
+            .match({
+              sub_lesson_id: sub_lesson_id,
+              user_course_detail_id: user_course_detail_id,
+            })
+            .select();
+        }
+      }
       const lessonID = await supabase
         .from("sub_lessons")
         .select("lesson_id")
