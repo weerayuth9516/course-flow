@@ -6,6 +6,7 @@ import Footer from "../../components/Footer";
 import image_background from "../../assets/ourCourses/image_background.png";
 import { useAuth } from "../../context/authentication";
 import useMycourses from "../../hook/useMycourses";
+import image from "../../assets/header/image.png";
 
 function MyCoursePage() {
   const {
@@ -21,10 +22,16 @@ function MyCoursePage() {
 
   const auth = useAuth();
   const [getFocus, setGetFocus] = useState(true);
+  const [hasImage, setHasImage] = useState(false);
 
   useEffect(() => {
     if (auth.isAuthenicated) {
       setUserId(auth.session.user.user_id);
+      if (auth.session.user.user_avatar !== null) {
+        setHasImage(true);
+      } else {
+        setHasImage(false);
+      }
     }
   }, [auth.isAuthenicated]);
 
@@ -77,11 +84,25 @@ function MyCoursePage() {
         <div className="user-image-and-course-container flex justify-center mb-10">
           <div className="user-box sticky top-20 w-[357px] h-[396px] rounded-lg shadow-lg mr-10 flex flex-col justify-center items-center">
             <div className="w-[120px] h-[120px]">
-              <img
+              {/* <img
                 src={auth.session.user.user_avatar}
                 alt="user image"
                 className="object-cover w-full h-full rounded-full"
-              />
+              /> */}
+              {hasImage ? (
+                <img
+                  id="image-profile"
+                  className="object-cover w-full h-full rounded-full"
+                  src={auth.session.user.user_avatar}
+                />
+              ) : (
+                <img
+                  id="image-profile"
+                  className="object-cover w-full h-full rounded-full"
+                  src={image}
+                  alt="image profile"
+                />
+              )}
             </div>
             <div className="mt-5 text-header3 text-gray-800">
               {auth.session.user.user_name}

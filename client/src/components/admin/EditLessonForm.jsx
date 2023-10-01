@@ -77,7 +77,7 @@ function EditLessonForm() {
     if (!subLessonName) {
       setSubLessonNameError("Required!!!");
       setSignError(<img src={errorIcon} />);
-    } else if (!/^[a-zA-Z0-9\s]+$/.test(subLessonName)) {
+    } else if (!/^[a-zA-Z0-9\sก-๙]+$/.test(subLessonName)) {
       setSubLessonNameError({
         text: "Sub-Lesson name must contain only letters or digits",
         index: index,

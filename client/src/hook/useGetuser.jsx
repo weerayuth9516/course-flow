@@ -62,6 +62,7 @@ const useGetuser = () => {
         const fetching = await axios.get(`http://localhost:4001/users/${id}`);
         const userDataFromToken = jwtDecode(fetching.data.token);
         auth.session.user = userDataFromToken;
+
         localStorage.setItem("token", fetching.data.token);
       }
       setIsLoading(false);

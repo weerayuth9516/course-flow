@@ -51,19 +51,14 @@ function LessonForm() {
     initialValues.subLessons = [{ subLessonName: "", video: null }];
   }
   const validationSchema = Yup.object().shape({
-    lessonName: Yup.string()
-      .required("Lesson name is required")
-      .matches(
-        /^[a-zA-Z0-9]+$/,
-        "Lesson name must contain only letters or digits"
-      ),
+    lessonName: Yup.string().required("Lesson name is required"),
     subLessons: Yup.array()
       .of(
         Yup.object().shape({
           subLessonName: Yup.string()
             .required("Sub-Lesson name is required")
             .matches(
-              /^[a-zA-Z0-9\s]+$/,
+              /^[a-zA-Z0-9\sก-๙]+$/,
               "Sub-Lesson name must contain only letters or digits"
             ),
           video: Yup.mixed().required("Video is required"),
