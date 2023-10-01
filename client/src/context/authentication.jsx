@@ -96,7 +96,6 @@ function AuthProvider(props) {
   const isAuthenicated = Boolean(localStorage.getItem("token") && !isAdmin);
   const isAdminAuthenticated =
     Boolean(localStorage.getItem("token")) && isAdmin;
-  console.log(isAdminAuthenticated);
   if (isAuthenicated) {
     const token = localStorage.getItem("token");
     session.user = jwtDecode(token);

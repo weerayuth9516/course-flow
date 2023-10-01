@@ -369,10 +369,19 @@ courseRouter.get("/coursedetail/learning", protect, async (req, res) => {
                 return ass.sub_lesson_id === mainValue.sub_lesson_id;
               }
             )[0].assignment_start_at;
-            const assignment_duration =
-              assignmentDetailOnThisCourse.data.filter((ass) => {
+
+            const assignmentDuration = assignmentDetailOnThisCourse.data.filter(
+              (ass) => {
                 return ass.sub_lesson_id === mainValue.sub_lesson_id;
-              })[0].assignment_duration;
+              }
+            );
+
+            const assginmetDetail = assignmentDetailOnThisCourse.data.filter(
+              (assignment) => {
+                return assignment.sub_lesson_id === mainValue.sub_lesson_id;
+              }
+            );
+            console.log(mainValue.assignment_detail);
             return {
               sub_lesson_id: mainValue.sub_lesson_id,
               sub_lesson_name: mainValue.sub_lesson_name,
@@ -380,13 +389,18 @@ courseRouter.get("/coursedetail/learning", protect, async (req, res) => {
               lesson_id: mainValue.lesson_id,
               assignment_status: assignment_status,
               assignment_started_at: assignment_started_at,
-              assignment_duration: assignment_duration,
-              assignment_answer: mainValue.assignment_detail,
-              assignment_detail: assignmentDetailOnThisCourse.data.filter(
-                (assignment) => {
-                  return assignment.sub_lesson_id === mainValue.sub_lesson_id;
-                }
-              )[0].assignment_detail,
+              assignment_duration:
+                assignmentDuration[0] === undefined
+                  ? null
+                  : assignmentDuration[0].assignment_duration,
+              assignment_answer:
+                mainValue.assignment_detail === undefined
+                  ? null
+                  : mainValue.assignment_detail,
+              assignment_detail:
+                assginmetDetail[0] === undefined
+                  ? null
+                  : assginmetDetail[0].assignment_detail,
               status_value:
                 status === 1
                   ? "not_started"
