@@ -272,6 +272,26 @@ courseRouter.get("/subscription/:userId/:courseId", async (req, res) => {
   return res.json({ isSubscribed });
 });
 
+courseRouter.post("/assignment/submit", async (req, res) => {
+  try {
+    await supabase
+      .from("user_sub_lesson_details")
+      .update({
+        assignment_status: req.body.assignment_status,
+        assignment_detail: req.body.assignment_detail,
+      })
+      .match({
+        user_course_detail_id: req.body.user_course_detail_id,
+        sub_lesson_id: req.body.sub_lesson_id,
+      });
+    return res.json({
+      message: "Assignment send successfully",
+    });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
 courseRouter.get("/coursedetail/learning", protect, async (req, res) => {
   if (!req.query.user_id || !req.query.course_id) {
     return res.status(400).json({
@@ -342,12 +362,22 @@ courseRouter.get("/coursedetail/learning", protect, async (req, res) => {
         const assignment_status = userSubLessonDetail.data.filter((ass) => {
           return ass.sub_lesson_id === mainValue.sub_lesson_id;
         })[0].assignment_status;
+        const assignment_started_at = userSubLessonDetail.data.filter((ass) => {
+          return ass.sub_lesson_id === mainValue.sub_lesson_id;
+        })[0].assignment_start_at;
+        const assignment_duration = assignmentDetailOnThisCourse.data.filter(
+          (ass) => {
+            return ass.sub_lesson_id === mainValue.sub_lesson_id;
+          }
+        )[0].assignment_duration;
         return {
           sub_lesson_id: mainValue.sub_lesson_id,
           sub_lesson_name: mainValue.sub_lesson_name,
           sub_lesson_video: mainValue.sub_lesson_video,
           lesson_id: mainValue.lesson_id,
           assignment_status: assignment_status,
+          assignment_started_at: assignment_started_at,
+          assignment_duration: assignment_duration,
           assignment_detail: assignmentDetailOnThisCourse.data.filter(
             (assignment) => {
               return assignment.sub_lesson_id === mainValue.sub_lesson_id;
@@ -378,6 +408,7 @@ courseRouter.get("/coursedetail/learning", protect, async (req, res) => {
           ),
         };
       });
+      console.log(courseDetailOnThisCourse.data);
       return res.json({
         data: [
           {
