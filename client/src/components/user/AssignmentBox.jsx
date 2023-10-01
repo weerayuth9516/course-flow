@@ -7,8 +7,10 @@ function AssignmentBox({
   userCourseDetailId,
   subLessonId,
   assignmentAnswer,
+  assignmentDuration,
+  assignmentStartedAt,
 }) {
-  const [inputText, setInputText] = useState("");
+  const [inputText, setInputText] = useState(assignmentAnswer);
   const [checkAssignmentStatus, setCheckAssignmentStatus] = useState(assignmentStatus);
   const handleInputText = (e) => {
     const newInputText = e.target.value;
@@ -59,7 +61,7 @@ function AssignmentBox({
       <div className="w-[691px] h-[32px] flex justify-between items-center mt-4">
         <div className="text-body1 text-black">Assignment</div>
         <div className="text-[#996500] text-[16px] w-[79px] bg-[#FFFBDB] border flex justify-center p-1">
-          {checkAssignmentStatus === "not_started" ? "Pending" : "Submitted"}
+          {checkAssignmentStatus !== "not_started" ? "Pending" : "Submitted"}
         </div>
       </div>
       <form onSubmit={submitForm}>
@@ -71,10 +73,10 @@ function AssignmentBox({
             placeholder="Answer..."
             onChange={handleInputText}
             value={inputText}
-            disabled={
-              checkAssignmentStatus === "in_progress" ||
-              checkAssignmentStatus === "completed"
-            }
+            // disabled={
+            //   checkAssignmentStatus === "in_progress" ||
+            //   checkAssignmentStatus === "completed"
+            // }
             required
           />
         </div>

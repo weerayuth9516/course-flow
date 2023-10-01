@@ -11,15 +11,18 @@ function useCourselearning() {
   const [subLessonStatus, setSubLessonStatus] = useState([]);
   const [powerLevel, setPowerLevel] = useState(0);
   const [toggleStates, setToggleStates] = useState(lesson.map(() => false));
+  const [getUserId, setGetUserId] = useState("");
   const [currentSubLesson, setCurrentSubLesson] = useState({
     subLessonName: "",
     subLessonVideo: "",
     subLessonId: "",
+  });
+  const [currentAssignment, setCurrentAssignment] = useState({
     assignmentStatus: null,
     assignmentDetail: null,
     assignmentDuration: null,
     assignmentStartedAt: null,
-    assignmentAnswer: null,
+    assignmentAnswer: "",
   });
   const params = useParams();
 
@@ -91,31 +94,26 @@ function useCourselearning() {
     }
   };
 
-  const handleTitleClick = (
-    subLesson,
-    subVideo,
-    subLessonId,
-    assignmentStatus,
-    assignmentDetail,
-    assignmentDuration,
-    assignmentStartedAt,
-    assignmentAnswer
-  ) => {
+  const handleTitleClick = (subLesson, subVideo, subLessonId) => {
     setCurrentSubLesson({
       subLessonName: subLesson,
       subLessonVideo: subVideo,
       subLessonId: subLessonId,
-      assignmentStatus: assignmentStatus,
-      assignmentDetail: assignmentDetail,
-      assignmentDuration: assignmentDuration,
-      assignmentStartedAt: assignmentStartedAt,
-      assignmentAnswer: assignmentAnswer,
     });
-
+    getUserCoursesLearning(getUserId);
     const currentIndex = subLessonArray.indexOf(
       subLessonArray.find((item) => item.sub_lesson_id === subLessonId)
     );
     setLessonPage(currentIndex + 1);
+    if (subLessonArray[currentIndex].assignmentStatus !== null) {
+      setCurrentAssignment({
+        assignmentStatus: subLessonArray[currentIndex].assignmentStatus,
+        assignmentDetail: subLessonArray[currentIndex].assignmentDetail,
+        assignmentDuration: subLessonArray[currentIndex].assignmentDuration,
+        assignmentStartedAt: subLessonArray[currentIndex].assignmentStartedAt,
+        assignmentAnswer: subLessonArray[currentIndex].assignmentAnswer,
+      });
+    }
   };
 
   const handleVideoEnd = () => {
@@ -193,6 +191,10 @@ function useCourselearning() {
     handleVideoEnd,
     handleVideoStart,
     handleAssignment,
+    currentAssignment,
+    setCurrentAssignment,
+    getUserId,
+    setGetUserId,
   };
 }
 

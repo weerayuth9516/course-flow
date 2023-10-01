@@ -32,10 +32,14 @@ function CourseLearningPage() {
     handleVideoStart,
     handleAssignment,
     userCourseDetailId,
+    currentAssignment,
+    setCurrentAssignment,
+    getUserId,setGetUserId,
   } = useCourselearning();
 
   useEffect(() => {
     if (auth.isAuthenicated) {
+      setGetUserId(auth.session.user.user_id);
       const userId = auth.session.user.user_id;
       getUserCoursesLearning(userId);
     }
@@ -47,11 +51,6 @@ function CourseLearningPage() {
         subLessonName: subLessonArray[0].sub_lesson_name,
         subLessonVideo: subLessonArray[0].sub_lesson_video,
         subLessonId: subLessonArray[0].sub_lesson_id,
-        assignmentStatus: subLessonArray[0].assignment_status,
-        assignmentDetail: subLessonArray[0].assignment_detail,
-        assignmentDuration: subLessonArray[0].assignment_duration,
-        assignmentStartedAt: subLessonArray[0].assignment_started_at,
-        assignmentAnswer: subLessonArray[0].assignment_answer,
       });
       setSubLessonStatus(subLessonArray.map((initial) => initial.status_value));
     }
@@ -67,12 +66,6 @@ function CourseLearningPage() {
         subLessonName: subLessonArray[lessonPage - 1].sub_lesson_name,
         subLessonVideo: subLessonArray[lessonPage - 1].sub_lesson_video,
         subLessonId: subLessonArray[lessonPage - 1].sub_lesson_id,
-        assignmentStatus: subLessonArray[lessonPage - 1].assignment_status,
-        assignmentDetail: subLessonArray[lessonPage - 1].assignment_detail,
-        assignmentDuration: subLessonArray[lessonPage - 1].assignment_duration,
-        assignmentStartedAt:
-          subLessonArray[lessonPage - 1].assignment_started_at,
-        assignmentAnswer: subLessonArray[lessonPage - 1].assignment_answer,
       });
     }
   }, [lessonPage, subLessonArray]);
@@ -160,19 +153,6 @@ function CourseLearningPage() {
                                     item.sub_lesson_name,
                                     item.sub_lesson_video,
                                     item.sub_lesson_id,
-                                    item.assignment_status,
-                                    item.assignment_status !== null
-                                      ? item.assignment_detail
-                                      : null,
-                                    item.assignment_status !== null
-                                      ? item.assignment_duration
-                                      : null,
-                                    item.assignment_status !== null
-                                      ? item.assignment_started_at
-                                      : null,
-                                    item.assignment_status !== null
-                                      ? item.assignment_answer
-                                      : null
                                   )
                                 }
                                 className="w-[257px] h-[48px] text-left ml-3 whitespace-normal"
@@ -207,13 +187,15 @@ function CourseLearningPage() {
                 className="w-[739px] h-[460px]"
               ></video>
               {handleAssignment() &&
-              currentSubLesson.assignmentStatus !== null ? (
+              currentAssignment.assignmentStatus !== null ? (
                 <AssignmentBox
-                  assignmentDetail={currentSubLesson.assignmentDetail}
-                  assignmentStatus={currentSubLesson.assignmentStatus}
+                  assignmentDetail={currentAssignment.assignmentDetail}
+                  assignmentStatus={currentAssignment.assignmentStatus}
+                  assignmentAnswer={currentAssignment.assignmentAnswer}
+                  assignmentDuration={currentAssignment.assignmentDuration}
+                  assignmentStartedAt={currentAssignment.assignmentStartedAt}
                   userCourseDetailId={userCourseDetailId}
                   subLessonId={currentSubLesson.subLessonId}
-                  assignmentAnswer={currentSubLesson.assignmentAnswer}
                 />
               ) : (
                 ""
