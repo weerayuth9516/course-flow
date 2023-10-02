@@ -228,7 +228,7 @@ function LessonForm() {
                                 {errors.subLessons?.[index]?.subLessonName &&
                                   touched.subLessons?.[index]
                                     ?.subLessonName && (
-                                    <div className="error-icon absolute right-[35%] top-[19%] transform -translate-y-1/2">
+                                    <div className="error-icon absolute right-[58%] top-[21%] transform -translate-y-1/2">
                                       <img src={errorIcon} alt="Error Icon" />
                                     </div>
                                   )}
