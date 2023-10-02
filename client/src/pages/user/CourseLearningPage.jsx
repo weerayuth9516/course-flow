@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import completed from "../../assets/courseLearning/completed.png";
@@ -34,9 +34,9 @@ function CourseLearningPage() {
     userCourseDetailId,
     currentAssignment,
     setCurrentAssignment,
-    getUserId,setGetUserId,
+    getUserId,
+    setGetUserId,
   } = useCourselearning();
-
   useEffect(() => {
     if (auth.isAuthenicated) {
       setGetUserId(auth.session.user.user_id);
@@ -58,6 +58,11 @@ function CourseLearningPage() {
 
   useEffect(() => {
     calculatePowerLevel();
+    // setCurrentAssignment({assignmentStatus
+    //   assignmentDetail
+    //   assignmentDuration
+    //   assignmentStartedAt
+    //   assignmentAnswer})
   }, [subLessonStatus]);
 
   useEffect(() => {
@@ -148,13 +153,22 @@ function CourseLearningPage() {
                               </span>
                               <button
                                 key={index}
-                                onClick={() =>
+                                onClick={() => {
                                   handleTitleClick(
                                     item.sub_lesson_name,
                                     item.sub_lesson_video,
                                     item.sub_lesson_id,
-                                  )
-                                }
+                                    {
+                                      assignment_detail: item.assignment_detail,
+                                      assignment_answer: item.assignment_answer,
+                                      assignment_duration:
+                                        item.assignment_duration,
+                                      assignment_started_at:
+                                        item.assignment_started_at,
+                                      assignment_status: item.assignment_status,
+                                    }
+                                  );
+                                }}
                                 className="w-[257px] h-[48px] text-left ml-3 whitespace-normal"
                               >
                                 {item.sub_lesson_name}
@@ -186,8 +200,7 @@ function CourseLearningPage() {
                 src={currentSubLesson.subLessonVideo}
                 className="w-[739px] h-[460px]"
               ></video>
-              {handleAssignment() &&
-              currentAssignment.assignmentStatus !== null ? (
+              {/* {currentAssignment.assignmentStatus !== null ? (
                 <AssignmentBox
                   assignmentDetail={currentAssignment.assignmentDetail}
                   assignmentStatus={currentAssignment.assignmentStatus}
@@ -199,7 +212,7 @@ function CourseLearningPage() {
                 />
               ) : (
                 ""
-              )}
+              )} */}
             </div>
           </div>
         </div>

@@ -375,7 +375,7 @@ courseRouter.get("/coursedetail/learning", protect, async (req, res) => {
                 return ass.sub_lesson_id === mainValue.sub_lesson_id;
               }
             );
-
+            console.log(assignmentDuration[0]);
             const assginmetDetail = assignmentDetailOnThisCourse.data.filter(
               (assignment) => {
                 return assignment.sub_lesson_id === mainValue.sub_lesson_id;
