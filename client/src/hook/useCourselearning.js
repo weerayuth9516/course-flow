@@ -45,23 +45,7 @@ function useCourselearning() {
       SetUserCourseDetailId(courseResult.data.data[0].user_course_detail_id);
       setCourse(courseResult.data.data[0].course_detail);
       setLesson(courseResult.data.data[0].lesson_detail);
-      setCurrentAssignment({
-        assignmentStatus:
-          courseResult.data.data[0].lesson_detail[0].sub_lesson[0]
-            .assignment_status,
-        assignmentDetail:
-          courseResult.data.data[0].lesson_detail[0].sub_lesson[0]
-            .assignment_detail,
-        assignmentDuration:
-          courseResult.data.data[0].lesson_detail[0].sub_lesson[0]
-            .assignment_duration,
-        assignmentStartedAt:
-          courseResult.data.data[0].lesson_detail[0].sub_lesson[0]
-            .assignment_started_at,
-        assignmentAnswer:
-          courseResult.data.data[0].lesson_detail[0].sub_lesson[0]
-            .assignment_answer,
-      });
+      console.log(courseResult.data.data[0].lesson_detail);
       const subLessons = courseResult.data.data[0].lesson_detail.flatMap(
         (lesson) => lesson.sub_lesson
       );
@@ -111,19 +95,22 @@ function useCourselearning() {
     }
   };
 
-  const handleTitleClick = (subLesson, subVideo, subLessonId, assObj) => {
-    setCurrentAssignment({
+  const handleTitleClick = async (subLesson, subVideo, subLessonId, assObj) => {
+    // console.log(assObj.assignment_answer);
+    await setCurrentSubLesson({
+      subLessonName: subLesson,
+      subLessonVideo: subVideo,
+      subLessonId: subLessonId,
+    });
+    await setCurrentAssignment({
       assignmentStatus: assObj.assignment_status,
       assignmentDetail: assObj.assignment_detail,
       assignmentDuration: assObj.assignment_duration,
       assignmentStartedAt: assObj.assignment_started_at,
       assignmentAnswer: assObj.assignment_answer,
     });
-    setCurrentSubLesson({
-      subLessonName: subLesson,
-      subLessonVideo: subVideo,
-      subLessonId: subLessonId,
-    });
+    // console.log(currentAssignment);
+    // console.log(currentSubLesson);
     getUserCoursesLearning(getUserId);
     const currentIndex = subLessonArray.indexOf(
       subLessonArray.find((item) => item.sub_lesson_id === subLessonId)

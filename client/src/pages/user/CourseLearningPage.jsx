@@ -37,6 +37,14 @@ function CourseLearningPage() {
     getUserId,
     setGetUserId,
   } = useCourselearning();
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [preAssignment, setPreAssignment] = useState({
+    assignmentDetail: "",
+    assignmentAnswer: "",
+    assignmentDuration: 0,
+    assignmentStartedAt: null,
+    assignmentStatus: "",
+  });
   useEffect(() => {
     if (auth.isAuthenicated) {
       setGetUserId(auth.session.user.user_id);
@@ -51,6 +59,7 @@ function CourseLearningPage() {
         subLessonName: subLessonArray[0].sub_lesson_name,
         subLessonVideo: subLessonArray[0].sub_lesson_video,
         subLessonId: subLessonArray[0].sub_lesson_id,
+        subLessonStatus: subLessonArray[0].status_value,
       });
       setSubLessonStatus(subLessonArray.map((initial) => initial.status_value));
     }
@@ -58,11 +67,6 @@ function CourseLearningPage() {
 
   useEffect(() => {
     calculatePowerLevel();
-    // setCurrentAssignment({assignmentStatus
-    //   assignmentDetail
-    //   assignmentDuration
-    //   assignmentStartedAt
-    //   assignmentAnswer})
   }, [subLessonStatus]);
 
   useEffect(() => {
@@ -71,6 +75,7 @@ function CourseLearningPage() {
         subLessonName: subLessonArray[lessonPage - 1].sub_lesson_name,
         subLessonVideo: subLessonArray[lessonPage - 1].sub_lesson_video,
         subLessonId: subLessonArray[lessonPage - 1].sub_lesson_id,
+        subLessonStatus: subLessonArray[lessonPage - 1].status_value,
       });
     }
   }, [lessonPage, subLessonArray]);
@@ -153,7 +158,7 @@ function CourseLearningPage() {
                               </span>
                               <button
                                 key={index}
-                                onClick={() => {
+                                onClick={() =>
                                   handleTitleClick(
                                     item.sub_lesson_name,
                                     item.sub_lesson_video,
@@ -165,10 +170,23 @@ function CourseLearningPage() {
                                         item.assignment_duration,
                                       assignment_started_at:
                                         item.assignment_started_at,
-                                      assignment_status: item.assignment_status,
+                                      assignment_status:
+                                        item.assignment_status === "not_started"
+                                          ? null
+                                          : item.assignment_status,
                                     }
-                                  );
-                                }}
+                                  ).then(() => {
+                                    setPreAssignment({
+                                      assignmentAnswer: item.assignment_answer,
+                                      assignmentDetail: item.assignment_detail,
+                                      assignmentDuration:
+                                        item.assignment_duration,
+                                      assignmentStartedAt:
+                                        item.assignment_started_at,
+                                      assignmentStatus: item.assignment_status,
+                                    });
+                                  })
+                                }
                                 className="w-[257px] h-[48px] text-left ml-3 whitespace-normal"
                               >
                                 {item.sub_lesson_name}
@@ -178,7 +196,9 @@ function CourseLearningPage() {
                         })
                       : ""
                   }
-                  isOpen={toggleStates[index]}
+                  isOpen={
+                    index === 0 ? !toggleStates[index] : toggleStates[index]
+                  }
                   toggle={() => toggle(index)}
                 />
               ))}
@@ -200,19 +220,23 @@ function CourseLearningPage() {
                 src={currentSubLesson.subLessonVideo}
                 className="w-[739px] h-[460px]"
               ></video>
-              {/* {currentAssignment.assignmentStatus !== null ? (
+              {(preAssignment.assignmentStatus !== null &&
+                preAssignment.assignmentStatus !== "not_started" &&
+                preAssignment.assignmentStatus !== undefined &&
+                preAssignment.assignmentStatus !== "") ||
+              currentSubLesson.subLessonStatus === "completed" ? (
                 <AssignmentBox
-                  assignmentDetail={currentAssignment.assignmentDetail}
-                  assignmentStatus={currentAssignment.assignmentStatus}
-                  assignmentAnswer={currentAssignment.assignmentAnswer}
-                  assignmentDuration={currentAssignment.assignmentDuration}
-                  assignmentStartedAt={currentAssignment.assignmentStartedAt}
+                  assignmentDetail={preAssignment.assignmentDetail}
+                  assignmentStatus={preAssignment.assignmentStatus}
+                  assignmentAnswer={preAssignment.assignmentAnswer}
+                  assignmentDuration={preAssignment.assignmentDuration}
+                  assignmentStartedAt={preAssignment.assignmentStartedAt}
                   userCourseDetailId={userCourseDetailId}
                   subLessonId={currentSubLesson.subLessonId}
                 />
               ) : (
                 ""
-              )} */}
+              )}
             </div>
           </div>
         </div>

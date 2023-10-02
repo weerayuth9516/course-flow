@@ -278,7 +278,7 @@ courseRouter.put("/assignment/submit", async (req, res) => {
       .from("user_sub_lesson_details")
       .update({
         assignment_status: req.body.assignment_status,
-        assignment_detail: req.body.assignment_detail,
+        assignment_detail: req.body.assignment_answer,
       })
       .match({
         user_course_detail_id: req.body.user_course_detail_id,
@@ -358,6 +358,31 @@ courseRouter.get("/coursedetail/learning", protect, async (req, res) => {
       if (assignmentDetailOnThisCourse.data.length !== 0) {
         const subLessonMap = subLessonDetailOnThisCourse.data.map(
           (mainValue) => {
+            const assignment_checker = userSubLessonDetail.data.filter(
+              (ass) => {
+                return ass.sub_lesson_id === mainValue.sub_lesson_id;
+              }
+            )[0];
+            if (assignment_checker.assignment_start_at !== null) {
+              const timeChecker = new Date();
+              const timeStartAt = new Date(
+                assignment_checker.assignment_started_at
+              );
+              if (
+                (timeChecker - timeStartAt) / (1000 * 60 * 60 * 24) >
+                  assignment_checker.assignment_duration &&
+                assignment_checker.assignment_status !== "completed"
+              ) {
+                supabase
+                  .from("user_sub_lesson_details")
+                  .update({ assignment_status: "overdue" })
+                  .match({
+                    user_course_detail_id:
+                      userCourseDetails.data[0].user_course_detail_id,
+                    sub_lesson_id: mainValue.sub_lesson_id,
+                  });
+              }
+            }
             const status = userSubLessonDetail.data.filter(
               (subValue) => mainValue.sub_lesson_id === subValue.sub_lesson_id
             )[0].status_id;
@@ -369,21 +394,19 @@ courseRouter.get("/coursedetail/learning", protect, async (req, res) => {
                 return ass.sub_lesson_id === mainValue.sub_lesson_id;
               }
             )[0].assignment_start_at;
-
             const assignmentDuration = assignmentDetailOnThisCourse.data.filter(
               (ass) => {
                 return ass.sub_lesson_id === mainValue.sub_lesson_id;
               }
-            );
-            console.log(assignmentDuration[0]);
+            )[0];
             const assginmetDetail = assignmentDetailOnThisCourse.data.filter(
               (assignment) => {
                 return assignment.sub_lesson_id === mainValue.sub_lesson_id;
               }
-            );
+            )[0];
             const assignmentAnswer = fetchUerSubLesson.data.filter((ass) => {
               return ass.sub_lesson_id === mainValue.sub_lesson_id;
-            });
+            })[0];
             return {
               sub_lesson_id: mainValue.sub_lesson_id,
               sub_lesson_name: mainValue.sub_lesson_name,
@@ -392,14 +415,14 @@ courseRouter.get("/coursedetail/learning", protect, async (req, res) => {
               assignment_status: assignment_status,
               assignment_started_at: assignment_started_at,
               assignment_duration:
-                assignmentDuration[0] === undefined
+                assignmentDuration === undefined
                   ? null
-                  : assignmentDuration[0].assignment_duration,
-              assignment_answer: assignmentAnswer[0].assignment_detail,
+                  : assignmentDuration.assignment_duration,
+              assignment_answer: assignmentAnswer.assignment_detail,
               assignment_detail:
-                assginmetDetail[0] === undefined
+                assginmetDetail === undefined
                   ? null
-                  : assginmetDetail[0].assignment_detail,
+                  : assginmetDetail.assignment_detail,
               status_value:
                 status === 1
                   ? "not_started"
@@ -409,9 +432,9 @@ courseRouter.get("/coursedetail/learning", protect, async (req, res) => {
             };
           }
         );
-        const lessonMap = lessonDetailOnThisCourse.data.map((value) => {
+        const lessonMap = lessonDetailOnThisCourse.data.map((value, index) => {
           const status = userLessonDetail.data.filter(
-            (subValue) => subValue.lesson_id === value.lesson_id
+            (sub) => sub.lesson_id === value.lesson_id
           )[0].status_id;
           return {
             lesson_name: `${value.lesson_name}`,
