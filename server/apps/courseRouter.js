@@ -192,8 +192,40 @@ courseRouter.post("/mycourses/:courseId", protect, async (req, res) => {
             subscription_id: 1,
           },
         ]);
+      const lesson = await supabase
+        .from("lessons")
+        .select("lesson_id")
+        .eq("course_id", req.body.course_id);
+      const lessonArray = lesson.data.map((value) => {
+        return value.lesson_id;
+      });
+      const subLessonArray = await supabase
+        .from("sub_lessons")
+        .select("*")
+        .in("lesson_id", lessonArray);
 
-      if (updateSubscriptionStatus.status === 201) {
+      const insertSubUserDeatil = subLessonArray.data.map((value) => ({
+        user_course_detail_id: userCourseDetailsId,
+        sub_lesson_id: value.sub_lesson_id,
+        status_id: 1,
+      }));
+      const lessonsData = lesson.data.map((lesson) => ({
+        user_course_detail_id: userCourseDetailsId,
+        lesson_id: lesson.lesson_id,
+        status_id: 1,
+      }));
+      const subscribeLessons = await supabase
+        .from("user_lesson_details")
+        .insert(lessonsData);
+      const subscribeSubLessons = await supabase
+        .from("user_sub_lesson_details")
+        .insert(insertSubUserDeatil);
+
+      if (
+        (updateSubscriptionStatus.statusText,
+        subscribeLessons.statusText,
+        subscribeSubLessons.statusText === "Created")
+      ) {
         return res.json({ message: "Subscription updated successfully" });
       } else {
         return res.status(400).send("Failed to update subscription status");
