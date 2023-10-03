@@ -13,6 +13,7 @@ import LessonForm from "../../components/admin/LessonForm";
 import EditLessonForm from "../../components/admin/EditLessonForm";
 import { DeleteCourseEdit } from "../../components/admin/ConfirmDeleteModal";
 import { DeleteLesson } from "../../components/admin/ConfirmDeleteModal";
+
 function EditCoursePage() {
   const { formValues, setFormValues } = useDataCenter();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -90,6 +91,7 @@ function EditCoursePage() {
         }
       );
       setLoading(false);
+      navigate("/admin");
     } catch (err) {
       console.log(err);
       setLoading(false);
