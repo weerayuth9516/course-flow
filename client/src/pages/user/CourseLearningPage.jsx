@@ -61,6 +61,12 @@ function CourseLearningPage() {
         subLessonId: subLessonArray[0].sub_lesson_id,
         subLessonStatus: subLessonArray[0].status_value,
       });
+      setCurrentAssignment({
+        assignmentDetail: subLessonArray[0].assignment_detail,
+        assignmentAnswer: subLessonArray[0].assignment_answer,
+        assignmentDuration: subLessonArray[0].assignment_duration,
+        assignmentStartedAt: subLessonArray[0].assignment_started_at,
+      });
       setSubLessonStatus(subLessonArray.map((initial) => initial.status_value));
     }
   }, [subLessonArray]);
@@ -76,6 +82,14 @@ function CourseLearningPage() {
         subLessonVideo: subLessonArray[lessonPage - 1].sub_lesson_video,
         subLessonId: subLessonArray[lessonPage - 1].sub_lesson_id,
         subLessonStatus: subLessonArray[lessonPage - 1].status_value,
+      });
+      setCurrentAssignment({
+        assignmentDetail: subLessonArray[lessonPage - 1].assignment_detail,
+        assignmentAnswer: subLessonArray[lessonPage - 1].assignment_answer,
+        assignmentDuration: subLessonArray[lessonPage - 1].assignment_duration,
+        assignmentStartedAt:
+          subLessonArray[lessonPage - 1].assignment_started_at,
+        assignmentStatus: subLessonArray[lessonPage - 1].assignment_status,
       });
     }
   }, [lessonPage, subLessonArray]);
@@ -220,17 +234,13 @@ function CourseLearningPage() {
                 src={currentSubLesson.subLessonVideo}
                 className="w-[739px] h-[460px]"
               ></video>
-              {(preAssignment.assignmentStatus !== null &&
-                preAssignment.assignmentStatus !== "not_started" &&
-                preAssignment.assignmentStatus !== undefined &&
-                preAssignment.assignmentStatus !== "") ||
-              currentSubLesson.subLessonStatus === "completed" ? (
+              {currentSubLesson.subLessonStatus === "completed" ? (
                 <AssignmentBox
-                  assignmentDetail={preAssignment.assignmentDetail}
-                  assignmentStatus={preAssignment.assignmentStatus}
-                  assignmentAnswer={preAssignment.assignmentAnswer}
-                  assignmentDuration={preAssignment.assignmentDuration}
-                  assignmentStartedAt={preAssignment.assignmentStartedAt}
+                  assignmentDetail={currentAssignment.assignmentDetail}
+                  assignmentStatus={currentAssignment.assignmentStatus}
+                  assignmentAnswer={currentAssignment.assignmentAnswer}
+                  assignmentDuration={currentAssignment.assignmentDuration}
+                  assignmentStartedAt={currentAssignment.assignmentStartedAt}
                   userCourseDetailId={userCourseDetailId}
                   subLessonId={currentSubLesson.subLessonId}
                 />

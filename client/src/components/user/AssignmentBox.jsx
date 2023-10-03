@@ -43,6 +43,7 @@ function AssignmentBox({
   };
 
   const submitForm = (e) => {
+    console.log(e.target.value);
     e.preventDefault();
     setCheckAssignmentStatus("submit");
     createAssignmentAnswer();
@@ -51,8 +52,9 @@ function AssignmentBox({
   useEffect(() => {
     setInputText(assignmentAnswer);
     setCheckAssignmentStatus(assignmentStatus);
+    // console.log(assignmentStatus);
     if (checkAssignmentStatus === "pending") {
-      createAssignmentAnswer();
+      // createAssignmentAnswer();
     }
   }, [subLessonId, assignmentAnswer, assignmentStatus]);
 

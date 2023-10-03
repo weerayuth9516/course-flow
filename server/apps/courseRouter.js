@@ -293,65 +293,80 @@ courseRouter.put("/assignment/submit", async (req, res) => {
 });
 
 courseRouter.get("/allassignment/:userId", async (req, res) => {
+  // const result = await supabase
+  //   .rpc("get_myassignments")
+  //   .eq("user_id", req.params.userId);
   const result = await supabase
-    .rpc("get_myassignments")
+    .from("user_course_details")
+    .select("user_course_detail_id, course_id")
     .eq("user_id", req.params.userId);
-  const resultFilter = result.data.filter((detail) => {
-    return detail.assignment_status !== "not_started";
+  const courseDetailId = result.data.map((value) => {
+    return value.user_course_detail_id;
   });
-  console.log(resultFilter);
-  console.log("------------------");
+  const courseId = result.data.map((value) => {
+    return value.course_id;
+  });
+  const lessonDetail = await supabase
+    .from("user_lesson_details")
+    .select("lesson_id")
+    .in("user_course_detail_id", courseDetailId);
+  const lessonId = lessonDetail.data.map((lesson) => {
+    return lesson.lesson_id;
+  });
+  // console.log(lessonId);
+  const subLessonDetail = await supabase
+    .from("user_sub_lesson_details")
+    .select("*")
+    .in("user_course_detail_id", courseDetailId);
+  const resultFilter = subLessonDetail.data.filter((subDetail) => {
+    return subDetail.assignment_status !== "not_started";
+  });
   if (resultFilter.length > 0) {
-    const courseId = resultFilter.map((filter) => {
-      return filter.course_id;
-    });
     const newCourse = await supabase
       .from("courses")
       .select("course_id, course_name")
       .in("course_id", courseId);
-    const lessonId = resultFilter.map((filter) => {
-      return filter.lesson_id;
-    });
     const newLesson = await supabase
       .from("lessons")
-      .select("lesson_id, lesson_name")
+      .select("lesson_id, lesson_name, course_id")
       .in("lesson_id", lessonId);
     const sublessonId = resultFilter.map((filter) => {
       return filter.sub_lesson_id;
     });
+    // console.log(newLesson);
     const newSub = await supabase
       .from("sub_lessons")
-      .select("sub_lesson_id, sub_lesson_name")
+      .select("sub_lesson_id, sub_lesson_name, lesson_id")
       .in("sub_lesson_id", sublessonId);
     const newAss = await supabase
       .from("assignments")
       .select("sub_lesson_id, assignment_detail")
       .in("sub_lesson_id", sublessonId);
-    const newMap = resultFilter.map((detail) => {
-      const assMap = newAss.data.filter((subDetail) => {
+    const newMapII = resultFilter.map((detail) => {
+      const subName = newSub.data.filter((subDetail) => {
         return subDetail.sub_lesson_id === detail.sub_lesson_id;
-      })[0];
+      });
+      const question = newAss.data.filter((assDetail) => {
+        return assDetail.sub_lesson_id === detail.sub_lesson_id;
+      });
+      const lessonName = newLesson.data.filter((lessDetail) => {
+        return lessDetail.lesson_id === subName[0].lesson_id;
+      });
+      const courseName = newCourse.data.filter((courseDetail) => {
+        return courseDetail.course_id === lessonName[0].course_id;
+      });
       return {
-        course_name: newCourse.data.filter((couresDetail) => {
-          return couresDetail.course_id === detail.course_id;
-        })[0].course_name,
-        lesson_name: newLesson.data.filter((lessonDetail) => {
-          return lessonDetail.lesson_id === detail.lesson_id;
-        })[0].lesson_name,
-        sub_lesson_name: newSub.data.filter((subDetail) => {
-          return subDetail.sub_lesson_id === detail.sub_lesson_id;
-        })[0].sub_lesson_name,
-        assignment_question:
-          assMap === undefined ? null : assMap.assignment_detail,
-        assignment_answer:
-          detail.assignment_detail === undefined
-            ? null
-            : detail.assignment_detail,
+        course_name: courseName[0].course_name,
+        lesson_name: lessonName[0].lesson_name,
+        sub_lesson_name: subName[0].sub_lesson_name,
+        assignment_question: question[0].assignment_detail,
+        assignment_answer: detail.assignment_detail,
         assignment_status: detail.assignment_status,
       };
     });
+    // console.log(newMapII);
     return res.json({
-      data: newMap,
+      data: newMapII,
     });
   }
   res.json({
