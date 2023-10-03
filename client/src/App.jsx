@@ -19,7 +19,7 @@ import AdminLoginPage from "./pages/admin/AdminLoginPage";
 import EditLessonPage from "./pages/admin/EditLessonPage";
 import EditCoursePage from "./pages/admin/EditCoursePage";
 import AssignmentPage from "./pages/admin/AssignmentPage";
-
+import MyAssignmentPage from "./pages/user/MyAssignment";
 // export const SessionContext = React.createContext();
 
 function App() {
@@ -35,6 +35,7 @@ function App() {
         <Route path="course" element={<CoursePage />} />
         {auth.isAuthenicated ? (
           <>
+            <Route path="/assignments" element={<MyAssignmentPage />} />
             <Route path="/mycourses" element={<MyCoursePage />} />
             <Route
               path="/courselearning/:courseId"
