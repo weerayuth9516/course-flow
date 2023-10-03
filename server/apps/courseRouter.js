@@ -292,6 +292,75 @@ courseRouter.put("/assignment/submit", async (req, res) => {
   }
 });
 
+courseRouter.get("/allassignment/:userId", async (req, res) => {
+  const result = await supabase
+    .rpc("get_myassignments")
+    .eq("user_id", req.params.userId);
+  const resultFilter = result.data.filter((detail) => {
+    return detail.assignment_status !== "not_started";
+  });
+  console.log(resultFilter);
+  console.log("------------------");
+  if (resultFilter.length > 0) {
+    const courseId = resultFilter.map((filter) => {
+      return filter.course_id;
+    });
+    const newCourse = await supabase
+      .from("courses")
+      .select("course_id, course_name")
+      .in("course_id", courseId);
+    const lessonId = resultFilter.map((filter) => {
+      return filter.lesson_id;
+    });
+    const newLesson = await supabase
+      .from("lessons")
+      .select("lesson_id, lesson_name")
+      .in("lesson_id", lessonId);
+    const sublessonId = resultFilter.map((filter) => {
+      return filter.sub_lesson_id;
+    });
+    const newSub = await supabase
+      .from("sub_lessons")
+      .select("sub_lesson_id, sub_lesson_name")
+      .in("sub_lesson_id", sublessonId);
+    const newAss = await supabase
+      .from("assignments")
+      .select("sub_lesson_id, assignment_detail")
+      .in("sub_lesson_id", sublessonId);
+    const newMap = resultFilter.map((detail) => {
+      const assMap = newAss.data.filter((subDetail) => {
+        return subDetail.sub_lesson_id === detail.sub_lesson_id;
+      })[0];
+      return {
+        course_name: newCourse.data.filter((couresDetail) => {
+          return couresDetail.course_id === detail.course_id;
+        })[0].course_name,
+        lesson_name: newLesson.data.filter((lessonDetail) => {
+          return lessonDetail.lesson_id === detail.lesson_id;
+        })[0].lesson_name,
+        sub_lesson_name: newSub.data.filter((subDetail) => {
+          return subDetail.sub_lesson_id === detail.sub_lesson_id;
+        })[0].sub_lesson_name,
+        assignment_question:
+          assMap === undefined ? null : assMap.assignment_detail,
+        assignment_answer:
+          detail.assignment_detail === undefined
+            ? null
+            : detail.assignment_detail,
+        assignment_status: detail.assignment_status,
+      };
+    });
+    return res.json({
+      data: newMap,
+    });
+  }
+  res.json({
+    data: result.data.filter((value) => {
+      return value.assignment_status !== "not_started";
+    }),
+  });
+});
+
 courseRouter.get("/coursedetail/learning", protect, async (req, res) => {
   if (!req.query.user_id || !req.query.course_id) {
     return res.status(400).json({
@@ -542,7 +611,6 @@ courseRouter.get("/coursedetail/learning", protect, async (req, res) => {
 });
 
 courseRouter.put("/assignment/submit", async (req, res) => {
-  console.log(req.body);
   try {
     await supabase
       .from("user_sub_lesson_details")

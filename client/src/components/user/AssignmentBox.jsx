@@ -25,11 +25,12 @@ function AssignmentBox({
         Authorization: `Bearer ${token}`,
       };
       const body = {
-        assignment_status: checkAssignmentStatus,
+        assignment_status: "submit",
         assignment_answer: inputText,
         user_course_detail_id: userCourseDetailId,
         sub_lesson_id: subLessonId,
       };
+      console.log(body);
       const courseResult = await axios.put(
         `http://localhost:4001/courses/assignment/submit`,
         body,
@@ -43,18 +44,16 @@ function AssignmentBox({
 
   const submitForm = (e) => {
     e.preventDefault();
-    setCheckAssignmentStatus("in_progress");
+    setCheckAssignmentStatus("submit");
+    createAssignmentAnswer();
   };
-
-  useEffect(() => {
-    if (checkAssignmentStatus === "in_progress") {
-      createAssignmentAnswer();
-    }
-  }, [checkAssignmentStatus]);
 
   useEffect(() => {
     setInputText(assignmentAnswer);
     setCheckAssignmentStatus(assignmentStatus);
+    if (checkAssignmentStatus === "pending") {
+      createAssignmentAnswer();
+    }
   }, [subLessonId, assignmentAnswer, assignmentStatus]);
 
   return (
@@ -91,11 +90,7 @@ function AssignmentBox({
                 : `Your Answer is "${assignmentAnswer}"`
             }
             onChange={handleInputText}
-            value={
-              assignmentAnswer !== null || assignmentAnswer !== ""
-                ? inputText
-                : `Your Answer is "${assignmentAnswer}"`
-            }
+            value={inputText}
             disabled={checkAssignmentStatus !== "pending"}
             required
           />

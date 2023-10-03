@@ -9,11 +9,13 @@ import Footer from "../../components/Footer";
 import DisplayCards from "../../components/user/DisplayCards";
 import SubFooter from "../../components/SubFooter";
 import { useAuth } from "../../context/authentication";
-
+import useCourselearning from "../../hook/useCourselearning";
+import axios from "axios";
 function MyAssignmentPage() {
   const { searchList, getSearchList } = useGetsearch();
   const [getFocus, setGetFocus] = useState(true);
   const [hasImage, setHasImage] = useState(false);
+  const { getUserCoursesLearning, course } = useCourselearning();
   const [preAssignment, setPreAssignment] = useState({
     assignmentDetail: "",
     assignmentAnswer: "",
@@ -24,6 +26,7 @@ function MyAssignmentPage() {
   const [inputText, setInputText] = useState("");
   const [checkAssignmentStatus, setCheckAssignmentStatus] = useState("");
   const [status, setStatus] = useState("myCourses");
+  const [detail, setDetail] = useState([]);
   const auth = useAuth();
   const limit = 12;
   const submitForm = (e) => {
@@ -40,12 +43,14 @@ function MyAssignmentPage() {
     getSearchList(newInputText, limit);
   };
   const getMyAssignment = async () => {
-    console.log(auth.session.user.user_id);
+    return await axios.get(
+      `http://localhost:4001/courses/allassignment/${auth.session.user.user_id}`
+    );
   };
   useEffect(() => {
-    // getSearchList("", limit);
-    // getAssignment();
-    getMyAssignment();
+    getMyAssignment().then((response) => {
+      setDetail(response.data.data);
+    });
     localStorage.setItem("previousPage", "/assignments");
   }, []);
 
@@ -83,6 +88,10 @@ function MyAssignmentPage() {
               <button
                 onClick={() => {
                   setStatus("all");
+                  getMyAssignment().then((value) => {
+                    console.log(value.data.data);
+                    setDetail(value.data.data);
+                  });
                   setGetFocus(true);
                 }}
                 className={`text-black p-2 ${
@@ -94,6 +103,12 @@ function MyAssignmentPage() {
               <button
                 onClick={() => {
                   setStatus("pending");
+                  getMyAssignment().then((value) => {
+                    const filter = value.data.data.filter((inside) => {
+                      return inside.assignment_status === "pending";
+                    });
+                    setDetail(filter);
+                  });
                   setGetFocus(false);
                 }}
                 className="transform transition-transform duration-300 ease-in-out hover:border-b hover:border-b-1 hover:text-black text-gray-600 focus:text-black focus:border-b focus:border-b-1 focus: border-black p-2"
@@ -103,6 +118,12 @@ function MyAssignmentPage() {
               <button
                 onClick={() => {
                   setStatus("submit");
+                  getMyAssignment().then((value) => {
+                    const filter = value.data.data.filter((inside) => {
+                      return inside.assignment_status === "submit";
+                    });
+                    setDetail(filter);
+                  });
                   setGetFocus(false);
                 }}
                 className="transform  transition-transform duration-300 ease-in-out hover:border-b hover:border-b-1 hover:text-black text-gray-600 focus:text-black focus:border-b focus:border-b-1 focus: border-black p-2"
@@ -111,7 +132,13 @@ function MyAssignmentPage() {
               </button>
               <button
                 onClick={() => {
-                  setStatus("submit");
+                  setStatus("overdue");
+                  getMyAssignment().then((value) => {
+                    const filter = value.data.data.filter((inside) => {
+                      return inside.assignment_status === "overdue";
+                    });
+                    setDetail(filter);
+                  });
                   setGetFocus(false);
                 }}
                 className="transform  transition-transform duration-300 ease-in-out hover:border-b hover:border-b-1 hover:text-black text-gray-600 focus:text-black focus:border-b focus:border-b-1 focus: border-black p-2"
@@ -120,7 +147,13 @@ function MyAssignmentPage() {
               </button>
               <button
                 onClick={() => {
-                  setStatus("submit");
+                  setStatus("submitlate");
+                  getMyAssignment().then((value) => {
+                    const filter = value.data.data.filter((inside) => {
+                      return inside.assignment_status === "submitlate";
+                    });
+                    setDetail(filter);
+                  });
                   setGetFocus(false);
                 }}
                 className="transform  transition-transform duration-300 ease-in-out hover:border-b hover:border-b-1 hover:text-black text-gray-600 focus:text-black focus:border-b focus:border-b-1 focus: border-black p-2"
@@ -131,95 +164,101 @@ function MyAssignmentPage() {
           </div>
         </div>
         <div className="h-auto  flex flex-col items-center justify-center">
-          <div className="bg-blue-100 w-[70%] flex flex-col justify-center items-center rounded-lg mt-[10px] mb-[20px] p-[20px]">
-            <div className="w-[691px] h-[32px] flex justify-between items-center mt-4">
-              <div className="text-body1 text-black">Assignment</div>
-              {checkAssignmentStatus === "pending" ? (
-                <div className="text-[#996500] text-[16px] w-[79px] bg-[#FFFBDB] border flex justify-center p-1 w-[100px]">
-                  Pending
-                </div>
-              ) : checkAssignmentStatus === "overdue" ? (
-                <div className="text-[#246e28] text-[16px] w-[79px] bg-[#b8ffb8] border flex justify-center p-1 w-[100px]">
-                  Overdue
-                </div>
-              ) : checkAssignmentStatus === "submitrate" ? (
-                <div className="text-[#246e28] text-[16px] w-[79px] bg-[#b8ffb8] border flex justify-center p-1 w-[100px]">
-                  Submit Rate
-                </div>
-              ) : (
-                <div className="text-[#246e28] text-[16px] w-[79px] bg-[#b8ffb8] border flex justify-center p-1 w-[100px]">
-                  Submit
-                </div>
-              )}
-            </div>
-            <div className="flex flex-col ">
-              <form onSubmit={submitForm} className="">
-                <div className="w-[691px] h-[124px] flex flex-col mt-5">
-                  <div className="text-[16px] mb-2">
-                    {preAssignment.assignmentDetail}
+          {detail.length < 0
+            ? ""
+            : detail.map((value, index) => {
+                return (
+                  <div
+                    key={index}
+                    className="bg-blue-100 w-[70%] flex flex-col justify-center items-center rounded-lg mt-[10px] mb-[20px] p-[20px]"
+                  >
+                    <div className="w-[691px] h-[32px] flex justify-between items-center mt-4">
+                      <div className="text-body1 text-black">
+                        Course: {value.course_name}
+                        <span className="block text-body2 text-gray-600 mb-5">
+                          {value.lesson_name}: {value.sub_lesson_name}
+                        </span>
+                      </div>
+                      {value.assignment_status === "pending" ? (
+                        <div className="text-[#996500] text-[16px] w-[79px] bg-[#FFFBDB] border flex justify-center p-1 w-[100px]">
+                          Pending
+                        </div>
+                      ) : value.assignment_status === "overdue" ? (
+                        <div className="text-[#246e28] text-[16px] w-[79px] bg-[#b8ffb8] border flex justify-center p-1 w-[100px]">
+                          Overdue
+                        </div>
+                      ) : value.assignment_status === "submitrate" ? (
+                        <div className="text-[#246e28] text-[16px] w-[79px] bg-[#b8ffb8] border flex justify-center p-1 w-[100px]">
+                          Submit Rate
+                        </div>
+                      ) : (
+                        <div className="text-[#246e28] text-[16px] w-[79px] bg-[#b8ffb8] border flex justify-center p-1 w-[100px]">
+                          Submit
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex flex-col ">
+                      <form onSubmit={submitForm} className="">
+                        <div className="w-[691px] h-[124px] flex flex-col mt-5">
+                          <div className="text-[16px] mb-2">
+                            {value.assignment_question}
+                          </div>
+                          <input
+                            type="text"
+                            className="w-[691px] h-[96px] text-[16px] text-gray-600 border-1 rounded-lg bg-white pl-5 pt-3"
+                            placeholder={
+                              value.assignment_status !== "submit"
+                                ? "Answer..."
+                                : `Your Answer is "${value.assignment_answer}"`
+                            }
+                            onChange={handleInputText}
+                            value={
+                              value.assignment_answer !== null ||
+                              value.assignment_answer !== ""
+                                ? inputText
+                                : `Your Answer is "${value.assignment_answer}"`
+                            }
+                            disabled={
+                              value.assignment_status === "submit" ||
+                              value.assignment_status === "overdue"
+                            }
+                            required
+                          />
+                        </div>
+                        <div className="w-[691px] flex justify-start mt-8">
+                          {value.assignment_status === "pending" ? (
+                            <button
+                              type="submit"
+                              className={
+                                value.assignment_status !== "pending"
+                                  ? `w-[203px] h-[60px] text-[16px] text-white font-bold rounded-xl bg-blue-500 hover:bg-blue-400`
+                                  : `w-[203px] h-[60px] text-[16px] text-white font-bold rounded-xl bg-blue-500`
+                              }
+                              disabled={value.assignment_status !== "pending"}
+                            >
+                              Send Assignment
+                            </button>
+                          ) : value.assignment_status === "overdue" ? (
+                            <button
+                              type="submit"
+                              className={
+                                value.assignment_status !== "pending" ||
+                                value.assignment_status !== "overdue"
+                                  ? `w-[203px] h-[60px] text-[16px] text-white font-bold rounded-xl bg-blue-500 hover:bg-blue-400`
+                                  : `w-[203px] h-[60px] text-[16px] text-white font-bold rounded-xl bg-blue-500`
+                              }
+                            >
+                              Send Assignment
+                            </button>
+                          ) : (
+                            <></>
+                          )}
+                        </div>
+                      </form>
+                    </div>
                   </div>
-                  <input
-                    type="text"
-                    className="w-[691px] h-[96px] text-[16px] text-gray-600 border-1 rounded-lg bg-white pl-5 pt-3"
-                    placeholder={
-                      preAssignment.assignmentAnswer !== null ||
-                      preAssignment.assignmentAnswer !== ""
-                        ? "Answer..."
-                        : `Your Answer is "${preAssignment.assignmentAnswer}"`
-                    }
-                    onChange={handleInputText}
-                    value={
-                      preAssignment.assignmentAnswer !== null ||
-                      preAssignment.assignmentAnswer !== ""
-                        ? inputText
-                        : `Your Answer is "${preAssignment.assignmentAnswer}"`
-                    }
-                    disabled={checkAssignmentStatus !== "pending"}
-                    required
-                  />
-                </div>
-                <div className="w-[691px] flex justify-start mt-8">
-                  {checkAssignmentStatus === "pending" ? (
-                    <button
-                      type="submit"
-                      className={
-                        checkAssignmentStatus !== "pending"
-                          ? `w-[203px] h-[60px] text-[16px] text-white font-bold rounded-xl bg-blue-500 hover:bg-blue-400`
-                          : `w-[203px] h-[60px] text-[16px] text-white font-bold rounded-xl bg-blue-500`
-                      }
-                      disabled={checkAssignmentStatus !== "pending"}
-                    >
-                      Send Assignment
-                    </button>
-                  ) : checkAssignmentStatus === "overdue" ? (
-                    <button
-                      type="submit"
-                      className={
-                        checkAssignmentStatus !== "pending" ||
-                        checkAssignmentStatus !== "overdue"
-                          ? `w-[203px] h-[60px] text-[16px] text-white font-bold rounded-xl bg-blue-500 hover:bg-blue-400`
-                          : `w-[203px] h-[60px] text-[16px] text-white font-bold rounded-xl bg-blue-500`
-                      }
-                    >
-                      Send Assignment
-                    </button>
-                  ) : (
-                    <button
-                      type="submit"
-                      className={
-                        checkAssignmentStatus !== "pending" ||
-                        checkAssignmentStatus !== "overdue"
-                          ? `w-[203px] h-[60px] text-[16px] text-white font-bold rounded-xl bg-blue-500 hover:bg-blue-400`
-                          : `w-[203px] h-[60px] text-[16px] text-white font-bold rounded-xl bg-blue-500`
-                      }
-                    >
-                      Send Assignment
-                    </button>
-                  )}
-                </div>
-              </form>
-            </div>
-          </div>
+                );
+              })}
         </div>
         <div>{!auth.session.user ? <SubFooter /> : ""}</div>
         <Footer />
