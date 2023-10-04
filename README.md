@@ -8,7 +8,7 @@ This project was developed and is maintained by the following amazing individual
 
 - [Bee](https://github.com/YaneeW)
 - [Dew](https://github.com/team-member-2)
-- [Folk](https://github.com/team-member-3)
+- [JRY](https://github.com/JIRAYUTRPY)
 - [Goy](https://github.com/gxysai)
 - [May](https://github.com/MaySupunnika)
 - [Mon](https://github.com/weerayuth9516)
