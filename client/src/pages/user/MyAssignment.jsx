@@ -45,10 +45,9 @@ function MyAssignmentPage() {
   const handleInputText = (e, index) => {
     const newInputText = e.target.value;
     const newSet = inputText;
-    newSet[index].assignment_answer =
-      newSet[index].assignment_answer + newInputText;
-    setInputText(newSet);
-    // console.log(newSet[index].assignment_answer, newSet[index].sub_lesson_name);
+    newSet[index].assignment_answer = newInputText;
+    // console.log(newSet[index].assignment_answer);
+    setInputText([...newSet]);
   };
   const handleInputChange = (e) => {
     const newInputText = e.target.value;
@@ -105,7 +104,9 @@ function MyAssignmentPage() {
                   getMyAssignment().then((value) => {
                     // console.log(value.data.data);
                     setDetail(value.data.data);
+                    setInputText([...value.data.data]);
                   });
+
                   setGetFocus(true);
                 }}
                 className={`text-black p-2 ${
@@ -121,11 +122,16 @@ function MyAssignmentPage() {
                     const filter = value.data.data.filter((inside) => {
                       return inside.assignment_status === "pending";
                     });
-                    setDetail(filter);
+                    setInputText([...filter]);
+                    setDetail([...filter]);
                   });
                   setGetFocus(false);
                 }}
-                className="transform transition-transform duration-300 ease-in-out hover:border-b hover:border-b-1 hover:text-black text-gray-600 focus:text-black focus:border-b focus:border-b-1 focus: border-black p-2"
+                className={`text-black p-2 ${
+                  status === "pending"
+                    ? "border-b border-black "
+                    : "text-gray-600"
+                } transform transition-transform duration-300 ease-in-out  hover:border-b hover:border-b-1 hover:text-black focus:text-black focus:border-b focus:border-b-1 focus:border-black`}
               >
                 Pending
               </button>
@@ -136,11 +142,16 @@ function MyAssignmentPage() {
                     const filter = value.data.data.filter((inside) => {
                       return inside.assignment_status === "submit";
                     });
+                    setInputText([...filter]);
                     setDetail(filter);
                   });
                   setGetFocus(false);
                 }}
-                className="transform  transition-transform duration-300 ease-in-out hover:border-b hover:border-b-1 hover:text-black text-gray-600 focus:text-black focus:border-b focus:border-b-1 focus: border-black p-2"
+                className={`text-black p-2 ${
+                  status === "submit"
+                    ? "border-b border-black "
+                    : "text-gray-600"
+                } transform transition-transform duration-300 ease-in-out  hover:border-b hover:border-b-1 hover:text-black focus:text-black focus:border-b focus:border-b-1 focus:border-black`}
               >
                 Submit
               </button>
@@ -151,11 +162,16 @@ function MyAssignmentPage() {
                     const filter = value.data.data.filter((inside) => {
                       return inside.assignment_status === "overdue";
                     });
+                    setInputText([...filter]);
                     setDetail(filter);
                   });
                   setGetFocus(false);
                 }}
-                className="transform  transition-transform duration-300 ease-in-out hover:border-b hover:border-b-1 hover:text-black text-gray-600 focus:text-black focus:border-b focus:border-b-1 focus: border-black p-2"
+                className={`text-black p-2 ${
+                  status === "overdue"
+                    ? "border-b border-black "
+                    : "text-gray-600"
+                } transform transition-transform duration-300 ease-in-out  hover:border-b hover:border-b-1 hover:text-black focus:text-black focus:border-b focus:border-b-1 focus:border-black`}
               >
                 Orver Due
               </button>
@@ -166,11 +182,16 @@ function MyAssignmentPage() {
                     const filter = value.data.data.filter((inside) => {
                       return inside.assignment_status === "submitlate";
                     });
+                    setInputText([...filter]);
                     setDetail(filter);
                   });
                   setGetFocus(false);
                 }}
-                className="transform  transition-transform duration-300 ease-in-out hover:border-b hover:border-b-1 hover:text-black text-gray-600 focus:text-black focus:border-b focus:border-b-1 focus: border-black p-2"
+                className={`text-black p-2 ${
+                  status === "submitlate"
+                    ? "border-b border-black "
+                    : "text-gray-600"
+                } transform transition-transform duration-300 ease-in-out  hover:border-b hover:border-b-1 hover:text-black focus:text-black focus:border-b focus:border-b-1 focus:border-black`}
               >
                 Submit Late
               </button>
@@ -221,14 +242,12 @@ function MyAssignmentPage() {
                             type="text"
                             className="w-[691px] h-[96px] text-[16px] text-gray-600 border-1 rounded-lg bg-white pl-5 pt-3"
                             onChange={(e) => {
-                              if (value.assignment_status !== "submit") {
-                                handleInputText(e, index);
-                              }
+                              handleInputText(e, index);
                             }}
                             value={
                               value.assignment_status !== "submit"
-                                ? `${inputText[index].assignment_answer}`
-                                : `Your Answer is "${value.assignment_answer}"`
+                                ? inputText[index].assignment_answer
+                                : `Your Answer is "${inputText[index].assignment_answer}"`
                             }
                             disabled={
                               value.assignment_status === "submit" ||
