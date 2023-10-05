@@ -23,7 +23,16 @@ function MyAssignmentPage() {
     assignmentStartedAt: null,
     assignmentStatus: "",
   });
-  const [inputText, setInputText] = useState("");
+  const [inputText, setInputText] = useState([
+    {
+      assignment_answer: "",
+      assignment_question: "",
+      assignment_status: "",
+      course_name: "",
+      lesson_name: "",
+      sub_lesson_name: "",
+    },
+  ]);
   const [checkAssignmentStatus, setCheckAssignmentStatus] = useState("");
   const [status, setStatus] = useState("myCourses");
   const [detail, setDetail] = useState([]);
@@ -33,9 +42,13 @@ function MyAssignmentPage() {
     e.preventDefault();
     setCheckAssignmentStatus("in_progress");
   };
-  const handleInputText = (e) => {
+  const handleInputText = (e, index) => {
     const newInputText = e.target.value;
-    setInputText(newInputText);
+    const newSet = inputText;
+    newSet[index].assignment_answer =
+      newSet[index].assignment_answer + newInputText;
+    setInputText(newSet);
+    // console.log(newSet[index].assignment_answer, newSet[index].sub_lesson_name);
   };
   const handleInputChange = (e) => {
     const newInputText = e.target.value;
@@ -50,6 +63,7 @@ function MyAssignmentPage() {
   useEffect(() => {
     getMyAssignment().then((response) => {
       setDetail(response.data.data);
+      setInputText(response.data.data);
     });
     localStorage.setItem("previousPage", "/assignments");
   }, []);
@@ -74,11 +88,11 @@ function MyAssignmentPage() {
               id="message-text"
               name="message-text"
               type="text"
-              value={inputText}
+              // value={inputText}
               className="w-[357px] h-[48px] pl-10 border rounded-lg py-2 px-3 focus:outline-none hover:border-orange-300 focus:border-orange-300"
               placeholder="Search..."
               debounceTimeout={500}
-              onChange={handleInputChange}
+              // onChange={handleInputChange}
             />
           </div>
         </div>
@@ -89,7 +103,7 @@ function MyAssignmentPage() {
                 onClick={() => {
                   setStatus("all");
                   getMyAssignment().then((value) => {
-                    console.log(value.data.data);
+                    // console.log(value.data.data);
                     setDetail(value.data.data);
                   });
                   setGetFocus(true);
@@ -206,16 +220,14 @@ function MyAssignmentPage() {
                           <input
                             type="text"
                             className="w-[691px] h-[96px] text-[16px] text-gray-600 border-1 rounded-lg bg-white pl-5 pt-3"
-                            placeholder={
-                              value.assignment_status !== "submit"
-                                ? "Answer..."
-                                : `Your Answer is "${value.assignment_answer}"`
-                            }
-                            onChange={handleInputText}
+                            onChange={(e) => {
+                              if (value.assignment_status !== "submit") {
+                                handleInputText(e, index);
+                              }
+                            }}
                             value={
-                              value.assignment_answer !== null ||
-                              value.assignment_answer !== ""
-                                ? inputText
+                              value.assignment_status !== "submit"
+                                ? `${inputText[index].assignment_answer}`
                                 : `Your Answer is "${value.assignment_answer}"`
                             }
                             disabled={
