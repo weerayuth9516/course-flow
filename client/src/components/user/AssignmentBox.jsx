@@ -85,7 +85,7 @@ function AssignmentBox({
           <div className="text-[16px] mb-2">{assignmentDetail}</div>
           <input
             type="text"
-            className="w-[691px] h-[96px] text-[16px] text-gray-600 border-1 rounded-lg bg-white pl-5 pt-3"
+            className="w-[691px] h-[96px] text-[16px] text-gray-600 border-1 rounded-lg bg-white pl-5 pt-3 focus:outline-none focus:scale-105 transition-transform"
             placeholder={
               assignmentAnswer !== null || assignmentAnswer !== ""
                 ? "Answer..."
@@ -104,7 +104,7 @@ function AssignmentBox({
               className={
                 checkAssignmentStatus !== "pending"
                   ? `w-[203px] h-[60px] text-[16px] text-white font-bold rounded-xl bg-blue-500 hover:bg-blue-400`
-                  : `w-[203px] h-[60px] text-[16px] text-white font-bold rounded-xl bg-blue-500`
+                  : `w-[203px] h-[60px] text-[16px] text-white font-bold rounded-xl bg-blue-500 hover:scale-110 transition-transform`
               }
               disabled={checkAssignmentStatus !== "pending"}
             >

@@ -293,9 +293,6 @@ courseRouter.put("/assignment/submit", async (req, res) => {
 });
 
 courseRouter.get("/allassignment/:userId", async (req, res) => {
-  // const result = await supabase
-  //   .rpc("get_myassignments")
-  //   .eq("user_id", req.params.userId);
   const result = await supabase
     .from("user_course_details")
     .select("user_course_detail_id, course_id")
@@ -355,16 +352,22 @@ courseRouter.get("/allassignment/:userId", async (req, res) => {
       const courseName = newCourse.data.filter((courseDetail) => {
         return courseDetail.course_id === lessonName[0].course_id;
       });
+      const courseDetailId = result.data.filter((cdid) => {
+        return cdid.course_id === lessonName[0].course_id;
+      });
+      const id = courseDetailId[0].user_course_detail_id;
       return {
+        id: id,
         course_name: courseName[0].course_name,
         lesson_name: lessonName[0].lesson_name,
         sub_lesson_name: subName[0].sub_lesson_name,
+        sub_id: subName[0].sub_lesson_id,
         assignment_question: question[0].assignment_detail,
         assignment_answer: detail.assignment_detail,
         assignment_status: detail.assignment_status,
       };
     });
-    // console.log(newMapII);
+
     return res.json({
       data: newMapII,
     });

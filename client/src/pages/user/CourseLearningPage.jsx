@@ -160,8 +160,8 @@ function CourseLearningPage() {
                               className={`w-[309px] h-[60px] flex justify-start items-center pr-2 pl-2 ${
                                 currentSubLesson.subLessonId ===
                                 item.sub_lesson_id
-                                  ? "bg-gray-100 rounded-lg"
-                                  : ""
+                                  ? "bg-gray-100 rounded-lg transition-transform"
+                                  : "transition-transform"
                               }`}
                             >
                               <span>

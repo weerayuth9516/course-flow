@@ -25,12 +25,14 @@ function MyAssignmentPage() {
   });
   const [inputText, setInputText] = useState([
     {
+      id: "",
       assignment_answer: "",
       assignment_question: "",
       assignment_status: "",
       course_name: "",
       lesson_name: "",
       sub_lesson_name: "",
+      sub_id: "",
     },
   ]);
   const [checkAssignmentStatus, setCheckAssignmentStatus] = useState("");
@@ -48,6 +50,25 @@ function MyAssignmentPage() {
     newSet[index].assignment_answer = newInputText;
     // console.log(newSet[index].assignment_answer);
     setInputText([...newSet]);
+  };
+  const updateAnswer = async (index) => {
+    const response = await axios.put(
+      `http://localhost:4001/courses/assignment/submit`,
+      {
+        user_course_detail_id: inputText[index].id,
+        assignment_status: "submit",
+        assignment_answer: inputText[index].assignment_answer,
+        sub_lesson_id: inputText[index].sub_id,
+      }
+    );
+    if (response.status === 200) {
+      const newSet = inputText;
+      console.log(newSet);
+      newSet[index].assignment_status = "submit";
+      setInputText([...newSet]);
+    } else {
+      console.log(response);
+    }
   };
   const handleInputChange = (e) => {
     const newInputText = e.target.value;
@@ -205,7 +226,7 @@ function MyAssignmentPage() {
                 return (
                   <div
                     key={index}
-                    className="bg-blue-100 w-[70%] flex flex-col justify-center items-center rounded-lg mt-[10px] mb-[20px] p-[20px]"
+                    className="bg-blue-100 shadow-lg w-[70%] flex flex-col justify-center items-center rounded-lg mt-[10px] mb-[20px] p-[20px]"
                   >
                     <div className="w-[691px] h-[32px] flex justify-between items-center mt-4">
                       <div className="text-body1 text-black">
@@ -240,7 +261,7 @@ function MyAssignmentPage() {
                           </div>
                           <input
                             type="text"
-                            className="w-[691px] h-[96px] text-[16px] text-gray-600 border-1 rounded-lg bg-white pl-5 pt-3"
+                            className="w-[691px] h-[96px] text-[16px] text-gray-600 border-1 rounded-lg bg-white pl-5 pt-3 focus:outline-none focus:scale-110 transition-transform"
                             onChange={(e) => {
                               handleInputText(e, index);
                             }}
@@ -260,12 +281,14 @@ function MyAssignmentPage() {
                           {value.assignment_status === "pending" ? (
                             <button
                               type="submit"
+                              onClick={() => {
+                                updateAnswer(index);
+                              }}
                               className={
                                 value.assignment_status !== "pending"
-                                  ? `w-[203px] h-[60px] text-[16px] text-white font-bold rounded-xl bg-blue-500 hover:bg-blue-400`
-                                  : `w-[203px] h-[60px] text-[16px] text-white font-bold rounded-xl bg-blue-500`
+                                  ? `w-[203px] h-[60px] text-[16px] text-white font-bold rounded-xl bg-blue-500 hover:scale-110 transition-transform`
+                                  : `w-[203px] h-[60px] text-[16px] text-white font-bold rounded-xl bg-blue-500 hover:scale-110 transition-transform`
                               }
-                              disabled={value.assignment_status !== "pending"}
                             >
                               Send Assignment
                             </button>
