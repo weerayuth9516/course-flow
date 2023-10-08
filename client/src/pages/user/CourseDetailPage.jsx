@@ -1,15 +1,18 @@
 import React, { useEffect, useState, useContext } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
-import ToggleLesson from "../components/ToggleLesson";
-import SubFooter from "../components/SubFooter";
-import { SubscribeModal } from "../components/ConfirmMadal";
-import useGetsearch from "../hook/useGetsearch";
+import Header from "../../components/Header";
+import Footer from "../../components/Footer";
+import ToggleLesson from "../../components/user/ToggleLesson";
+import SubFooter from "../../components/SubFooter";
+import {
+  SubscribeModal,
+  DesireCourseModal,
+} from "../../components/user/ConfirmMadal";
+import useGetsearch from "../../hook/useGetsearch";
 import axios from "axios";
-import DisplayCards from "../components/DisplayCards";
-import { useAuth } from "../context/authentication";
-import useGetuser from "../hook/useGetuser";
+import DisplayCards from "../../components/user/DisplayCards";
+import { useAuth } from "../../context/authentication";
+import useGetuser from "../../hook/useGetuser";
 
 function CourseDetailPage() {
   const [course, setCourse] = useState({});
@@ -40,7 +43,12 @@ function CourseDetailPage() {
       }
       getCourse();
       getSearchList("", 3);
-      checkSubscription();
+      checkSubscription(auth.session.user.user_id);
+      checkDesireCourse(auth.session.user.user_id);
+      // localStorage.setItem(
+      //   "previousPage",
+      //   `/course/courseDetail/${params.courseId}`
+      // );
     };
     fetchData();
   }, [params.courseId, auth.isAuthenicated]);
@@ -52,24 +60,19 @@ function CourseDetailPage() {
     return "";
   }
 
-  // const [showDesireModal, setShowDesireModal] = useState(false);
+  const [showDesireModal, setShowDesireModal] = useState(false);
   const [showSubscribeModal, setShowSubscribeModal] = useState(false);
   const [courseNameForModal, setCourseNameForModal] = useState("");
   const [isSubscribed, setIsSubscribed] = useState(false);
-  // const [isDesired, setIsDesired] = useState(false);
+  const [isDesired, setIsDesired] = useState(false);
 
-  // const openDesireModal = (courseName) => {
-  //   setCourseNameForModal(courseName);
-  //   setShowDesireModal(true);
-  // };
-  // const closeDesireModal = () => {
-  //   setShowDesireModal(false);
-  // };
-
-  // const handleConfirmGetInDesire = () => {
-  //   setIsDesired(true);
-  //   closeDesireModal();
-  // };
+  const openDesireModal = (courseName) => {
+    setCourseNameForModal(courseName);
+    setShowDesireModal(true);
+  };
+  const closeDesireModal = () => {
+    setShowDesireModal(false);
+  };
 
   const openSubscribeModal = (courseName) => {
     setCourseNameForModal(courseName);
@@ -79,11 +82,70 @@ function CourseDetailPage() {
     setShowSubscribeModal(false);
   };
 
-  const checkSubscription = async () => {
+  const handleConfirmGetInDesire = async () => {
+    try {
+      const userId = auth.session.user.user_id;
+      const courseId = course.course_id;
+      const dataSend = {
+        user_id: userId,
+        course_id: courseId,
+      };
+      const desireRequest = await axios.post(
+        `http://localhost:4001/courses/mydesirecourses/${params.courseId}`,
+        dataSend
+      );
+      console.log(desireRequest);
+      if (desireRequest && desireRequest.status === 200) {
+        setIsDesired(true);
+        closeDesireModal();
+        console.log("Desired successfully");
+      } else {
+        console.log("Desired error");
+      }
+    } catch (error) {
+      console.error("Error desired this course:", error);
+    }
+  };
+
+  const checkDesireCourse = async (userId) => {
+    try {
+      // const userId = auth.session.user.user_id;
+      const courseId = params.courseId;
+      const response = await axios.get(
+        `http://localhost:4001/courses/mydesirecourses/${userId}/${courseId}`
+      );
+      if (response.data.isDesired.data.length === 0) {
+        setIsDesired(false);
+      } else {
+        setIsDesired(true);
+      }
+    } catch (error) {
+      console.error("Error checking desired status:", error);
+    }
+  };
+
+  const handleRemoveDesireCourse = async () => {
     try {
       const userId = auth.session.user.user_id;
       const courseId = params.courseId;
-      console.log(userId);
+      const response = await axios.delete(
+        `http://localhost:4001/courses/mydesirecourses/${userId}/${courseId}`
+      );
+      if (response.status === 200) {
+        setIsDesired(false);
+      } else {
+        setIsDesired(true);
+      }
+    } catch (error) {
+      console.error("Error removing desired course:", error);
+    }
+  };
+
+  const checkSubscription = async (userId) => {
+    try {
+      // const userId = auth.session.user.user_id;
+      const courseId = params.courseId;
+
       const response = await axios.get(
         `http://localhost:4001/courses/subscription/${userId}/${courseId}`
       );
@@ -124,6 +186,13 @@ function CourseDetailPage() {
     }
   };
 
+  const previousPage = localStorage.getItem("previousPage");
+  const handleBack = () => {
+    if (Boolean(localStorage.getItem("previousPage"))) {
+      navigate(localStorage.getItem("previousPage"));
+    }
+  };
+
   return (
     <>
       <div className="relative z-1">
@@ -132,9 +201,12 @@ function CourseDetailPage() {
 
       <div className="flex justify-center mt-9">
         <div className="flex flex-col mr-5">
-          <Link to="/course" className="text-blue-500 mb-4 font-bold">
-            <span className="font-semibold text-xs pr-2">🡠</span> Back
-          </Link>
+          <button
+            onClick={handleBack}
+            className="text-blue-500 mb-4 font-bold flex justify-start"
+          >
+            🡠 Back
+          </button>
           <iframe
             width="739px"
             height="460px"
@@ -186,8 +258,11 @@ function CourseDetailPage() {
               </button>
             ) : (
               <>
-                {/* {isDesired ? (
-                  <button className="px-8 py-[18px] w-[309px] h-[60px] border-solid border-[1px] rounded-[12px] border-orange-500 font-bold text-orange-500 mt-3 hover:bg-orange-500 hover:text-white">
+                {isDesired ? (
+                  <button
+                    className="px-8 py-[18px] w-[309px] h-[60px] border-solid border-[1px] rounded-[12px] border-orange-500 font-bold text-orange-500 mt-3 hover:bg-orange-500 hover:text-white"
+                    onClick={() => handleRemoveDesireCourse()}
+                  >
                     Remove from Desire Course
                   </button>
                 ) : (
@@ -198,28 +273,16 @@ function CourseDetailPage() {
                     >
                       Get in Desire Course
                     </button>
-                    <DesireCourseModal
-                      isOpen={showDesireModal}
-                      onRequestClose={closeDesireModal}
-                      courseName={courseNameForModal}
-                      onConfirm={handleConfirmGetInDesire}
-                    />
                   </>
                 )}
 
-                <br /> */}
+                <br />
                 <button
                   className="px-8 py-[18px] w-[309px] h-[60px] border-solid border-[1px] rounded-[12px] bg-blue-500 font-bold text-white mt-5 hover:bg-blue-600"
                   onClick={() => openSubscribeModal(course.course_name)}
                 >
                   Subscribe This Course
                 </button>
-                <SubscribeModal
-                  isOpen2={showSubscribeModal}
-                  onRequestClose2={closeSubscribeModal}
-                  courseName={courseNameForModal}
-                  onConfirm2={handleConfirmSubscribe}
-                />
               </>
             )}
           </div>
@@ -240,6 +303,18 @@ function CourseDetailPage() {
       <div className="relative z-1">
         <Footer />
       </div>
+      <DesireCourseModal
+        isOpen={showDesireModal}
+        onRequestClose={closeDesireModal}
+        courseName={courseNameForModal}
+        onConfirm={handleConfirmGetInDesire}
+      />
+      <SubscribeModal
+        isOpen2={showSubscribeModal}
+        onRequestClose2={closeSubscribeModal}
+        courseName={courseNameForModal}
+        onConfirm2={handleConfirmSubscribe}
+      />
     </>
   );
 }

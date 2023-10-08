@@ -17,7 +17,12 @@ userRouter.get("/", async (req, res) => {
 userRouter.get("/:id", async (req, res) => {
   const id = req.params.id;
   const results = await supabase.from("users").select("*").eq("user_id", id);
-  if (results.statusText === "OK") {
+  // const hasAvatar = await supabase
+  //   .from("users")
+  //   .select("user_avatar")
+  //   .eq("user_id", id);
+  // console.log(results.data);
+  if (results.statusText === "OK" && results.data[0].user_avatar !== null) {
     const avatarPath = await supabase.storage
       .from("user_avatars")
       .getPublicUrl(results.data[0].user_avatar);
@@ -29,6 +34,30 @@ userRouter.get("/:id", async (req, res) => {
         user_education: results.data[0].user_education,
         user_dob: results.data[0].user_dob,
         user_avatar: avatarPath.data.publicUrl,
+      },
+      process.env.SECRET_KEY,
+      {
+        expiresIn: "1d",
+      }
+    );
+
+    return res.json({
+      message: "Fetching succesfully",
+      token,
+    });
+  } else if (
+    results.statusText === "OK" &&
+    results.data[0].user_avatar === null
+  ) {
+    // console.log("Yes!");
+    const token = jwt.sign(
+      {
+        user_id: results.data[0].user_id,
+        user_email: results.data[0].user_email,
+        user_name: results.data[0].user_name,
+        user_education: results.data[0].user_education,
+        user_dob: results.data[0].user_dob,
+        user_avatar: null,
       },
       process.env.SECRET_KEY,
       {
@@ -62,7 +91,7 @@ userRouter.post("/", async (req, res) => {
 
 userRouter.put("/:id", async (req, res) => {
   const id = req.params.id;
-  console.log(req.body.user_email);
+  // console.log(req.body.user_email);
   const oldPath = await supabase
     .from("users")
     .select("user_avatar")

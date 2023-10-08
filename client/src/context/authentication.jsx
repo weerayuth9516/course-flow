@@ -10,8 +10,10 @@ function AuthProvider(props) {
     loading: null,
     error: null,
     user: null,
+    admin: null,
   });
   const navigate = useNavigate();
+
   const login = async (data) => {
     session.error = null;
     try {
@@ -22,15 +24,14 @@ function AuthProvider(props) {
       if (!results.data.token) {
         session.error = results.data.message;
       } else {
-        console.log(results);
         session.error = null;
         const token = results.data.token;
         const userDataFromToken = jwtDecode(token);
         session.user = userDataFromToken;
-        if (Boolean(localStorage.getItem("previousCourse"))) {
-          const redirectPage = localStorage.getItem("previousCourse");
+        if (Boolean(localStorage.getItem("previousPage"))) {
+          const redirectPage = localStorage.getItem("previousPage");
           navigate(redirectPage);
-          localStorage.removeItem("previousCourse");
+          localStorage.removeItem("previousPage");
         } else {
           navigate("/");
         }
@@ -43,6 +44,39 @@ function AuthProvider(props) {
       return error;
     }
   };
+
+  const adminLogin = async (data) => {
+    session.error = null;
+    try {
+      const results = await axios.post(
+        "http://localhost:4001/auth/admin/login",
+        data
+      );
+      if (!results.data.token) {
+        session.error = results.data.message;
+      } else {
+        session.error = null;
+        const token = results.data.token;
+        const userDataFromToken = jwtDecode(token);
+        session.admin = userDataFromToken;
+        if (session.admin.role !== "admin") {
+          navigate("/");
+        }
+        if (results) {
+          navigate("/admin");
+        }
+        localStorage.setItem("role", "admin");
+        localStorage.setItem("token", token);
+      }
+      return results;
+    } catch (error) {
+      // console.log(error);
+      session.error;
+      // console.log(session.error);
+      return error;
+    }
+  };
+
   const register = async (data) => {
     const result = await axios.post(
       "http://localhost:4001/auth/register",
@@ -58,19 +92,39 @@ function AuthProvider(props) {
       alert("API INVALID");
     }
   };
-  const logout = () => {
-    localStorage.removeItem("token");
-    setSession({ ...session, user: null, error: null });
-  };
-
-  const isAuthenicated = Boolean(localStorage.getItem("token"));
+  const isAdmin = Boolean(localStorage.getItem("role"));
+  const isAuthenicated = Boolean(localStorage.getItem("token") && !isAdmin);
+  const isAdminAuthenticated =
+    Boolean(localStorage.getItem("token")) && isAdmin;
   if (isAuthenicated) {
     const token = localStorage.getItem("token");
     session.user = jwtDecode(token);
   }
+  if (isAdminAuthenticated) {
+    const token = localStorage.getItem("token");
+    session.admin = jwtDecode(token);
+  }
+  const logout = () => {
+    if (isAdmin) {
+      localStorage.removeItem("role");
+    }
+    localStorage.removeItem("token");
+    localStorage.removeItem("previousPage");
+    setSession({ ...session, user: null, admin: null, error: null });
+  };
+
   return (
     <AuthContext.Provider
-      value={{ session, login, logout, register, isAuthenicated }}
+      value={{
+        session,
+        login,
+        logout,
+        register,
+        isAuthenicated,
+        isAdminAuthenticated,
+        adminLogin,
+        isAdmin,
+      }}
     >
       {props.children}
     </AuthContext.Provider>

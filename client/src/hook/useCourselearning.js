@@ -11,10 +11,18 @@ function useCourselearning() {
   const [subLessonStatus, setSubLessonStatus] = useState([]);
   const [powerLevel, setPowerLevel] = useState(0);
   const [toggleStates, setToggleStates] = useState(lesson.map(() => false));
+  const [getUserId, setGetUserId] = useState("");
   const [currentSubLesson, setCurrentSubLesson] = useState({
     subLessonName: "",
     subLessonVideo: "",
     subLessonId: "",
+  });
+  const [currentAssignment, setCurrentAssignment] = useState({
+    assignmentStatus: null,
+    assignmentDetail: null,
+    assignmentDuration: null,
+    assignmentStartedAt: null,
+    assignmentAnswer: "",
   });
   const params = useParams();
 
@@ -86,17 +94,35 @@ function useCourselearning() {
     }
   };
 
-  const handleTitleClick = (subLesson, subVideo, subLessonId) => {
-    setCurrentSubLesson({
+  const handleTitleClick = async (subLesson, subVideo, subLessonId, assObj) => {
+    // console.log(assObj.assignment_answer);
+    console.log(assObj);
+    await setCurrentSubLesson({
       subLessonName: subLesson,
       subLessonVideo: subVideo,
       subLessonId: subLessonId,
     });
-
+    await setCurrentAssignment({
+      assignmentStatus: assObj.assignment_status,
+      assignmentDetail: assObj.assignment_detail,
+      assignmentDuration: assObj.assignment_duration,
+      assignmentStartedAt: assObj.assignment_started_at,
+      assignmentAnswer: assObj.assignment_answer,
+    });
+    getUserCoursesLearning(getUserId);
     const currentIndex = subLessonArray.indexOf(
       subLessonArray.find((item) => item.sub_lesson_id === subLessonId)
     );
     setLessonPage(currentIndex + 1);
+    console.log(subLessonArray[currentIndex]);
+    if (subLessonArray[currentIndex].assignmentStatus !== null) {
+      setCurrentAssignment({
+        assignmentDetail: subLessonArray[currentIndex].assignment_detail,
+        assignmentDuration: subLessonArray[currentIndex].assignment_duration,
+        assignmentStartedAt: subLessonArray[currentIndex].assignment_started_at,
+        assignmentAnswer: subLessonArray[currentIndex].assignment_answer,
+      });
+    }
   };
 
   const handleVideoEnd = () => {
@@ -107,6 +133,18 @@ function useCourselearning() {
       const newStatusArray = [...subLessonStatus];
       newStatusArray[currentIndex] = "completed";
       setSubLessonStatus(newStatusArray);
+      setCurrentSubLesson({
+        ...currentSubLesson,
+        subLessonStatus: "completed",
+      });
+      setCurrentAssignment({
+        assignmentDetail: subLessonArray[currentIndex].assignment_detail,
+        assignmentDuration: subLessonArray[currentIndex].assignment_duration,
+        assignmentStartedAt: subLessonArray[currentIndex].assignment_started_at,
+        assignmentAnswer: subLessonArray[currentIndex].assignment_answer,
+        assignmentStatus: "pending",
+      });
+      // console.log(currentAssignment);
       updateLearningStatus(
         userCourseDetailId,
         currentSubLesson.subLessonId,
@@ -174,6 +212,10 @@ function useCourselearning() {
     handleVideoEnd,
     handleVideoStart,
     handleAssignment,
+    currentAssignment,
+    setCurrentAssignment,
+    getUserId,
+    setGetUserId,
   };
 }
 

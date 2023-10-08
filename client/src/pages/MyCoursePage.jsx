@@ -5,7 +5,7 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { useAuth } from "../context/authentication";
 import axios from "axios";
-
+import imagebg from "../assets/ourCourses/image_background.png";
 function MyCoursePage() {
   const [myCourses, setMyCourses] = useState([]);
   const [inProgressCourses, setInProgressCourses] = useState([]);
@@ -36,7 +36,7 @@ function MyCoursePage() {
   useEffect(() => {
     if (auth.isAuthenicated) {
       setUserId(auth.session.user.user_id);
-    } 
+    }
   }, [auth.isAuthenicated]);
 
   useEffect(() => {
@@ -47,7 +47,8 @@ function MyCoursePage() {
     <>
       <Header />
       <div id="container" className="font-inter mx-auto">
-        <div className="bg-[url('src/assets/ourCourses/image_background.png')] bg-[length:100%_190px] bg-no-repeat">
+        <div className="relative">
+          <img className="w-screen absolute" src={imagebg}></img>
           <div className="search-box mb-2 flex flex-col items-center mt-20 h-[230px]">
             <div className="title text-black text-header2 font-bold mb-5">
               My Course

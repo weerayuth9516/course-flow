@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import useGetuser from "../hook/useGetuser";
-import remove from "../assets/header/remove.png";
-import addImage from "../assets/header/add.png";
-import error from "../assets/header/error.png";
+import useGetuser from "../../hook/useGetuser";
+import remove from "../../assets/header/remove.png";
+import addImage from "../../assets/header/add.png";
+import error from "../../assets/header/error.png";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
@@ -10,8 +10,9 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import dayjs from "dayjs";
 import { Stack } from "@mui/material";
-import { useAuth } from "../context/authentication";
+import { useAuth } from "../../context/authentication";
 import { useNavigate } from "react-router-dom";
+import imagebg from "../../assets/ourCourses/image_background.png";
 
 function EditProfileForm() {
   const navigate = useNavigate();
@@ -35,13 +36,10 @@ function EditProfileForm() {
   };
   const validationSchema = Yup.object().shape({
     name: Yup.string()
-      .matches(/^[a-zA-Z\s]+$/, "Name must contain only letters")
+      .matches(/^[a-zA-Z0-9\sก-๙]+$/, "Name must contain only letters")
       .required("Name is required"),
-    birthDate: Yup.date()
-      .max(new Date(), "Date of Birth cannot be in the future")
-      .required("Date of Birth is required"),
     education: Yup.string()
-      .matches(/^[a-zA-Z\s]+$/, "Education must only contain letters")
+      .matches(/^[a-zA-Z0-9\sก-๙]+$/, "Education must contain only letters")
       .required("Educational Background is required"),
     email: Yup.string()
       .email("Invalid email address")
@@ -69,6 +67,7 @@ function EditProfileForm() {
       setBirthDate(auth.session.user.user_dob);
       setEducation(auth.session.user.user_education);
       setEmail(auth.session.user.user_email);
+
       if (auth.session.user.user_avatar === null) {
         setHasImage(false);
       } else {
@@ -87,11 +86,13 @@ function EditProfileForm() {
   const handleSubmit = (event) => {
     const data = {
       user_name: name,
-      user_dob: birthDate,
+      user_dob:
+        birthDate instanceof dayjs ? birthDate.format("YYYY-MM-DD") : birthDate,
       user_education: education,
       user_email: email,
       avatarObj: fileBody,
     };
+
     if (dateErrorMessage === null && fileErrorMessage === null) {
       updateUserProfileById(auth.session.user.user_id, data);
     }
@@ -127,8 +128,9 @@ function EditProfileForm() {
   return (
     <div
       id="edit-profile-container"
-      className=" flex flex-col items-center justify-center bg-[url('src/assets/ourCourses/image_background.png')] bg-no-repeat bg-[length:100%_190px] bg-[center_top_5rem] h-[955px]"
+      className=" flex flex-col items-center justify-center h-[955px] relative"
     >
+      <img className="w-screen absolute top-20" src={imagebg}></img>
       <span className=" text-header2  font-medium">Profile</span>
       <Formik
         enableReinitialize={true}
