@@ -388,13 +388,15 @@ courseRouter.get("/allassignment/:userId", async (req, res) => {
         return cdid.course_id === lessonName[0].course_id;
       });
       const id = courseDetailId[0].user_course_detail_id;
+      // console.log(question[0].assignment_detail);
       return {
         id: id,
         course_name: courseName[0].course_name,
         lesson_name: lessonName[0].lesson_name,
         sub_lesson_name: subName[0].sub_lesson_name,
         sub_id: subName[0].sub_lesson_id,
-        assignment_question: question[0].assignment_detail,
+        assignment_question:
+          question[0] != undefined ? question[0].assignment_detail : null,
         assignment_answer: detail.assignment_detail,
         assignment_status: detail.assignment_status,
       };
